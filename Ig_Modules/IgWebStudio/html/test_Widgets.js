@@ -1,0 +1,2 @@
+mainDiv = document.createElement ("div");
+

@@ -1,0 +1,428 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgViewDB_boost.cc: Move to IgPluginManager.
+	
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, IgViewDB.h, IgViewDB_boost.cc, IgDocument.cc,
+	IgPage.cc, IgStudioDriver.cc, IgView.cc, IgViewDB.cc, IgWizard.cc,
+	plugin.cc: Move to classlib and IgPluginManager.
+
+	* BuildFile: Use Iguana flag.
+	* IgStudioSetup.cc: Correct the message to ask for IGUANA_PLUGINS.
+	
+2006-06-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* ChangeLog: Fixed the last commit which was done by Shahzad
+	not Giulio.
+
+2006-06-23  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Added IgConfig dependency.
+	* src/IgStudioDriver.cc: Use IgEnvsElement instead of getenv, make use
+	of IgConfig to get the Session type if not provided via tha command-line
+	argument, read the application caption, and size from the config file. 
+
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgModelManager.cc: default parameter declaration commented out in
+	.cc for ANSI C++ compliancy (still there in the .h).
+
+2006-03-01  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgStudioDriver.cc: Register an autoprint bitmap to the image
+	service.
+
+2005-12-15  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* python/BuildFile: Added boost_python dependency.
+	
+2005-11-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgDocumentData.cc: useless assertions removed.
+
+2005-08-26  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgDocumentData.cc (IgDocumentData): removed a couple of asserts,
+	until IgDocument and IgPage return Qt free.
+
+2005-07-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.cc: Added default views printing image to the image
+	service.
+
+2005-06-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgPage.cc: Remove ... from the New menu.
+
+2005-04-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgStudioDriver.cc: Remove placeholders for unimplemented Pick
+	and RepVisibility services. Remove an extra button for the Pick
+	service from the tool-bar.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2005-02-07  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgMDIView.cc: Added the missing qwidget.h header.
+
+2004-12-16  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.cc: IMAGE_ID_WHATS_THIS_PICKING image registered
+	in the image service.
+
+2004-12-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgModelManager.h, IgModelManager.cc: Moved from IgObjectBrowser,
+	added functionality to lookup the model by name.
+	
+	* IgDocumentDataManager.h, IgDocumentDataManager.cc: Newly added
+	document data manager to provide a mapping b/w the document data root
+	and its available state.
+	
+	* IgDocument.h, IgDocument.cc: Default name of decoument is set to
+	"IGUANA Visualization".
+	
+	* IgDocumentData.h, IgDocumentData.cc: Default root name is now
+	currentRoot, new method to directly add IgSimpleTwig root
+	( used by IgIVView).
+	
+	* IgStudioDriver.cc: IgDocumentDataManager and IgModelManager services
+	added.
+
+2004-11-29  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.cc: "--iguana-session | -is" used instead of "-s"
+	for selecting the session type. "-s" was already used by COBRA.
+
+2004-11-19  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.h, IgStudioDriver.cc: Now -s <session> can be passed
+	to bypass the IGUANA Setup and directly open a Studio session, also 
+	support for having aliases added. Now session types can have multiple
+	names e.g. "Services/Studio/Session Types/X; Y;Z" and it can be open by
+	either passing -s X, -s Y or -s Z via command-line. If -s <session>
+	is used then it will override the IGUANA_SETUP environment variable.
+
+2004-11-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgMDIView.h, IgMDIView.cc: Moved from Ig3DView ( original name was
+	Ig3DMDIView).
+
+2004-10-21  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgViewCreator.cc: Delete the view if not created properly.
+
+2004-10-19  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.cc: IgQtAppImageService createdand initialized here.
+
+2004-09-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgPage.cc: m_numRegisteredWindows initialized properly and
+	incremented for each added view, removed un-used iostream header.
+
+2004-08-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.cc: Added new services in the state e.g.
+	IgQtAppActiveService, IgPickService and IgRepVisibilityService.
+	
+2004-08-25  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgPage.cc: Add a tear-off handle to the New sub-menu.
+
+2004-08-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgStudioSetup.cc: Resize the setup window to accommodate longer
+	names of the session setups.
+
+2004-08-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgDocument_boost.cc, IgView_boost.cc: added because pyste
+	generated files are not ok with the old version of pyste.
+
+	* IgDocument.pyste, IgView.pyste: renamed to .pystegen
+
+	* IgDocument.pystegen, IgView.pystegen: renamed from .pyste
+
+2004-08-18  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgPage.cc: Bug fixed to fix the tear-off item for the File menu,
+	tear-off menu item added for Window menu.
+
+2004-08-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgViewDB_boost.cc: Bindings ported to new SEAL.
+
+2004-08-04 Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgStudioDriver.h, IgStudioDriver.cc: Add a default session setup
+	adding an environment variable IGUANA_SETUP. setupSession takes it
+	as an argument.
+
+2004-07-29  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgViewDB.h, IgViewDB.cc: Update to new SEAL plug-in manager.
+	* IgViewInfo.h, IgViewInfo.cc: Removed, no longer required.
+
+2004-07-21  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test_TileWindowsInWorkspace.py: now creates the new windows by
+	itself.
+
+	* IgViewDB_boost.cc, IgView.pyste (IgView): Python bindings for
+	IgView and IgViewDB. 
+
+2004-07-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtFocusManager.cc (windowActivated): Using LOG () from
+	seal in place of std::cerr.
+
+2004-07-05  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* ChangeLog: FIXME: python bindings are not yet added (boost 1.31.0) is not
+	yet available in the configuration. Once boost 1.31.0 is available then
+	python bindings should be added.
+
+2004-06-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgDocument.h, IgDocument.cc, IgPage.h, IgPage.cc: IgPage now
+	register to proper IgDocument on creation.  IgDocument has a list
+	with all the pages associated to it and a pointer to the current
+	one.
+
+	* test_TileWindowsInWorkspace.py: another example on how to manage
+	windows from python.
+
+	* IgDocument.pyste: bindings for IgDocument added.
+
+2004-06-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/BuildFile IgDocumentData.pyste IgPage.pyste
+	test_DumpTwigTree.py:  some python bindings(and one example
+	on how to use them) added.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgDocumentDataset.cc, IgDocumentDataset.h: new class that has
+	the knowledge of all the objects (Models,Browsers, Views)
+	associated to a root twig. 
+
+	* IgDocumentData.cc, IgDocumentData.h: iterators on all the
+	available roots added.
+
+	* IgPage.h, IgPage.cc: stackArea and workspace are now
+	IgQtSiteStacks.
+
+2004-05-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.cc: Incons used from IgIcons instead of IgQt.
+	
+	* IgViewCreator.cc: Removed unused includes.
+
+2004-04-30  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPage.h, IgPage.cc: New "stackArea" site available. Now using 
+	dockareas as placeholders for windows.
+
+	* IgDocumentData.h, IgDocumentData.cc (IgDocumentData): now it is
+	possible to get multiple root twigs.
+
+2004-03-26  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPage.cc (registerView): a window is risen and gets focus
+	when selected from the "Window" menu.
+
+2004-03-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPage.cc (IgPage): wrong accelerator in the menu fixed. 
+
+	* IgPage.cc (IgPage): Fallback to single window iguana removed. 
+
+2004-03-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgView.cc, IgView.h: view now has a (optional) title property, as
+	well accessors method to it.
+
+	* IgPage.cc: every IgView that has a title will register such a
+	title in the "Window" menu.
+
+2004-03-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPage.cc: added cascading and tiling option to the "Window"
+	menu.
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgView.cc, IgView.h: a view now has knowledge of the state and
+	of the page and provides accessors to get them. 
+	
+	* IgPage.h, IgPage.cc: new menus ID for "File->New..." menu and
+	for the "Window" menu.  New structure of the page: workspace () is
+	now an MDI workspace, then we have leftDockArea (), rightDockArea
+	() and bottonDockArea (), for single instance panels. The page
+	also has a map which matches the QWidget of an MDI window to the
+	appropriate view. registerView() can be used to insert new entries
+	in such a map. An IgPage is now a Splitter widget. In the .cc file
+	we have code to implement the new layout and to generate the
+	"File->New..." menu on the fly, by looking at the View plugin
+	database.
+
+	* IgQtFocusManager.cc, IgQtFocusManager.h: Object which handles
+	the focus change. This is done in order not to have IgPage derive
+	directly from QObject.
+	
+	* IgViewCreator.cc, IgViewCreator.h: Object which has a Qt slot
+	for creating views on request.
+	
+	* IgViewDB.cc, IgViewDB.h, IgViewInfo.cc, IgViewInfo.h:
+	added to make IgViews seal::Plugins.
+
+	* BuildFile: added dependency to seal plugin manager.
+	
+2004-01-16 Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgStudioSetup.ui, IgStudioSetup.ui.h: Add 2D, 3D options.
+
+2003-10-08 Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgStudioDriver.h, IgStudioDriver.cc: Use new splash screen class from
+	Qt.
+
+2003-09-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgDocument.cc, IgPage.cc, IgStudioDriver.cc, IgStudioSetup.cc,
+	IgStudioSetup.ui, IgView.cc, IgWizard.cc, plugin.cc, config.h,
+	src/BuildFile: Move to using SEAL Foundation classes.  Adapt help
+	message and build file to the use of SEAL plug-in manager.  Adapt
+	to OS X start-up.
+
+2003-08-19 Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgStudioSetup.ui, IgStudioSetup.h, IgStudioSetup.cc: Add help: tool
+	tips and what's this information. .h and .cc files are auto-generated.
+	
+2003-07-10  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgStudioDriver.cc: The x11SetAppDpi calls are unavailable
+	without X11 (changes from George Alverson).
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Plug-in manager update.
+
+2003-01-23 Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgStudioSetup.ui, IgStudioSetup.cc: Accept "double-click" 
+	and "press return" in the setup extensions list. .cc file is 
+	auto-generated.
+	
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-09-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* Adjust to plug-in management changes.
+
+2002-09-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgDocumentData.h, IgDocumentData.cc: New state element to point
+	to and help to manage the data for the document owning the state:
+	a reimplemented IgG4TwigService for the new document architecture.
+
+	* IgDocument.h, IgDocument.cc: Install IgDocumentData.  Rename
+	data proxies to content proxies.  Indicate loads on status bar.
+	Load everything in our own state, not the global one owned by
+	the plugin loader.
+
+	* IgStudioDriver.cc (setupMainWindow): Load extensions in my own
+	state, not the global one owned by the plugin loader.
+
+	* BuildFile: Add dependency on twigs from IgCommonData.
+
+2002-09-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgDocument.h, IgDocument.cc, IgPage.h, IgPage.cc, IgView.h,
+	IgView.cc: New files, beginnings of a document-based approach.	
+
+	* IgStudioDriver.h, IgStudioDriver.cc (state): New method, export
+	state to clients.
+
+2002-08-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgStudioDriver.cc (setupSession): Show wait cursor while loading
+	studio setup in case it takes a long time to load.
+
+	* IgStudioDriver.h, IgStudioDriver.cc: IgSession to IgState
+	migration.
+
+2002-04-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgStudioDriver (showSplash): Reduce splash screen display time,
+	some window managers keep it on top which hinders interaction.
+
+2002-03-08  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgStudioDriver (run): Fix Qt resolution thinking.
+
+2002-03-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Remove reference to plugin_makefile.mk.
+	* src/BuildFile: Move it here.
+
+	* IgStudioDriver.h, IgStudioDriver.cc: Export more of the studio
+	environment.  Pass the studio to the setup object.
+
+	* IgStudioSetupExtension.h, IgStudioSetupExtension.cc: Pass the
+	studio to the setup object.
+
+	* IgWizard.cc: Adjust wizard button defaults for convenience.
+
+2002-03-05  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgStudioDriver.cc (ctor): Initialise m_setup.
+	(setupSession): `setup' returns a bool, not int.
+
+2002-03-05  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgStudioDriver.h, IgStudioDriver.cc (run): Clean up.
+	(setupSession): Clean up.  Remember the setup object.
+
+	* IgStudioSetupExtension.h, IgStudioSetupExtension.cc:
+	Only do setup, running is done in the driver.
+
+2002-03-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgStudioDriver.cc, IgStudioDriver.h: Split functionality into
+	more methods.  Add comments explaining what is going on.  Actually
+	setup the session using extensions in the plug-in database.
+
+	* IgStudioSetupExtension.h, IgStudioSetupExtension.cc: New files,
+	define base class for session types.
+
+	* IgStudioSetup.ui, IgStudioSetup.h, IgStudioSetup.cc: New files,
+	simple window for querying the session type.
+
+	* IgWizard.h, IgWizardBase.ui, IgWizardBase.h, IgWizardPage.h,
+	IgWizard.cc, IgWizardBase.cc, IgWizardPage.cc: New files, base
+	class implementation for generic IGUANA wizards.
+	
+2002-02-28  Lassi A. Tuura  <lat@iki.fi>
+
+	* New IGUANA Studio main package.

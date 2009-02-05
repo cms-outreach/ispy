@@ -1,0 +1,50 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test/simTracks.iv: Removed as unreadable - the test iv files can
+	be taken from share/ivs directory.
+	* BuildFile: Remove dependency on IgIVView, add dependency on
+	Ig3DSystem which as pulled in by the removed one.
+	* IgOIVExtension.h, IgOIVExtension.cc: Removed direct dependency
+	on an IgIVView which is a plugin.
+
+2007-03-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, plugin.cc: Move to classlib
+	and IgPluginManager.
+
+2006-04-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgOIVExtension.h, src/IgOIVExtension.cc: Destructor added
+	to properly cleanup the object.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2004-12-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgOIVExtension.cc: Code clean up.
+	
+2004-11-19  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgOIVExtension.cc: Rename the plugin to have "; " separated aliases.
+	
+2004-08-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgOIVExtension.h, IgOIVExtension.cc, config.h, plugin.cc,
+	BuildFile, src/BuildFile: New extensions to promote the scene
+	viewer as a session setup.
+	* test/simTracks.iv: The test file with saved OpenInventor scene.
+	* New example: reading of the iv files.

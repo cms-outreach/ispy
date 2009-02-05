@@ -1,0 +1,24 @@
+<Use name=Ig_Modules/IgCommonData>
+<Use name=Ig_Modules/IgTextModel>
+<Use name=Ig_Modules/Ig3DModel>
+<Use name=Ig_Modules/Ig2DModel>
+<Use name=Ig_Modules/IgLegoModel>
+<Use name=Ig_Modules/IgRZModel>
+<Use name=Ig_Modules/IgRPhiModel>
+<Use name=Ig_Extensions/IgOpenInventor>
+<Use name=Qt>
+
+<export>
+  <Use name=Ig_Modules/IgCommonData>
+  <Use name=Ig_Modules/IgTextModel>
+  <Use name=Ig_Modules/Ig3DModel>
+  <Use name=Ig_Modules/Ig2DModel>
+  <Use name=Ig_Modules/IgLegoModel>
+  <Use name=Ig_Modules/IgRZModel>
+  <Use name=Ig_Modules/IgRPhiModel>
+  <Use name=Ig_Extensions/IgOpenInventor>
+  <Use name=Qt>
+
+  <lib name=Ig_ModulesIgCommon3DReps>
+
+</export>

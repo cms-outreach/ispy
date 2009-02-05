@@ -1,0 +1,25 @@
+2007-03-06  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Added sockets dependency.
+
+2007-02-28  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Typo (nameuuid => name=uuid).
+
+2007-02-26  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Newly added with only export section.
+
+2007-02-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* configure.in: Set version to 3.0.0.
+
+	* cfg/bootstrap.sh: Further clean up libtool nonsense.
+
+	* Makefile.am: Set QUIET_ASSERT in tests.
+
+2007-02-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* Starting new major version of classlib based on last SEAL
+	version.  Converted to build using autotools and updated some
+	external packages.

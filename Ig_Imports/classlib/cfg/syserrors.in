@@ -1,0 +1,266 @@
+# errno class						other	noelse
+
+# unix
+EPERM		OperationNotPermittedSystemError
+ENOENT		NoSuchEntitySystemError
+ESRCH		NoSuchProcessSystemError
+EINTR		InterruptedSystemCallSystemError
+EIO		IOSystemError
+ENXIO		NoSuchDeviceOrAddressSystemError
+E2BIG		ArgListTooLongSystemError
+ENOEXEC		ExecFormatSystemError
+EBADF		BadFileNumberSystemError
+ECHILD		NoChildProcessesSystemError
+EAGAIN		TryAgainSystemError
+ENOMEM		OutOfMemorySystemError
+EACCES		PermissionDeniedSystemError
+EFAULT		BadAddressSystemError
+ENOTBLK		BlockDeviceRequiredSystemError
+EBUSY		DeviceOrResourceBusySystemError
+EEXIST		FileExistsSystemError
+EXDEV		CrossDeviceLinkSystemError
+ENODEV		NoSuchDeviceSystemError
+ENOTDIR		NotDirectorySystemError
+EISDIR		IsDirectorySystemError
+EINVAL		InvalidArgumentSystemError
+ENFILE		FileTableOverflowSystemError
+EMFILE		TooManyOpenFilesSystemError
+ENOTTY		NotTTYSystemError
+ETXTBSY		TextFileBusySystemError
+EFBIG		FileTooLargeSystemError
+ENOSPC		NoSpaceLeftOnDeviceSystemError
+ESPIPE		IllegalSeekSystemError
+EROFS		ReadOnlyFileSystemSystemError
+EMLINK		TooManyLinksSystemError
+EPIPE		BrokenPipeSystemError
+EDOM		MathArgumentOutOfDomainSystemError
+ERANGE		MathResultOutOfRangeSystemError
+EDEADLK		ResourceDeadlockWouldOccurSystemError
+ENAMETOOLONG	FileNameTooLongSystemError
+ENOLCK		NoLocksAvailableSystemError
+ENOSYS		FunctionNotImplementedSystemError
+ELOOP		TooManySymbolicLinksSystemError
+ENOMSG		NoRequestedMessageSystemError
+EIDRM		IdentifierRemovedSystemError
+ECHRNG		ChannelOutOfRangeSystemError
+EL2NSYNC	Level2NotSynchronisedSystemError
+EL3HLT		Level3HaltedSystemError
+EL3RST		Level3ResetSystemError
+ELNRNG		LinkNumberOutOfRangeSystemError
+EUNATCH		ProtocolDriverNotAtachedSystemError
+ENOCSI		NoCSIStructureSystemError
+EL2HLT		Level2HaltedSystemError
+EBADE		InvalidExchangeSystemError
+EBADR		InvalidRequestDescriptorSystemError
+EXFULL		ExchangeFullSystemError
+ENOANO		NoANodeSystemError
+EBADRQC		InvalidRequestCodeSystemError
+EBADSLT		InvalidSlotSystemError
+EBFONT		BadFontFileFormatSystemError
+ENOSTR		DeviceNotStreamSystemError
+ENODATA		NoDataAvailableSystemError
+ETIME		TimerExpiredSystemError
+ENOSR		OutOfStreamsResourcesSystemError
+ENONET		NoNetworkSystemError
+ENOPKG		PackageNotInstalledSystemError
+EREMOTE		ObjectIsRemoteSystemError
+ENOLINK		SeveredLinkSystemError
+EADV		AdvertiseSystemError
+ESRMNT		SrmountSystemError
+ECOMM		OnSendCommunicationSystemError
+EPROTO		ProtocolSystemError
+EMULTIHOP	MultihopAttemptedSystemError
+EDOTDOT		RFS_SpecificSystemError
+EBADMSG		NotDataMessageSystemError
+EOVERFLOW	ValueTooLargeSystemError
+ENOTUNIQ	NameNotUniqueOnNetworkSystemError
+EBADFD		BadFileDescriptorStateSystemError
+EREMCHG		RemoteAddressChangedSystemError
+ELIBACC		InaccessibleSharedLibrarySystemError
+ELIBBAD		CorruptedSharedLibrarySystemError
+ELIBSCN		CorruptedLibrarySectionSystemError
+ELIBMAX		TooManySharedLibrariesSystemError
+ELIBEXEC	CannotExecuteSharedLibrarySystemError
+EILSEQ		IllegalByteSequenceSystemError
+ERESTART	RestartSystemCallSystemError
+ESTRPIPE	StreamsPipeSystemError
+EUSERS		TooManyUsersSystemError
+ENOTSOCK	NotSocketSystemError
+EDESTADDRREQ	DestinationAddressRequiredSystemError
+EMSGSIZE	MessageTooLongSystemError
+EPROTOTYPE	WrongProtocolTypeSystemError
+ENOPROTOOPT	UnavailableProtocolSystemError
+EPROTONOSUPPORT	UnsupportedProtocolSystemError
+ESOCKTNOSUPPORT	UnsupportedSocketTypeSystemError
+EPFNOSUPPORT	UnsupportedProtocolFamilySystemError
+EAFNOSUPPORT	UnsupportedAdressFamilySystemError
+EADDRINUSE	AddressInUseSystemError
+EADDRNOTAVAIL	AddressNotAvailableSystemError
+ENETDOWN	NetworkDownSystemError
+ENETUNREACH	NetworkUnreachableSystemError
+ENETRESET	NetworkResetSystemError
+ECONNABORTED	ConnectionAbortedSystemError
+ECONNRESET	ConnectionResetByPeerSystemError
+ENOBUFS		NoBuffersAvailableSystemError
+EISCONN		AlreadyConnectedSystemError
+ENOTCONN	NotConnectedSystemError
+ESHUTDOWN	ConnectionAlreadyShutDownSystemError
+ETOOMANYREFS	TooManyReferencesSystemError
+ETIMEDOUT	ConnectionTimedOutSystemError
+ECONNREFUSED	ConnectionRefusedSystemError
+EHOSTDOWN	HostDownSystemError
+EHOSTUNREACH	NoRouteToHostSystemError
+EALREADY	OperationAlreadyInProgressSystemError
+EINPROGRESS	OperationInProgressSystemError
+ESTALE		StaleNFSHandleSystemError
+EUCLEAN		StructureNeedsCleaningSystemError
+ENOTNAM		NotNamedTypeFileSystemError
+ENAVAIL		NoSemaphoresAvailableSystemError
+EISNAM		IsNamedTypeFileSystemError
+EREMOTEIO	RemoteIOSystemError
+EDQUOT		QuotaExceededSystemError
+ENOMEDIUM	NoMediumFoundSystemError
+EMEDIUMTYPE	WrongMediumTypeSystemError
+ENOTSUP		OperationNotSupportedSystemError
+ECANCELED	OperationCanceledSystemError
+EOWNERDEAD	ProcessDiedWithLockSystemError
+ENOTRECOVERABLE	LockNotRecovarableSystemError
+ELOCKUNMAPPED	LockUnmappedSystemError
+ENOSYM		NoSuchSymbolInExecutableSystemError
+EREMOTERELEASE	RemotePeerReleasedConnectionSystemError
+
+EOPNOTSUPP	OperationNotSupportedSystemError		ENOTSUP
+EWOULDBLOCK	TryAgainSystemError				EAGAIN
+EDEADLOCK	ResourceDeadlockWouldOccurSystemError		EDEADLK
+ENOTEMPTY	DirectoryNotEmptySystemError			EEXIST	true
+
+
+# windows
+
+# general
+# INVALID_FUNCTION		EBADRQC
+# FILE_NOT_FOUND		ENOENT
+# PATH_NOT_FOUND		ENOENT
+# TOO_MANY_OPEN_FILES		EMFILE
+# ACCESS_DENIED			EACCES
+# INVALID_HANDLE		EBADF
+# NOT_ENOUGH_MEMORY		ENOMEM
+# INVALID_DATA			EINVAL
+# OUTOFMEMORY			ENOMEM
+# INVALID_DRIVE			ENODEV
+# NOT_SAME_DEVICE		EXDEV
+# NO_MORE_FILES			ENMFILE
+# WRITE_PROTECT			EROFS
+# BAD_UNIT			ENODEV
+# SHARING_VIOLATION		EACCES
+# LOCK_VIOLATION		EACCES
+# SHARING_BUFFER_EXCEEDED	ENOLCK
+# HANDLE_EOF			ENODATA
+# HANDLE_DISK_FULL		ENOSPC
+# NOT_SUPPORTED			ENOSYS
+# REM_NOT_LIST			ENONET
+# DUP_NAME			ENOTUNIQ
+# BAD_NETPATH			ENOSHARE
+# BAD_NET_NAME			ENOSHARE
+# FILE_EXISTS			EEXIST
+# CANNOT_MAKE			EPERM
+# INVALID_PARAMETER		EINVAL
+# NO_PROC_SLOTS			EAGAIN
+# BROKEN_PIPE			EPIPE
+# OPEN_FAILED			EIO
+# NO_MORE_SEARCH_HANDLES	ENFILE
+# CALL_NOT_IMPLEMENTED		ENOSYS
+# INVALID_NAME			ENOENT
+# WAIT_NO_CHILDREN		ECHILD
+# CHILD_NOT_COMPLETE		EBUSY
+# DIR_NOT_EMPTY			ENOTEMPTY
+# SIGNAL_REFUSED		EIO
+# BAD_PATHNAME			ENOENT
+# SIGNAL_PENDING		EBUSY
+# MAX_THRDS_REACHED		EAGAIN
+# BUSY				EBUSY
+# ALREADY_EXISTS		EEXIST
+# NO_SIGNAL_SENT		EIO
+# FILENAME_EXCED_RANGE		EINVAL
+# META_EXPANSION_TOO_LONG	EINVAL
+# INVALID_SIGNAL_NUMBER		EINVAL
+# THREAD_1_INACTIVE		EINVAL
+# BAD_PIPE			EINVAL
+# PIPE_BUSY			EBUSY
+# NO_DATA			EPIPE
+# PIPE_NOT_CONNECTED		ECOMM
+# MORE_DATA			EAGAIN
+# DIRECTORY			ENOTDIR
+# PIPE_CONNECTED		EBUSY
+# PIPE_LISTENING		ECOMM
+# NO_TOKEN			EINVAL
+# PROCESS_ABORTED		EFAULT
+# BAD_DEVICE			ENODEV
+# BAD_USERNAME			EINVAL
+# NOT_CONNECTED			ENOLINK
+# OPEN_FILES			EAGAIN
+# ACTIVE_CONNECTIONS		EAGAIN
+# DEVICE_IN_USE			EAGAIN
+# INVALID_AT_INTERRUPT_TIME	EINTR
+# IO_DEVICE			EIO
+# NOT_OWNER			EPERM
+# END_OF_MEDIA			ENOSPC
+# EOM_OVERFLOW			ENOSPC
+# BEGINNING_OF_MEDIA		ESPIPE
+# SETMARK_DETECTED		ESPIPE
+# NO_DATA_DETECTED		ENOSPC
+# POSSIBLE_DEADLOCK		EDEADLOCK
+# CRC				EIO
+# NEGATIVE_SEEK			EINVAL
+# NOT_READY			ENOMEDIUM
+# DISK_FULL			ENOSPC
+# NOACCESS			EFAULT
+# FILE_INVALID			ENXIO
+
+# sockets
+# WSAEINTR			EINTR
+# WSAEWOULDBLOCK		EWOULDBLOCK
+# WSAEINPROGRESS		EINPROGRESS
+# WSAEALREADY			EALREADY
+# WSAENOTSOCK			ENOTSOCK
+# WSAEDESTADDRREQ		EDESTADDRREQ
+# WSAEMSGSIZE			EMSGSIZE
+# WSAEPROTOTYPE			EPROTOTYPE
+# WSAENOPROTOOPT		ENOPROTOOPT
+# WSAEPROTONOSUPPORT		EPROTONOSUPPORT
+# WSAESOCKTNOSUPPORT		ESOCKTNOSUPPORT
+# WSAEOPNOTSUPP			EOPNOTSUPP
+# WSAEPFNOSUPPORT		EPFNOSUPPORT
+# WSAEAFNOSUPPORT		EAFNOSUPPORT
+# WSAEADDRINUSE			EADDRINUSE
+# WSAEADDRNOTAVAIL		EADDRNOTAVAIL
+# WSAENETDOWN			ENETDOWN
+# WSAENETUNREACH		ENETUNREACH
+# WSAENETRESET			ENETRESET
+# WSAECONNABORTED		ECONNABORTED
+# WSAECONNRESET			ECONNRESET
+# WSAENOBUFS			ENOBUFS
+# WSAEISCONN			EISCONN
+# WSAENOTCONN			ENOTCONN
+# WSAESHUTDOWN			ESHUTDOWN
+# WSAETOOMANYREFS		ETOOMANYREFS
+# WSAETIMEDOUT			ETIMEDOUT
+# WSAECONNREFUSED		ECONNREFUSED
+# WSAELOOP			ELOOP
+# WSAENAMETOOLONG		ENAMETOOLONG
+# WSAEHOSTDOWN			EHOSTDOWN
+# WSAEHOSTUNREACH		EHOSTUNREACH
+# WSAENOTEMPTY			ENOTEMPTY
+# WSAEPROCLIM			EPROCLIM
+# WSAEUSERS			EUSERS
+# WSAEDQUOT			EDQUOT
+# WSAESTALE			ESTALE
+# WSAEREMOTE			EREMOTE
+# WSAEINVAL			EINVAL
+# WSAEFAULT			EFAULT  
+
+# host (h_errno)
+# WSAHOST_NOT_FOUND		HOST_NOT_FOUND
+# WSATRY_AGAIN			TRY_AGAIN
+# WSANO_RECOVERY		NO_RECOVERY
+# WSANO_DATA			NO_DATA

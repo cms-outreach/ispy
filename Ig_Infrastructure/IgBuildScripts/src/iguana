@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+## IGUANA front end script:
+## ------------------------
+##
+## This is the global front-end script to run iguana.  It selects a
+## project-specific front-end to do all the real work.  If you are
+## not happy with the default `cms' project environment, set
+## $IGUANA_DEFAULT_PROJECT to a project you want by default.
+##
+## Usage: iguana [--project=PROJECT | --project PROJECT] ...
+##
+## Simply execs iguana-PROJECT.
+## PROJECT defaults to $IGUANA_DEFAULT_PROJECT, or if not set, `cms'.
+
+project=${IGUANA_DEFAULT_PROJECT-cms}
+case "$1" in
+  --project=* ) project=`echo "$1" | sed 's/^--project=//'`; shift ;;
+  --project   ) project="$2"; shift; shift ;;
+
+  --help   ) grep '^##' $0 | sed 's/^##//; s/^ //'; echo
+             exec "iguana-$project" --help ;;
+esac
+exec "iguana-$project" "$@"

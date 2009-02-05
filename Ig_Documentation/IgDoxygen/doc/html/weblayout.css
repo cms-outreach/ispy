@@ -1,0 +1,50 @@
+td.navbar {
+ font-family: Helvetica, Arial;
+}
+
+td.nav1 {
+ font-family: Helvetica, Arial;
+ padding-top: 5px;
+}
+td.nav1s {
+ font-family: Helvetica, Arial;
+ background-color: #ffee66;
+ /* padding-top: 5px; */
+}
+
+td.nav2 {
+ font-family: Helvetica, Arial;
+}
+td.nav2s {
+ font-family: Helvetica, Arial;
+ background-color: #ffee66;
+}
+
+td.nav3 {
+ font-family: Helvetica, Arial;
+ font-size: small;
+}
+td.nav3s {
+ font-family: Helvetica, Arial;
+ font-size: small;
+ background-color: #ffee66;
+}
+
+h4 {
+ font-family: Helvetica, Arial;
+ padding-left: 30px;
+}
+h3 {
+ font-family: Helvetica, Arial;
+}
+h2 {
+ font-family: Helvetica, Arial;
+}
+div.sect1, div.sect2 {
+ padding-left: 30px;
+}
+pre {
+  white-space: pre;
+  background: #f0f0f0;
+  border: thin ridge #f0f0f0;
+}

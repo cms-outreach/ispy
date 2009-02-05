@@ -1,0 +1,23 @@
+#!/bin/sh
+
+for arg; do
+  case $arg in
+    *.app | *.app/ ) continue ;;
+    /* ) ;;
+    *  ) arg=$(cd $(dirname $arg); pwd)/$(basename $arg) ;;
+  esac
+
+  if (file $arg | grep Mach-O) >/dev/null 2>&1; then
+    filepart=$(basename $arg)
+    origapp=$arg
+    appinfo=$arg.app/Contents/PkgInfo
+    appdir=$arg.app/Contents/MacOS
+    appexe=$appdir/$filepart
+    rm -fr $arg.app
+    mkdir -p $appdir
+    echo "APPL????" > $appinfo
+    mv $origapp $appexe
+    (echo "#!/bin/sh"; echo "exec $appexe"' ${1+"$@"}') > $origapp
+    chmod 755 $origapp
+  fi
+done

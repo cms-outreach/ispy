@@ -1,0 +1,13 @@
+### PATCH cmsim-patch
+--- util/iodb/io_close_file.F~	Mon Dec 31 15:23:12 2001
++++ util/iodb/io_close_file.F	Thu Nov 27 09:55:01 2003
+@@ -142,7 +142,7 @@
+           CALL FZENDI (LOGICAL_UNIT, 'TU')
+           CLOSE (LOGICAL_UNIT)
+ #endif
+-#ifndef(CMS_VAX)&&ifndef(CMS_IBM)
++#if !defined(CMS_VAX)&&!defined(CMS_IBM)
+           CALL GCLOSE (LOGICAL_UNIT, ISTAT)
+ #endif
+         ELSE
+

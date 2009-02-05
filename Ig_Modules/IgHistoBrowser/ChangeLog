@@ -1,0 +1,54 @@
+2007-03-12  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, IgHistoBrowser.h, xtypeinfo.h,
+	IgHistoBrowser.cc, plugin.cc: Removed.
+	
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h, BuildFile, IgHistoBrowser.cc, plugin.cc:
+	Move to classlib and IgPluginManager.
+	
+2006-10-10  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Added the missing dependency on Ig_Modules/IgQtBrowser
+
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgHistoBrowser.h: extra semicolumn added for ANSI C++
+	compliancy.
+
+2005-11-25  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* interface/*, src/*: hippodraw namespace added.
+
+2005-06-21  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgHistoBrowser.cc: Spelling correction.
+
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgHistoBrowser.cc: listen/unlisten renamed to add/remove in
+	IgDispatcher.
+
+2005-06-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgHistoBrowser.cc: changed to use the new, IgDispatcher based,
+	API of IgHistoBrowser. 
+
+2005-05-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgHistoBrowser.cc: Support for the new model in which the
+	HistoModel is derived from a NTupleModel. 
+
+2005-05-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgHistoBrowser.cc (modelChanged): debug printout removed. 
+
+2005-04-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, ChangeLog, IgHistoBrowser.h, config.h, xtypeinfo.h,
+	IgHistoBrowser.cc, plugin.cc: First import.
+
+	* New package with the browser for histogram models. Based on
+	hippodraw.
+

@@ -1,0 +1,12 @@
+<Use name=Ig_Modules/IgStudio>
+<Use name=Ig_Extensions/IgQt>
+<Use name=SoQt>
+<Use name=OpenInventor>
+
+<Export>
+  <Use name=Ig_Modules/IgStudio>
+  <Use name=Ig_Extensions/IgQt>
+  <Use name=SoQt>
+  <Use name=OpenInventor>
+  <Lib name=Ig_ExamplesIgOpenInventorDemo>
+</Export>

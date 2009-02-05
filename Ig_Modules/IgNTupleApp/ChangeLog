@@ -1,0 +1,54 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, BuildFile, IgNTupleAppMain.cc, plugin.cc: Move to
+	classlib and IgPluginManger. 
+	
+2005-11-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgNTupleAppMain.cc: Now loads plugin GUI elements.
+
+2005-07-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgNTupleAppMain.cc: now using IgQtTreeBrowser in place of
+	IgQtTwigBrowser for the selection. 
+
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgNTupleAppMain.cc (setup): default root
+	browser removed.
+
+2005-06-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgNTupleAppMain.cc: creating a root object browser, if available.
+
+	* IgNTupleAppSetup.cc: extension renamed on Yana's request.
+
+	* plugin.cc, xtypeinfo.h, IgDQMContent.h, IgDQMOps.h, IgDQMTwig.h,
+	IgDQMContent.cc, IgDQMOps.cc, IgDQMTwig.h, IgDQMTwig.cc: DQM
+	related stuff moved to VisDQMBase.
+
+2005-05-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgDQMContent.h, IgDQMOps.h, IgDQMTwig.h, xtypeinfo.h,
+	IgDQMContent.cc IgDQMOps.cc, IgDQMTwig.cc, BuildFile,
+	IgNTupleAppMain.cc, plugin.cc: first import of examples on how to
+	create an histogram browsing application.
+
+2005-05-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgNTupleAppExtension.h, IgNTupleAppMain.h,
+	IgNTupleAppSetup.h, config.h, IgNTupleAppExtension.cc,
+	IgNTupleAppMain.cc, IgNTupleAppSetup.cc: First import of the files
+	necessary to define a new studio extension that will allow to
+	browse ntuples and histograms.
+	
+plugin.cc
+
+	* Package created.
+

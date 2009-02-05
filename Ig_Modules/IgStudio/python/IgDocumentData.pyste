@@ -1,0 +1,14 @@
+IgDocumentData=Class("IgDocumentData", "Ig_Modules/IgStudio/interface/IgDocumentData.h")
+Include ("Ig_Framework/IgObjectBrowser/interface/IgState.h")
+Include ("Ig_Framework/IgObjectBrowser/interface/IgStateElement.h")
+Include ("Ig_Framework/IgObjectBrowser/interface/IgStateKey.h")
+Include ("Ig_Modules/IgStudio/interface/IgDocument.h")
+Include ("Ig_Modules/IgCommonData/interface/IgTwig.h")
+
+
+set_policy (IgDocumentData.get, return_value_policy (reference_existing_object))
+set_policy (IgDocumentData.document, return_internal_reference())
+set_policy (IgDocumentData.root, return_value_policy (reference_existing_object))
+set_policy (IgDocumentData.add, return_internal_reference())
+set_policy (IgDocumentData.find, return_internal_reference())
+exclude (IgDocumentData.stateKey)

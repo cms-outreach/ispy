@@ -1,0 +1,188 @@
+#!/usr/bin/env perl
+
+#COMMAND 
+# perl lib_comp.prl ORCA_3/ORCA_3_2_1 /afs/cern.ch/user/v/veden1/work/Perl/TEST/ | & tee list.txt
+
+#$prefix = "/afs/cern.ch/cms/Releases/ORCA/" ; 
+
+#$prefix = "/afs/cern.ch/user/v/veden1/work/" ; # IGUANA_2_4_2
+
+#$_ = "@ARGV";
+
+$project = $ARGV[0];
+
+$local_top = $ARGV[1]; # reading of information from dir. IGUANA_2_4_2 
+
+$project_out_dir = $ARGV[2] ; #dir /afs/cern.ch/user/v/veden1/work/Perl/TEST/
+
+#$project_out_dir_tmp = "$project_out_dir/mydoc_lib_comp";   
+
+$project_in_dir      = "$local_top";
+    
+#     	if( ! ( -e $project_out_dir_tmp ) ) 
+#	{ system "mkdir $project_out_dir_tmp" ;}
+#         print "create a dir $project_out_dir_tmp \n";   
+   
+    &create_file("file_lib.html");
+
+#############################################################################
+# Subroutines:
+#############################################################################
+
+#############################################################################
+# CREATE_FILE
+#############################################################################
+
+sub create_file()
+	#  create .html file 
+	#  and include index.html inside
+{
+	my $new_file = $_[0];
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> create_file <<<                    \n";
+        print "                                                   \n";
+
+	# Open source file for writing:
+	
+	open( NEW_FD, ">$project_out_dir/$new_file" ) || die( "Can't create file $project_out_dir/$new_file" );
+	print NEW_FD "<html>\n";
+	print NEW_FD "Structure of the $project Project<hr>\n\n";
+
+	&process_dir( $project_in_dir );
+	print NEW_FD "\n\n</html>\n";
+
+        close NEW_FD;
+}
+
+#############################################################################
+# PROCESS_DIR
+#############################################################################
+
+sub process_dir()	
+        #  scan src dir 
+	#  and create .doc files
+{
+	my $target_dir = $_[0];
+	
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> process_dir <<<                    \n";
+        print "                                                   \n";
+       
+	print "Scan dir $target_dir ...\n";
+	opendir( DIR_D, "$target_dir") || die( "Can't find dir $target_dir" ); 
+	
+	@dirs = readdir( DIR_D );
+	
+	for( $i = 0; $i < @dirs; $i ++ ) {
+	    if  (( -d "$target_dir/$dirs[$i]" ) 
+                && ( $dirs[$i]  eq  ".SCRAM" )) { 
+		   print ("DIR SCRAM (process_dir ) : $dirs[$i] \n");	
+		   &process_subdir ( "$target_dir/$dirs[$i]" ); 	      
+	    } #end if exists  dir admin 
+
+	  else  {  
+	  	print ("DIR NE SCRAM (process_dir ) : $dirs[$i] \n");				
+		} 	  
+         }
+	 closedir( DIR_D );
+}
+
+#############################################################################
+# PROCESS_SUBDIR
+#############################################################################
+
+sub process_subdir()	
+       #  scan dirs 
+       #  and create .doc files
+{
+	my $target_subdir = $_[0];
+	#$j = 0;
+
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> process_subdir <<<                 \n";
+        print "                                                   \n";
+
+	opendir( DIR_D, "$target_subdir") || die( "Can't find dir $target_subdir" ); 
+        
+	@subdirs = readdir( DIR_D );
+	
+	for( $j = 0; $j < @subdirs; $j ++ ) 
+	{
+	      if (( -d "$target_subdir/$subdirs[$j]" ) 
+		    &&("$subdirs[$j]" ne "SunOS__5.6")
+		    &&("$subdirs[$j]" ne "Linux__2.2")
+	       	    &&("$subdirs[$j]" ne "SunOS__5.7")){
+		   print ("DIR UNCORRECT(process_subdir ) : $subdirs[$j] \n");
+		#} #end if exists  dir admin 
+     	      } # END_OF IF FOR
+
+     	      elsif (-d "$target_subdir/$subdirs[$j]") { 
+			print "DIRECTORY : $subdirs[$j] \n";
+			print NEW_FD " $subdirs[$j] <ul> "; #write a 1 last dir where located .admin 
+       		        &process_file_dev("$target_subdir/$subdirs[$j]" );	 		
+
+	      }
+          print NEW_FD "\n</ul>\n";
+	} #END_OF_FOR
+	closedir( DIR_D );
+}
+ 
+#############################################################################
+# PROCESS_FILE_DEV
+#############################################################################
+sub process_file_dev()	
+       #  scan dirs 
+       #  and create .doc files
+{
+	my $target_file_dir = $_[0];
+	$f=0;	
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> process_file_dev <<<               \n";
+        print "                                                   \n";
+	
+        opendir (DIR_F, "$target_file_dir") || die ( "Can't find dir $target_file_dir " );		 
+        @files = glob ("$target_file_dir/*.dat");
+	for ($f=0; $f<@files ; $f++ )
+	{ 
+	  	if (-e "$files[$f]" ){
+	   	  open (LIB , "$files[$f]"); 
+		
+		  $NAME = 0;
+		  $VERSION = 0;
+	          while(<LIB>){
+	   	  $STR = $_;
+                  
+		  if($STR =~ /^name/) { $NAME = 1; }
+		  else	{ $NAME = 0; }
+    
+		  if($STR =~ /^version/)  { $VERSION = 1; }
+        	  else { $VERSION = 0; }
+
+		  if ($NAME == 1){
+    			chomp($STR);
+			($name, $print_name, $sys_n) = split (/:/,$STR);
+			 $NAME_STR = $print_name;
+#			#print  "$STR \n ";
+	          }# end of if($NAME == 1)
+	
+	 	  if($VERSION == 1){
+		       	chomp($STR);
+   			($vers, $print_vers, $sys_v) = split (/:/,$STR);
+			 $VERS_STR = $print_vers;
+			#print  "$STR \n ";
+		  } # end of if($VERSION == 1)
+	  	  
+		  } #END_OF_WHILE
+		  close LIB;
+		  print NEW_FD "\n$NAME_STR : $VERS_STR<br> ";
+				
+		} #END_OF IF EXISTS FILE *.dat
+	        else { print "Didn't open file $files[$f] \n\n";}
+	}	 
+}#END_OF sub process_file_dev()	
+
+

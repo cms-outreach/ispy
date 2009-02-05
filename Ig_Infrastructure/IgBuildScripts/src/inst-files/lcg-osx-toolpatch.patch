@@ -1,0 +1,164 @@
+### PATCH lcg-osx-toolpatch
+diff -ru SCRAMToolBox.orig/Compilers/CXX/gcc3 SCRAMToolBox/Compilers/CXX/gcc3
+--- SCRAMToolBox.orig/Compilers/CXX/gcc3	Sat Dec  6 15:07:02 2003
++++ SCRAMToolBox/Compilers/CXX/gcc3	Sat Dec  6 15:09:15 2003
+@@ -125,7 +125,7 @@
+ endif
+ </makefile>
+ </Architecture>
+-<Architecture name=Darwin>
++<Architecture name=macosx>
+ <makefile>
+ # Set the extension for object files and executables:
+ objext := o
+@@ -152,8 +152,8 @@
+ PreProcessorCTool = $(CC) -E $(CPPFLAGS) $^ -o $@
+ 
+ SharedCObjectFlags = -fPIC
+-SharedCTool = $(CC) $(CSharedFlags) $^ -o $@ -dynamiclib $(CSharedLink)
+-DebugSharedCTool = $(CC) $(CSharedFlags) $(CDebugFlag) $^ -o $@ -dynamiclib $(CSharedLink)
++SharedCTool = $(CC) $(CSharedFlags) $^ -o $@ -dynamiclib -single_module $(CSharedLink)
++DebugSharedCTool = $(CC) $(CSharedFlags) $(CDebugFlag) $^ -o $@ -dynamiclib -single_module $(CSharedLink)
+ 
+ # Beginning of C++ var defs:
+ CXXDebugFlag=-g
+@@ -169,8 +169,8 @@
+ 
+ SharedCCObjectFlags = -fPIC
+ SharedSuffix =dylib
+-SharedCCTool = $(CXX) $(CXXSharedFlags) $^ -o $@ -dynamiclib $(CXXSharedLink)
+-DebugSharedCCTool = $(CXX) $(CXXSharedFlags) $(CXXDebugFlag) $^ -o $@ -dynamiclib $(CXXSharedLink)
++SharedCCTool = $(CXX) $(CXXSharedFlags) $^ -o $@ -dynamiclib -single_module $(CXXSharedLink)
++DebugSharedCCTool = $(CXX) $(CXXSharedFlags) $(CXXDebugFlag) $^ -o $@ -dynamiclib -single_module $(CXXSharedLink)
+ PreProcessorCCTool = $(CXX) -E $(CPPFLAGS) $^ -o $@
+ ifdef g77
+ extralib+=g2c m
+diff -ru SCRAMToolBox.orig/General/Python SCRAMToolBox/General/Python
+--- SCRAMToolBox.orig/General/Python	Sat Dec  6 15:07:02 2003
++++ SCRAMToolBox/General/Python	Sat Dec  6 15:10:19 2003
+@@ -23,6 +23,15 @@
+ The top of the Python 2.2 distribution.
+ </Environment>
+ 
++<Architecture name=macosx>
++<Environment name=INCLUDE default="$PYTHON_BASE/include/python2.2">
++</Environment>
++<Environment name=LIBDIR default="$PYTHON_BASE/lib" type=lib>
++</Environment>
++<Environment name=PATH value="$PYTHON_BASE/bin" type=Runtime_path>
++</Environment>
++</Architecture>
++
+ <Architecture name=rh73>
+ <Environment name=INCLUDE default="$PYTHON_BASE/include/python2.2">
+ </Environment>
+diff -ru SCRAMToolBox.orig/General/bz2lib SCRAMToolBox/General/bz2lib
+--- SCRAMToolBox.orig/General/bz2lib	Sat Dec  6 15:07:02 2003
++++ SCRAMToolBox/General/bz2lib	Sat Dec  6 15:09:49 2003
+@@ -2,6 +2,9 @@
+ <Tool name=bz2lib version=1.0.2>
+ <info url=http://sources.redhat.com/bzip2/></info>
+ 
++<Architecture name=macosx>
++<Lib name=bz2>
++</Architecture>
+ <Architecture name=rh73>
+ <Lib name=bz2>
+ </Architecture>
+@@ -13,6 +16,13 @@
+ <Environment name=BZ2LIB_BASE>
+ The top of the BZ2LIB distribution.
+ </Environment>
++
++<Architecture name=macosx>
++<Environment name=LIBDIR default="$BZ2LIB_BASE/lib" type=lib>
++</Environment>
++<Environment name=INCLUDE default="$BZ2LIB_BASE/include">
++</Environment>
++</Architecture>
+ 
+ <Architecture name=rh73>
+ <Environment name=LIBDIR default="$BZ2LIB_BASE/lib" type=lib>
+diff -ru SCRAMToolBox.orig/General/pcre SCRAMToolBox/General/pcre
+--- SCRAMToolBox.orig/General/pcre	Sat Dec  6 15:07:02 2003
++++ SCRAMToolBox/General/pcre	Sat Dec  6 15:10:04 2003
+@@ -31,6 +31,9 @@
+ 
+ <Tool name=pcre version=4.4>
+ <info url=http://www.pcre.org></info>
++<Architecture name=macosx>
++<Lib name=pcre>
++</Architecture>
+ <Architecture name=rh73>
+ <Lib name=pcre>
+ </Architecture>
+diff -ru SCRAMToolBox.orig/General/zlib SCRAMToolBox/General/zlib
+--- SCRAMToolBox.orig/General/zlib	Sat Dec  6 15:07:02 2003
++++ SCRAMToolBox/General/zlib	Sat Dec  6 15:10:36 2003
+@@ -4,6 +4,9 @@
+ </Tool>
+ <Tool name=zlib version=1.1.4>
+ <info url=http://www.gzip.org/zlib/></info>
++<Architecture name=macosx>
++<Lib name=z>
++</Architecture>
+ <Architecture name=rh73>
+ <Lib name=z>
+ </Architecture>
+@@ -15,6 +15,10 @@
+ The top of the ZLIB distribution.
+ </Environment>
+ 
++<Architecture name=macosx>
++<Environment name=LIBDIR default="$ZLIB_BASE/lib" type=lib> </Environment>
++<Environment name=INCLUDE default="$ZLIB_BASE/include"> </Environment>
++</Architecture>
+ <Architecture name=rh73>
+ <Environment name=LIBDIR default="$ZLIB_BASE/lib" type=lib> </Environment>
+ <Environment name=INCLUDE default="$ZLIB_BASE/include"> </Environment>
+diff -ru SCRAMToolBox.orig/System/Sockets SCRAMToolBox/System/Sockets
+--- SCRAMToolBox.orig/System/Sockets	Sat Dec  6 15:07:02 2003
++++ SCRAMToolBox/System/Sockets	Sat Dec  6 15:11:07 2003
+@@ -23,10 +23,10 @@
+ <LIB name=dl>
+ </Architecture>
+ 
+-<Architecture name=Darwin>
++<Architecture name=macosx>
+ <LIB name=dl>
+ <client>
+-<Environment name=DLCOMPAT>Base of the dlcompat installation (e.g. fink root).</Environment>
++<Environment name=DLCOMPAT default=/sw>Base of the dlcompat installation (e.g. fink root).</Environment>
+ <Environment name=INCLUDE default="$DLCOMPAT/include"></Environment>
+ <Environment name=LIBDIR default="$DLCOMPAT/lib" type=lib></Environment>
+ </client>
+diff -ru SCRAMToolBox.orig/TestingTools/OVAL SCRAMToolBox/TestingTools/OVAL
+--- SCRAMToolBox.orig/TestingTools/OVAL	Sat Dec  6 15:07:02 2003
++++ SCRAMToolBox/TestingTools/OVAL	Sat Dec  6 15:11:31 2003
+@@ -107,6 +107,10 @@
+ The top of the OVAL distribution.
+ </Environment>
+ </Client>
++<architecture name=macosx>
++<Environment name=OVAL_FLAVOR value="Darwin" type=Runtime_path>
++</Environment>
++</architecture>
+ <architecture name=rh73_gcc32>
+ <Environment name=OVAL_FLAVOR value="Linux" type=Runtime_path>
+ </Environment>
+--- SCRAMToolBox/Configuration/Configuration~	Sat Dec  6 19:12:38 2003
++++ SCRAMToolBox/Configuration/Configuration	Sat Dec  6 19:15:21 2003
+@@ -15,7 +15,6 @@
+ </Architecture>
+ <require name=anaphe 		          version=5.0.6		 url="cvs:?module=SCRAMToolBox/Anaphe/anaphe"></require>
+ <require name=JDK                	  version=1.4.1          url="cvs:?module=SCRAMToolBox/Compilers/Java/JDK"></require>
+-<require name=Sockets            	  version=1.0            url="cvs:?module=SCRAMToolBox/System/Sockets"></require>
+ <require name=UUID			  version=1.32           url="cvs:?module=SCRAMToolBox/General/UUID"></require>
+ <require name=gccxml			  version=0.4.2_patch1   url="cvs:?module=SCRAMToolBox/General/gccxml"></require>
+ <require name=Boost			  version=1.30.2         url="cvs:?module=SCRAMToolBox/General/Boost"></require>
+@@ -70,3 +69,4 @@
+ <require name=pcre          	          version=4.4	         url="cvs:?module=SCRAMToolBox/General/pcre"></require>
+ <require name=GEANT4                      version=4.5.2          url="cvs:?module=SCRAMToolBox/LHCxx/GEANT4"></require>
+ <require name=SEAL                        version=SEAL_1_3_0_pre1 url="cvs:?module=SCRAMToolBox/LCG/Tools/SEAL"></require>
++<require name=Sockets            	  version=1.0            url="cvs:?module=SCRAMToolBox/System/Sockets"></require>
+

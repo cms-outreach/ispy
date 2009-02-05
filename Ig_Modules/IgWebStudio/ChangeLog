@@ -1,0 +1,331 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, plugin.cc, IgStudioWebService.cc: Move to
+	classlib and IgPluginManager.
+	
+2006-05-15  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* html/main.css: section for warning added.
+	* interface/IgStudioWebService.h, src/IgStudioWebService.cc: Logout
+	functionality added and a warning message generated for the user-agents
+	which are not yet suppoted or working properly.
+	* html/TopToolbar.js: Added new top tool bar (used for logout link).
+
+2006-04-06  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgStudioWebService.cc: Moved to use new features of file manager
+	and prepend web studio related path.
+
+2006-04-05  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgStudioWebService.h, src/IgStudioWebService.cc: Moved
+	getScript and getPic methods in the IgWebService (i.e. base class).
+	* src/IgStudioWebService.cc: Moved the file manager creation and
+	initialization to IgServerSocket.
+
+2006-04-04  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgStudioWebService.h, src/IgStudioWebService.cc: As one
+	should be able to ping the main server too, so removed the ping from
+	here and added it in the IgServerSocket.
+	* interface/IgStudioWebService.h, src/IgStudioWebService.cc: New service
+	ping added to test a server if its running or not.
+	* images/ping.png: Newly added png file for ping service.
+
+2006-04-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgStudioWebService.h, src/IgStudioWebService.cc: Properly
+	redirect the user to his/her previous session, moved the common redirect
+	functionality to IgServerSocket.
+
+2006-03-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgStudioWebService.cc: Bug fixed, -p was used for both port
+	and proxy command-line argument. Now only --proxy is used for it.
+	* src/IgStudioWebService.cc: A--ig-proxy used instead of --proxy.
+
+2006-03-07  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Removed IGUANA_RELEASETOP and IGUANA_LOCALTOP
+	CXXFLAGS.
+	* src/IgFileManager.cc: Moved to use IgEnvsElement instead of
+	depending on IGUANA_RELEASETOP and IGUANA_LOCALTOP.
+
+2006-02-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* WorkspaceManager.js: now class is a correct javascript plugin.
+	TreeBrowser.js: added depenendency on TreeItem.
+
+2006-02-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Dispatcher.js, PluginLoader.js, Toolbar3D.js, ToolbarButton.js,
+	TreeBrowser.js: using importClass rather than loadPlugin.
+
+	* Browser3D.js, Browser3DBase.js, BrowserLego.js, BrowserROOT.js,
+	BrowserRPhi.js, BrowserRZ.js, Column.js, ComboBox.js, Dialog.js,
+	InputDialog.js, Panel.js, PluginLoader.js, PopupMenu.js,
+	PopupMenuItem.js, PushButton.js , Row.js, StringInput.js,
+	Table.js, TextArea.js, ToolTip.js, Toolbar3D.js, ToolbarEvent.js,
+	ToolbarService.js, TreeBrowser.js, TreePanel.js, UpdateService.js,
+	Window.js, Window2D.js, Window3D.js, WindowLego.js, WindowROOT.js,
+	WindowRPhi.js, WindowRZ.js, Workspace.js, test_PushButtons.html:
+	using importClass rather than loadPlugin.
+
+	* EventLayer.js: some missing var added.
+
+	* Evt.js: improved compatibility with Opera and IE.
+
+	* HTTPRequest.js: improved compatibility with Opera and IE.
+
+	* PluginLoader.js: plugins for javascript! First import.
+
+	* PopupMenuService.js: protection added against non-existing
+	menu's. Transformed into a javascript plugin.
+
+	* Row.js, Column.js: Transformed into a javascript
+	plugins. Constructor does not take state anymore.
+
+	* TextArea.js, Table.js, StringInput.js, PushButton.js,
+	ComboBox.js: code for new widgets added to repository.
+
+	* ToolbarEvent.js, Toolbar3D.js: some missing var
+	added. Transformed into a javascript plugin.
+
+	* TreeBrowser.js: Transformed into a javascript plugin. Uses Evt
+	class for cross browser event handling.
+
+	* TwigOps.js, TreeItem.js: Now tree leafs use RPID, rather than names
+	to distinguish duplicate children. Transformed into a javascript
+	plugin.
+
+	* Window.js: Transformed into a javascript plugin. Now uses Evt class
+	for cross browser event handling.
+
+	* WindowRZ.js, WindowsRPhi.js, Window3D.js, Window2D.js,
+	WindowLego.js, WindowROOT.js: windows don't get focus anymore when
+	created. Transformed into javascript plugins.
+
+	* Workspace.js, TreePanel.js, Table.js, PopupMenuItem.js,
+	PopupMenu.js, PlaceHolder.js, Panel.js, NodeUtils.js,
+	InputDialog.js, DebugWindow.js, ContextManager.js, BrowserRZ.js,
+	BrowserRPhi.js, BrowserROOT.js, BrowserLego.js, Browser3DBase.js,
+	Browser3D.js, Browser2D.js: Transformed into a javascript plugin.
+
+	* test_Widgets.html: using new Row API.
+
+	* IgStudioWebService.cc: tabs converted to spaces.
+
+2006-01-11  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgStudioWebService.cc: QSocket substituted with QIODevice.
+
+2005-12-16  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* ToolTip.js: tooltip class.
+
+	* Dialog.js: transparent background fixed.
+
+	* PopupMenuItem.js: now using the UniversalCallback.
+
+	* Toolbar3D.js, ToolbarEvent.js: toolbars now sport nice tooltips.  
+
+	* Callback.js: UniversalCallback added which supports unlimited
+	number of arguments and self values.
+
+	* TreeItem.js: Tabs converted to spaces. 
+
+2005-12-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* PopupMenu.js, PopupMenuItem.js, TreeBrowser.js: now menus work
+	correctly.
+
+	* Row.js, Column.js: now expand as much as possible in the
+	direction where there is supposed to be only one.
+
+	* WindowRZ.js, WindowROOT.js, WindowLego.js, Window3D.js,
+	Window2D.js: moved to use the Window Base
+	class. Miscellaneous cosmetics fixes.
+
+	* IgStudioWebService.cc: demo mode added so that only people with
+	a valid cookie get access to the GUI.
+
+2005-12-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* PopupMenuService.js: now pops up a menu correctly when requested
+	one.
+
+	* PopupMenu.js, PopupMenuItem.js: menu beatification.
+
+	* PlaceHolder.js, Toolbar3D.js, ToolbarEvent.js: using the new
+	getPic method of IgStudioWebService.
+
+	* EventLayer.js: debug border removed.
+
+	* TreeItem.js, TreePanel.js, TreeBrowser.js: support for context
+	menus
+
+	* edit_add.png, edit_remove.png, mini.png, stock_calc-accept.png,
+	stock_calc-cancel.png, stock_data-last.png, stock_down.png,
+	stock_draw-sphere.png, stock_help-chat-16.png, stock_left.png,
+	stock_right.png, stock_up.png, stock_zoom-in.png,
+	stock_zoom-out.png: images added to repository.
+
+2005-12-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Widget.js: hide and show methods added.
+
+	* EventLayer.js, Evt.js: wrong behaviour fixed.
+
+	* TreeBrowser.js, TreeItem.js: now uses IDs rather than navigating
+	the tree.
+
+	* PopupMenu.js, PopupMenuItem.js, PopupMenuService.js,
+	test_PopupMenu.js: added to repository.
+
+	* Browser2D.js, Browser3D.js, Browser3DBase.js, BrowserROOT.js,
+	IgStudioWebService.h, IgStudioWebService.cc: fixes for being able
+	to work behind a proxy server.
+
+2005-11-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Panel.js: nicer wait icon.
+
+	* Dialog.js, InputDialog.js: added to repository.
+
+2005-11-11  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Browser3DBase.js, TreeBrowser.js, TreeItem.js, TreePanel.js,
+	TwigOps.js: refactoring of the tree browser into proper classes.
+
+2005-11-09  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Inheritance.js: Classic OO features added to javascript. 
+
+	* Browser3D.js, Browser3DBase.js, BrowserLego.js, BrowserRPhi.js,
+	BrowserRZ.js, Column.js, Panel.js, Row.js, Toolbar.js,
+	Toolbar3D.js, ToolbarEvent.js, Widget.js, Window.js,
+	WindowLego.js, WindowRPhi.js, WindowRZ.js, Workspace.js,
+	test.html, test_Inheritance.js, test_Panel.html,
+	test_Widgets.html: code completely refactored to take advantage of
+	classical OO features.
+
+2005-10-31  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BrowserRZ.js: cannot rotate it anymore.
+
+	* BrowserLego.js: callbacks for update added.
+
+	* WindowLego.js: file added to repository.
+
+2005-10-21  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgStudioWebService.h, IgStudioWebService.cc: Using seal::LOG for
+	debugging output.
+
+	* IgStudioWebService.h, IgStudioWebService.cc: using the newly
+	created IgFileManager class to serve files from different
+	directories.
+
+2005-10-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgStudioWebService.h, IgStudioWebService.cc: ability to serve as
+	a proxy added to the webservice.
+
+2005-10-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BrowserRPhi.js, EventLayer.js: Now the model does not rotate
+	anymore in BrowserRPhi.
+
+2005-10-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BrowserROOT.js, BrowserRZ.js, Column.js, Row.js, WindowROOT.js,
+	WindowRZ.js: added to repository.
+
+2005-09-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Window3D.js, WindowRPhi.js: now the windows ask for focus on
+	creation.
+ 
+	* BrowserRPhi.js: using /3D/ webservice to rotate and move windows. 
+
+	* Browser3D.js, BrowserRPhi.js, EventLayer.js, Window.js,
+	Window3D.js, WindowRPhi.js: now the GUI does not require any
+	static to work.
+
+2005-09-28  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Browser3D.js, BrowserRPhi.js, Callback.js, Column.js,
+	Component.js ContextManager.js, Panel.js, PlaceHolder.js,
+	State.js, StateManager.js, Toolbar.js, Toolbar3D.js,
+	ToolbarButton.js, ToolbarEvent.js, ToolbarService.js,
+	UpdateService.js, Window.js, Window2D.js, Window3D.js,
+	WindowRPhi.js, Workspace.js: new added to repository. Now the
+	javascript interface is powerful enough to mimic context sensitive
+	behaviour of the GUI.
+
+2005-09-26  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* State.js: file added to repository.
+
+2005-09-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BrowserLego.js: New browser for lego added.
+
+	* BrowserRPhi.js: New browser for RPhi view added.
+
+	* main.css: now front page has 64x64 pics.
+
+2005-09-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* main.css, IgStudioWebService.cc: problem fixed with
+	mozilla/firefox not recognizing the css because of bad type. Now
+	getScript allows the specification of the type.
+
+	* Browser2D.js, EventLayer.js: now supports 2D browsers.
+
+2005-09-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgBrowserManager.h, IgStudioWebService.h, IgStudioWebService.cc:
+	now the main studio page is XHTML conformant.
+
+	* Browser3D.js, EventLayer.js, Evt.js, main.css: now supports more
+	than 1 browser.
+
+	* DebugWindow.js: debugging widget feature added.
+
+2005-09-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* main.css, IgStudioWebService.h, IgStudioWebService.cc: now it
+	handles multiple users.
+
+2005-08-31  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgStudioWebService.cc, main.css: now /Studio/initSession shows a
+	application menu like in IgStudio.
+
+	* IgBrowserManager.h, IgBrowserManager.cc: browser manager to
+	access browser by name.
+
+2005-08-30  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* TreeBrowser.js: added to repository.
+
+	* Browser3D.js, EventLayer.js, NodeUtils.js: added to repository.
+
+2005-08-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Panel.js, ToolbarButton.js: added new graphical elements.
+
+2005-08-26  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test.html, BuildFile, Callback.js, Dispatcher.js, Evt.js,
+	HTTPRequest.js, IgStudioWebService.h, config.h,
+	IgStudioWebService.cc, plugin.cc: first imported to
+	repository. This module provides common scripts for web pages.
+

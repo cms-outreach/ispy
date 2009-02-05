@@ -1,0 +1,110 @@
+#!/bin/sh
+
+## iguana-cms help:
+## ----------------
+##
+## This is the CMS front-end to running iguana: it selects the
+## runtime environment in which to run the real IGUANA executable.
+## If you are currently inside a SCRAM area, we just assume you
+## want to use that area (presumably already depending on IGUANA
+## project in some way), get the runtime from SCRAM and run iguana.
+##
+## If you are currently not inside any SCRAM area, we assume you
+## want the latest ORCA environment.  You can also use options to
+## select a particular release (or several releases) you want to
+## combine to become your working environment.
+##
+## NOTE: At the moment, all you get is the latest IGUANA if you
+## are outside any areas!  Will be fixed by Eager Shell Programmer
+## Real Soon Now...
+##
+##
+## Help from the real iguana command:
+## ----------------------------------
+##
+
+# Protect against recursion
+if [ -z "$IGUANA_CMS_WRAPPER" ]; then :; else
+  echo "$0: No \`iguana'" ${IGUANA_CMS_WRAPPER:+" in $IGUANA_CMS_WRAPPER"} 1>&2
+  exit 1
+fi
+
+# Prepare environment
+if [ -z $CMS_PATH ]; then
+  CMS_PATH=/afs/cern.ch/cms
+  PATH=$PATH:$CMS_PATH/utils
+  export CMS_PATH PATH
+fi
+
+# Check if we are in a release area; if so, look in there, otherwise
+# look for a release with `scram list'
+dir=`/bin/pwd`
+while [ ! -d "$dir/.SCRAM" -a "$dir" != / ]; do
+  dir="`cd $dir/..; /bin/pwd`"
+done
+
+if [ -d $dir/.SCRAM ]; then
+  path=$dir
+  docd=false
+elif [ x"$1" = x--scram ]; then
+  shift
+
+  tmp=/tmp/v.$$
+  trap 'rm -f $tmp' 0 1 2 15
+
+  : > /tmp/v.$$
+  scram list | tail +7 | sed 's/...//g' | perl -e '
+    @lines = ();
+    while (<STDIN>) {
+      chomp;
+      s/\s+/ /g; s/^\s*//; s/\s*$//;
+      /^$/ && next;
+      if (/^Projects available/) {
+        next;
+      } elsif (/^-->/) {
+        s/^-->\s*/ /;
+        @lines[$#lines] .= $_
+      } elsif (/^([A-Za-z]+) ([A-Za-z]+[A-Za-z0-9_]+)$/) {
+        ($name, $v) = ($1, $2);
+        $v =~ s/^[A-Za-z]*[_V]*//;
+        $v =~ s/_/./g;
+        push(@lines, "$name $v");
+      } else {
+        push(@lines, $_)
+      }
+    }
+    print join("\n", @lines), "\n";' | 
+   egrep IGUANA |
+   sort -rd |
+   head -1 > $tmp
+
+  read p v path < $tmp
+  rm -f $tmp
+  docd=true
+else # not false
+  path=`ls -dt /afs/cern.ch/cms/Releases/IGUANA/IGUANA_* | head -1`
+  docd=true
+fi
+
+# Go to the directory we found and eval scram runtime.  We
+# don't `cd' only if we are already inside a SCRAM area.
+# Note that `scram runtime' will munge the environment such
+# that the real iguana will always come first in the path.
+# We should probably fix this to be a different command name
+# (so that all uses will go through the front-end first), but
+# for now that's what we have.  (On the other hand, it is
+# neat enough to run the real command directly when we don't
+# need any of these front-ends!)
+
+IGUANA_CMS_WRAPPER=$path
+export IGUANA_CMS_WRAPPER
+
+$docd && cd $path
+eval `scram runtime -sh`
+
+if [ x"$1" = x--help ]; then
+  grep '^##' $0 | sed 's/^##//; s/^ //'
+  exec iguana --help
+else
+  exec iguana "$@"
+fi

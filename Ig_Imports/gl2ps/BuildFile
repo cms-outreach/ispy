@@ -1,0 +1,7 @@
+<Use name=OpenGL>
+
+<Export>
+  <include_path path=$(LOCALTOP)/$(SCRAM_SOURCEDIR)/Ig_Imports/gl2ps/src>
+  <Use name=OpenGL>
+  <lib name=Ig_Importsgl2ps>
+</Export>

@@ -1,0 +1,10 @@
+<Use name=Qt>
+<Use name=Ig_Framework/IgObjectBrowser>
+<Use name=Ig_Modules/IgStudio>
+
+<Export>
+  <Use name=Qt>
+  <Use name=Ig_Framework/IgObjectBrowser>
+  <Use name=Ig_Modules/IgStudio>
+  <Lib name=Ig_ExamplesIgQTDemo>
+</Export>

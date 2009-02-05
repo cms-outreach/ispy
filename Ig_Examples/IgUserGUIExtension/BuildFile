@@ -1,0 +1,8 @@
+<Use name=Ig_Modules/IgStudio>
+<Use name=Qt>
+
+<Export>
+  <Use name=Ig_Modules/IgStudio>
+  <Use name=Qt>
+  <Lib name=Ig_ExamplesIgUserGUIExtension>
+</Export>

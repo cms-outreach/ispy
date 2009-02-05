@@ -1,0 +1,42 @@
+### PATCH geant4-macosx-2
+--- config/sys/Darwin-g++.gmk	Mon Sep 15 21:49:02 2003
++++ Darwin-g++.gmk	Mon Sep 15 21:52:11 2003
+@@ -10,7 +10,7 @@
+ #
+ ifeq ($(G4SYSTEM),Darwin-g++)
+ # choice of GNU compilers:
+-  CXX       := g++2
++  CXX       := g++
+ # CXX       := g++3
+   CXXFLAGS  := -Wall -ansi -pedantic -pipe
+ # optionally add verbose flag
+@@ -36,12 +36,12 @@
+     FCFLAGS   += -fPIC
+     CCFLAGS   += -fPIC
+   endif
+-  G4RUNPATHOPTION := -Wl,-rpath 
++  G4RUNPATHOPTION := # -Wl,-rpath 
+   FC := g77
+   FCFLAGS += -fno-automatic -fno-backslash -fno-second-underscore
+   FCLIBS := -lg2c -lnsl
+   ECHO    := /bin/echo -n
+-  SHEXT   := so
++  SHEXT   := dylib
+   X11FLAGS  := -I/usr/include/X11/extensions -I/usr/include/X11
+   X11LIBS   := -L/usr/X11R6/lib  -lXmu -lXt -lXext -lX11 -lSM -lICE
+   XMFLAGS   := -I/usr/X11R6/include
+@@ -60,12 +60,12 @@
+   define build-granular-shared-lib
+     @libdir=`(cd $(@D);/bin/pwd)`; \
+      cd $(G4TMPDIR); \
+-     $(CXX) -Wl,-soname,$(@F) -shared -o $$libdir/$(@F) *.o
++     $(CXX) -dynamiclib -flat_namespace -single_module -bind_at_load -undefined suppress -o $$libdir/$(@F) *.o
+   endef
+   define build-global-shared-lib
+     @libdir=`(cd $(@D);/bin/pwd)`; \
+      cd $(G4TMP)/$(G4SYSTEM); \
+-     $(CXX) -Wl,-soname,$(@F) -shared -o $$libdir/$(@F) \
++     $(CXX) -dynamiclib -flat_namespace -single_module -bind_at_load -undefined suppress -o $$libdir/$(@F) \
+                     $(foreach dir,$(SUBLIBS),$(dir)/*.o);
+   endef
+ 

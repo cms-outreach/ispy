@@ -1,0 +1,7 @@
+<use name="Ig_Framework/IgObjectBrowser">
+<use name="Ig_Modules/IgCommonData">
+<use name="Ig_Modules/IgTextModel">
+
+<export>
+	<lib name=Ig_ModulesIgTemplateModel>
+</export>

@@ -1,0 +1,28 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, IgWebRPhiService.cc, plugin.cc: Move to
+	classlib and IgPluginManager.
+	
+2006-01-11  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgWebRPhiService.cc: using QIODevice rather than QSocket.
+
+2005-10-31  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgWebRPhiService.cc, IgWebRPhiService.h: correct default camera.
+
+2005-10-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgWebRPhiService.cc: print outs removed.
+
+2005-09-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgWebRPhiService.h, config.h, IgWebRPhiService.cc,
+	plugin.cc: Package for the RPhi browser on the web.
+

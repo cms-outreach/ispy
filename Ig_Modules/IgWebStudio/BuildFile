@@ -1,0 +1,6 @@
+<use name=qt>
+<use name=Ig_Modules/IgSocketDriver>
+
+<export>
+	<lib name=Ig_ModulesIgWebStudio>
+</export>

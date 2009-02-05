@@ -1,0 +1,296 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, IgGDContent.cc, plugin.cc: Move to classlib
+	and IgPluginManager.
+
+2007-02-28  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* absorber-barrel-3d.iv, COCF.iv,
+	driftTubes-superlayer-details-rphi.iv, ecal-rz.iv,
+	hcal-endcap-3d.iv, iron-edges-rphi.iv, muonendcaprpc.iv,
+	absorber-barrel-rphi.iv, COII.iv, driftTubes-superlayers-rphi.iv,
+	hcal-barrel-3d.iv, hcalendcap.iv, magnet.iv,
+	absorber-barrel-rz.iv, COIS.iv, driftTubes-superlayers-rz.iv,
+	hcalbarrel.iv, hcal-endcap-rz.iv, magnet-rphi.iv, steel-full.iv,
+	absorber-endcap-3d.iv, COIV.iv, dt-middleRing.iv,
+	hcal-barrel-layers-rphi.iv, hcal-forward-3d.iv,
+	muonbarrelabsorber.iv, steel-middle-ring.iv,
+	absorber-endcap-rz.iv, ecalbarrel.iv, hcal-barrel-layers-rz.iv,
+	hcalforward.iv, muonbarreldt.iv, tracker-barrel-rphi.iv,
+	beampipe.iv, driftTubes-3d.iv, ecalforward.iv,
+	hcal-barrel-rphi.iv, hcal-forward-rz.iv, muonbarrelrpc.iv,
+	tracker-rz.iv, cms-det-rphi.iv, driftTubes-rphi.iv,
+	ecalpreshower.iv, hcal-barrel-rz.iv, hcal-outer.iv,
+	muonendcapabsorber.iv, cms-det-rz.iv, driftTubes-rz.iv,
+	ecal-rphi.iv, hcal-barrel-towers-rphi.iv, hcalouter.iv,
+	muonendcapcsc.iv: Replaced by compressed files.
+	* absorber-barrel-3d.gzip.iv, driftTubes-3d.gzip.iv,
+	ecal-preshower-3d.gzip.iv, hcal-endcap-rz.gzip.iv,
+	rpc-barrel-rz.gzip.iv, absorber-barrel-rphi.gzip.iv,
+	driftTubes-rphi.gzip.iv, ecal-rz.gzip.iv, hcal-forward-3d.gzip.iv,
+	rpc-barre-rphi.gzip.iv, absorber-barrel-rz.gzip.iv,
+	driftTubes-rz.gzip.iv, hcal-barrel-3d.gzip.iv,
+	hcal-forward-rz.gzip.iv, rpc-endcap-3d.gzip.iv,
+	absorber-endcap-3d.gzip.iv,
+	driftTubes-superlayer-details-rphi.gzip.iv,
+	hcal-barrel-layers-rphi.gzip.iv, hcal-outer-3d.gzip.iv,
+	rpc-endcap-rz.gzip.iv, absorber-endcap-rz.gzip.iv,
+	driftTubes-superlayers-rphi.gzip.iv, hcal-barrel-layers-rz.gzip.iv,
+	magnet-3d.gzip.iv, tracker-barrel-rphi.gzip.iv, beampipe.gzip.iv,
+	driftTubes-superlayers-rz.gzip.iv, hcal-barrel-rphi.gzip.iv,
+	magnet-rphi.gzip.iv, tracker-rz.gzip.iv, csc-3d.gzip.iv,
+	ecal-barrel-3d.gzip.iv, hcal-barrel-rz.gzip.iv, magnet-rz.gzip.iv,
+	csc-rz.gzip.iv, ecal-barrel-rphi.gzip.iv,
+	hcal-barrel-towers-rphi.gzip.iv, ecal-forward-3d.gzip.iv,
+	hcal-endcap-3d.gzip.iv, rpc-barrel-3d.gzip.iv: Compressed files
+	which replace the above ones.
+
+2007-02-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* tracker-rz.iv: Updated shape.
+	
+	* tracker-barrel-rphi.iv: Updated shape.	
+	* absorber-endcap-rz.iv: Updated shape.
+	
+	* hcal-forward-rz.iv: Updated shape.
+
+	* absorber-endcap-3d.iv, driftTubes-3d.iv, hcal-barrel-3d.iv,
+	hcal-endcap-3d.iv, hcal-forward-3d.iv: Unify the shape file names.
+	* muonendcapabsorber.iv: Updated shape.
+
+	* driftTubes-3d.iv: Make them gray as in all the other views.
+
+2007-02-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* absorber-barrel-rz.iv: Updated shape.
+
+2007-02-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* absorber-barrel-rz.iv, absorber-endcap-rz.iv,
+	driftTubes-rphi.iv, driftTubes-rz.iv,
+	driftTubes-superlayer-details-rphi.iv,
+	driftTubes-superlayers-rphi.iv, driftTubes-superlayers-rz.iv,
+	ecal-rphi.iv, ecal-rz.iv, hcal-barrel-layers-rphi.iv,
+	hcal-barrel-layers-rz.iv, hcal-barrel-rphi.iv, hcal-barrel-rz.iv,
+	hcal-barrel-towers-rphi.iv, hcal-endcap-rz.iv, hcal-forward-rz.iv,
+	hcal-outer.iv, iron-edges-rphi.iv, magnet-rphi.iv, none.iv,
+	tracker-barrel-rphi.iv, tracker-rz.iv: New CMS descriptions.
+	* absorber-barrel-rphi.iv: Updated to the new geometry.
+
+2006-12-21  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* magnet.iv: Update to the full shape.
+
+2006-10-10  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Added the missing dependency on Ig_Modules/IgStudio
+
+2006-07-27  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* cms-det-rphi.iv: Remove an extra curly bracket.
+
+2006-06-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* cms-det-rphi.iv, cms-det-rz.iv: Full RZ and RPhi detector 
+	representations.
+
+2006-05-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* cms-det-rphi.iv: New RPhi view of the detector.
+
+2006-04-24  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* absorber-barrel-3d.iv, absorber-barrel-rphi.iv: Change material to a
+	nicer red.
+	
+2006-04-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgGDTwig.cc: Fixed memory leaks.
+
+2006-03-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* muonendcapcsc.iv: Change default color to blue-transparent. 
+
+2006-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* absorber-barrel-3d.iv: Extra bracket at the end of the file 
+	removed. 
+
+2006-02-27  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* absorber-barrel-3d.iv, absorber-barrel-rphi.iv: CMS absorber 
+	description.
+
+2005-12-01  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* steel-middle-ring.iv, steel-full.iv: CMS absorber description.
+	
+	* dt-middleRing.iv: CMS Muon DT middle ring description.
+
+2005-11-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* COCF.iv, COII.iv, COIS.iv, COIV.iv: CMS magnet description.
+
+2005-10-10  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* beampipe.iv, ecalbarrel.iv, ecalpreshower.iv, hcalendcap.iv,
+	hcalouter.iv, muonbarrelabsorber.iv, muonbarrelrpc.iv,
+	muonendcapcsc.iv, ecalforward.iv, hcalbarrel.iv, hcalforward.iv,
+	magnet.iv, muonbarreldt.iv, muonendcapabsorber.iv,
+	muonendcaprpc.iv: Test files.
+	
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgGDContent.cc: listen/unlisten renamed to add/remove in
+	IgDispatcher.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Define it to be plugin here. Add OpenInventor and 
+	Qt dependencies.
+	* src/BuildFile: Delete as not needed for SCRAM V1.0.1.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+
+2004-11-01  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile, IgGDTwig.cc: Moved to Ig3DCategories instead of Ig3DWindow.
+
+2004-08-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgGDTwig.h, IgGDTwig.cc, IgGDContent.cc, xtypeinfo.h, plugin.cc:
+	Remove Lego twig. Add event twig with two tracks and its 3D
+	representation.
+	
+2004-08-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Add dependencies on the lego model.
+	* IgGDTwig.cc: Add lego representation.
+	
+2004-07-27  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDContent.cc: Fixed lego twig, added testCube in here.
+	
+	* IgGDTwig.cc: Moved testCube out of Generic Detector twig tree to a
+	seperate one.
+
+2004-07-27  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* plugin.cc, xtypeinfo.h, IgGDContent.cc, IgGDTwig.h, IgGDTwig.cc:
+	sample lego twig.  
+
+2004-07-26  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDTwig.cc, IgGDTwig.h: Moved the implementation of Generic Detector
+	to the one used till IGUANA_4_8_0 due to the remote rendering problem.
+
+2004-07-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDTwig.cc: Changed back to old implementation as that did not work
+	with the node manipulation.	
+
+2004-07-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDTwig.cc: No need to add every child of a group.	
+
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Removed unused packages.
+
+2004-04-25  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDTwig.h, IgGDTwig.cc: By default the MagneticField is off now,
+	changed the logic to create nodes once and then multimethod call
+	just add or remove those nodes, testCube added to test the
+	Ig3DNodeCategory.
+	
+	* * xtypeinfo.h, plugin.cc: testCube added to test the Ig3DNodeCategory.
+
+2004-03-12  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Dependency on Ig_Modules/Ig3DWindow and
+	Ig_Modules/IgControlCentre added.
+	
+	* IgGDTwig.h, IgGDTwig.cc: MagneticField added and loaded the 3D
+	field plane category to control the magnetic field, now the Detector
+	constructor also needed the IgState.
+	
+	* xtypeinfo.h, plugin.cc: XTYPEINFO for MagneticField added.
+	
+	* IgGDContent.cc, IgGDContent.h: Passed the IgState to the Detector.
+	
+2004-01-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgGDContent.cc: Remove unnecessary call (commented out).
+	* IgGDTwig.cc: Move to invalidation-based rendering, use only
+	"doUpdate" from now on.
+
+2003-10-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgGDTwig.cc: Remove unnecessary include for calorimeter hits.
+	Make all twigs again visible by default.
+
+2003-10-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgGDTwig.cc: now the different parts of the detector use the
+	new IgSoRotSolid shape in place of the old IgSoG4Tubs, IgSoG4Cons,
+	IgSoPgon, IgSoPcon.
+	Beam pipe now uses a Pcon like shape, instead of a Cons like one
+	and therefore it looks nicer. 
+
+2003-10-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgGDTwig.cc: Make some of the shapes not visible by default.
+
+2003-09-24  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* BuildFile, IgGDContent.cc: Remove references to IgCxxFeatures.
+
+2003-09-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgGDContent.cc, plugin.cc, config.h, BuildFile, src/BuildFile:
+	Move to SEAL Foundation classes and plug-in manager.
+
+2003-06-26  George Alverson <George.Alverson@cern.ch>
+
+    *   IgGDTwig.cc: fixed z-position swap for forward calorimeter
+
+2003-05-02  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDTwig.cc: Deleted unuesd CalCell code.
+	  
+2003-05-02  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDTwig.h: Name of class wheelsOfBoxes changed to IgGDWheelsOfBoxes
+	  to avoid the conflicting class in IgVisEx.
+
+	* IgGDTwig.cc: Name of class wheelsOfBoxes changed to IgGDWheelsOfBoxes
+	  to avoid the conflicting class in IgVisEx. Comment out the CalCell 
+	  class as it was not used. comment out the variable definations which
+	  was not used any more to avoid the compiler warnings.
+	  
+
+2003-04-29  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgGDTwig.cc: IgSoPcon replaced by IgSoG4Cons.
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Plug-in manager update.  Remove redundant type info.
+
+
+2003-03-25  George Alverson <George.Alverson@cern.ch>
+
+
+    *   config.h: Added for use with Windows dll's
+
+    *   xtypeinfo.h:    Modified to use config.h for use with Windows dll's

@@ -1,0 +1,45 @@
+2008-07-03  Lassi A. Tuura  <lat@iki.fi>
+
+	* StringOps.h, StringOps.cpp: Support operations on bare C strings
+	as well as std::string.  Allow "first" to be set without "last" in
+	the split() methods.  Fix incorrect string replacements in regular
+	expression replace() methods.
+
+	* Regexp.h, Regexp.cpp: Support operations on just C strings.
+
+	* Makefile.am: Consolidate tests.  Add a target to build just
+	the test programs, without actually running the tests.
+
+	* test/utils/StringFormat*.cpp, test/utils/StringOps*.cpp:
+	Consolidate into fewer tests and VERIFY() test results.  Add
+	some new tests.
+
+	* cfg/bootstrap.sh: Apply more brute force to undo libtool.
+	* cfg/config.guess, cfg/config.sub, cfg/ltmain.sh: Updated.
+
+2008-07-03  Lassi A. Tuura  <lat@iki.fi>
+
+	* cfg/bootstrap.sh: Enable glibtoolize --force on Darwin.
+
+2007-05-14  Lassi A. Tuura  <lat@iki.fi>
+
+	* configure.in: Set version to 3.0.1.
+
+	* cfg/bootstrap.sh: Update to work on Linux as well.
+
+	* Makefile.in, cfg/aclocal.m4, cfg/config.guess, cfg/config.sub,
+	cfg/ltmain.sh, configure: Regenerate using more recent tool chain.
+
+2007-02-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* configure.in: Set version to 3.0.0.
+
+	* cfg/bootstrap.sh: Further clean up libtool nonsense.
+
+	* Makefile.am: Set QUIET_ASSERT in tests.
+
+2007-02-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* Starting new major version of classlib based on last SEAL
+	version.  Converted to build using autotools and updated some
+	external packages.

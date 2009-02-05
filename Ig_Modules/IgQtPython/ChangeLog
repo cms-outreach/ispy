@@ -1,0 +1,213 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, test/test_PythonShell.cc, BuildFile, IgPythonView.cc,
+	IgQtTextEditStreambuf.cc, plugin.cc: Move to classlib and
+	IgPluginManager.
+
+	* plugin.cc: Correct a typo.
+	
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtTextEditStream.cc, test_PythonShell.cc: ANSI C++ fixes
+	(extra ; removed).
+
+2005-09-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtPythonMenuLoad.cc, IgPythonView.cc: old path for includes
+	fixed.
+
+2005-08-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonService.h, IgPythonState.h, IgPythonState.pyste,
+	IgPythonService.cc, IgPythonState.cc, BuildFile: moved to
+	IgPython.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2004-08-04  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test_PythonShell.cc: fixed to use new
+	IgQtPythonShell API.
+
+2004-07-26  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonState.cc (get): using seal LOG(). 
+
+	* IgPythonView.cc, IgPythonView.h: Menu item for "Scripts" added.
+
+	* IgQtTextEditStreambuf.cc (realSync): Using LOG() from
+	seal. Source beautifications.   
+
+	* IgQtPythonLoadMenu.cc, IgQtPythonLoadMenu.h: helper class for
+	"Scripts" menu.
+
+2004-07-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtTextEditStreambuf.cc (realSync): using seal LOG() for
+	debugging info.
+
+2004-07-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtDecorator.h, IgQtDecorator.cc : cosmetic fixes.
+
+2004-07-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonService.cc (IgPythonService): __name__ == __iguana__ for
+	the embedded python interpreter.  
+
+	* IgQtPythonShell.h, IgQtPythonShell.h: now the constructor
+	requires an IgPythonStream object as argument.
+
+	* IgPythonView.cc (IgPythonView): now using IgPythonService for
+	retrieving the python interpreter object. 
+
+	* IgPythonService.cc, IgPythonService.h: new IgStateElement for
+	retrieving python interpreter in an IGUANA like manner.
+
+2004-06-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtPythonShell.cc, IgQtPythonShell.h: Now IgQtPythonShell is a
+	QVBox. 
+	Unused QLayout removed.
+
+	* IgQtPythonShellEditor.cc, IgQtPythonShellEditor.h: major code
+	beautifications. 
+	Command-line history now behaves in a more correct way.
+
+	* IgPythonView.cc: removing useless IgQWidgetSite fixes resizing
+	issues.
+
+	
+2004-06-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/IgPythonState.pyste IgPythonState.cc IgPythonState.h:
+	special accessory class that is used to pass the IgState of iguana 
+
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Removed unused packages.
+
+2004-05-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonView.cc (IgPythonView): Now uses dockable windows.
+
+2004-03-16  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtPythonShell.cc (IgQtPythonShell): beautification fixes.
+
+	* IgQtPythonShellEditor.cc (IgQtPythonShellEditor): beautification
+	fixes.
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgPythonView.h, IgPythonView.cc, plugin.cc: now a
+	standard IgView plugin is available for the python shell, so that
+	it can be used within the iguana multi-window environment.
+
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile, config.h, test/test_PythonShell.cc: Move to using
+	SEAL Foundation classes.
+
+2003-05-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/test_PythonShell.cc (main): shows help message on startup.
+
+	* src/IgQtPythonShell.cc (helpMessage): shows a message box with
+	help about the key bindings.
+
+	* interface/IgQtPythonShell.h (IgQtPythonShell): added field for
+	an IgQtPythonShellEditor. Added method to show an help message box.
+
+2003-05-16  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtPythonShellEditor.cc (IgQtPythonShellEditor): removed
+	word wrapping.
+	(IgQtPythonShellEditor): Fixed width font.
+	(keyPressEvent): fixes tabbing alignment.
+	(keyPressEvent): fixed wrong tabbing behavior.
+
+2003-05-14  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtPythonShellEditor.cc (keyPressEvent): rich text parts
+	filtered away from python code to be executed.
+
+2003-05-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/BuildFile and BuildFile: removed unwanted references to
+	Coin and OpenInventor.
+
+	* src/IgQtPythonShellEditor.cc (keyPressEvent): moves to last
+	paragraph when it is not there and a key is pressed.
+	(keyPressEvent): History fixed
+	(keyPressEvent): fixes the crash when hitting ctrl-return with
+	empty shell.
+
+	* interface/IgQtTextEditStreambuf.h (IgQtTextEditStreambuf):
+	decoration additions.
+
+	* src/IgQtTextEditStreambuf.cc: removed xpuntn() and overflow. See below.
+
+	* interface/IgQtTextEditStreambuf.h (IgQtTextEditStreambuf): using
+	stringbuf in place of streambuf. This makes overriding overflow()
+	and xpuntn() useless.
+
+	* interface/IgQtDecorator.h (IgQtDecorator): documentation additions.
+
+2003-05-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/test_PythonShell.cc (main): Quit on window close.
+
+2003-05-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/IgQtTextEditor.h: removed
+
+	* src/IgQtTextEditor.cc: removed
+	
+	* src/BuildFile: removed
+
+	* src/plugin.cc: removed
+
+	* BuildFile: doesn't use Studio anymore.
+
+	* test/BuildFile: Buildfile for the test Python Shell application.
+
+	* test/test_PythonShell.cc: Python Shell application now doesn't
+	use Studio.
+
+2003-04-30  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtPythonShellEditor.cc (IgQtPythonShellEditor): removed
+	some comments
+
+	* interface/IgQtDecorator.h (IgQtDecorator): C++ base class for
+	decoration of string. The actual decoration can be performed by a
+	python extended object.
+
+	* src/IgQtPythonShellEditor.cc (keyPressEvent): workaround to
+	python flushing bug...
+
+2003-04-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/IgQtTextEditStreambuf.h: because of python
+	misconception of std::endl, which does \n + flush() and not only
+	\n I need to implement a new function to do the realSync(). This
+	is turned on by passing the true as  waitToSync parameter in the constructor.  
+
+	* IgQtPythonShellEditor.cc (keyPressEvent): better completion
+	detection by the use of regexp.
+

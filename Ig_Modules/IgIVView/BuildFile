@@ -1,0 +1,9 @@
+<Use name=Ig_Modules/IgCommon3DReps>
+<Use name=Ig_Modules/IgStudio>
+<Use name=Ig_Modules/Ig3DSystem>
+<Use name=Ig_Modules/Ig3DBaseWindow>
+<Use name=Ig_Modules/Ig3DCategories>
+<Use name=Ig_Modules/IgFileProxy>
+<Use name=Ig_Modules/IgCommonOps>
+<Use name=soqt>
+<Use name=openinventor>

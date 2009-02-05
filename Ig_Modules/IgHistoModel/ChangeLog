@@ -1,0 +1,57 @@
+2007-03-12  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, IgDataSourceProxy.h, IgHistoModelEvent.h,
+	IgHistoModel.h, IgHistoRep.h, xtypeinfo.h, IgDataSourceProxy.cc,
+	IgHistoModel.cc, IgHistoRep.cc, plugin.cc: Removed.
+
+	* test/BuildFile, test_IgHistoModel01.cpp,
+	test_IgHistoModel02.cpp: Removed.
+	
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h, IgHistoModel.h, IgDataSourceProxy.cc,
+	IgHistoModel.cc, IgHistoRep.cc: Move to classlib.
+	
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgHistoModel.h, IgHistoRep.h: extra ; removed for ANSI C++
+	compliance.
+
+2005-11-25  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgDataSourceProxy.h, interface/IgHistoModel.h, interface/IgHistoRep.h,
+	src/IgDataSourceProxy.cc, src/IgHistoModel.cc, src/IgHistoRep.cc:
+	Added hippodraw namespace.
+
+2005-10-25  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, test_IgHistoModel01.cpp, test_IgHistoModel02.cpp:
+	simple unit tests added.
+
+	* IgHistoModel.cc, IgHistoModel.h: destructor added. Now catches
+	a possible throw by hippodraw and ASSERT (false). 
+
+2005-06-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgHistoModel.cc, IgHistoModel.h: now IgHistoModel uses an
+	IgDispatcher to communicate changes to the whatching browsers.
+
+2005-05-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgHistoRep.h, IgHistoModel.h, IgHistoRep.cc,
+	IgHistoModel.cc: Dependency on IgNTupleModel added.
+
+	* IgDataSourceProxy.cc, IgDataSourceProxy.h: First added to
+	repository. IgDataSourceProxy is a proxy class that allows an
+	IgNTupleRep class to be a datasource for hippodraw
+	histogramming. This allows to insulate the NTuple filling parts
+	from the actual histogramming and its hippodraw implementation.
+
+2005-04-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, ChangeLog, IgHistoModel.h, IgHistoModelEvent.h,
+	IgHistoRep.h, config.h, xtypeinfo.h, IgHistoModel.cc,
+	IgHistoRep.cc, plugin.cc: First implementation of the
+	histogramming stuff added to the repository.
+
+	* New package for histogram model.

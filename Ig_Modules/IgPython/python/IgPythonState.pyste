@@ -1,0 +1,4 @@
+Include("Ig_Framework/IgObjectBrowser/interface/IgState.h")
+IgPythonState=Class("IgPythonState", "Ig_Modules/IgPython/interface/IgPythonState.h")
+set_policy(IgPythonState.get, return_value_policy (reference_existing_object))
+

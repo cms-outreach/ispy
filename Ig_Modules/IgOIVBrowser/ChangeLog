@@ -1,0 +1,75 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, xtypeinfo.h, IgOIVBrowser.cc, plugin.cc: Move to
+	classlib and IgPluginManager.
+	
+2007-01-31  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/plugin.cc: Removed IgSoText2 and IgSoMarkerSet initialization
+	and added IgSoGL2PSAction initialization.
+
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOIVBrowser: ANSI C++ fix.
+
+2006-04-03  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgOIVBrowser.cc: --ig-display coomand-line argument used to set
+	the display.
+
+2006-03-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgOIVBrowser.cc: Added IgSoText2 initialization.
+
+2006-01-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOIVBrowser.cc: new method for writing IV files, rather than
+	pictures. Random file name function added.
+
+2005-10-31  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgOIVBrowser.cc: Lego Model support added.
+
+2005-10-24  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOIVBrowser.cc: IgSoRZHist initialization code added.
+
+2005-09-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOIVBrowser.cc: added IgRZModel to the possible ones. 
+
+2005-09-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgOIVBrowser.h, IgOIVBrowser.cc: method for handling
+	orthographic camera added.
+
+2005-09-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOIVBrowser.h, IgOIVBrowser.cc: now spin methods all take
+	normalized positions. Split between window size and actual
+	rendering size.
+
+2005-09-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOIVBrowser.cc: now it uses a random image name for the buffer.
+
+2005-08-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOIVBrowser.cc, IgOIVBrowser.h: ability to zoom added.
+
+2005-08-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgOIVBrowser.h, config.h, xtypeinfo.h,
+	IgOIVBrowser.cc, plugin.cc: first import of GUI-less openinventor
+	browser.
+
+	* BuildFile, IgOIVBrowser.h, config.h, xtypeinfo.h,
+	IgOIVBrowser.cc, plugin.cc: first import of GUI-less openinventor
+	browser.
+

@@ -1,0 +1,431 @@
+<!DOCTYPE UI><UI version="3.0" stdsetdef="1">
+<class>IgQtXyzScale</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>Scale</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>310</width>
+            <height>167</height>
+        </rect>
+    </property>
+    <property name="sizePolicy">
+        <sizepolicy>
+            <hsizetype>3</hsizetype>
+            <vsizetype>5</vsizetype>
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+        </sizepolicy>
+    </property>
+    <property name="caption">
+        <string>Scale</string>
+    </property>
+    <property name="iconText">
+        <string>Scale</string>
+    </property>
+    <property name="toolTip" stdset="0">
+        <string>Adjusts overall scales of the scene</string>
+    </property>
+    <property name="whatsThis" stdset="0">
+        <string>Scale scene</string>
+    </property>
+    <hbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>GroupBox8</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>3</hsizetype>
+                    <vsizetype>5</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string></string>
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout11</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>xLayout</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>xCheckBox</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>x</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>enable x scaling</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>Spacer6</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Preferred</enum>
+                                    </property>
+                                </spacer>
+                                <widget class="QSlider">
+                                    <property name="name">
+                                        <cstring>x_slider</cstring>
+                                    </property>
+                                    <property name="sizePolicy">
+                                        <sizepolicy>
+                                            <hsizetype>7</hsizetype>
+                                            <vsizetype>0</vsizetype>
+                                            <horstretch>0</horstretch>
+                                            <verstretch>0</verstretch>
+                                        </sizepolicy>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>slider to adjust x scale</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>Spacer7</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Preferred</enum>
+                                    </property>
+                                </spacer>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>x_text_input</cstring>
+                                    </property>
+                                    <property name="frameShape">
+                                        <enum>LineEditPanel</enum>
+                                    </property>
+                                    <property name="frameShadow">
+                                        <enum>Sunken</enum>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>indicator/setter for x scale</string>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>yLayout</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>yCheckBox</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>y</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>enable y scaling</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>Spacer6_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Preferred</enum>
+                                    </property>
+                                </spacer>
+                                <widget class="QSlider">
+                                    <property name="name">
+                                        <cstring>y_slider</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>slider to adjust y scale</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>Spacer7_2</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Preferred</enum>
+                                    </property>
+                                </spacer>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>y_text_input</cstring>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>indicator/setter for y scale</string>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                        <widget class="QLayoutWidget">
+                            <property name="name">
+                                <cstring>zLayout</cstring>
+                            </property>
+                            <hbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <property name="margin">
+                                    <number>0</number>
+                                </property>
+                                <property name="spacing">
+                                    <number>6</number>
+                                </property>
+                                <widget class="QCheckBox">
+                                    <property name="name">
+                                        <cstring>zCheckBox</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>z</string>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>enable z scaling</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>Spacer6_3</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Preferred</enum>
+                                    </property>
+                                </spacer>
+                                <widget class="QSlider">
+                                    <property name="name">
+                                        <cstring>z_slider</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>slider to adjust z scale</string>
+                                    </property>
+                                </widget>
+                                <spacer>
+                                    <property name="name">
+                                        <cstring>Spacer7_3</cstring>
+                                    </property>
+                                    <property name="orientation">
+                                        <enum>Horizontal</enum>
+                                    </property>
+                                    <property name="sizeType">
+                                        <enum>Preferred</enum>
+                                    </property>
+                                </spacer>
+                                <widget class="QLineEdit">
+                                    <property name="name">
+                                        <cstring>z_text_input</cstring>
+                                    </property>
+                                    <property name="toolTip" stdset="0">
+                                        <string>indicator/setter for z scale</string>
+                                    </property>
+                                </widget>
+                            </hbox>
+                        </widget>
+                    </vbox>
+                </widget>
+                <spacer>
+                    <property name="name">
+                        <cstring>Spacer14</cstring>
+                    </property>
+                    <property name="orientation">
+                        <enum>Vertical</enum>
+                    </property>
+                    <property name="sizeType">
+                        <enum>Expanding</enum>
+                    </property>
+                </spacer>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout13</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Spacer15</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                        </spacer>
+                        <widget class="QPushButton">
+                            <property name="name">
+                                <cstring>CloseButton</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Close</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>close this popup</string>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </hbox>
+</widget>
+<connections>
+    <connection>
+        <sender>CloseButton</sender>
+        <signal>released()</signal>
+        <receiver>Scale</receiver>
+        <slot>close()</slot>
+    </connection>
+    <connection>
+        <sender>xCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>Scale</receiver>
+        <slot>xboxChecked(int)</slot>
+    </connection>
+    <connection>
+        <sender>y_slider</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Scale</receiver>
+        <slot>ysliderValueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>z_slider</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Scale</receiver>
+        <slot>zsliderValueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>yCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>Scale</receiver>
+        <slot>yboxChecked(int)</slot>
+    </connection>
+    <connection>
+        <sender>zCheckBox</sender>
+        <signal>stateChanged(int)</signal>
+        <receiver>Scale</receiver>
+        <slot>zboxChecked(int)</slot>
+    </connection>
+    <connection>
+        <sender>x_slider</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Scale</receiver>
+        <slot>xsliderValueChanged(int)</slot>
+    </connection>
+    <connection>
+        <sender>x_text_input</sender>
+        <signal>returnPressed()</signal>
+        <receiver>Scale</receiver>
+        <slot>xtextValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>y_text_input</sender>
+        <signal>returnPressed()</signal>
+        <receiver>Scale</receiver>
+        <slot>ytextValueChanged()</slot>
+    </connection>
+    <connection>
+        <sender>z_text_input</sender>
+        <signal>returnPressed()</signal>
+        <receiver>Scale</receiver>
+        <slot>ztextValueChanged()</slot>
+    </connection>
+</connections>
+<slots>
+    <slot>xboxChecked(int)</slot>
+    <slot>xsliderValueChanged(int)</slot>
+    <slot>xtextValueChanged()</slot>
+    <slot>yboxChecked(int)</slot>
+    <slot>ysliderValueChanged(int)</slot>
+    <slot>ytextValueChanged()</slot>
+    <slot>zboxChecked(int)</slot>
+    <slot>zsliderValueChanged(int)</slot>
+    <slot>ztextValueChanged()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

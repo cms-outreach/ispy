@@ -1,0 +1,33 @@
+<Use name=Ig_Framework/IgObjectBrowser>
+
+<makefile>
+IG_WHO		     := $(shell whoami)
+IG_UNAME	     := $(shell uname -a)
+IG_COMPILER_VERSION  := no version info
+
+ifneq ($(findstring c++,$(CXX)),)
+ IG_COMPILER_VERSION := $(shell $(CXX) -v 2>&1 | grep 'gcc version' | sed 's/^gcc version //') [$(shell $(CXX) -dumpmachine)]
+endif
+ifneq ($(findstring CC,$(CXX)),)
+ IG_COMPILER_VERSION := $(shell $(CXX) -V 2>&1)
+endif
+ifneq ($(findstring KCC,$(CXX)),)
+ IG_COMPILER_VERSION := $(shell ( touch kcc-version-check.cc; \
+			         $(CXX) -V -c kcc-version-check.cc 2>&1; \
+			         rm -f kcc-version-check.cc kcc-version-check.o) | \
+			       sed 's/ -- (C) Copyright.*//')
+endif
+
+CPPFLAGS += -DIGUANA_APP='"iguana"'			 \
+	    -DIGUANA_VERSION='"$(SCRAM_PROJECTVERSION)"' \
+	    -DIGUANA_UNAME='"$(IG_UNAME)"'		 \
+	    -DIGUANA_HOST='"$(SCRAM_ARCH)"'		 \
+	    -DIGUANA_CXX='"$(strip $(CXX))"'		 \
+	    -DIGUANA_COMPILER='"$(IG_COMPILER_VERSION)"' \
+	    -DIGUANA_WHO='"$(IG_WHO)"'
+</makefile>
+
+<Export>
+  <Use name=Ig_Framework/IgObjectBrowser>
+  <Lib name=Ig_FrameworkIgApplication>
+</Export>

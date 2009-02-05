@@ -1,0 +1,78 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, plugin.cc, BuildFile,
+	IgLegoViewPropertiesCategory.cc, IgLegoWindow.cc: Move to classlib
+	and IgPluginManager.
+	
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgLegoWindow.cc: listen/unlisten renamed to add/remove in
+	IgDispatcher.
+
+2005-05-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Add Ig3DCategories to be able to use a single Lego
+	window without loading 3D first.
+	
+2005-04-12  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgLegoWindow.cc: Removed addOnFoucsIn/Out callbacks
+	which were already added by Ig3DBaseWindow. 
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2004-12-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgLegoWindow.cc: Moved to use new IgModelManager and IgDocumentDataManager
+	manager.
+	
+2004-11-01  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Now depneds on Ig3DCategories for the light category.
+	
+	* IgLegoWindow.h, IgLegoWindow.cc: Removed unused IgSoMaterialCategory,
+	Ig3DLightsCategory used instead of IgLegoLightsCategory.
+
+2004-10-27  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgLegoLightsCategory.h, IgLegoLightsCategory.cc: Fixed to construct the
+	lights properly.
+
+2004-10-19  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgLegoWindow.cc: IMAGE_ID_* moved to IgImageIDs.
+
+2004-09-07  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgLegoViewPropertiesCategory.h, IgLegoViewPropertiesCategory.cc:
+	browserChanged and registerBrowser methods added, Ig3DBaseRep not
+	needed any more.
+	
+	* IgLegoWindow.cc: Register the IgLegoViewPropertiesCategory category
+	for the lego browser.
+
+2004-08-27  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* *.cc: Removed tool tips.
+
+2004-08-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgLegoLightsCategory.h, IgLegoViewPropertiesCategory.h,
+	IgLegoLightsCategory.cc, IgLegoViewPropertiesCategory.cc,
+	IgLegoWindow.cc, plugin.cc, BuildFile, src/BuildFile: New files for lego
+	window.
+	* New package for lego window.

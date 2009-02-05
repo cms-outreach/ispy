@@ -1,0 +1,23 @@
+### PATCH shift
+--- Imakefile	Mon Dec  1 12:47:51 2003
++++ Imakefile.orig	Mon Dec  1 12:46:56 2003
+@@ -115,7 +115,7 @@
+ 	do (if [ -d $$i ] ;\
+ 	    then \
+ 	      (echo " $$i:" ; cd $$i ;\
+-	      ../imake/imake -I../config -DOSMajorVersion="$$OSMAJNO" -DOSMinorVersion="$$OSMINNO" ;\
++	      imake -Dlinux -DUseInstalled -I../config -DOSMajorVersion="$$OSMAJNO" -DOSMinorVersion="$$OSMINNO" ;\
+ 	      $(MAKE) $(MFLAGS) $@) ;\
+ 	    else \
+ 	      (echo "ERROR : No directory $$i" ;\
+--- test/Imakefile	Mon Dec  1 12:48:24 2003
++++ test/Imakefile.orig	Mon Dec  1 12:48:00 2003
+@@ -32,7 +32,7 @@
+ 	do (if [ -d $$i ] ;\
+ 	    then \
+ 	      (echo " $$i:" ; cd $$i ;\
+-	      ../../imake/imake -I../../config -DOSMajorVersion="$$OSMAJNO" -DOSMinorVersion="$$OSMINNO" ;\
++	      imake -Dlinux -DUseInstalled -I../../config -DOSMajorVersion="$$OSMAJNO" -DOSMinorVersion="$$OSMINNO" ;\
+ 	      $(MAKE) $(MFLAGS) $@) ;\
+ 	    else \
+ 	      (echo "ERROR : No directory $$i" ;\

@@ -1,0 +1,35 @@
+dnl
+dnl  Not used now, for the future when uuid is separated out into its 
+dnl own package.
+dnl
+AC_INIT(gen_uuid.c)
+AC_PREREQ(2.12)
+
+AC_CHECK_HEADERS(stdlib.h unistd.h sys/sockio.h net/if.h netinet/in.h)
+AC_CHECK_FUNCS(srandom)
+
+dnl
+dnl LAT: From ext2fsprogs global configure.in
+dnl
+if test "$cross_compiling" = yes -a "$ac_cv_sizeof_long" = ""; then
+  # if cross-compiling, with no cached values, just assume something common. 
+  ac_cv_sizeof_short=2
+  ac_cv_sizeof_int=4
+  ac_cv_sizeof_long=4
+  ac_cv_sizeof_long_long=8
+  AC_MSG_WARN([Cross-compiling, so cannot check type sizes; assuming short=2, int=4, long=4, long long=8])
+fi
+AC_CHECK_SIZEOF(short)
+AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
+AC_CHECK_SIZEOF(long long)
+SIZEOF_SHORT=$ac_cv_sizeof_short
+SIZEOF_INT=$ac_cv_sizeof_int
+SIZEOF_LONG=$ac_cv_sizeof_long
+SIZEOF_LONG_LONG=$ac_cv_sizeof_long_long
+AC_SUBST(SIZEOF_SHORT)
+AC_SUBST(SIZEOF_INT)
+AC_SUBST(SIZEOF_LONG)
+AC_SUBST(SIZEOF_LONG_LONG)
+
+AC_OUTPUT(Makefile ext2_types.h)

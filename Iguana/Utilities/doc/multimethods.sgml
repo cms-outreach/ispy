@@ -1,0 +1,132 @@
+<article><title>Multi-methods for C++</>
+
+<abstract>
+
+<para>This note describes why multi-methods are a useful concept and
+explains how they can be implemented in C++.  Some examples are given
+to demonstrate the uses of multi-methods with this implementation.
+
+</abstract>
+
+<sect1><title>Introduction to Multi-methods</>
+
+<para>A <firstterm>multi-method</> consists of a family of related
+functions, which together form a polymorphic operation.  They are
+similar to regular C++ virtual functions in that the actual operation
+performed depends on the objects the method is applied to.  However,
+they are unlike virtual functions in that they are not limited to one
+polymorphic argument type.  Instead, the operation can be selected
+based on any number of polymorphic object arguments.
+
+<para>As an example, below is a simple polymorphic base class
+<literal>Printable</>.
+
+<programlisting>
+class Printable
+{
+     virtual ~Printable (void);
+     virtual void print (void) = 0;
+};
+</programlisting>
+
+<para>This class defines one polymorphic function, <literal>print</>,
+that together with its implementations in derived classes forms a
+family of functions performing a polymorphic operations.  For
+instance, below is an example of a class derived from
+<literal>Printable</> that implements its own variant of
+<literal>print</>.
+
+<programlisting>
+class PrintableInteger : public Printable
+{
+    int m_value;
+public:
+    PrintableInteger (int value) : m_value (value) { }
+    ~PrintableInteger (void) { }
+
+    int value (void) { return m_value; }
+    virtual void print (void) { std::cout << value () << std::endl; }
+};
+</programlisting>
+
+<para>Actual uses of the polymorphism and the virtual methods might go
+along the lines of the simple-minded code fragment below.
+
+<programlisting>
+void use (Printable *object)
+{ object->print (); }
+
+int test (void)
+{
+    PrintableInteger object (5);
+    use (&object);
+}
+</programlisting>
+
+<para>We are now happy authors of the class <literal>Printable</>, and
+contemplate the fruits of the design work.  It soon becomes apparent
+that the interface could be improved: instead of always printing to
+<literal>std::cout</>, it would be great to be able to output to any
+device.  Furthermore, some objects deriving from <literal>Printable</>
+might want to print themselves differently on different devices, so it
+is no good to pass a <literal>std::ostream</> reference as an argument
+to <literal>print</>.
+
+<para>How to go about solving this problem?  In standard C++, the
+solution is going to be ugly: you just have to use more than one
+<literal>print</> method.  Things will soon get even more ugly if you
+do not know at the call site the actual type of the device you want to
+output to.  One possibility is to use the <literal>Visitor</> pattern
+[FIXME: reference], but it has well-known deficiencies.
+
+<para>Multi-methods are a natural and well-known solution for this
+problem.<footnote><para>In fact, the <literal>Visitor</> pattern is
+just an attempt to work around the lack of multi-methods in
+C++.</footnote> For the case at hand, one would like to say something
+along these lines:
+
+<programlisting>
+void print (virtual Printable *object, virtual OutputDevice *device);
+
+void print (PrintableInteger *object, OstreamOutputDevice *device)
+{ (*device) << object->value () << std::endl; }
+</programlisting>
+
+<para>Notice how we use the keyword <literal>virtual</> above to
+designate <emphasis>two</> of the arguments as polymorphic; the actual
+function chosen depends on the actual type of both of them, not just
+of the type of one of them.  Unfortunately, this syntax is not legal
+C++.
+
+<para>
+
+First, let us introduce a simplifying notation for C++ function calls.
+Namely, we shall describe all functions, whether methods or regular
+functions, being called with notation
+
+<equation>
+  function (arg1, arg2, ..., argN)
+</>
+
+If <replaceable>function</> is actually a method, normally called in C++ as
+
+<equation>
+  object.function (arg1, arg2, ..., argN)
+</>
+
+we shall pretend it is called as follows
+
+<equation>
+  function (object, arg1, arg2, ..., argN)
+</>
+
+<para>Now, using this n
+
+A <firstterm>multi-method</> consists of a family of normal functions,
+which together form a polymorphic function.  They are similar to
+regular C++ virtual functions in that when applied to an object, the
+actual function executed depends on the actual type of the
+object.<footenote><para>As opposed to the static, or compile-time
+type.</footnote> Unlike C++ virtual functions, multi-methods are not
+restricted
+

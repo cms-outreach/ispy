@@ -1,0 +1,5 @@
+<use name=VisReco/Analyzer>
+<use name=FWCore/Services>
+<library file=Module.cc name=IguanaPlugins>
+<flags EDM_PLUGIN=1>
+</library>

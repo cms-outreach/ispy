@@ -1,0 +1,3 @@
+<Use name="Ig_Modules/IgQtProfileService">
+<Lib name=iberty>
+<Lib name=bfd>

@@ -1,0 +1,19 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h: Move to classlib.
+	
+2005-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+	
+	* BuildFile: Port to new SCRAMV1.
+
+2004-08-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+	
+	* IgLegoModel.h, IgLegoRep.h, config.h, xtypeinfo.h, IgLegoModel.cc,
+	IgLegoRep.cc, plugin.cc: New files for lego model and rep.
+	* New package for the lego model. 

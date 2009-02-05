@@ -1,0 +1,71 @@
+2003-09-12  Lassi A. Tuura  <lat@pb-d-128-141-36-125.cern.ch>
+
+	* BuildFile, Iguana.cpp: Move to "src" for uniformity.
+	* BuildFile: Use <Use> instead of <Lib>; remove redundancy.
+
+2002-08-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp: Add a pointer to the original bug report.
+
+	* Iguana.cpp: Force template instantiation of the GNU C++ default
+	memory allocator in the main program to avoid a memory leak.
+
+2001-11-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* Factor common bits out into Ig_Framework/IgApplication.
+
+2001-11-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Great renaming and general clean-up patch.
+
+2001-08-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp (Preloader, main): Add library preloading support.
+
+2001-08-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp (fatal_exception): Work around different standard
+	library string implementations.
+
+2001-07-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp: Reflect changes to object browser architecture:
+	remove rep and model info, introduce sessions.
+
+2001-07-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Get program and build information and embed it into
+	the compiled program.
+
+	* Iguana.cpp: Install hooks for fatal errors, exceptions and for
+	low memory conditions.  Report time usage.
+
+2001-05-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp (load_driver): Catch more exceptions.
+
+2001-04-11  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp (load_driver): Leave extension loading to driver.
+
+2001-04-02  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp (dump_range_by_type_model): New, for dumping out
+	rep-to-model information.
+	(dump_database): Move site dumping where it logically fits
+	better.  Dump out rep-to-model information.
+
+2001-03-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* Iguana.cpp
+	(init_database): New function to initialise the plug-in database.
+	(dump_range_by_type): Factor out common print code.
+	(dump_database): New function for dumping out info.  Dump out more
+	of the information in the plug-in database.
+	(load_driver): New function for loading and executing the driver.
+	(main): Divert action to the appropriate functions.
+
+2001-03-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* New generic iguana main program.
+

@@ -1,0 +1,1032 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, BuildFile, IgOProfConfiguration.cc,
+	IgOProfEventMap.cc, IgOProfNetworkRepresentable.cc,
+	IgOProfProcDevice.cc, IgOProfProcDevice.h,
+	IgOProfProcessRepresentable.cc, IgOProfProcessRepresentable.h,
+	IgOProfRepresentable.cc, IgOProfRepresentable.h,
+	IgOProfRepresentableInterface.cc, IgOProfSymbolRepresentable.cc,
+	IgQtProfileService.cc, plugin.cc, test/BuildFile: Move to classlib
+	and IgPluginManager.
+	
+2007-01-12  Shahzad Muzaffar  <Shahzad Muzaffar@cern.ch>
+
+	* test/test_ProcDevice.cc: Removed extra ;
+
+2005-03-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test/test_ProcDevice.cc: Check if oprofile exists.
+
+	* QuestionLog: Removed as obsolete.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test/BuildFile: Port to new SCRAMV1.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2004-11-18  Shahzad Muzaffar  <Shahzad Muzaffar@cern.ch>
+
+	* IgQtProfileExtension.h, IgQtProfileExtension.cc: Rename the
+	extension to "Extensions/Profiler/OProfile" so that it does not
+	loaded automatically by the studio driver. Now it is loaded on demand.
+
+2004-08-30  Shahzad Muzaffar  <Shahzad Muzaffar@cern.ch>
+
+	* IgOProfEventMap.cc, IgOProfProcessRepresentable.cc,
+	IgOProfRepresentable.cc : Moved back to use seal::IOFlags
+	instead of seal::PipeCmd for SEAL_1_4_0.
+
+2004-08-20  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfRepresentable.pystegen, IgOprofRepresentable.pyste:
+	Renamed.
+
+	* IgOProfRepresentable_boost.cc: Modified to work with the old
+	version of boost.
+
+2004-08-16  Shahzad Muzaffar  <Shahzad Muzaffar@cern.ch>
+
+	* IgOProfEventMap.cc, IgOProfProcessRepresentable.cc,
+	IgOProfRepresentable.cc : Moved back to use PipeCmd API
+	instead of seal::IOFlags for SEAL_1_3_4.
+	
+2004-08-04  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfRepresentableConcrete.h: fixed missing type. 
+
+2004-08-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfEventMap.cc, IgOProfProcessRepresentable.cc,
+	IgOProfRepresentable.cc : Using seal::IOFlags in place of
+	deprecated PipeCmd API.
+
+2004-07-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfOprofilerProc.h: IgOProfObjectFile.h header removed.
+
+2004-07-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfOprofilerProc.cc (start): removed
+	--kernel-start/--kernel-stop options because oprofile does not
+	need them anymore.
+
+	* IgOProfObjectFile.h, IgOProfObjectFile.cc: removed.
+
+2004-05-14  Shahzad Muzaffar  <Shahzad Muzaffar@cern.ch>
+
+	* BuildFile: Removed unused packages.
+	
+	* IgOProfProcessListViewItem.cc, IgQtProfileExtension.cc:
+	Removed unused headers.
+
+2003-12-18  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfSymbolRepresentable.cc, IgOProfSymbolRepresentable.h: now
+	having getter/setter API to access attributes, which now are all
+	in private section. Actual implementation moved to .cc file. 
+	
+	* IgOProfRepresentableInterface.h: Cosmetic fixes. Some typename
+	changed to match IGUANA coding conventions.
+	
+	* IgOProfRepresentableInterface.cc: Cosmetic fixes.
+	
+	* IgOProfRepresentableConcrete.h: Cosmetic fixes. Moved some
+	implementations from header file to actual source.
+
+	* IgOProfProcessRepresentable.cc, IgOProfProcessRepresentable.h,
+	IgOProfRepresentable.cc,IgOProfRepresentable.h: Improved support
+	for new user level tools by oprofile.  API changed so that now
+	hits/process name/symbol name/updating information are
+	encapsulated. Cosmetic fixes. Implementation of some methods moved
+	from include file to source.
+
+	* IgOProfMainListView.cc, IgOProfNetworkRepresentable.cc,
+	IgOProfPythonBrowser.cc, IgOProfPythonMapBrowser.cc,
+	IgOProfSimpleBrowser.cc, IgOProfSimpleBrowser.h: Cosmetic
+	fixes.  Using the new accessor API to get and modify member
+	variables of IgOProfProcessRepresentable and
+	IgOProfSymbolRepresentable.  Some typenames renamed to match
+	IGUANA coding convention.
+	
+2003-12-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfShowTextWindow.cc: Uses opannotate in place of the old
+	op_to_source.
+	
+	* IgOProfEventMap.cc (IgOProfEventMap): removed unused variable.
+
+	* IgOProfConfiguration.cc, IgOProfConfiguration.h: Changed to
+	detect and use the new "opreport" and "opannotate" tools provided
+	by oprofile.
+	
+	* IgOProfProcessRepresentable.cc, IgOProfRepresentable.cc: Changed
+	to support the new report tools provided by oprofile. Cosmetic
+	fixes.
+	
+2003-11-20  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgOProfEventMap.cc: Use SEAL classes to read "op_help" output.
+	Simplifies the code and improves ability to understand "op_help".
+
+2003-10-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfMainWindow.cc (init): added reference to instructions
+	on how to install oprofile.
+
+2003-09-30  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgOProfSyncProcess.h: added missing include to config.h and
+	missing IG_QT_PROFILE_SERVICE_API.
+
+	* IgOProfEventMap.h (IgOProfEventMap): cosmetic fixes. IgEvent
+	renamed to IgOProfEvent. Added missing include to config.h and
+	missing IG_QT_PROFILE_SERVICE_API.
+
+	* IgOProfEventMap.cc (IgOProfEventMap): cosmetic fixes.
+
+2003-09-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtProfileInfo.cc (show): GUI created with buttons enabled
+	only if the profiler is found.
+
+	* src/IgQtProfileExtension.cc (IgQtProfileExtension): cosmetic
+	fixes.
+
+	* src/IgOProfRepresentable.cc: cosmetic fixes.
+
+	* src/IgOProfProcDevice.h: cosmetic fixes. enabled() method added
+	which returns true if the root path for the /proc informations is
+	found.
+
+	* src/IgOProfProcDevice.cc: cosmetic fixes. Protecting all the
+	functions against proc path not present.
+	
+	* src/IgOProfProcDevice.h (class IgOProfProcDevice): added enabled
+	method which returns true when the oprofiler /proc subtree is
+	found.
+
+	* src/IgOProfOprofilerProc.cc: cosmetic fixes.
+
+	* src/IgOProfOprofilerProc.h: cosmetic fixes.
+
+	* src/IgOProfMenuBar.cc (IgOProfMenuBar): cosmetic fixes.
+
+	* src/IgOProfMainWindow.h: cosmetic fixes.  
+	(setGUIStatus): method added which enables/disables widgets
+	which are supposed to be used only when the profiler is running.
+	(createGUI): now this method accepts a bool as a parameter which
+	indicates if the profiler is present/working or not.
+	
+	* src/IgOProfMainWindow.cc: cosmetic fixes.
+	(init): if oprofile is not found, first ask if the user wants to
+	profile a remote box, if not, just open the GUI, with "update"
+	button disabled, allowing only to load previously saved sessions
+	or to quit.
+	(setGUIStatus): Implementation added.
+
+	* src/IgOProfEventMap.h (class IgOProfEventMap): cosmetic fixes.
+	ByName and ByID maps renamed to m_byName and m_byId and ,moved to
+	private sector.  containsId (int): method added which returns true
+	if requested event is in the map.
+
+	* src/IgOProfEventMap.cc: cosmetic fixes. If oprofile is not found
+	event descriptions are not looked up and dummy entries are created.
+
+	* src/IgOProfCounter.cc: moved out of IgOProfConfiguration.h
+
+	* src/IgOProfCounter.h: moved out of IgOProfConfiguration.h
+	
+	
+	* src/IgOProfConfiguration.h: cosmetic fixes. Added
+	m_noProfilerFound variable which is set if /proc/dev/sys/oprofile
+	is not there.  IgOProfCounter class moved to :: namespace in
+	IgOProfCounter.h/cc.
+	
+	* src/IgOProfConfiguration.cc: cosmetic fixes.
+	(read): if profiler is not found, does not check for counters.
+
+2003-09-24  Lassi A. Tuura  <lt@lxcms73.cern.ch>
+
+	* BuildFile, IgOProfObjectFile.h: Fix previous unsuccessful
+	work-arounds to try make it work on OS X.  Pick up libbfd.
+	Forward declare "bfd" correctly.
+
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgOProfConfiguration.cc, IgOProfNetworkRepresentable.cc,
+	IgOProfObjectFile.h, IgOProfObjectFile.cc, IgOProfProcDevice.h,
+	IgOProfProcDevice.cc, IgOProfProcessRepresentable.cc,
+	IgOProfRepresentable.cc, IgOProfRepresentableInterface.cc,
+	IgQtProfileService.cc, plugin.cc, config.h, BuildFile,
+	src/BuildFile, test/BuildFile: Move to using SEAL Foundation
+	classes and plug-in manager.  Clean up build files.  Add guards
+	for linux-specific code; to be handled properly.
+
+2003-08-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQtProfileExtension.cc: Tear-off handle replaced by a separator. 
+
+2003-07-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfMainWindow.cc (createGUI): fixed the widget
+	reparenting issue.
+
+	* src/IgOProfRepresentable.cc (instance): removed debug output.
+	(updateProcessList): removed debug output.
+
+	* src/IgOProfConfiguration.cc (read): name clash after renaming
+	t_prefix->prefix with other "prefix" variable. t_prefix now is configurationPrefix. 
+
+	* src/IgOProfMainWindow.cc (createGUI): code beatification.
+
+2003-07-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* everywhere: removed t_ from in front of local variables.
+
+	* python/IgOProfPythonBrowser.pyste : added bindings for the
+	IgOProfPythonMapBrowser.
+
+	* src/IgOProfPythonMapBrowser.cc/.h: new browser which
+	creates a python map out of the profiling informations.
+
+	* src/IgOProfRepresentable.cc (instance): moving the
+	implementation from .h to .cc.
+
+	* src/IgOProfConfiguration.cc (instance): moving the
+	implementation from .h to .cc.
+
+2003-07-02  Giulio Eulisse  <giulio.eulisse@cern.ch>	
+
+	* src/IgOProfMainWindow.cc (init): GUI to activate and configure remote profiling.
+
+	* src/IgOProfRepresentable.h (IgOProfRepresentableSingleton):
+	removed the need of setting an env variable to trigger the remote profiler.
+
+	* everywhere: assert->ASSERT
+
+	* everywhere:  Changes to follow coding conventions.
+	
+	* src/IgOProfSyncProcess.cc (readOutput): removed debug output.
+
+	* everywhere:  Removed ; at end of code blocks.
+
+	* src/IgOProfNetworkRepresentable.cc/.h
+	(IgOProfNetworkRepresentable): network enable version of the representable.
+
+	* share/SimpleServer.py: server script which waits for a client
+	GUI to connect and then passes them local profile informations.
+
+	* share/Client.py: script to get remote profiling informations.
+
+	* src/IgOProfRepresentableConcrete.h
+	(IgOProfRepresentableConcrete): Concrete object to ease the
+	creation of python bindings.
+
+	* src/IgOProfRepresentableInterface.cc (getProcess):
+	implementation of getProcess now creates a ProcessRepresentable if
+	the requested one is not found.
+
+	* share/GetProfilingInfos.py (browser): no need for creating a
+	Configuration object as the Representable now gets it directly
+	from the singleton.
+
+	* src/IgOProfApplication.cc (IgOProfApplication): not passing the
+	Configuration anymore, as now it is accessible via singleton.	
+
+	* src/IgOProfConfiguration.h (IgOProfConfigurationSingleton):
+	Singleton class for the configuration.
+	Removed ; at end of code blocks.
+
+	* src/IgOProfConfiguration.cc: Removed
+	commented code.
+	Removed ; at end of code blocks.
+	Coding rules fixes.
+	
+
+	* src/IgOProfEventMap.cc: removed "using namespace std" and
+	putting std:: in front of stl classes.
+	Removed ; at end of code blocks.
+
+	* src/IgOProfEventMap.h: removed "using namespace std" and
+	putting std:: in front of stl classes.
+
+	* src/IgOProfMainListView.cc: Coding guidelines fixes.
+	(IgOProfMainListView): using singletons to get Representable 
+	and Configuration instead of creating them by new.	
+
+	* src/IgOProfMainWindow.h (class IgOProfMainWindow): no need for
+	passing Configuration anymore.
+
+	* src/IgOProfMainWindow.cc : removed ; at end of code blocks.
+	Coding rules fixes.
+	(IgOProfMainWindow): no need for
+	passing Configuration anymore.	
+
+	* src/IgOProfObjectFile.h: removed "using namespace std" and
+	putting std:: in front of stl classes.
+
+	* src/IgOProfProcessRepresentable.cc (getSymbol): if a symbol does
+	not exist it is created and added to the symbolList.
+	(requestUpdateSymbolList): resetting buffer on new update.
+	assert ->ASSERT
+	(updateSymbolList): now returns the correct value to keep being
+	notified as long as there is something to read.
+	(IgOProfProcessRepresentable): default value for m_name and m_hits. 
+
+	* src/IgOProfProcessRepresentable.h (IgOProfProcessRepresentable):
+	getSymbol body moved to .cc file.
+	No need for passing Configuration anymore.
+
+	* src/IgOProfPythonBrowser.cc (IgOProfPythonBrowser): default gets
+	an instance of the RepresentableInterface from the RepresentableSingleton.
+
+	* src/IgOProfPythonBrowser.h (IgOProfPythonBrowser): Using the
+	RepresentableInterface abstract class rather then the concrete one.
+
+	* src/IgOProfRepresentable.cc (updateProcessList): using ASSERT() in
+	place of assert().
+	Returning proper value to keep on reading as long as input is
+	streamed to the pipe.
+	(requestUpdateProcessList): Flushing buffer when an update command is issued.
+	(IgOProfRepresentable): using ConfigurationSingleton.
+	
+	* src/IgQtProfileInfo.cc (IgQtProfileInfo): no need for passing
+	Configuration object to m_profiler_widget anymore.
+
+	* src/IgQtProfileService.cc (IgQtProfileService): using
+	Configuration singleton.
+	
+	* src/IgOProfConfiguration.cc (read): added configuration entries
+	for remote profiling.
+
+	* python/IgOProfConfiguration.pyste: exporting the
+	IgOProfConfigurationSingleton class.
+
+	* python/IgOProfPythonBrowser.pyste: including the abstract
+	IgOProfRepresentableInterface class, rather then the 
+	IgOProfRepresentable
+
+	* src/IgOProfApplication.cc (IgOProfApplication): using
+	configuration singleton.
+	
+2003-06-27  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/IgOProfConfiguration.pyste: wrapping
+	IgOProfConfigurationSingleton too.
+
+	* python/IgOProfRepresentable.pyste: wrapping
+	IgOProfRepresentableConcrete container, rather then actual
+	Representable class.
+
+	* src/IgOProfRepresentable.h (IgOProfRepresentableSingleton): now
+	using a singleton to access profile information representable.
+	This has to be done to allow python hooking into the same
+	Representable C++ uses without the use of a a-priori variable
+	name. The singleton also acts as a factory, creating Local or
+	Network representable according to REMOTEPROFILE variable.
+	(IgOProfRepresentable): All the map navigation methods moved 
+	to IgOProfRepresentableInterface.
+	Documentation fixes.
+	
+	* src/IgOProfRepresentableInterface.h
+	(IgOProfRepresentableInterface): new interface class for the
+	profiling data representable. This is to allow remote updating via
+	different remote object.
+
+	* src/IgOProfConfiguration.h (IgOProfConfigurationSingleton):
+	Added singleton class for the Configuration. All placeces
+	where an IgOProfConfiguration was created now use the static
+	method IgOProfConfigurationSingleton::instance().
+	Fixed some missing std::.
+	
+	* src/IgOProfMainListView.h (class IgOProfMainListView): using
+	interface in place of concrete IgOProfRepresentable class.
+	Using IgOProfConfigurationSingleton.
+	
+2003-06-25  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfProcessRepresentable.h (IgOProfProcessRepresentable):
+	symbol map begin() end() and find() methods exposed directly in
+	IgOProfProcessRepresentable.
+	added method to get a symbol directly.
+
+	* src/IgOProfPythonBrowser.cc/h: this class dumps the profiler
+	state to a python script.
+
+	* python/IgOProfSymbolRepresentable.pyste
+	(IgOProfSymbolRepresentable): python bindings  to symbol
+	representable. Now the profiler is fully python scriptable.
+
+2003-06-18  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfRepresentable.h (IgOProfRepresentable): added method
+	to get IgOProfProcessRepresentable by name directly.
+
+2003-06-16  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* share/GetProfilingInfos.py: example script to collect profiling
+	data from python.
+
+	* python/*.py: bindings to use profiler from python environment.
+	
+	* src/IgOProfRepresentable.h (IgOProfRepresentable): m_processMap
+	moved to private part of the class. New methods to access it are
+	provided. This was done to ease the duty of writing bindings to 
+	IgOProfRepresentable.
+
+2003-06-11  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfRepresentable.cc (updateProcessList): reading too
+	much: fixed buffer overwriting.
+
+	* src/IgOProfMainListView.h (class IgOProfMainListView): Config -> m_configuration.
+
+	* src/IgOProfMainListView.h/cc (class IgOProfMainListView): removed
+	profileProcessExited and dumpStderr as they are now duty of the 
+	IgProcessRepresentable class.
+
+2003-06-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfMainListView.cc (itemExpanded/collapsed): removed
+	some debug output.
+	(timedUpdate): added selection
+	(update&IgOProfMainListView): beautification of first column.
+	(timeProcessExited): Comment removed.
+
+	* python/*: python bindings for IgOProfProcDevice.
+	
+	* test/*: new test for IgOProfRepresentable and IgOProfProcDevice.
+	
+	* src/IgOProfSimpleBrowser.*: simple text browser for 
+	IgOProfRepresentable.
+	
+	* Buildfile: added seal as a dependency for the backend part.
+	
+	* src/IgOProfMainListView.*: changes due to the new
+	backend-frontend architechure.
+	
+	* src/IgOProfMainWindow.cc: changes due to the new Backend-Frontend
+	architecture.
+	
+	* src/IgOProfMenuBar.cc: changes due to the new Backend-Frontend
+	architecture.
+
+	* src/IgOProf*Representable.*: Now we separate GUI frontend from
+	oprofile backend. The backend uses Seal's PipeCmd and Regexp in
+	place of analogous QT classes. I have also solved the problem with
+	broken pipes.
+
+2003-05-26  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfConfiguration.cc (checkExec): looks for op tools in
+	$PATH, too.
+
+	* src/IgOProfMenuBar.cc (slotAboutMenu): better "About" message.
+
+2003-05-21  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtProfile.cc: removed since not used anymore.
+
+	* interface/IgQtProfile.h removed since not used anymore.
+	
+	* now the profiler GUI seems to work again.
+	
+	* src/IgOProfConfiguration.cc (read): prefix to configuration
+	items put in a separated std::string.
+
+	* src/IgOProfProcDevice.cc: Many assertions added.
+	(exists): using SearchPath instead than trying to open the stream. 
+	(all read/write methods): assert() that the file exists before
+	performing any operation.
+
+	* src/IgOProfOprofilerProc.cc: changed to use new
+	IgOProfProcDevice::read API. Assertions to check reading/writing
+	did not fail.
+
+	* src/IgOProfProcDevice.h (class IgOProfProcDevice): Documentation additions.
+
+	* src/IgOProfProcDevice.cc (read): changed API to allow returning
+	success of the read operation separated from read data.
+
+2003-05-20  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/*.cc/h: IgOProfConfiguration members renamed to m_*.
+
+	* src/IgOProfMainListView.h (class IgOProfMainListView): IgOProfConfiguration
+	members renamed to m_* and changed QString to std::string.
+
+	* src/IgOProfConfiguration.h (class IgOProfConfiguration): using
+	std::string in place of QString to decouple from QT.
+	renaming all the member variables to m_*.
+
+	* src/IgOProfConfiguration.cc (checkExec): check for executables
+	in /usr/local/bin, /localscratch/o/oprofile/bin and /usr/bin.
+	now the function returns false if the user wants to quit.
+
+	* src/IgOProfMainWindow.h (class IgOProfMainWindow): added
+	m_readyToRun, and getter method readyToRun() that keep track
+	whether the GUI was built or not.
+
+	* src/IgOProfMainWindow.cc (createGUI): sets m_readyToRun to true.
+
+	* src/IgQtProfileInfo.cc (show): now the GUI is
+	not built if the user aborts configuration process.
+
+	* src/IgQtProfileService.cc (IgQrProfileService): now the GUI is
+	not built if the user aborts configuration process.
+
+2003-05-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfMainWindow.h (class IgOProfMainWindow): added
+	m_parentMenuBar to store the passed QMenuBar.
+
+	* src/IgOProfMainWindow.cc (IgOProfMainWindow): uninitialized
+	pointers point to 0.
+
+	* src/IgOProfMainWindow.h (class IgOProfMainWindow): documentation updates.
+
+	* src/IgOProfMainWindow.cc (checkExec): removed as now is the
+	configuration which checks for executables.
+	(init): added default case for dialog.
+	(init): now returns false if the user required to cancel during initialization.
+
+2003-05-15  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfMainListView.cc (updateSymbolsList): much better
+	regexp for parsing symbols profiling informations.
+
+	* src/IgQtProfileExtension.cc (showProfiler): now GUI is created
+	only once and then shown or hidden on requests.
+
+	* src/IgQtProfileService.cc: now has "isDialog" parameter to
+	determine whether or not is embedded in a QDialog window.
+	
+	* src/IgOProfProfile.cc/h: passes false as isDialog flag. 
+	
+	* src/IgQtProfileInfo.cc/h: passes true as isDialog flag.
+	
+	* src/IgOProfMainWindow.cc/h (IgOProfMainWindow): now has
+	"isDialog" parameter to	determine whether or not is embedded in a QDialog window. 
+
+	* src/IgQtProfileExtension.cc (showProfiler): only one QDialog is
+	created when called from the menu item.
+
+	* src/IgOProfMenuBar.cc (slotSessionMenu): "Hide" menu item additions.
+	(IgOProfMenuBar): "Hide" menu item additions.
+	(slotConfigurationMenu): About" message updated/fixed to mention
+	IGUANA and NEU.
+
+	* src/IgOProfConfiguration.cc (readCountersFromProc): removed
+	debug output.
+	(readCountersFromProc): debug assertions added..
+	(use): removed code comments
+
+	* src/IgOProfEventMap.cc (IgOProfEventMap): miscellaneus ASSERT() added.
+
+	* python/IgProcessListViewItem_boost.cc: removed pending use of pyste.
+
+2003-05-14  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+        * in various places: event_map -> m_eventMap
+	
+	* src/IgOProfMainWindow.cc (IgOProfMainWindow):  now
+	IgOProfconfiguration is responsible to check for the existance of
+	profile tools and optionally ask for them if not found.
+
+	* src/IgOProfEventMap.cc/.h (IgOProfEventMap): now gets op_help
+	executable from IgOProfConfiguration object.
+
+	* src/IgOProfConfiguration.cc/.h (IgOProfConfiguration): now
+	IgOProfconfiguration is responsible to check for the existance of
+	profile tools and optionally ask for them if not found.
+
+	* src/IgOProfMainWindow.cc (checkExec): default path = /usr/local/
+	(init): checks for op_help path as well.
+
+	* src/IgOProfConfiguration.h (class IgOProfConfiguration): added item to configuration
+	which points to op_help.
+
+	* src/IgOProfConfiguration.cc (read): added item to configuration
+	which points to op_help.
+
+	* src/IgOProfConfiguration.h (class IgOProfConfiguration): new
+	method to dump counter state.
+
+	* src/IgOProfEventMap.cc (IgOProfEventMap): fixed part of the
+	crashes with new (>=0.5.2) versions of oprofile. Still need to
+	remove an absolute path to op_help.
+
+	* src/IgOProfMainWindow.cc (checkExec): now there is the
+	opportunity to quit if oprofile is not installed.
+	(init): better/more verbose warning messages.
+
+2003-05-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfConfiguration.h (class IgOProfConfiguration): doc additions.
+
+	* interface/IgQtProfileInfo.h (class IgQtProfileInfo): doc additions.
+
+2003-05-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgOProfConfiguration.h (class IgOProfConfiguration): IgCounter->IgOProfCounter
+
+	* (src|interface)/*.(cc|h): Ig -> IgOProf
+
+	* interface/IgQtProfileInfo.h (class IgQtProfileInfo): added documentation.
+
+	* src/Ig*.(cc|h): renamed to IgOProf* 
+
+2003-05-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgSyncProcess.cc: moved private includes from interface/ to src/
+
+	* src/IgQtProfileService.cc: moved private includes from interface/ to src/
+
+	* src/IgQtProfileInfo.cc:  moved private includes from interface/ to src/
+
+	* src/IgQtProfileExtension.cc: moved private includes from interface/ to src/
+
+	* src/IgQtProfile.cc: moved private includes from interface/ to src/
+
+	* src/IgProfile.cc: moved private includes from interface/ to src/
+
+	* src/IgProcessListViewItem.cc: moved private includes from interface/ to src/
+
+	* src/IgObjectFile.cc: moved private includes from interface/ to src/
+
+	* src/IgPopupMenu.cc: moved private includes from interface/ to src/
+
+	* src/IgMainWindow.cc: moved private includes from interface/ to src/
+
+	* src/IgSymbolListViewItem.h: moved private includes from interface/ to src/
+
+	* src/IgHitsString.cc: moved private includes from interface/ to src/
+
+	* src/IgEventMap.cc: moved private includes from interface/ to src/
+
+	* src/IgConfiguration.cc: moved private includes from interface/ to src/
+
+	* src/IgConfigFile.cc: moved private includes from interface/ to src/
+
+	* src/IgApplication.cc: moved private includes from interface/ to src/
+
+	* src/IgInitialConfiguration.cc: moved private includes from interface/ to src/
+
+	* src/IgSymbolListViewItem.cc:  moved private includes from interface/ to src/
+
+	* src/IgOprofilerProc.cc: moved private includes from interface/ to src/
+
+	* src/IgMenuBar.cc: moved private includes from interface/ to src/
+
+2003-04-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+	
+	* src/IgDemangleSymbol.cc: renamed from demangle_symbol.cc
+
+	* src/IgDemangleSymbol.h: moved from interface/demangle_symbol.h
+	
+	* src/IgProcessListViewItem.cc (postProcess): fixed conversion
+	from QString to std::string
+
+	* BuildFile: boost-python boost_python 
+
+2003-04-09  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Globally changed all files called interface/KOP* to interface/Ig*
+	
+	* All Globally changed all the KOP* classes into Ig*
+	
+	* python/IgProcessListViewItem_boost.cc: removed from src/KOPProcessListViewItemPython.cc
+
+2003-04-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPProcessListViewItem.cc: using IgPython module
+
+2003-04-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgPythonInterpreterService.cc (namespace): this unnamed
+	namespace is used to hide the class which initializes the 
+	python interpreter.
+	(IgPythonInterpreterService): Removed the python interpreter
+	initialization code.
+	(~IgPythonInterpreterService): Removed the python interpreter
+	finalization code.
+
+2003-03-25  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPProcessListViewItem.cc (postProcess): this is a virtual
+	function called to decorate ListViewItem after it has been set up. 
+	(setColor): Added API to change color to the Item.
+	(getColor): Added API to change color to the Item.
+	(paintCell): Added API to change color to the Item.
+	(getDisplayedName): API to change displayed name and hits.
+	(getDisplayedHits): API to change displayed name and hits.
+	(setDisplayedName): API to change displayed name and hits.
+	(setDisplayedHits): API to change displayed name and hits.
+
+2003-03-24  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/IgPythonInterpreterService.h: Added API
+	to get object from the python environment: getObject,
+	getLocalObject, getGlobalObject.(NOT YET UNDERSTOOD HOW TO DO IT)
+	
+	* src/IgPythonInterpreterService.cc: Added API
+	to get object from the python environment: getObject,
+	getLocalObject, getGlobalObject.(NOT YET UNDERSTOOD HOW TO DO IT)
+
+	* interface/IgPythonInterpreterService.h
+	(IgPythonInterpreterService): Added API to get reference to
+	namespace dictionaries.
+	(IgPythonInterpreterService): using boost::python::object instead
+	of PyObject for dictionary keeping.
+
+2003-03-21  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPProcessListViewItem.cc: Moving to m_ formalism and 
+	getPropertyName/setPropertyName in order to make python embedding 
+	look nicer.
+
+	* interface/KOPSymbolListViewItem.h (class KOPSymbolListViewItem):
+	Moving to m_ formalism.
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Plug-in manager update.
+
+2003-03-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPMainListView.cc (requestPopupMenu): Now saves xml
+	correctly.
+
+2003-03-14  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPMenuBar.cc (KOPMenuBar): now the selection from the
+	counters menu actually works!
+
+	* interface/KOPConfiguration.h (class KOPConfiguration): Added
+	m_counter field which olds the number of the hardware counter used.
+
+	* interface/KOPEventMap.h: New counters detection routine
+	using op_help. Also removed the OP_CPU stuff and now I'm using
+	OProfileProc CPU_XXX.
+	
+
+	* src/KOPEventMap.cc (KOPEventMap): New counters detection routine
+	using op_help.
+
+2003-03-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPMainListView.cc (updateSymbolsList): debug output removed.
+
+2003-03-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtProfileService.cc (IgQtProfileService): Integrating koprofiler
+	MenuBar with Iguana one.
+
+	* src/IgProfile.cc (setup): Integrating koprofiler
+	MenuBar with Iguana one.
+
+	* src/KOPMenuBar.cc: Integrating koprofiler
+	MenuBar with Iguana one.
+	Using iguana m_ convention.
+
+	* src/KOPMainWindow.cc (KOPMainWindow): Integrating koprofiler
+	MenuBar with Iguana.
+
+	* src/KOPMainListView.cc (requestPopupMenu): save dialog now
+	points to current directory and remembers last path.
+
+	* src/KOPProcessListViewItem.cc (OffsetHits): removed useless QString()
+
+	* src/KOPMainWindow.cc (KOPMainWindow): Fixes wrong
+	menuBar/listView creation order.
+
+2003-03-11  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgProfile.cc (setup): Now uses the QMainWindow QStatusBar
+	for better integration into existing applications.
+
+	* src/KOPMainWindow.cc (KOPMainWindow): Now get a StatusBar as
+	parameter for better integration into existing applications.
+
+	* src/IgQtProfileInfo.cc (IgQtProfileInfo): Standalone StatusBar
+	and MenuBar are created here for the dialog version.
+
+	* src/KOPOprofilerProc.cc (isRunning): Now correctly detects if
+	oprofile is running or not.
+
+	* src/KOPMainListView.cc (updateProcessesList): If in filtered
+	mode, after updating shows all the symbols contained in the
+	filtered applications.
+
+	* interface/KOPMainWindow.h (class KOPMainWindow): Added stuff
+	for filtering GUI.
+
+	* src/KOPMainWindow.cc (KOPMainWindow): Added filtering GUI.
+
+	* src/IgProfile.cc (setup): Removed for release, because buggy.
+
+	* interface/KOPMainListView.h (class KOPMainListView): Wrong
+	arguments...I Forgot to put the final "int column" one...
+
+	* interface/KOPConfiguration.h (class KOPConfiguration): Added
+	destructor declaration.
+
+	* src/KOPConfiguration.cc (KOPConfiguration): Destructor implemented
+	(KOPConfiguration): Using dynamically allocated QSettings object
+	because of QSettings bug when saving!
+
+2003-03-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPConfiguration.cc (firstCounterEnabled): This function
+	return the first counter enabled when called. This is necessary as
+	on Pentium4 counter 0 is not general purpose and so defaulting to 
+	it leads to unwanted results.
+	
+	* interface/KOPOprofilerProc.h: op_cpu table copied from
+	op_cpu_type.h in libop.
+
+	* src/KOPOprofilerProc.cc (maxCounters): Support for P4 added
+	when returning the maximal amount of counter for the architecture.
+
+2003-03-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPMainWindow.cc (checkExec): using a QWidget instead of the
+	QMainWindow as parent.
+
+	* interface/IgQtProfileInfo.h (class IgQtProfileInfo): Doesn't
+	need QMainWindow anymore
+
+	* interface/IgQtProfileExtension.h (IgQtProfileExtension): 
+	menu ID constants moved here.
+
+	* src/KOPMainWindow.cc (KOPMainWindow): is a QWidget now.
+
+	* src/IgQtProfileExtension.cc (IgQtProfileExtension): Menu item
+	addition code is here now!
+
+	* src/IgQtProfileService.cc (IgQtProfileService): Menu item addition
+	moved from here to IgQtProfileExtension
+
+	* src/KOPShowTextWindow.cc: moving KOPShowTextWindow.h include on
+	top. fixed missing iostream include (not included by default on gcc3)
+
+	* src/KOPOprofilerProc.cc: missing include. gcc 3.2 doesn't include
+	iostream by default...
+
+	* src/KOPObjectFile.cc: missing include. gcc 3.2 doesn't include
+	iostream by default...
+
+	* src/KOPOprofilerProc.cc: using namespace std fix for gcc 3.2
+
+	* src/KOPObjectFile.cc: using namespace std fix for gcc 3.2
+
+	* src/IgQtProfileService.cc (IgQtProfileService): Adding the
+	Show Profile menu item to the Debug menu, if present. 
+
+	* src/plugin.cc: using unnamed namespaces and templates to ease
+	the declaration of simple plugins.
+
+2003-03-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/IgQtProfileExtension.h (IgQtProfileExtension):
+	Extension which gets loaded at startup and that adds a profile menu.
+
+2003-03-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/KOPToolBar.cc: removed...
+
+	* src/KOPToolBar.h: removed...
+	
+	* src/KOPMainWindow.cc (KOPMainWindow): QButton->QPushButton typo.
+	(KOPMainWindow): Putting update button in q QHBox.
+
+	* interface/KOPMainWindow.h (class KOPMainWindow):
+	QButton->QPushButton typo!
+
+	* src/KOPMainWindow.cc (checkExec): File requester remembers last path.
+	(init): fixed alert message.
+
+2003-03-04  Giulio Eulisse  <Giulio.Eulisse@cern.ch>
+
+	* src/KOPMainWindow.cc (KOPMainWindow): Uses m_ for members.
+	(KOPMainWindow): Update button is not a toolbar anymore!
+
+	* src/KOPApplication.cc (KOPApplication): KOPMainWindow
+	constructor now wants QMainWindow and parent widget.
+
+	* interface/KOPMainWindow.h (class KOPMainWindow): renamed member
+	variables to m_*. 
+
+	* src/KOPMainWindow.cc (KOPMainWindow): Using QVBoxLayout to order
+	menu, listview and status bar.
+
+2003-03-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtProfile.cc (profiler): Changes status bar when the
+	profiler is invoked.
+
+	* src/IgQtProfileService.cc (IgQtProfileService): Adding menu
+	entry to have profiler popup. To do so I created a IgQtProfile
+	class which inherits from QObject which has a slot method:
+	profiler() which is bound to the menu.
+
+	* interface/IgQtProfile.h (IgQtProfile): This class is used to
+	fire-up a popup menu with the profiler GUI.
+
+2003-02-28  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgQtProfileService.cc (IgQtProfileService): Should add a
+	menu for profiling when instantiated.
+	(IgQtProfileService): Doesn't take over mainwindow anymore!
+
+	* src/IgProfile.cc (setup): Trying to use the IgQtStatusBarService
+	(setup): trying to use the profiler service instead of taking over
+	the main window.
+
+	* src/KOPApplication.cc: Added qmainwindow.h include because it
+	has been removed in KOPMainWindow.h
+
+	* interface/KOPMainWindow.h (class KOPMainWindow): Implementation
+	moved to .cc
+
+	* src/KOPMainWindow.cc (KOPMainWindow): Implementation moved 
+	here from .h 
+
+	* src/KOPConfiguration.cc : Implementation moved 
+	here from .h
+
+	* interface/KOPConfiguration.h (class KOPConfiguration): Moved
+	implementation to .cc.  
+
+	* interface/KOPMenuBar.h (class KOPMenuBar): Moved
+	implementation to .cc. 
+
+	* src/KOPMenuBar.cc: Implementation moved 
+	here from .h
+
+	* interface/KOPInitialConfiguration.h (class KOPInitialConfiguration): Moved
+	implementation to .cc. 
+
+	* src/KOPInitialConfiguration.cc: Implementation moved 
+	here from .h
+
+	* interface/KOPConfigFile.h (class KOPConfigFile): Moved
+	implementation to .cc.
+
+	* src/KOPConfigFile.cc: Implementation moved 
+	here from .h
+
+	* src/KOPEventMap.cc (KOPEventMap): Implementation moved 
+	here from .h
+
+	* interface/KOPEventMap.h (class KOPEventMap): Moved
+	implementation to .cc.
+
+	* src/KOPApplication.cc (KOPApplication): Adapted to new
+	KOPMainWindow API which was changed because of Iguana integration.
+
+	* interface/KOPHitsString.h (class KOPHitsString): Moved
+	implementation to .cc
+	Made parameters const.
+
+	* src/KOPHitsString.cc: Implementation moved here from .h
+
+	* src/KOPApplication.cc: Implementation moved here from .h
+
+	* interface/KOPApplication.h: Moved implementation to .cc
+
+	* src/KOPPopupMenu.cc: Implementation moved here from .h
+
+	* interface/KOPPopupMenu.h (class KOPPopupMenu): Moved
+	implementation to .cc
+
+	* src/KOPSyncProcess.cc: Implementation moved here from .h.
+
+	* interface/KOPSyncProcess.h (class KOPSyncProcess): Moved
+	implementation to .cc.
+
+2003-02-27  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/KOPOprofilerProc.h (KOPProcDevice): moved
+	implementations in .cc 
+
+2003-02-26  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* imported in CVS.
+	* getting used to xemacs...vi rulez ;-)
+

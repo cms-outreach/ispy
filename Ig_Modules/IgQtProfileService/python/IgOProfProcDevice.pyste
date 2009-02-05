@@ -1,0 +1,2 @@
+IgOProfProcDevice=Class("IgOProfProcDevice","Ig_Modules/IgQtProfileService/src/IgOProfProcDevice.h")
+exclude(IgOProfProcDevice.canDo)

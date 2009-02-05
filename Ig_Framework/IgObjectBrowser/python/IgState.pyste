@@ -1,0 +1,8 @@
+IgState=Class("IgState", "Ig_Framework/IgObjectBrowser/interface/IgState.h")
+Include ("Ig_Framework/IgObjectBrowser/interface/IgStateKey.h")
+Include ("Ig_Framework/IgObjectBrowser/interface/IgStateElement.h")
+set_policy(IgState.get, return_internal_reference ())
+set_policy(IgState.root, return_internal_reference ())
+set_policy(IgState.parent, return_internal_reference ())
+set_policy(IgState.child, return_internal_reference ())
+set_policy(IgState.element, return_internal_reference ())

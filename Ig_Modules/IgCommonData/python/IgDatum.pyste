@@ -1,0 +1,1 @@
+IgDatum=Class("IgDatum", "Ig_Modules/IgCommonData/interface/IgDatum.h")

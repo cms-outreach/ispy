@@ -1,0 +1,8 @@
+<Use name=Ig_Extensions/IgQt>
+<Use name=Ig_Modules/IgQtBrowser>
+
+<Export>
+  <Use name=Ig_Extensions/IgQt>
+  <Use name=Ig_Modules/IgQtBrowser>
+  <Lib name=Ig_ModulesIgControlCentre>
+</Export>

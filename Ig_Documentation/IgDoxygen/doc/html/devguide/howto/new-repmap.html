@@ -1,0 +1,422 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+<link rel="home" href="http://iguana.cern.ch/">
+<link rev="made" href="mailto:iguana-developers@cern.ch">
+<link rel="stylesheet" href="../../weblayout.css" type="text/css">
+<meta name="originator" content="IGUANA Developers">
+<meta http-equiv="Reply-to" content="iguana-developers@cern.ch">
+<meta http-equiv="Keywords" content="LHC, CMS, IGUANA, interactive,
+  graphics, visualisation, toolkit, event display, OpenGL, OpenInventor,
+  how to, create rep, rep mapping, represent object">
+
+<title>IGUANA Developer Guide: How To Create a Rep Mapping</title>
+</head>
+
+<body bgcolor="#ffffff">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+ <!-- Top icon: fixes navigation bar width -->
+ <td align="left" valign="top"><table width="100%" border="0">
+  <tr><td><img src="../../images/pad.gif" width="20" height="1" alt=""></td>
+   <td valign="top"><img src="../../images/mini.gif" width="98" height="64"
+     border="0" alt="Yo!"></td>
+   <td><img src="../../images/pad.gif" width="70" height="1" alt="*"></tr></table></td>
+
+ <!-- Top banner: title -->
+ <td colspan="2"><table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr><td align="left" colspan="2"><font face="Arial, Helvetica" size="-1">
+     <font color="#FF00FF">I</font><font color="#009900">nteractive</font>
+     <font color="#FF00FF">G</font><font color="#009900">raphics</font>
+     <font color="#009900">For</font>
+     <font color="#FF00FF">U</font><font color="#009900">ser</font>
+     <font color="#FF00FF">ANA</font><font color="#009900">lysis</font>
+     <font color="#0020FF">(Version @VERSNUM@)</font></td></tr>
+  <tr valign="bottom"><td align="left"><img src="../../images/title.gif" width="208"
+    height="62"  border="0" alt="IGUANA"></td>
+   <td align="right"><font face="Arial, Helvetica" size="+2"><b>
+    Developer Guide: How To<br>Create a Rep Mapping</b></font></td></tr>
+  <tr><td colspan="2" align="left"><hr align="left" noshade="noshade"></td></tr>
+ </table></td></tr>
+
+<tr valign="top"><td>
+ <!-- Left context navigation bar. -->
+ <!-- Navigation button row. -->
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+   <td align="left"><a href="../howto/"><img src="../../images/arrow-up.gif"
+    width="34" height="34" alt="[Up]" border="0"></a></td>
+   <td align="right"><a href="new-representable.html"><img src="../../images/arrow-left.gif"
+    width="34" height="34" alt="[Prev]" border="0"></a>
+    <a href="update-config.html"><img src="../../images/arrow-right.gif"
+    width="34" height="34" alt="[Next]" border="0"></a></td></tr>
+ </table></td>
+ <td>&nbsp;</td>
+ <td>&nbsp;</td></tr>
+
+<tr valign="top"><td bgcolor="#ffffdd">
+ <!-- Navigation bar. -->
+ <table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr><td class="nav1"><img src="../../images/pad.gif"
+    width="10" height="1" hspace="2" alt=" "></td>
+   <td class="nav1" colspan="3"><b>Quick Links</b></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../../releases.html">Releases</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/lxr.html">LXR Index</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="http://isscvs.cern.ch/cgi-bin/viewcvs.cgi/?cvsroot=iguana">CVS</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/faqs.html">FAQs</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/problems.html">Problems?</a></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../index.html">IGUANA</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../install/">Installation</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../userguide/">User Guide</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../devguide/">Developer Guide</a></b></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../conventions.html">Conventions</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../deps.html">Dependencies</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../arch.html">Architecture</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../howto/">How To...?</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="build.html">Build</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-package.html">Create a Package</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-plugin.html">Create a Plug-in</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-driver.html">Create a Driver</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-service.html">Create a Service</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-model.html">Create a Model</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-browser.html">Create a Browser</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-representable.html">Create a Representable</a></td></tr>
+  <tr><td class="nav3s">&nbsp;</td><td class="nav3s">&nbsp;&nbsp;</td>
+   <td class="nav3s"><img src="../../images/marker.gif"
+    width="10" height="10" hspace="2" alt="&gt;"></td>
+   <td class="nav3s">Create a Rep Mapping</td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="update-config.html">Update Configuration</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="other-projects.html">Work With Other Projects</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="release.html">Release IGUANA</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="debug.html">Debug</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="webpages.html">Update Web Pages</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="screenshot.html">Make a Screen Shot</a></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../apiref/">API Reference</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../info/">More Information</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td>
+   <td class="nav1" colspan="3"><hr noshade="noshade" border="1"></td></tr>
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><form
+    method="get" action="http://www.google.com/custom">
+    <font face="Helvetica, Arial, Sans-Serif" size="-1">
+     <a href="http://www.google.com/search"><img src="../../images/google.gif" border="0"
+      alt="Google Search" width="16" height="16"></a>
+     <input type="text" name="q" size="11">
+     <input type="hidden" name="cof"
+     value="LW:98;L:http://iguana.cern.ch/snapshot/images/mini.gif;LH:64;AH:center;S:http://iguana.cern.ch;AWFID:9ebb11a906c88373;">
+     <input type="hidden" name="domains" value="iguana.web.cern.ch">
+     <input type="hidden" name="sitesearch" value="iguana.web.cern.ch">
+     <b><input value="Search" type="submit"></b></font></form>
+     <!-- <br><input type="radio" name="sitesearch" value="" checked> Search WWW
+      <input type="radio" name="sitesearch" value="iguana.web.cern.ch"> Search IGUANA</font> -->
+    </form>
+   </td></tr></table>
+</td>
+<td>&nbsp;</td>
+
+<td width="100%" align="left" valign="top">
+ <h3><a name="overview">Overview</a></h3>
+
+ <!-- FIXME: link all this stuff the class docs! -->
+ <div class="sect1"><p><b>Warning:</b> These instructions are not
+ upto-date. Please re-visit this page in start of March 2004, these
+ should be updated by then.
+ </div>
+ 
+ <div class="sect1"><p>IGUANA has a number of <i>multi-methods</i>
+   that bridge the application objects and the reps.  Each such
+   multi-method has a base method in <tt>IgBrowserMethods</tt> plus an
+   extensible <i>family of functions</i> in plug-ins.  Each method
+   takes a main argument pair (for example, <tt>represent</tt> takes
+   a pair &lt;object, model&gt; for which to create a rep); the method
+   implementation selects from the family of functions the best match
+   for the pair of actual arguments used.  In this context, "best"
+   means that no exact match is required -- the system uses the
+   polymorphic nature of classes as one would expect.</p>
+
+   <p>Perhaps the important concept with these methods is that the
+   family of functions varies based on which shared libraries are
+   loaded.  Thus, functions for a multi-method family need not be
+   linked into the programs but can be put into separate IGUANA
+   plug-in libraries.  When dropped into the plug-in directories,
+   IGUANA will automatically detect these libraries and load them
+   on demand -- when objects of those arguments combinations are
+   handled.  It is therefore an advantage to split the rep mapping
+   methods into fairly small granularity shared libraries.  That way
+   the minimum of code will be loaded, and even then only when it is
+   actually needed.  (Note that although the focus here is on lazy
+   dynamic loading of extension code in shared libraries, IGUANA's
+   plug-in mechanism is orthogonal to dynamic loading.  It is possible
+   to build plug-ins directly into the program itself, either fully so
+   that it will never try to load anything dynamically, or partly so
+   that some plug-ins are built into the program and others are loaded
+   at run time.)</p>
+
+   <p>Multi-methods are not a native feature of C++, and hence are
+   implemented by an additional library (<tt>classlib</tt>).  We
+   provide a number of preprocessor macros to make their use as
+   simple and intuitive as possible.  This guide explains both how
+   to use and understand the macros as well as what the purpose of
+   each method is.  The methods available in <tt>IgBrowserMethods</tt>
+   are explained below; each method consist of a pair: a front-end
+   class-static function that should be used to call the method, and
+   the multi-method itself.</p>
+   <ul>
+     <li> <tt>represent</tt>/<tt>doRepresent</tt>: This method is
+	  used to create a rep for an application object
+	  (representable) into a browser model.<p>
+
+     <li> <tt>commit</tt>/<tt>doCommit</tt>: This method is used
+	  to commit changes made to a rep (in some browser) back
+	  into the application object.  The change may apply to
+	  the whole object or only some part of it.<p>
+
+     <li> <tt>update</tt>/<tt>doUpdate</tt>: This method is used
+	  to update the existing reps of an application object when
+          the object has changes.<p>
+
+     <li> <tt>expand</tt>/<tt>doExpand</tt>: This method is used
+	  to expand the representation of an object.  It is used
+	  by browsers that construct a model for several objects
+	  lazily.  When invoked, the method should create the "next
+	  level" of representations, whatever that means in the
+	  context of the model in question.  For example, it could
+	  mean creating representations for the children of that
+	  object.<p>
+   </ul>
+
+   <p>The functions for the multi-method families are usually "free
+   functions" -- functions outside any class.  That is, they are
+   normally not members of the application object nor of the rep, but
+   mediators between the two, and simply use the public interfaces of
+   both classes to do their job.  The package they are contained in
+   normally links against both the application object library and the
+   model libraries -- but typically <i>not</i> against the browsers
+   that view the model.</p>
+
+   <p>Let us now describe the methods in more detail.  The rest of
+   this guide is divided into two parts, as shown below.  The first
+   part describes the steps required for writing a multi-method.  The
+   second part describes more precisely what functions in each method
+   family should do.<p>
+   <ul>
+     <li> Creating a multi-method:
+	  <ul> 
+	    <li> Create a new package as explained in the guide to <a
+		 href="new-package.html">create a new package</a>.
+	    <li> <a href="#plugin">Add <tt>src/plugin.cc</tt></a>
+	    <li> <a href="#buildfile">Modify <tt>BuildFile</tt></a>
+	    <li> <a href="#build">Build the package</a>
+	    <li> <a href="#check">Check the library with <tt>iguana</tt></a>
+	  </ul>
+
+     <li> Details on specific multi-methods:
+	  <ul>
+	    <li> <a href="#mm-represent"><tt>represent</tt></a>
+	    <li> <a href="#mm-commit"><tt>commit</tt></a>
+	    <li> <a href="#mm-update"><tt>update</tt></a>
+	    <li> <a href="#mm-expand"><tt>expand</tt></a>
+	  </ul>
+   </ul>
+
+   <p>This receipe assumes that you are using the IGUANA C++ templates
+   (automatically available in our emacs customisation).</p>
+ </div>
+
+ <h3><a name="create">Creating a multi-method</a></h3>
+ <h4><a name="plugin">Add <tt>src/plugin.cc</tt></a></h4>
+ <div class="sect2"><p>This is the main step of writing a new
+   rep-mapping method.  You should create a <tt>src/plugin.cc</tt>
+   as is usual for <a href="new-plugin.html#plugin">plug-ins</a>.
+   In this file you need to do two things: define a new function for
+   the multi-method family, and register the argument combination into
+   the plug-in database as a capability.  It is not necessary to
+   define any new extensions or services -- the function extends the
+   multi-method family simply by being present in a loaded shared
+   library.</p>
+
+   <p>First you should add the following includes:
+   <ul>
+     <li> Include the headers of all the classes you use.  This
+	  is at least the application object, the model and the rep
+	  type.  You will most likely also need the header for
+	  <tt>IgRepContext</tt> and <tt>IgRepSet</tt>.
+
+     <li> Include the <tt>xtypeinfo.h</tt> declarations for the
+	  types involved in the multi-methods: the application
+	  object, model and rep classes.
+
+     <li> Include <tt>IgBrowserMethods.h</tt> from
+	  <tt>IgObjectBrowser</tt>.
+
+     <li> Include <tt>typeinfo</tt> system header.
+   </ul>
+
+   <p>Go to the "public function definitions" section and define
+   a new multi-method member (which is what "MMM" stands for).
+   The multi-method family is the one that starts with <tt>do</tt>;
+   for example, for <tt>represent</tt> the multi-method family is
+   <tt>doRepresent</tt>.  To declare a global free function as a
+   member you should use the <tt>MMM_DEFUN_FUNC</tt> macro (use
+   <tt>MMM_DEFUN_METHOD</tt> for class static methods).  Note that
+   despite all the macro sugar on top, you will be defining just a
+   normal function -- the macro is there to hide implementation
+   details.</p>
+
+   <p>The arguments of the macro are intended to read like
+   a function prototype: return value, scope of the multi-method,
+   its name, the actual argument list for this family member.  The
+   name would be for example <tt>doRepresent</tt>.  The code for the
+   declaration should look something like this:</p>
+
+   <pre>MMM_DEFUN_FUNC(IgRepContext *,IgBrowserMethods::,doRepresent,
+               (IgSoTwig *twig, Ig3DModel *model))
+{
+    // Code here -- see later for details
+}</pre>
+
+   <p>Next, you should declare the plug-in definition to declare
+   the package capability so that library will be loaded when it
+   is needed.  Following the instructions in the <a
+   href="new-plugin.html#plugin">plug-in creation how-to</a>
+   declare the capabilityh in the <tt>query</tt> method like this
+   (note that the model comes first in this case!):
+   <pre>void
+IgFooPlugin::query (void)
+{
+    declareCapability (IgBrowserMethods::key
+		       (typeid (Ig3DModel).name (),
+			typeid (IgSoTwig).name ()));
+}</pre>
+ </div>
+
+ <h4><a name="buildfile">Modify <tt>BuildFile</tt></a></h4>
+ <div class="sect2"><p>Nothing extraordinary here.  You'll need
+   dependencies on <tt>IgObjectBrowser</tt> and anything else you
+   used.  The <tt>BuildFile</tt> in the package root directory should
+   now look like this:</p>
+
+   <pre>&lt;Use name=Ig_Framework/IgObjectBrowser&gt;
+&lt;Use name=Ig_Modules/IgFooData&gt;
+&lt;Use name=Ig_Modules/IgBarModel&gt;
+&lt;Export&gt;
+  &lt;Lib name=IgFooBarReps&gt;
+&lt;/Export&gt;</pre>
+ </div>
+
+ <h4><a name="build">Build the package</a></h4>
+ <div class="sect2"><p>You are now ready to build your plug-in with
+   <tt>scram build</tt>.  You should see your library linked against
+   other libraries and a XML fragment created into the plug-in
+   directory.  Note that in IGUANA your package must be mentioned in
+   the build order to build it from the top level.  See <a
+   href="new-package.html">the new package how-to</a> for the
+   instructions.</p>
+ </div>
+
+ <h4><a name="check">Check the plug-in with <tt>iguana</tt></a></h4>
+ <div class="sect2"><p>Make sure the library loads properly as
+   described in the <a href="new-plugin.html">the new plug-in
+   how-to</a>.</p>
+ </div>
+
+ <h3><a name="details">Details on specific methods</a></h3>
+ <h4><a name="mm-represent"><tt>represent</tt></a></a></h4>
+ <div class="sect2"><p>FIXME: create a rep, then context for it;
+   return the context.  Don't use directly, use methods in IgRepSet
+   instead (lookup)!  An error to call this if rep already exists.  If
+   model maintains object relationships, have to careful to maintain
+   them correctly here and in the rep.  OK to return null if no rep
+   can be created -- though better would be not to provide a method if
+   it will always fail!</p>
+ </div>
+
+ <h4><a name="commit"><tt>commit</tt></a></h4>
+ <div class="sect2"><p>FIXME: commit changes from a rep back to
+   object.  Do use directly (usually from browsers or models).  Can
+   give sub-object detail (usually a field index -- but all users of
+   the index must agree what they mean; FIXME: use object detail that
+   will be shared with selection).  remember to invoke update via
+   methods in IgRepSet.  Note that changes to parent object may
+   require children to be updated too (but don't create reps if the
+   children don't yet have them!).</p>
+ </div>
+
+ <h4><a name="update"><tt>update</tt></a></h4>
+ <div class="sect2"><p>FIXME: update an existing rep for an object.
+   Don't use directly, use methods in IgRepSet instead (update).  An
+   error to call this if no rep exists.  FIXME: add single easy update
+   method instead of two awkward ones.  Additional argument tells what
+   subfield originated the change, or zero if the whole object has
+   changed (FIXME: object detail).</p>
+ </div>
+
+ <h4><a name="expand"><tt>expand</tt></a></h4>
+ <div class="sect2"><p>FIXME: expand object's contents (normally
+   children in hierarchical views).  Automatically IgRepSet::lookup
+   kids' reps.</p>
+ </div>
+</td></tr>
+
+<tr>
+ <td bgcolor="#ffffdd"><table border="0" width="100%"><tr>
+   <td align="left"><a href="mailto:iguana-developers@cern.ch"><img
+    src="../../images/mailto.gif" border="0" width="14" height="10"
+    alt="[Mail]"></a></td>
+   <td align="right"><font face="Arial, Helvetica"
+    size="-2">$Date: 2006/09/11 07:45:25 $</font></td></tr></table></td>
+ <td><font face="Arial, Helvetica" size="-2">&nbsp;</font></td>
+ <td><font face="Arial, Helvetica" size="-2">&nbsp;</font></td></tr>
+</table>
+</body>
+</html>

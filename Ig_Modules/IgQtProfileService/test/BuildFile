@@ -1,0 +1,14 @@
+#
+# $Id: BuildFile,v 1.5 2007/03/07 16:11:17 yana Exp $ Converted for SCRAM Version 1.0 
+# NB: NOT BACKWARD COMPATIBLE!
+#
+<use name=Ig_Modules/IgQtProfileService>
+<use name=Ig_Imports/classlib>
+<lib name=bfd>
+
+
+# tests correct operation of /proc filesystem wrapper.
+<bin file=test_ProcDevice.cc>
+ 
+</bin>
+

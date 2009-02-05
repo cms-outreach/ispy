@@ -1,0 +1,27 @@
+<use name=FWCore/Framework>
+<use name=FWCore/ParameterSet>
+<use name=FWCore/ServiceRegistry>
+<use name=Geometry/CaloGeometry>
+<use name=Geometry/CaloEventSetup>
+<use name=Geometry/CSCGeometry>
+<use name=Geometry/DTGeometry>
+<use name=Geometry/RPCGeometry>
+<use name=Geometry/TrackerGeometryBuilder>
+<use name=DataFormats/DTRecHit>
+<use name=DataFormats/SiPixelDigi>
+<use name=DataFormats/ParticleFlowReco>
+<use name=TrackPropagation/SteppingHelixPropagator>
+<use name=TrackingTools/TransientTrack>
+<use name=Iguana/Framework>
+<use name=Iguana/GLBrowsers>
+<use name=Iguana/Utilities>
+<use name=VisFramework/VisFrameworkBase>
+<use name=OpenInventor>
+<use name=qt>
+<use name=sigcpp>
+<use name=clhep>
+
+<export>
+ <lib name=VisRecoAnalyzer>
+</export>
+<flags EDM_PLUGIN=1>

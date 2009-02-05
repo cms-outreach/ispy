@@ -1,0 +1,1 @@
+IgStateElement=Class("IgStateElement", "Ig_Framework/IgObjectBrowser/interface/IgStateElement.h")

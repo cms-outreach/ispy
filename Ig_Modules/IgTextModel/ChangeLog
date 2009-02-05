@@ -1,0 +1,80 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h, IgTextModel.h, IgSimpleTextModel.cc,
+	IgSimpleTextRep.cc: Move to classlib. 
+	
+2005-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Port to SCRAMV1.
+
+2003-09-12  Lassi A. Tuura  <lat@pb-d-128-141-36-125.cern.ch>
+
+	* BuildFile: Tidy up.
+
+	* IgTextModel.h, IgSimpleTextModel.cc, IgSimpleTextRep.cc,
+	config.h, xtypeinfo.h: Move to using SEAL Foundation classes.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* xtypeinfo.h: Add export as per classlib changes.
+
+2002-09-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSimpleTextModel.cc: Tidy up formatting.  Notify owners
+	only if the rep really changes.
+
+	* IgSimpleTextRep.cc: Tidy up formatting.
+
+2002-07-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgTextRep.h, IgSimpleTextRep.h, IgSimpleTextRep.cc (setText):
+	New method, allow the text to be modified.
+
+2002-03-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* Complete implementation.
+
+2001-11-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Great renaming and general clean-up patch.
+
+2001-08-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSimpleTextRep.h, IgSimpleTextRep.cc: Add destructors to clean
+	up properly.
+
+2001-07-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile, plugin.cc: We no longer record model information, so
+	stop being a plug-in.
+
+2001-03-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Try to work around SCRAM linking issues.
+
+	* IgSimpleTextModel.cc, IgSimpleTextRep.cc: Define missing virtual
+	methods so that the library will load.
+
+2001-03-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: First version to build with SCRAM.
+
+	* IgSimpleTextRep.h: Switch data member order to avoid warnings.
+
+	* IgTextModel.h: Fix callback name typo.
+
+	* xtypeinfo.h: Include info for IgSimpleTextRep.
+
+	* IgSimpleTextModel.cc: Fix typos.
+
+	* IgSimpleTextRep.cc, IgTextRep.cc: Move code to the right file.

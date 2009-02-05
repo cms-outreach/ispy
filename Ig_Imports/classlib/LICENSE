@@ -1,0 +1,46 @@
+C++ Class Library, Copyright (C) 1993-2007 Lassi A. Tuura <lat@iki.fi>
+Portions Copyright (C) Pere Mato and Lorenzo Moneta.
+
+The libraries created by this package come with the following license,
+except that the files in `ext' are distributed under their respective
+own licenses; see each directory for details.  There have been some
+minor changes to them (aix-dlfcn: inclusion of system.h and disabled
+on non-AIX platforms; uuid: some additional files for windows port,
+originals not changed; others: not all files from the distro are
+included, only the core library itself).
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Library General Public
+    License as published by the Free Software Foundation; either
+    version 2 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Library General Public License for more details.
+
+    You should have received a copy of the GNU Library General Public
+    License along with this library; if not, write to the Free
+    Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+    MA 02111-1307, USA
+
+The executables and scripts created by this package come with the
+following license.
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+The licenses refererred to above are in the `doc' directory as COPYING
+and COPYING.LIB (GNU General Public License and Library General Public
+License, respectively).

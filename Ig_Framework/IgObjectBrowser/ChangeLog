@@ -1,0 +1,659 @@
+2007-03-28  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+2007-03-06  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgBrowserDB.h, IgBrowserMethods.h, IgCapabilityDB.h,
+	IgDispatcher.h, IgDriverDB.h, IgEnvsElement.h, IgExtensionDB.h,
+	IgRepContext.h, IgSiteDB.h, IgStateElement.h, config.h,
+	xtypeinfo.h, IgArgsElement.cc, IgBrowserDB.cc,
+	IgBrowserMethods.cc, IgCapabilityDB.cc, IgDocumentDataRoot.cc,
+	IgDriverDB.cc, IgExtensionDB.cc, IgPluginLoader.cc,
+	IgSelectionService.cc, IgSiteDB.cc, IgState.cc, IgStateKey.cc,
+	debug.cc, debug.h, BuildFile: Move to use classlib and
+	IgPluginManager.
+
+2006-06-23  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgEnvsElement.h, src/IgEnvsElement.cc: Renamed member
+	function get to getEnv.
+
+2006-06-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgArgsElement.h, src/IgArgsElement.cc: const & pass instead
+	of passing the key by value.
+
+2006-04-05  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgArgsElement.h, src/IgArgsElement.cc: Improved interface
+	for getting command-line argumnets, e.g. methods to return int argument
+	types.
+
+2006-03-07  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgEnvsElement.h, src/IgEnvsElement.cc: New class for
+	reading the environment variables added.
+
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgDispatcher.h: listen/unlisten renamed add/remove.
+
+2005-06-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSelectionService.h: IgObserver renamed to IgDispatcher. 
+
+	* IgObserver.h, IgDispatcher.h: IgObserver renamed to
+	IgDispatcher.
+
+2005-04-12  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgPickMessage.h, IgPickService.h, IgRepVisibilityMessage.h,
+	IgRepVisibilityService.h, IgPickService.cc,
+	IgRepVisibilityService.cc: Remove placeholders for non-existing
+	service. By simply doing this performance for selection went from
+	sluggish to instant. Re-consider seriously before re-introducing
+	such a service.
+
+2005-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgState.pyste: Set a policy for a new member function.
+	* BuildFile: Port to new SCRAMV1.
+
+2004-12-16  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgState.h, IgState.cc: Methods to access the elements is this
+	state added.
+
+2004-12-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgModelManager.h, IgModelManager.cc: Moved to Ig_Modules/IgStudio.
+	
+	* IgDocumentDataRoot.h, IgDocumentDataRoot.cc: Added to provide the
+	current root name.
+
+2004-11-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgArgsElement.h, IgArgsElement.cc: Methods added to get/find
+	args values.
+
+2004-08-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgPickMessage.h, IgPickService.h, IgRepVisibilityMessage.h,
+	IgRepVisibilityService.h, IgPickService.cc, IgRepVisibilityService.cc:
+	Newly services for Pick and Rep Visibility.
+
+2004-08-24  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgRepSet_boost.cc, IgRepSet.pyste, IgRepSet.pystegen: using
+	_boost.cc file directly in place of .pyste one. .pyste renamed to
+	.pystegen.
+
+2004-08-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgRepSet.pyste : static method of IgRepSet excluded as the pyste
+	version used in IGUANA_5_1_1 does not support them.
+
+2004-07-29  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserDB.h, IgBrowserDB.cc, IgCapabilityDB.h,
+	IgCapabilityDB.cc, IgDriverDB.h, IgDriverDB.cc,
+	IgSiteDB.h, IgSiteDB.cc, IgExtensionDB.h, IgExtensionDB.cc:
+	Move to new SEAL plug-in manager.
+	* IgBrowserInfo.h, IgBrowserInfo.cc, IgCapabilityInfo.h,
+	IgCapabilityInfo.cc, IgDriverInfo.h, IgDriverInfo.cc,
+	IgSiteInfo.h, IgSiteInfo.cc, IgExtensionInfo.h,
+	IgExtensionInfo.cc: Removed, no longer necessary.
+
+2004-06-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/BuildFile IgRepSet.pyste IgRepresentable.pyste
+	IgState.pyste IgStateElement.pyste IgStateKey.pyste: python
+	bindings to some miscellaneous classes.
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgModelManager.h, IgModelManager.cc: model manager class. It is
+	used to be able to have different windows of the multi-window
+	environment looking at the same model.
+
+	* IgCapabilityInfo.h (PluginInfo): unused parameter commented out.
+
+2004-01-14  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgBrowserDB.cc, IgBrowserInfo.cc, IgCapabilityDB.cc,
+	IgCapabilityInfo.cc, IgDriverDB.cc, IgDriverInfo.cc,
+	IgExtensionDB.cc, IgExtensionInfo.cc, IgSiteDB.cc, IgSiteInfo.cc:
+	Add IGUANA name to the plug-in category labels to avoid
+	conflicts with the SEAL ones.
+
+2004-01-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserMethods.h, IgBrowserMethods.cc (invalidate,
+	doInvalidate): New method/multi-method as a start-up for
+	invalidation-based rendering.  The default is to redirect to
+	an appropriate "update" method.
+	* IgRepSet.h, IgRepSet.cc (invalidate): New methods, similar to
+	"update" but using the new methods in IgBrowserMethods.  Add
+	documentation for every method.
+
+2003-10-29  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* test: deleted old test files.
+
+2003-09-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Clean up.  Move to using SEAL.
+
+	* IgBrowserDB.h, IgBrowserInfo.h, IgBrowserMethods.h,
+	IgCapabilityDB.h, IgCapabilityInfo.h, IgDriverDB.h,
+	IgExtensionDB.h, IgExtensionInfo.h, IgObserver.h,
+	IgRepContext.h, IgSiteDB.h, IgSiteInfo.h, IgStateElement.h,
+	IgArgsElement.cc, IgBrowserDB.cc, IgBrowserInfo.cc,
+	IgBrowserMethods.cc, IgCapabilityDB.cc, IgCapabilityInfo.cc,
+	IgDriverDB.cc, IgDriverInfo.cc, IgExtensionDB,
+	IgExtensionInfo.cc, IgPluginLoader.cc, IgSelectionService.cc,
+	IgSiteDB.cc, IgSiteInfo.cc, IgState.cc, IgStateKey.cc,
+	config.h, debug.h, debug.cc, utils.h, xtypeinfo.h:
+	Move to SEAL Foundation classes.
+
+	* test: Initial clean-up by migrating to SEAL headers.
+	Still won't compile however.
+
+2003-07-24  George Alverson <George.Alverson@cern.ch>
+
+	* IgExtension.h: add #include config.h
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* Rework plug-in manager to SEAL specifications.  All plug-in
+	management-related classes moved to IgPluginManager.  Lots of
+	class and variable renames, in particular for consistent use
+	of module vs. plug-in.  Remove redundant type info.
+
+2003-02-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgPluginDBView.h: Alias map's value_type for MSVC++.
+
+2003-02-21  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgPluginDBItem.h: Make destructor virtual.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* xtypeinfo.h: Add export as per classlib changes.
+
+	* IgPluginDef.h: Export DLL entry point on Windows.
+
+	* IgRep.h: Fix documentation typo.
+
+	* IgObserver.h: Include header for ASSERT.  Remove MSVC++ DLL
+	export from the template class.
+
+2002-09-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgPluginDBView.h: Add missing typename keywords.
+	(Iterator): Fix base declaration.
+
+	* IgPluginDBView.h (Def): Move inline code to method section.
+	(Iterator): Reimplement to skip over duplicates.
+	(begin, end, locate): Use new iterators.
+	(info): Use `locate' to find a position.
+
+2002-09-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserInfo.cc, IgExtensionInfo.cc, IgSiteInfo.cc:
+	Detach factory automatically in destructor.
+
+2002-09-26  Lassi A. Tuura  <lat@iki.fi>
+
+	Major rewrite of plug-in mechanism: replace centralised plug-in
+	database that knows about all object types with separate lazily
+	constructed, object-type-specific views.  Each plug-in now simply
+	stores cache data until a view turns it into into higher-level
+	info objects.  The central IgPluginDB database is now a global
+	object which just maintains lists of views to which it passes
+	notifications on cache updates and plug-in queries.
+
+	* IgBrowserDB, IgBrowserInfo: New, browser view.
+	* IgCapabilityDB, IgCapabilityInfo: New, capability view.
+	* IgDriverDB, IgDriverInfo: New, driver view.
+	* IgExtensionDB, IgExtensionInfo: New, extension view.
+	* IgSiteDB, IgSiteInfo: New, site view.
+
+	* IgPlugin: Replace references to specific info items with
+	a general scheme that collaborates with IgPluginDBItem and
+	IgPluginDB, and onto IgPluginDBView(Base).  Implement new
+	virtual functions to conform with IgPluginBase changes.
+
+	* IgPluginDatabase: Removed, renamed to IgPluginDB.
+
+	* IgPluginDB: Renamed from IgPluginDatabase.  Make this a global
+	object but move initialisation to a separate routine so that we
+	won't try refresh too early (before program start-up).  Replace
+	specific views with a generic list of IgPluginDBViewBase objects
+	and notify them as appropriate about changes in the plug-ins.
+
+	* IgPluginDBItem: New, abstract base class for implementing
+	cached info items in plug-in libraries.
+
+	* IgPluginDBViewBase: New, abstract base class for implementing
+	views of plug-in database.
+
+	* IgPluginDBView: Intermediate base class to simplify the writing
+	of new plug-in database views, templated by the type of the info
+	object stored.  Also includes a templated nested class to simplify
+	info registration.
+
+	* IgPluginDef: Remove unnecessary stuff to conform with changes to
+	other classes.
+
+	* IgPluginDirectory: Inherit IgPluginCache directly; implement
+	the virtual functions thus required.
+
+	* IgPluginLoader: Remove references to the database, clients
+	needing it can now access the global object directly.  Use
+	IgExtensionDB and IgCapabilityDB to load extensions.
+
+	* IgStateElement: Automatically declare and define `catalogLabel'
+	to simplify life for auto-loadable extension elements.
+
+	* IgBrowserMethods: Use the global capability view.
+
+	* IgBrowserFactory, IgSimpleBrowserFactory, IgDriverFactory,
+	IgSimpleDriverFactory, IgExtensionFactory,
+	IgSimpleExtensionFactory, IgSiteFactory, IgSimpleSiteFactory:
+	Removed, replaced by a nested class in corresponding info.
+
+2002-09-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgPluginLoader.h, IgPluginLoader.cc (load): Overload with a
+	variant that allows the client to specify to state in which to
+	create the extensions; default to using the loader's state.
+
+	* IgBrowserMethods.cc: Better and more debug logging.
+
+2002-08-15  Lassi A. Tuura  <lat@iki.fi>
+
+	Replace IgSession by a more flexible IgState and friends.
+
+	* IgState.h, IgState.cc, IgStateKey.h, IgStateKey.cc,
+	IgStateElement.h, IgStateElement.cc: New, replaces IgSession.
+
+	* IgArgsElement.h, IgArgsElement.cc: New.  State element for
+	application command line arguments.  From IgSession.
+
+	* IgPluginLoader.h, IgPluginLoader.cc: New.  State element for
+	accessing the plug-in database and auto-loading.  From IgSession.
+
+	* IgSelectionService.h, IgSelectionService.cc: Make a concrete
+	class, in future this needs to remember the current selection
+	state, not just pass messages around.
+
+	* IgExtension.h, IgExtension.cc: Make this a state element so
+	auto-loading can insert it into IgState.  Implementation (.cc)
+	removed since there is nothing to implement any more.
+
+	* IgBrowserFactory.h, IgSimpleBrowserFactory.h, IgDriver.h,
+	IgDriverFactory.h, IgSimpleDriverFactory.h, IgExtensionFactory.h,
+	IgSimpleExtensionFactory.h, IgPlugin.h, IgPluginDatabase.h,
+	IgSiteFactory.h, IgSimpleSiteFactory.h: Move to IgState from
+	IgSession.
+
+	* IgMessageService.h: Removed.  Use a specific class instead.
+
+	* IgSession.h, IgSession.cc: Removed.  Replaced by IgState and
+	specific state elements.
+
+	* IgSessionExtension.h: Removed.  Replaced by IgStateElement
+	macros.
+
+2002-08-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserMethods.cxx: Adjust std::rel_ops handling to cope with
+	GCC 3.1 limitations.
+
+2002-04-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSessionExtension.h: New, simplify creation of extensions.
+
+2002-02-20  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgRepContext.h (erase): Fix destruction logic.
+	* IgRepSet.h, IgRepSet.cc (~IgRepSet): Fix destruction logic.
+	(remove): Make additional checks while walking the lists.
+	(update): Provide another overloaded method to update all existing
+	object representations.
+
+2001-11-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgPlugin.h: Remove the typedefs for the items -- compilers
+	produce confused name manglings for them.
+
+2001-11-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserMethods.cc: Multi-method syntax was simplified.
+
+2001-11-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgPluginDef.h: Rearrange methods for more logical reading.
+
+	* IgObserver.h: Include required headers.
+
+2001-11-22  Lassi A. Tuura  <lat@iki.fi>
+
+	Clean up session class.
+
+	* IgSession.h, IgSession.cc: Remove global session, bus and
+	session tree structure.  Add a method to remove extensions
+	(instead of setting them to null).
+
+	* IgBrowserMethods.h, IgBrowserMethods.cc: Remove access to global
+	session and require the class to be initialised as a service.
+	Encapsulate the magic key calculation into a reusable function.
+
+2001-11-22  Lassi A. Tuura  <lat@iki.fi>
+
+	Replace bus and messages with message-specific services.
+
+	* IgBrowser.h, IgBrowserFactory.h: Update documentation.
+
+	* IgObserver.h: Encapsulate message listeners.
+
+	* IgMessageService.h, IgSelectionService.h, IgSelectionService.cc:
+	New files, message-specific service classes.
+
+	* IgSelectionMessage.h: Rewritten from IgSelectMessage to the new
+	scheme.
+	
+	* IgBus.h, IgBus.cc, IgMessage.h, IgMessage.cc,
+	IgMessageHandler.h, IgMessageHandler.cc, IgSelectMessage.h,
+	IgSelectMessage.cc: Obsolete classes removed.
+
+	* xtypeinfo.cc: Remove references to removed classes.
+
+2001-11-02  Lassi A. Tuura  <lat@iki.fi>
+
+	* Documentation update.
+
+2001-11-02  Lassi A. Tuura  <lat@iki.fi>
+
+	* Extend documentation.  Move name list code to the header.
+
+2001-11-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Great renaming, documentation and general clean-up patch.  Add
+	capabilities so that we no longer need to fool around with null
+	extensions.  Ignore plug-in directories that do not exist.  No
+	longer keep a pointer to the model in a rep context since the rep
+	must be able to cough up the pointer at any time.
+
+2001-08-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgRepresentable.cc: Clean up on object deletion.
+
+	* IgRepSet.h, IgRepSet.cc:
+	(~IgRepSet): Clean up on object deletion.
+	(update): Cache object.
+
+	* IgRepContext.h: Handle deletion from both directions: object
+	being deleted and rep being deleted.
+
+2001-08-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSession.cc (autoload): Work around different standard library
+	string implementations.
+
+2001-07-30  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserPlugin.h, IgBrowserPlugin.cc
+	(attached): Expose the plug-in status.
+
+2001-07-19  Lassi A. Tuura  <lat@iki.fi>
+
+	Introduce sessions and the built-in plug-in.  Remove rep and model
+	info and use specially marked up pseudo-extensions instead.  Bug
+	fix to plug-in database to skip older plug-ins for which we have a
+	newer version available.
+
+	* IgBrowserPlugin.h, IgBrowserPlugin.cc: Remove model and rep
+	info.  Create objects with a session.  Introduce the built-in
+	plug-in (simply a plug-in with no name).  Make sure all info stuff
+	gets cleaned up properly.
+
+	* IgBrowserPluginDatabase.h, IgBrowserPluginDatabase.cc: Remove
+	model and rep info.  Create objects with a session.  Remove global
+	plugin database list, replaced with a global session object.
+	Remove code to load reps dynamically, replaced with keyed null
+	extensions.  Include information about the built-in plug-in.  Skip
+	plug-ins we've already seen in order not to duplicate info or
+	advertise features we could never load.
+
+	* IgBrowserMethods.cc (preload): Add documentation to describe
+	what we do.  Use the global session object to load an extension
+	with an invented naming convention to get the needed plug-ins.
+
+	* IgNullExtensionFactory.h, IgNullExtensionFactory.cc: New files,
+	an application extension factory that never creates anything but
+	allows the system to load a plug-in for its side-effects.
+
+	* IgSession.h, IgSession.cc: New files for application context
+	management.
+
+	* IgAppDriverFactory.h, IgAppExtensionFactory.h,
+	IgSimpleAppDriverFactory.h, IgSimpleAppExtensionFactory.h,
+	IgBrowserFactory.h, IgBrowserSiteFactory.h,
+	IgSimpleBrowserFactory.h, IgSimpleSiteFactory.h:
+	Create with a session.
+
+2001-05-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserBus.cc: Include extended type info so that the modified
+	multi-method initialisation knows about it.
+
+	* IgBrowserMethods.cc: Likewise.  Import `operator!=' for iterator
+	comparisons as appropriate.
+
+2001-04-11  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserMethods.h, IgBrowserMethods.cc: New header for all
+	object browser multi-methods.  Use the new multi-method macro
+	syntax.  Wrap the multi-methods with methods to load converter
+	plug-ins on demand.  Define the multi-methods.
+
+	* IgBrowserPluginDatabase.h, IgBrowserPluginDatabase.cc: Keep a
+	global list of all plug-in databases.  Make browser multi-methods
+	friends of this class so that they can use the list.  Don't load
+	reps when loading the browser; they will be loaded when needed.
+
+	* represent.h: Removed.
+	* IgRepresentable.cc: Remove `represent' multi-method member.
+	* xtypeinfo.cc: Remove multi-method definitions.
+
+	* IgRepContext.h: Allow simple construction procedure and removal.
+
+	* IgRepSet.h, IgRepSet.cc: Factor out common simple ways to look
+	up, create and update representations.
+	(remove): Remove first context correctly and erase context link.
+
+	* IgBrowserBus.h, IgBrowserBus.cc: Use new multi-method macro
+	syntax.
+
+	* IgBrowserSelectMessage.h: Remove redundant include.
+
+2001-04-02  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgBrowserPluginDatabase.cc (load_browser): Add comments on
+	future development directions.
+
+2001-03-30  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Clean up unnecessary exports to avoid duplicates.
+
+	* IgRepSet.h, IgRepSet.cc (lookup): New, allow objects to detect
+	if related objects are represented.
+
+	* IgSimpleSiteFactory.h: Correct guards, #include and class name.
+
+	* IgBrowserPluginDirectory.cc: Drop time-stamps as per changes in
+	IgPluginManager.
+
+	* test/main.cc: Remove obsolete forms.
+
+2001-03-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Try tow work around SCRAM linking issues.
+
+	* IgAppDriverFactory.h, IgBrowserPlugin.h, IgBrowserPlugin.cc,
+	IgSimpleAppDriverFactory.h, IgBrowserPluginDatabase.h,
+	IgBrowserPluginDatabase.cc: Pass command line arguments and the
+	browser plugin database to the application driver.  Add missing
+	application-related parts.  Fix typos and alignment.
+
+	* IgAppDriver.h, IgAppExtension.h, IgAppDriver.cc,
+	IgAppExtension.cc: New, define the missing classes.
+
+	* xtypeinfo.h, xtypeinfo.cc: Define type info for the new classes.
+
+	* IgBrowserPluginDirectory.cc (create_plugin): Expect library and
+	time-stamp attributes.
+
+2001-03-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: First version to build with SCRAM.
+
+	* config.h, IgRep.cc: Fix #include typos.
+
+	* IgAppDriverFactory.h, IgAppExtensionFactory.h,
+	IgSimpleAppDriverFactory.h, IgSimpleSiteFactory.h,
+	IgAppDriverFactory.cc, IgAppExtensionFactory.cc: New.
+
+	* IgBrowser.h, IgBrowserBus.h, IgBrowserMessage.h,
+	IgBrowserSiteFactory.h, IgRep.h, IgRepContext.h, IgRepSet.h,
+	IgRepresentable.h, represent.h: Remove unnecessary forward
+	declarations.
+
+	* IgBrowserFactory.h, IgSimpleBrowserFactory.h: Remove unnecessary
+	forward declarations.  Add a site argument.
+
+	* IgBrowserPluginDirectory.h, IgBrowserPluginDirectory.cc: Remove
+	unnecessary forward declarations.  Switch to new XML interface.
+
+	* IgBrowserPlugin.h, IgBrowserPluginDatabase.h,
+	IgBrowserPlugin.cc, IgBrowserPluginDatabase.cc: Add application
+	drivers and extensions.  Add site to browser creation.  Switch to
+	the new XML interface.
+
+2001-02-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* Everything migrated to `Ig' prefix.
+
+1999-10-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* ObjectBrowser/Browser.h, ObjectBrowser/RepSet.h: Add more
+	documentation.
+
+	* test/test.dtd, test/test.xcs: New files; first thoughts
+	on XML-based browser and site configuration.
+
+1999-09-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* Stamped as ObjectBrowser-00-00-01.
+
+	* PACKAGE (version): Updated.
+
+1999-08-30  Lassi A. Tuura  <lat@iki.fi>
+
+	* PACKAGE (title): Update.
+	* README: Update.
+
+	* src/BrowserPlugin.cxx (BrowserPlugin::entry_point): Use unions
+	to cast a function pointer to a data pointer for debugging.  Not
+	all C++ compilers allow the conversion otherwise, not even with a
+	`reinterpret_cast'.
+
+	* src/BrowserPluginDatabase.cxx (rebuild_range): Template function
+	cannot be `static'.  Do not use `make_pair', some compilers do not
+	have member templates, and therefore cannot change wrong types of
+	pairs to other types of pairs (due to `const' differences or
+	such).
+
+	* test/GNUmakefile.in (libdata.so): Add a source file.
+
+	* test/data.cxx: New, define extended type-info for the data
+	classes.
+
+	* test/main.cxx: Remove extended type-info for the data classes.
+
+1999-08-18  Lassi A. Tuura  <lat@iki.fi>
+
+	* PACKAGE: Use `PluginManager' to get general plugin
+	implementation.
+
+	* configure, configure.in: Do not generate `config.h' any more.
+	Use `readdir_iterator' from classlib; no need for system checks.
+
+	* GNUmakefile.in: Do `check' in `test' directory, not `all'.  Do
+	not delete `config.h', it is not a generated file any more.
+
+	* (all header files): Use `OBJECT_BROWSER_API' instead of
+	`OBJECT_BROWSER_EXPORT' to export stuff from Windows DLLs.
+	Reformat files to nicer layouts.
+
+	* (all source files): #include files with directory name from own
+	package; avoids several `-I' options, makes things simpler all
+	around, and conforms to ATLAS coding style.
+
+	* ObjectBrowser/BrowserNameList.h,
+	ObjectBrowser/BrowserPluginDatabase.h,
+	ObjectBrowser/BrowserPluginDirectory.h,
+	ObjectBrowser/BrowserPlugin.h:
+	New files.  Use plugin implementation from `PluginManager'.
+
+	* ObjectBrowser/RepSet.h: Make constructors protected to avoid
+	warnings with GCC.
+
+	* src/GNUmakefile.in (libbrowse.so_CXXCPPFLAGS): Simplify.
+	(libbrowse.so_SRC): Add new source files.
+	(libbrowse.so_LIBS): Remove.
+	(libbrowse.so dependencies): Use a proper search.
+
+	* src/debug.cxx, src/debug.h: New files, for declaring
+	package-internal debugging entities.
+
+	* test/GNUmakefile.in: Split data into a shared library of its
+	own, avoids issues with exporting symbols from main executable to
+	the shared libraries.  Simplify `-I' options.  Make dependencies
+	for shared libraries.  Run the test program for `check'.
+
+	* test/abrowser.cxx, test/bbrowser.cxx, test/reps.cxx,
+	test/main.cxx: Use the new plugin mechanism.
+
+1999-06-18  Lassi A. Tuura  <lat@iki.fi>
+
+	* PACKAGE, src/GNUmakefile.in, test/GNUmakefile.in: Use linksets.
+
+	* ls-browse: New, fragment for the shared library linkset.
+
+	* ObjectBrowser/config.h.in (OBJECT_BROWSER_EXPORT): Define.
+
+	* ObjectBrowser/Browser.h, ObjectBrowser/BrowserBus.h,
+	ObjectBrowser/BrowserDatabase.h, ObjectBrowser/BrowserFactory.h,
+	ObjectBrowser/BrowserMessageHandler.h,
+	ObjectBrowser/BrowserMessage.h, ObjectBrowser/BrowserModel.h,
+	ObjectBrowser/BrowserSelectMessage.h, ObjectBrowser/Rep.h,
+	ObjectBrowser/RepContext.h, ObjectBrowser/RepSet.h,
+	ObjectBrowser/Representable.h, ObjectBrowser/represent.h,
+	ObjectBrowser/xtypeinfo.h: Update comments, add documentation.
+	(ObjectBrowser/config.h): Include
+	(OBJECT_BROWSER_EXPORT): Use.
+
+	* doc/obrowser.jpg: Added.
+
+1999-04-28  Lassi A. Tuura  <lat@iki.fi>
+
+	* Initial package version imported.

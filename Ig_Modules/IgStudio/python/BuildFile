@@ -1,0 +1,3 @@
+<Use name=Ig_Modules/IgStudio>
+<Use name=Ig_Framework/IgObjectBrowser>
+<Use name=boost_python>

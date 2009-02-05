@@ -1,0 +1,293 @@
+#!/usr/bin/env perl
+
+$_ = "@ARGV";
+
+$project = $ARGV[0];
+
+$local_top = $ARGV[1]; # reading of information from this dir.
+
+$project_out_dir = $ARGV[2] ; #dir /afs/cern.ch/user/v/veden1/work/Perl/TEST/
+
+#$project_out_dir_tmp = "$project_out_dir/mydoc";   
+
+$project_html_dir = "$project_out_dir" ;
+
+#COMMAND
+# perl cor_with_arr_htm.prl /afs/cern.ch/cms/Releases/ORCA/ORCA_3/ORCA_3_2_1/src/ /afs/cern.ch/user/v/veden1/work/Perl/TEST/ | & tee list.txt
+
+ if ( -e "$local_top/src" ) {
+	$project_in_dir      = "$local_top/src";
+    }else {
+        $project_in_dir      = "$local_top";
+    }
+
+ 
+#    	if( ! ( -e $project_out_dir_tmp ) ) 
+#	{ system "mkdir $project_out_dir_tmp" ;}
+#        print "create a dir $project_out_dir_tmp \n";   
+
+    	if( ! ( -e $project_out_dir ) ) 
+	{ system "mkdir $project_out_dir" ;}
+         print "create a dir $project_out_dir \n";   
+
+    system " perl lib_comp.prl $project $local_top $project_out_dir  ";
+    &create_file("info_dev.html");
+
+#############################################################################
+# Subroutines:
+#############################################################################
+
+#############################################################################
+# CREATE_FILE
+#############################################################################
+
+sub create_file()
+	#  create .html file 
+	#  and include index.html inside
+{
+	my $new_file = $_[0];
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> create_file <<<                    \n";
+        print "                                                   \n";
+
+	# Open source file for writing:
+	
+	open( NEW_FD, ">$project_out_dir/$new_file" ) || die( "Can't create
+	file $project_out_dir_tmp/$new_file" );
+	print NEW_FD "<html>\n";
+	print NEW_FD "Structure of the $project Project<hr>\n\n";
+#        print NEW_FD "<a  href = \"file_lib.html\">  About version </a> <hr>" ;	
+	&process_dir( $project_in_dir );
+	print NEW_FD "\n\n</html>\n";
+
+        close NEW_FD;
+}
+
+#############################################################################
+# PROCESS_DIR
+#############################################################################
+
+sub process_dir()	
+        #  scan src dir 
+	#  and create .doc files
+{
+	my $target_dir = $_[0];
+	
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> process_dir <<<                    \n";
+        print "                                                   \n";
+       
+	print "Scan dir $target_dir ...\n";
+	opendir( DIR_D, "$target_dir") || die( "Can't find dir $target_dir" ); 
+	
+	@dirs = readdir( DIR_D );
+	
+	for( $i = 0; $i < @dirs; $i ++ ) {
+	    if ( ( -d "$target_dir/$dirs[$i]" ) 
+              && ( $dirs[$i]  ne  "." ) 
+	      && ( $dirs[$i]  ne  ".." ) 
+	      && ( $dirs[$i]  ne  "CVS" ) 
+	      && ( $dirs[$i]  ne  "workspace" ) 
+	      && ( $dirs[$i]  ne  "Workspace" ) 
+	      && ( $dirs[$i]  ne  "doc" ) 
+	      && ( $dirs[$i]  ne  "domain" ) 
+	      && ( $dirs[$i]  ne  "Porting" ) 
+	      && ( $dirs[$i]  ne  "$project" ) 
+	      && ( $dirs[$i]  ne  "BuildFile" ) )
+		{
+		print "dir (process_dir) :$dirs[$i] \n";
+		if ($dirs[$i] !~ ".admin")
+		{
+		print NEW_FD "<li>$dirs[$i]"; #write a once last dir where located .admin 
+		 if (-e  "$target_dir/$dirs[$i]/.admin" ) { 
+  		  &process_file_dev("$target_dir/$dirs[$i]/.admin");	  
+		 } #end if exists  dir admin 
+		 &process_subdir ( "$target_dir/$dirs[$i]" ); 	      
+                print NEW_FD "</li>";
+	        }
+		else {
+		 if (-e  "$target_dir/$dirs[$i]/.admin" ) { 
+  		  &process_file_dev("$target_dir/$dirs[$i]/.admin");	  
+		 } #end if exists  dir admin 
+		 &process_subdir ( "$target_dir/$dirs[$i]" ); 	      
+		}
+	    }
+        }
+	closedir( DIR_D );
+}
+
+#############################################################################
+# PROCESS_SUBDIR
+#############################################################################
+
+sub process_subdir()	
+       #  scan dirs 
+       #  and create .doc files
+{
+	my $target_subdir = $_[0];
+	#$j = 0;
+
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> process_subdir <<<                 \n";
+        print "                                                   \n";
+
+	opendir( DIR_D, "$target_subdir") || die( "Can't find dir $target_subdir" ); 
+        
+	@subdirs = readdir( DIR_D );
+	
+	for( $j = 0; $j < @subdirs; $j ++ ) 
+	{
+	      if( ( -d "$target_subdir/$subdirs[$j]" ) 
+		&& ("$subdirs[$j]" ne ".")
+	       	&& ("$subdirs[$j]" ne "BuildFile")
+	       	&& ("$subdirs[$j]" ne "..")
+	       	&& ("$subdirs[$j]" ne "CVS")
+		&& ("$subdirs[$j]" ne "domain") )
+		{
+
+		 if (-e  "$target_subdir/$subdirs[$j]/.admin" ) 
+		 { #print NEW_FD "\n<li> $subdirs[$j] "; #write a 1 last dir where located .admin 
+		  #print "dir (process_subdir) :$subdirs[$j] \n";
+   		  &process_file_dev("$target_subdir/$subdirs[$j]/.admin", "$subdirs[$j]" );	 		
+		} #end if exists  dir admin 
+		  
+		 
+                # print NEW_FD "</li>";
+		 
+	     } # END_OF IF FOR	
+	} #END_OF_FOR
+	closedir( DIR_D );
+}
+ 
+
+#############################################################################
+# PROCESS_FILE_DEV
+#############################################################################
+sub process_file_dev()	
+       #  scan dirs 
+       #  and create .doc files
+{
+	my $target_file_dir = $_[0];
+		
+        print "                                                   \n";
+        print "---------------------------------------------------\n";
+        print "            >>> process_file_dev <<<               \n";
+        print "                                                   \n";
+	
+        opendir (DIR_F, "$target_file_dir") || die ( "Can't find dir $target_dir/$dirs[$i]/.admin " );		 
+
+ 		  if (-e "$target_file_dir/developers" ){
+                  
+		  print NEW_FD "<ul> $subdirs[$j] "; 
+		  print  "SUBDIRS (process file_dev) : $subdirs[$j] \n"; 
+		  #write a 1 last dir where located .admin\developers 
+
+		  open (DEVELOPERS, "$target_file_dir/developers");
+		  print "DIR : $target_file_dir/developers \n";
+		  $k = 0;
+		  $n = 0;			
+		  @name_arr = ();
+		  @address = ();
+		  @baida = ();
+		  $DEV = 0;
+		  $ADM = 0;
+#	          $MAIL_TO = "";
+#		  $MAIL_TO_C = "";		 
+		  while(<DEVELOPERS>){
+	   	  $STR = $_;
+	  	  	  
+		if(($STR =~ /^>Developers/) || ($STR =~ /^>Administrators/) )
+		{
+			if ( $STR =~ /^>Developers/)
+			{$DEV = 1;}
+			else {$DEV = 0;} 
+			print FILE_LIST "$DEV \n";
+		
+			if ( $STR =~ /^>Administrators/)
+			{$ADM = 1;}
+			else {$ADM = 0;} 
+			print FILE_LIST "$ADM \n";
+
+		
+			while ($STR = <DEVELOPERS>){
+					if ($STR =~ /.+/) {
+					chomp($STR);
+					#@name_arr[$k] = $STR ;
+					(@name_arr[$k],@address[$k])  = split (/:/, $STR) ;
+					
+				#	print "ADDRESS : $address[$k] \n";	
+					}
+				$k++;
+			}
+		}
+		}
+		
+		
+	print FILE_LIST "arr : $name_arr[0] \n";
+	if (( $DEV == 1) && ($name_arr[0] !~ ""))
+	{print FILE_LIST "Developers!!! \n";}
+	elsif (( $DEV == 1) &&($name_arr[1] !~ ">Administrators"))
+	{print NEW_FD "\n<br>>Developers \n";}
+
+	if ( ($ADM == 1) && ($name_arr[0] ne "")
+	&& ($name_arr[1] !~ ">Administrators") )
+	{print NEW_FD "\n<br>>Administrators \n";}
+	
+	
+	for ($n = 0 ; $n <@name_arr ; $n++)
+	{
+	print "array : $name_arr[$n] \n";	
+#	print "address1 : $address[$n] \n ";
+	
+	if ($address[$n] !~ " ")
+	{splice (@address,$n,1)}
+	if ($name_arr[$n] !~ " ")
+	{ 
+		   if (($name_arr[$n] =~ ">Developers")
+		   || ($name_arr[$n+1] =~ " " )
+		   ||($name_arr[$n+2] =~ " "))
+		
+		{ splice (@name_arr , $n,1);
+		 } 
+	  	if (($name_arr[$n] !~ ">Administrators")
+		&&($name_arr[$n] !~ ">Developers"))
+		
+	 	{ 
+		 $MAIL_TO = "<a href=\"mailto: @address[$n]\">"  ;
+		 $MAIL_TO_C = "</a>";
+		 print "address1 : @address[$n] \n ";
+ 		 print "MAIL_TO : $MAIL_TO \n "; 
+		 print  NEW_FD "\n<br>$MAIL_TO $name_arr[$n] $MAIL_TO_C  \n"; 
+		}
+		
+	 	else {print  NEW_FD "\n<br> $name_arr[$n]   \n";}
+	}
+	else {
+ 	 
+	 	# print "address1 : $address[$n] \n ";
+		if (($name_arr[$n] !~ ">Administrators")
+     		   &&($name_arr[$n] !~ ">Developers" ))
+	 	{ 
+		 $MAIL_TO = "<a href=\"mailto: @address[$n]\">"  ;
+		 $MAIL_TO_C = "</a>";
+		 print "address1 : @address[$n] \n ";
+ 		 print "MAIL_TO : $MAIL_TO \n "; 
+		 print  NEW_FD "\n<br>$MAIL_TO $name_arr[$n] $MAIL_TO_C \n";
+		}
+		
+	 	else {print  NEW_FD "\n<br>$name_arr[$n] \n";}
+	     }
+	
+	}
+	close DEVELOPERS;
+
+        } #END_OF IF EXISTS FILE DEVELOPERS
+	#else {  
+	#	 print "Didn't open file developers \n\n";}
+	
+	 print NEW_FD "</ul>";
+
+}#END_OF sub process_file_dev()	

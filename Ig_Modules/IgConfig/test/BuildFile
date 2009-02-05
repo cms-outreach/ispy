@@ -1,0 +1,2 @@
+<use name=Ig_Modules/IgConfig>
+<bin file=test_IgConfigElement.cpp></bin>

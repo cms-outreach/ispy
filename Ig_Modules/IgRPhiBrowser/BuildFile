@@ -1,0 +1,8 @@
+<Use name=Ig_Modules/Ig3DBaseBrowser>
+<Use name=Ig_Modules/IgRPhiModel>
+
+<Export>
+  <Use name=Ig_Modules/Ig3DBaseBrowser>
+  <Use name=Ig_Modules/IgRPhiModel>
+  <Lib name=Ig_ModulesIgRPhiBrowser>
+</Export>

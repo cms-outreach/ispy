@@ -1,0 +1,169 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+2007-03-12  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* test/BuildFile: SEAL dependency removed.
+
+2007-02-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* test/IgVisEx.cpp: IgSoText2 initialization removed.
+
+2006-10-24 George Alverson <George.Alverson@cern.ch>
+
+	* bring into step with most recent IgVis:
+	- conversion to static from virtual for shellName:
+	  interface/IgDemoExperiment.h
+	  interface/IgDemoExperiment2D.h
+	  interface/IgQtMDITest2DShell.h
+	  interface/IgQtMDITestShell.h
+	  interface/IgQtPickTestShell.h
+	- convert IgQtShellRegisterEntry calls/ addBroswer calls
+	  src/IgDemoExperiment.cpp
+	  src/IgDemoExperiment2D.cpp
+	  src/IgQtMDITest2DShell.cpp
+	  src/IgQtMDITestShell.cpp
+	  src/IgQtMDIPickTestShell.cpp
+	* add test for double slider
+	  interface/TestScene.h, src/TestScene.cpp
+	* add labels in track pick:
+	  src/GenericEvent.cpp
+	* add std:: to endl to eliminate compiler warning
+	  src/IgQtPickTestShell.cpp
+	    
+	  
+	
+
+2006-08-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* test/IgVisEx.cpp: IgSoText2 initialization added.
+
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* GenericEvent.cpp, TestScene.cpp: extra ; removed for ANSI C++
+	compliancy.
+
+
+2005-03-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BrowserTest.cpp: Removed as duplicate.
+
+	* test/IgVisEx.cpp: Add initialization of the IgSoAxis.
+
+2005-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, test/BuildFile: Port to new SCRAMV1.
+
+2004-01-14  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test/BuildFile: Add SEAL Foundation/SealBase which is needed by
+	IgOpenInventor.
+	
+2004-01-07  George Alverson <George.Alverson@cern.ch>
+	* IgVisEx.cpp: set build by default
+
+2004-01-05  George Alverson <George.Alverson@cern.ch>
+
+	* IgVisEx.cpp, BrowserTest.cpp (now identical): fix
+	  for case of maximized browser
+
+2003-12-19  George Alverson <George.Alverson@cern.ch>
+
+	* All source files: revise to match latest IgVis and IgOpenInventor: 
+	o shells now self-register and main (test) view starts with single view,
+          others are available on file menu/new scan.
+        o Old IgOpenInventor shapes removed. IgShapeKit used.
+        o Missing include files no longer included.
+             
+2003-10-31  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Remove IGUANA_OBSOLETE.
+
+	* IgSbPainter.cc, IgSbPainterPS.cc, IgSoPainterAction.cc,
+	IgSoViewportRegion.cc: Removed.
+
+2003-10-30  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgVisEx.cpp: Init the base class of new shapes.
+
+	* IgSbPainter.cc, IgSbPainterPS.cc, IgSoPainterAction.cc,
+	IgSoViewportRegion.cc: Temporarily added from IgOpenInventor.
+
+	* IgVisEx.cpp, IgQtPickTestShell.cpp, GenericEvent.cpp,
+	GenericDetector.cpp: Use new shapes.
+
+	* BuildFile: Define IGUANA_OBSOLETE.
+
+2003-09-24  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* config.h: New, for the moment just a dummy file.
+
+	* BaseQueryNode.h, SmartBox.h, TestObject.h, TestScene.h,
+	TestTrack.h, GenericDetector.cpp, IgDemoExperiment.cpp,
+	IgDemoExperiment2D.cpp, IgQtMDITest2DShell.cpp,
+	IgQtMDITestShell.cpp, IgQtPickTestShell.cpp, SmartBox.cpp,
+	TestObject.cpp, TestScene.cpp, TestTrack.cpp, test/IgVisEx.cpp,
+	test/test_IgDemoExperiment.cpp: Remove references to IgCxxFeatures
+	and add missing "std::" prefixes.  For the moment just include the
+	new dummy config.h instead of system.h; fix config.h if it matters.
+
+2003-09-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile, test/BuildFile: Clean up, replace <lib> with <use>.
+
+2003-07-22  George Alverson <George.Alverson@cern.ch>
+
+   *	IgVisEx.cpp: add init for IgSoCoordinateAxis
+
+   *    Add Q_OBJECT to IgDemoExperiment2D.h
+
+2003-07-21  George Alverson <George.Alverson@cern.ch>
+
+   *    BuildFile: add gl2ps for import
+
+   *    BrowserTest.cpp: add IgDemoExperiment2D and (temporary) axis shape.
+
+   *    TestScene.cpp: comment out unused argument.
+
+   *    IgQtMDITest2DShell.cpp: clean-up for compiler warnings. Make sure default is no headlights.
+
+   *    IgDemoExperiment2D.cpp: bring into line with revised IgLayer structure.
+
+   *    GenericEvent.cpp: turn on alternate rep for IgSoIdealTrackKit for debugging.
+
+   *    GenericDetector.cpp: add axes for feedback (temporary). Add complexity node before cylinders.
+
+2003-05-20  George Alverson <George.Alverson@cern.ch>
+
+   *    GenericDetector.cpp, GenericEvent.cpp, IgPickTestShell.cpp, IgVisEx.cpp: Relocate all initClass calls into one location in IgVisEx.cpp.
+
+2003-05-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+    *   GenericDetector.cpp: Explicit type cast style changed. int type changed
+    to unsigned int to avoid warnings.
+
+2003-05-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+    *   GenericDetector.cpp: Explicit type cast to int from double and
+        int to unsigned int to avoid warnings.
+
+    *   IgQtMDITest2DShell.cpp: Comment out 1 unused variables to avoid warnings.
+
+    *   IgQtPickTestShell.cpp: Comment out 2 unused variables to avoid warnings.
+
+    *   TestScene.cpp: Comment out 1 unused parameter to avoid warning.
+
+2003-05-08  George Alverson <George.Alverson@cern.ch>
+
+    *    GenericDetector.cpp: remove extraneous IgSoPgon::initClass().
+
+2003-03-25  George Alverson <George.Alverson@cern.ch>
+
+    *   ChangeLog created.
+
+    *   IgQtMDITestShell.cpp: add a call to killVolatileTwigs before reading in
+        a new event. Prevents the overlap of multiple events.
+
+    *   BrowserTest.cpp: initialise many of the commonly used IgOpenInventor classes
+        so that a saved event may be read in.

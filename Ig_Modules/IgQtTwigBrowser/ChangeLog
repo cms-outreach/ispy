@@ -1,0 +1,249 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h, BuildFile, IgQtTwigBrowser.cc, plugin.cc:
+	Move to classlib and IgPluginManager.
+	
+2006-04-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgQtTwigBrowser.cc: Memory leak fixed.
+
+2006-02-16  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtTwigBrowser.cc: Removed the unnecessary calls to
+	QListViewItem::isOpen()/setOpen() because QListView::ensureItemVisible()
+	already take care of this.
+	* IgQtTwigBrowser.cc: Now it unlistened the selected message
+	before broadcasting it to avoid the recursive calls to selectMessage()
+	method.
+	* IgQtTwigBrowser.cc: Reverted the changes i.e. onSelectionChange
+	is no more protected.
+
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtTwigBrowser.cc (IgQtTwigBrowser): IgDispatcher
+	listen/unlisten renamed to add/remove.
+
+2005-04-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQtTwigBrowser.cc: Remove IgRepVisibilityService.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2004-12-06  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtTwigBrowser.cc: Adjust the size of Twig browser (a bit wider now).
+
+2004-12-03  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtTwigBrowser.cc: Visibility problem fixed which occurs after
+	increasing the width of Twig browser, removed the unused resizeEvent().
+
+2004-11-30  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtTwigBrowser.h, IgQtTwigBrowser.cc: resizeEvent enabled again
+	to adjust the column size.
+
+2004-08-26  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtTwigBrowser.cc: Broadcast the IgRepVisibilityMessage message
+	when the visibility is toggled via clicking on the visibility
+	checkbox of the twig in twig tree browser.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtTwigBrowser.cc: cleanups 
+
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Removed ununsed packages.
+
+2004-01-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Move to new invalidation-based rendering.
+
+2003-09-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.cc, plugin.cc, config.h, xtypeinfo.h,
+	src/BuildFile: Move to SEAL Foundation classes and plug-in
+	manager.
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Plug-in manager update.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* xtypeinfo.h: Add export as per classlib changes.
+
+2002-09-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* Adjust to plug-in management changes.
+
+2002-09-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Add debug logs.  Use and respect twig update flags.
+
+2002-09-04  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigRep.cc: Add instances of class statics GCC 3.2 requires.
+
+2002-08-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.h, IgQtTwigBrowser.cc: IgSession to IgState
+	migration.
+
+2002-04-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigRep.h, IgQtTwigRep.cc (CASCADE_FIELD): Add new field.
+	(setOpen): Update cascade field (open/closed) back to the twig.
+	(setCheck): Remove unused variables.
+
+	* plugin.cc (doRepresent): Always show expansion status correctly.
+	(doCommit): Deal with cascade change notification.
+
+2002-04-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigRep.h, IgQtTwigRep.cc (setOpen): Restore public
+	visibility.  Sync internal flag with external (twig) state.
+
+	* plugin.cc: Update item open state as well.  Tie the child
+	update to whether rep is open, not traversal.
+
+	* IgQtTwigBrowser.cc (contextMenu): Run post-action menu update.
+
+2002-03-21  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.h, IgQtTwigBrowser.cc: Remove context menu;
+	switch to using the new object-specific menu system.
+
+	* IgQtTwigRep.h (setCheck): Expose to allow it to be invoked
+	without feedback loop back to application when external sources
+	modify visibility and traversal settings.
+
+	* plugin.cc: Copy externally modified visibility and traversal
+	settings to the reps.
+
+2002-03-08  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.cc (select): Open parents, not item itself.
+	(actionShow): Fix termination logic for n > 0.
+
+2002-03-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.cc (actionShow): Set visibility after processing
+	the children so that expansion will happen before we ask about it.
+
+	* IgQtTwigBrowser.h, IgQtTwigBrowser.cc: Refine new popup menu
+	functionality to be user-friendly.  Provide an option to make
+	something visible.
+
+	* IgQtTwigBrowser.h, IgQtTwigBrowser.cc, IgQtTwigRep.h,
+	IgQtTwigRep.cc: Remove traversal column, provide popup menu to
+	manage traversal and other common operations (traversal still
+	kept has a "phantom" column to allow operations on it).
+
+2002-03-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Remove reference to plugin_makefile.mk.
+	* src/BuildFile: Move it here.
+
+2002-02-20  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Respond to twig updates from other sources.
+
+2002-02-06  Lassi A. Tuura  <lat@iki.fi>
+
+	* Update to Qt 3: add missing headers.
+
+2002-01-16  Ianna Gaponenko  <ianna.gaponenko@cern.ch>
+
+	* IgQtTwigRep.h, IgQtTwigRep.h: open changed to opened  because of
+	QListViewItem::open.
+
+	* IgQtTwigRep.h, IgQtTwigRep.cc: pixmap renamed to pixmapForState.
+
+2001-11-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser (selectMessage): Remove bogus return value.
+
+2001-11-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Multi-method syntax was simplified.
+
+2001-11-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* Adjust to session and selection changes in core library.
+	Tidy up extension naming conventions.
+
+2001-11-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Great renaming and general clean-up patch.
+
+2001-10-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigRep.cxx (setCheck): Create null pixmap with default
+	constructor, not with a null string argument.
+
+2001-08-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* Remove model (use browser as one instead).  Build reps lazily.
+	Simplify code by removing unused and unnecessary structure code.
+	Copy from AdvListView implementation so that we can have to check
+	columns (and stop using AdvListView ourselves), use one for child
+	traversal and the other for object's own visiblity.  Don't sort
+	objects, let them always be in the order given by the application
+	(children reps will always sort into the right order within their
+	parents anyway).  Add more check boxes for different states.  When
+	representing twigs, find the first visible ancestor, not just
+	parent.
+
+2001-07-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Use IgCommonData for twigs.
+
+	* plugin.cc: Since this browser is for twigs only, move code to
+	handle twigs here.  This avoids the need for other packages to
+	know about this browser specifically, and frees them to deal with
+	twigs only.
+
+2001-07-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* Reflect object browser architecture changes: use session when
+	creating objects and stop keeping track of models.
+
+2001-05-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.cc: Include extended type info so that the
+	modified multi-method initialisation knows about it.
+
+2001-05-09  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.cc: Handle zero selection.  Make sure the
+	selected item becomes visible.
+
+2001-04-11  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtTwigBrowser.h, IgQtTwigBrowser.cc: Remove all references to
+	the IgObjectChangeMessage.
+
+2001-04-03  Lassi A. Tuura  <lat@iki.fi>
+
+	* Qt-based browser for twigs.

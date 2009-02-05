@@ -1,0 +1,45 @@
+2007-03-12  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, IgClarensClient.h, IgClarensFile.h,
+	IgClarensFileProxy.h, IgUserRSA.h, IgClarensClient.cc,
+	IgClarensFile.cc, IgClarensFileProxy.cc, IgUserRSA.cc, plugin.cc:
+	Removed.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, BuildFile, IgClarensFile.cc, IgClarensFileProxy.cc,
+	plugin.cc: Move to classlib and IgPluginManager.
+	
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+
+2004-11-16  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* plugin.cc: catalogLabel () used instead of hardcoded "clarens".
+	
+	* IgClarensFileProxy.cc: created a temp name of the destination file.
+	
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+	
+	* BuildFile, IgClarensFileProxy.cc: Removed unused packages and
+	includes.
+
+2004-04-05  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+	
+	* IgClarensFile.cc, IgClarensFileProxy.cc: Replaced QFile::exists with
+	seal::Filename::exists.
+
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h, plugin.cc, BuildFile, src/BuildFile: Move to SEAL
+	Foundation classes and plug-in manager.
+
+2003-06-17  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+        * New QuteXMLRPC based Clarens client for remote file access.

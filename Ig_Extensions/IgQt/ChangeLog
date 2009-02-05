@@ -1,0 +1,164 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+2007-03-15  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* qkactionmediator.h,qkcommand.h, qkcommandstack.h, qkeditmenu.h,
+	qkactionmediator.cpp, qkcommand.cpp, qkcommandstack.cpp,
+	qkeditmenu.cpp, IgQtSheetManager.h, IgQtSheetManager.cc,
+	IgQtSheetBase.h, IgQtSheetBase.cc: Remove obsolete classes.
+	* Makefile_OK, Makefile: Remove as obsolete.
+	* test/BuildFile, test_IgQt.cpp: Remove as obsolete.
+
+2007-03-06  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	*  config.h: Move to classlib.
+	
+2005-06-28  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtLock.h, IgQtLock.cc: wrapper class around QApplication::lock
+	()/::unlock () which locks on construction and unlock on
+	destruction.
+
+2005-03-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* test/BuildFile: Move to new SCRAMV1.
+
+	* python/BuildFile: Move to new SCRAMV1.
+
+	* python/BuildFile, qcstring.pyste, qkeysequence.pyste,
+	qpainter.pyste, qrect.pyste, qstring.pyste, qcursor.pyste,
+	qlayout.pyste, qpalette.pyste, qregexp.pyste, qstyleoption.pyste,
+	qbitarray.pyste, qfont.pyste, qmetaobject.pyste, qpixmap.pyste,
+	qregion.pyste, qtime.pyste, qbitmap.pyste, qiconset.pyste,
+	qnamespace.pyste, qpointarray.pyste, qsizepolicy.pyste,
+	qvariant.pyste, qcolor.pyste, qimage.pyste, qobject.pyste,
+	qpoint.pyste, qsize.pyste, qwidget.pyste: Removed as obsolete.
+
+2005-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Move to new SCRAMV1.
+
+2005-02-04  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtWorkspace.h, IgQtWorkspace.cc: Rename the windowActivated/
+          Deactivated signals to workspaceActivated/Deactivated to make
+          them different than windowActivated(QWidget*) signal.
+
+2005-01-31  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtScrollView.h, IgQtScrollView.cc: Newly added classes for
+	Scroll view (resizeEvent overridden).
+
+2004-09-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtWorkspace.h, IgQtWorkspace.cc: New class inherited from
+	QWorkspace to emit signals when workspace becomes the active
+	window.
+	
+	* IgQtPixButton.h, IgQtPixButton.cc: No need to keep the position of
+	the cursor. QCursor::pos () gives us the same information.
+
+2004-08-20  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtPixButton.h, IgQtPixButton.cc: Mouse left click event
+	handler added, popup the menu if any.
+
+2004-07-29  Lassi A. Tuura  <lat@iki.fi>
+
+	* qxembed.h, qxembed.cc: Removed.
+
+2004-06-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtSheetBase.cc, *.xpm: Moved all icons from IgQt to IgIcons.
+	
+2004-05-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IGUANA_SPLASH.xpm, iguana-medium.xpm, iguana-mini.xpm,
+	iguana-small.xpm: Deleted and moved to IgIcons.
+
+2004-03-04  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* qxembed.h, qxembed.cc: QXEmbed from KDE.
+	* test_qxembed.cpp: Test for QXEmbed from KDE.
+	
+2004-02-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* zoom_minus.xpm: Removed unwanted dots from the icon.
+
+2004-02-11  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* xz_small_wb.xpm yx_small_wb.xpm yz_small_wb.xpm: The icons with
+	borders.
+	* yx_small_col.xpm: Update colors to match.
+	* zoom_plus.xpm, zoom_minus.xpm: Remove borders.
+	* inverse.xpm: Sharper arrows.
+	* grid.xpm: Sharper picture.
+
+2004-02-10  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* yx_small_col.xpm: Make it look as the gray ones.
+
+2004-01-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* yz_small.xpm, yx_small.xpm, xz_small.xmp: Modified to have new
+	looking shapes.
+	
+2003-09-24  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* AdvListView.h, AdvListViewItem.h, IgMDIWindow.h,
+	IgQtSheetBase.h, IgQtSheetManager.h, IgNetscapeRunner.cpp,
+	IgQtSheetBase.cc: Remove references to IgCxxFeatures, replace with
+	package-local config.h.  Add missing "std::" prefixes found in the
+	process.
+
+2003-09-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Move to SEAL, replace IgCxxFeatures with SealPlatform.
+
+2003-08-12  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* zoom_minus.xpm, zoom_plus.xpm, save_to_disk.xpm: New icons for the new
+	buttons.
+
+2003-07-21  George Alverson <George.Alverson@cern.ch>
+
+	* AdvListView.h, AdvListViewItem.h: add IG_QT_API 
+
+2003-05-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/qnamespace.pyste (QNamespace): Excluding static memebers,
+	waiting for boost version bump.
+
+	* python/qobject.pyste (QObject): added some Include()s to specify
+	"class" declaration in the include.
+
+	* python/qstyle.pyste: added some Include()s to specify "class"
+	declaration in the include. 
+
+2002-04-15  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* yx_small_col.xpm, grid.xpm: New icons for new buttons.
+
+2003-04-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/BuildFile: Added
+
+	* src/IgQtSheetBase.cc: iostream.h -> iostream
+
+2003-03-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtLineEdit.h, IgQtLineEdit.cc,
+	IgQtPixButton.h, IgQtPixButton.cc:
+	New classes.
+
+2003-03-04  George Alverson <George.Alverson@cern.ch>
+
+        * IgNetscapeRunner.h: modify class description to include
+	IG_QT_API for use with Windows dlls.
+
+2002-12-19  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* yx_small.xpm, xz_small.xpm, yz_small.xpm: New icons to replace
+	Z, Y, and X buttons.

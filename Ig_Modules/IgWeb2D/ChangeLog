@@ -1,0 +1,21 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, IgWeb2DService.cc, plugin.cc: Move to classlib and
+	IgPluginManager.
+	
+2006-01-11  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgWeb2DService.cc:changed to use QIODevice rather than a
+	QSocket.
+
+2005-09-15  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgWeb2DService.h, config.h, IgWeb2DService.cc,
+	plugin.cc: package added to repository.
+

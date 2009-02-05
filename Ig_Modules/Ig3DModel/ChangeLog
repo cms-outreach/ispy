@@ -1,0 +1,138 @@
+2007-03-28  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h: Move to classlib.
+	
+2005-03-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Port to new SCRAMV1.
+
+2004-05-14  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* plugin.cc: Removed unused headers.
+
+2003-10-28  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DModelEvent.h: Removed.
+	* BuildFile, Ig3DModel.h, Ig3DRep.h, Ig3DModel.cc, Ig3DRep.cc,
+	plugin.cc: Move majority of the code to Ig3DBaseModel, leave
+	only specialisations in here.
+
+2003-09-18  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Remove reference to TGSInventorFix, it now comes
+	with the TGS Inventor tool.
+
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DModel.h, Ig3DModel.cc, Ig3DRep.cc, config.h, xtypeinfo.h:
+	Move to SEAL Foundation classes.
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Plug-in manager update.
+
+2003-03-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Clean up external refs.
+
+2002-10-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DRep.h, Ig3DRep.cc: Revert the change to Ig3Drep as a node.
+	Introduce instead a static method "asRep" that checks if a node is
+	a rep, and if so, returns a pointer to it.  Simplifies saved model
+	files and allows them to be read without the reps getting on the
+	way.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DRep.h, Ig3DRep.cc, Ig3DModel.cc: Add Inventor include scopes
+	for Windows.  Make Ig3DRep a minimal Inventor node.  TGS refuses
+	to build Windows Inventor libraries with C++ RTTI, which means we
+	must always use Inventor's RTTI scheme.  Yuck.
+
+	* xtypeinfo.h: Add export as per classlib changes.
+
+2002-08-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DModel.h, Ig3DModel.cc: IgSession to IgState migration.
+
+2002-07-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DModel.h, Ig3DModel.cc (encode, decode): Make arguments
+	and return values more convenient for common usage.
+
+2002-02-20  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DModel.cc (remove): Initialise search properly.
+
+2001-11-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Great renaming and general clean-up patch.  Move the name
+	encoding code here.
+
+2001-08-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DRep.h, Ig3DRep.cc: Avoid waste by making the rep simply a
+	separator itself, and keep only the minimum necessary structural
+	code.  Allow the rep creation to link it in the proper order in
+	the child list.  Label objects to simplify reading in files.
+	Allow rep to have "magic" Inventor nodes in the beginning for
+	things such as lights and clip planes that must not be inside a
+	separator.  Add a "clear" method so that subclasses can do
+	clean-up.  Add a little more documentation comments.
+
+	* Ig3DModel.h, Ig3DModel.cc: Keep a session around and simplify
+	structure: don't allow so much freedom on scene-graph structure,
+	it isn't needed for now.  Always create a top-level 3DRep to
+	manage the tree.  Reps are now Inventor nodes themselves, no need
+	to map them or look them up anymore.  Label objects to simplify
+	reading in files.  Add a little more documentation comments.
+
+2001-07-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile, plugin.cc: We no longer record model information, so
+	stop being a plug-in.
+
+2001-05-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: The hacks are now in TGSInventorFix.
+	* BuildFile: Refer to TGSInventorFix.
+
+2001-05-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Adapt the OIV hack to Solaris.
+
+2001-05-09  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DModel.h, Ig3DModel.cc
+	(Ig3DModel::Ig3DModel): Make the root always selectable.
+	(Ig3DModel::lookup): Add a means for an external object to
+	translate a node to a rep using our internal mapping table.
+
+2001-04-11  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DModel.h, Ig3DModel.cc: Don't manage SoNode relationships
+	between reps, let them do it themselves.  Just keep track of node
+	mappings and top-level reps.
+
+	* Ig3DRep.h, Ig3DRep.cc: Manage relationships between reps myself.
+	Simplify child addition and removal protocol by assuming the
+	caller must have done a `remove' earlier.  Ensure the hierarchy
+	relationships are not confused with Inventor node relationships;
+	keep my own node as my first child and child relationship as other
+	children of my inventor node.  Erase children when erased.
+
+2001-03-30  Lassi A. Tuura  <lat@iki.fi>
+
+	* OpenInventor-based browser model.
+

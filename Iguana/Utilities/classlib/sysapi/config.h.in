@@ -1,0 +1,690 @@
+// Looking for config.h but can't find it?  It is generated from this template
+// and put under platform-specific includes in CLASSLIB_X_Y_Z/$SCRAM_ARCH/include.
+
+#ifndef CLASSLIB_CONFIG_H
+# define CLASSLIB_CONFIG_H
+
+# ifdef _WIN32
+#  define _WIN32_WINNT 0x0500
+# endif
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* C++ features --------------------------------------------------------- */
+
+/* Define if you have working ANSI namespaces. */
+#undef HAVE_NAMESPACES
+
+/* Define if standard library is in namespace `std'. */
+#undef HAVE_NAMESPACE_STD
+
+/* Define if namespace `std::rel_ops' is defined. */
+#undef HAVE_NAMESPACE_STD_REL_OPS
+
+/* Define if namespace `std::rel_ops' is not defined and relational
+   operators are in namespace `std'.  */
+#undef HAVE_REL_OPS_IN_STD
+
+/* Define if you have `__PRETTY_FUNCTION__'.  */
+#undef HAVE_PRETTY_FUNCTION
+
+/* Define if you have `__FUNCTION__' but no `__PRETTY_FUNCTION__'.  */
+#undef HAVE_FUNCTION
+
+/* Define if you have `__func__' but no `__PRETTY_FUNCTION__' nor
+   `__FUNCTION__'  */
+#undef HAVE_FUNC
+
+
+/* Define if you have long longs. */
+#undef HAVE_LONG_LONG
+
+/* Define if you have __int64. */
+#undef HAVE_INT64
+
+/* Define if you have __int128. */
+#undef HAVE_INT128
+
+/* Define if you have bool keyword. */
+#undef HAVE_BOOL
+
+/* Define if you have ANSI `explicit' keyword. */
+#undef HAVE_EXPLICIT
+
+/* Define if you have ANSI `mutable' keyword. */
+#undef HAVE_MUTABLE
+
+/* Define if you have ANSI `restrict' keyword. */
+#undef HAVE_RESTRICT
+
+/* Define if you have ANSI-like `__restrict' keyword. */
+#undef HAVE_PRIVATE_RESTRICT
+
+/* Define if you have ANSI `signed' keyword. */
+#undef HAVE_SIGNED
+
+/* Define if you have working ANSI `using' directive. */
+#undef HAVE_USING
+
+/* Define if you have ANSI `typename' keyword.  */
+#undef HAVE_TYPENAME
+
+/* Define to `typename' if the keyword is required in base
+   class declaration for nested types in templates, otherwise
+   define to an empty string.  */
+#undef TYPENAME_IN_BASEDECL
+
+/* Define if you have new style casts (`static_cast',
+   `const_cast' and `reinterpret_cast').  */
+#undef HAVE_NEW_STYLE_CASTS
+
+/* Define if you have `dynamic_cast' operator.  */
+#undef HAVE_DYNAMIC_CAST
+
+/* Define if you have `typeid' operator.  */
+#undef HAVE_TYPEID
+
+/* Define to `if(0);else for' if `for' does not establish
+   scope as per ANSI standard. */
+#undef for
+
+/* Define if you have ANSI template instantiation. */
+#undef HAVE_ANSI_TEMPLATE_INSTANTIATION
+
+/* Define if explicit template specialisation can specialise static
+   data members of a template class without them being considered
+   instantiation initialisations.  (Conforming compiler should have
+   this set.) */
+#undef HAVE_SEPARATE_TEMPLATE_SPEC_INST
+
+/* Define if you have template default arguments.  */
+#undef HAVE_TEMPLATE_DEFAULT_ARGS
+
+/* Define if compiler allows null template arguments in functions.  */
+#undef HAVE_TEMPLATE_NULL_ARGS
+
+/* Define if compiler allows null template arguments in specialisation.  */
+#undef HAVE_TEMPLATE_NULL_SPEC
+
+/* Define if compiler allows partial template specialisation.  */
+#undef HAVE_TEMPLATE_PARTIAL_SPEC
+
+/* Define if you have member templates.  */
+#undef HAVE_MEMBER_TEMPLATES
+
+/* Define if you have ANSI operator-> for templates.  */
+#undef HAVE_ANSI_OPERATOR_ARROW
+
+/* Define if class access rights are broken.  */
+#undef HAVE_BROKEN_CLASS_ACCESS
+
+/* Define if you have <new> or <new.h> header file.  */
+#undef HAVE_NEW
+#undef HAVE_NEW_H
+
+/* Define if `new_handler' and `set_new_handler' are in namespace `std'.  */
+#undef HAVE_STD_NEW_HANDLER
+
+/* Define if you have new ANSI iostreams. */
+#undef HAVE_NEW_IOSTREAMS
+
+/* Define if you have streambuf declared in <iosfwd>. */
+#undef HAVE_STREAMBUF_IN_IOSFWD
+
+/* Define if ostream is overloaded for char. */
+#undef HAVE_OSTREAM_CHAR_OVERLOAD
+
+/* Define if ostream is overloaded for long double. */
+#undef HAVE_OSTREAM_LONG_DOUBLE_OVERLOAD
+
+/* Define if ostream is overloaded for long longs. */
+#undef HAVE_OSTREAM_LONG_LONG_OVERLOAD
+
+/* Define if you have usable `iterator_traits' in <iterator>. */
+#undef HAVE_ITERATOR_TRAITS
+
+/* Define if you have usable `iterator' in <iterator>. */
+#undef HAVE_ITERATOR
+
+/* Define to 1 (iterator), 2 (all w/tag), or 3 (all w/o tag) depending
+   on what kind of argument list `reverse_iterator' takes.  The first
+   of means that HAVE_ITERATOR is also set.  */
+#undef HAVE_REVERSE_ITERATOR_STYLE
+
+/* Define if you have standard C++ C headers like <cstdlib>. */
+#undef HAVE_CXX_STDC_HEADERS
+
+/* Define if you have <typeinfo> or <typeinfo.h> header file.  */
+#undef HAVE_TYPEINFO
+#undef HAVE_TYPEINFO_H
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* General system properties -------------------------------------------- */
+
+/* Define if you have the ANSI C header files.  */
+#undef STDC_HEADERS
+
+/* Define if you have the <limits.h> header file.  */
+#undef HAVE_LIMITS_H
+
+/* Define if you have the <strings.h> header file.  */
+#undef HAVE_STRINGS_H
+
+/* Define if you have the <sys/types.h> header file.  */
+#undef HAVE_SYS_TYPES_H
+
+/* Define if you have the <sys/sysctl.h> header file.  */
+#undef HAVE_SYS_SYSCTL_H
+
+/* Define if you have the <vm/vm_param.h> header file.  */
+#undef HAVE_VM_VM_PARAM_H
+
+/* Define if you have the <sys/vmmeter.h> header file.  */
+#undef HAVE_SYS_VMMETER_H
+
+/* Define if you have the <crt_externs.h> header file.  */
+#undef HAVE_CRT_EXTERNS_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H
+
+/* Define if you have the <windows.h> header file.  */
+/* #undef HAVE_WINDOWS_H */
+
+/* Define if you have the strerror function.  */
+#undef HAVE_STRERROR
+
+/* Define if you have the setenv function.  */
+#undef HAVE_SETENV
+
+/* Define if you have the unsetenv function.  */
+#undef HAVE_UNSETENV
+
+/* Define if utsname has member domainname. */
+#undef HAVE_UTSNAME_DOMAINNAME
+
+/* Define if <sys/types.h> defines caddr_t.  */
+#undef HAVE_CADDR_T
+
+/* Define to `unsigned' if <sys/types.h> doesn't define.  */
+#undef size_t
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef gid_t
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef uid_t
+
+/* Define to `int' if <sys/types.h> doesn't define.  */
+#undef pid_t
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* System limit constants copied from stdint.h -------------------------- */
+
+#undef HAVE_STDINT_H
+
+#undef CLASSLIB_INT8_MIN
+#undef CLASSLIB_INT8_MAX
+#undef CLASSLIB_UINT8_MAX
+
+#undef CLASSLIB_INT16_MIN
+#undef CLASSLIB_INT16_MAX
+#undef CLASSLIB_UINT16_MAX
+
+#undef CLASSLIB_INT32_MIN
+#undef CLASSLIB_INT32_MAX
+#undef CLASSLIB_UINT32_MAX
+
+#undef CLASSLIB_INT64_MIN
+#undef CLASSLIB_INT64_MAX
+#undef CLASSLIB_UINT64_MAX
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Signals -------------------------------------------------------------- */
+
+/* Define to the signal handler return type.  */
+#undef RETTYPE_SIGHANDLER
+
+/* Define to the signal handler argument list type.  */
+#undef ARGS_SIGHANDLER
+
+/* Define if you have POSIX signal stuff.  */
+#undef HAVE_POSIX_SIGNALS
+
+/* Define if you have POSIX real-time signal stuff.  */
+#undef HAVE_POSIX_RT_SIGNALS
+
+/* Define if you have the strsignal function.  */
+#undef HAVE_STRSIGNAL
+#undef HAVE_STRSIGNAL_DECL
+
+/* Define if you have raise. */
+#undef HAVE_RAISE
+#undef HAVE_RAISE_DECL
+
+/* Define if you have sys_siglist in <signal.h>.  */
+#undef HAVE_SYS_SIGLIST
+
+/* Define if siginfo_t has member si_utime.  */
+#undef HAVE_SIGINFO_SI_UTIME
+
+/* Define if siginfo_t has member si_int.  */
+#undef HAVE_SIGINFO_SI_INT
+
+/* Define if siginfo_t has member si_value.  */
+#undef HAVE_SIGINFO_SI_VALUE
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* General I/O ---------------------------------------------------------- */
+
+/* Define if you have the <fcntl.h> header file.  */
+#undef HAVE_FCNTL_H
+
+/* Define if you have the <io.h> header file.  */
+#undef HAVE_IO_H
+
+/* Define if you have the <sys/filio.h> header file.  */
+#undef HAVE_SYS_FILIO_H
+
+/* Define if you have the <sys/ioctl.h> header file.  */
+#undef HAVE_SYS_IOCTL_H
+
+/* Define if you have the <sys/uio.h> header file.  */
+#undef HAVE_SYS_UIO_H
+
+/* Define if you have the <sys/wait.h> header file.  */
+#undef HAVE_SYS_WAIT_H
+
+/* Define if you have the <sys/param.h> header file.  */
+#undef HAVE_SYS_PARAM_H
+
+/* Define if you have the <sys/mman.h> header file.  */
+#undef HAVE_SYS_MMAN_H
+
+/* Define if you have solaris-compatible sendfile().  */
+#undef HAVE_SOLARIS_SENDFILE
+
+/* Define if you have linux-compatible sendfile().  */
+#undef HAVE_LINUX_SENDFILE
+
+/* Define if you have freebsd-compatible sendfile().  */
+#undef HAVE_FREEBSD_SENDFILE
+
+/* Define if you have the pread function.  */
+#undef HAVE_PREAD
+#undef HAVE_PREAD_DECL
+
+/* Define if you have the popen function.  */
+#undef HAVE_POPEN
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* File system ---------------------------------------------------------- */
+
+/* Define if you have the <pwd.h> header file.  */
+#undef HAVE_PWD_H
+
+/* Define if `fsync' exists. */
+#undef HAVE_FSYNC
+
+/* Define if `fdatasync' exists. */
+#undef HAVE_FDATASYNC
+
+/* Define if you have the getcwd function.  */
+#undef HAVE_GETCWD
+
+/* Define if `mkstemp' exists. */
+#undef HAVE_MKSTEMP
+#undef HAVE_MKSTEMP_DECL
+
+/* Define if `mkdtemp' exists. */
+#undef HAVE_MKDTEMP
+#undef HAVE_MKDTEMP_DECL
+
+/* Define if `glob' exists. */
+#undef HAVE_GLOB
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Directory iterator --------------------------------------------------- */
+
+/* Define if you have the <dirent.h> header file.  */
+#undef HAVE_DIRENT_H
+
+/* Define if you have the <ndir.h> header file.  */
+#undef HAVE_NDIR_H
+
+/* Define if you have the <sys/dir.h> header file.  */
+#undef HAVE_SYS_DIR_H
+
+/* Define if you have the <sys/ndir.h> header file.  */
+#undef HAVE_SYS_NDIR_H
+
+/* Define if the closedir function returns void instead of int.  */
+#undef CLOSEDIR_VOID
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* I/O Selector --------------------------------------------------------- */
+
+/* Define if you have the <sys/devpoll.h> header file.  */
+#undef HAVE_SYS_DEVPOLL_H
+
+/* Define if you have the <sys/poll.h> header file.  */
+#undef HAVE_SYS_POLL_H
+
+/* Define if you have the <sys/select.h> header file.  */
+#undef HAVE_SYS_SELECT_H
+
+/* Define if you have the poll function.  */
+#undef HAVE_POLL
+
+/* Define if you have the kqueue function.  */
+#undef HAVE_KQUEUE
+
+/* Cast for file descriptor sets for select. */
+#undef SELECT_ARG_TYPE
+
+/* Define if <fcntl.h> defines F_SETSIG.  */
+#undef HAVE_F_SETSIG
+
+/* Define if <fcntl.h> defines F_SETAUXFL.  */
+#undef HAVE_F_SETAUXFL
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Networking ----------------------------------------------------------- */
+
+/* Define if you have the <sys/socket.h> header file.  */
+#undef HAVE_SYS_SOCKET_H
+
+/* Define if you have the <sys/sockio.h> header file.  */
+#undef HAVE_SYS_SOCKIO_H
+
+/* Define if you have the <sys/un.h> header file.  */
+#undef HAVE_SYS_UN_H
+
+/* Define if you have the <netinet/in.h> header file.  */
+#undef HAVE_NETINET_IN_H
+
+/* Define if you have the <netdb.h> header file.  */
+#undef HAVE_NETDB_H
+
+/* Define if you have the <arpa/inet.h> header file.  */
+#undef HAVE_ARPA_INET_H
+
+/* Cast for argument type for data type argument of recv and friends. */
+#undef RECV_ARG_TYPE
+
+/* The type of the last argument to socket option functions. */
+#undef SOCKOPT_LEN_TYPE
+
+/* Define to the type expected by socket functions.  */
+#undef SOCKET_LEN_TYPE
+
+/* Define if you have the sockaddr_un structure.  */
+#undef HAVE_SOCKADDR_UN
+
+/* Define if you have the inet_aton function.  */
+#undef HAVE_INET_ATON
+#undef HAVE_INET_ATON_DECL
+
+/* Define if gethostname is declared in unistd.h.  */
+#undef HAVE_GETHOSTNAME
+#undef HAVE_GETHOSTNAME_DECL
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Resource information ------------------------------------------------- */
+
+/* Define if you have the <sys/resource.h> header file.  */
+#undef HAVE_SYS_RESOURCE_H
+
+/* Define if linker defines these symbols.  */
+#undef HAVE_SYM_DATA_START
+#undef HAVE_SYM_BSS_START
+#undef HAVE_SYM_EDATA
+#undef HAVE_SYM_ETEXT
+#undef HAVE_SYM_END
+
+#undef HAVE_SYM_DL_ARGV
+#undef HAVE_SYM_ARGV
+#undef HAVE_SYM_ARGC
+
+/* Define if you have program_invocation_name.  */
+#undef HAVE_PROGRAM_INVOCATION_NAME
+
+/* Define if `getrusage' exists.  */
+#undef HAVE_GETRUSAGE
+
+/* Define if `getrlimit' exists.  */
+#undef HAVE_GETRLIMIT
+
+/* Define if `getpagesize' exists.  */
+#undef HAVE_GETPAGESIZE
+
+/* Define if `getdtablesize' exists.  */
+#undef HAVE_GETDTABELSIZE
+
+/* Define if `getdtablehi' exists.  */
+#undef HAVE_GETDTABLEHI
+
+/* Define if `ulimit ()' exists.  */
+#undef HAVE_ULIMIT
+
+/* Define if `sysconf (_SC_OPEN_MAX)' exists.  */
+#undef HAVE_SC_OPEN_MAX
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Time ----------------------------------------------------------------- */
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you can safely include both <sys/time.h> and <time.h>.  */
+#undef TIME_WITH_SYS_TIME
+
+/* Define if your <sys/time.h> declares struct tm.  */
+#undef TM_IN_SYS_TIME
+
+/* Define if struct tm has a member tm_gmtoff.  */
+#undef HAVE_TM_GMTOFF
+
+/* Define if struct tm has a member tm_zone.  */
+#undef HAVE_TM_ZONE
+
+/* Define if utime(file, NULL) sets file's timestamp to the present.  */
+#undef HAVE_UTIME_NULL
+
+/* Define if you have the timegm function.  */
+#undef HAVE_TIMEGM
+
+/* Define if you have the strftime function.  */
+#undef HAVE_STRFTIME
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* High-res timers ------------------------------------------------------ */
+
+/* Define if you have <invent.h> header file (sgi irix).  */
+#undef HAVE_INVENT_H
+
+/* Define if you have <sys/systemcfg.h> (aix/powerpc). */
+#undef HAVE_SYS_SYSTEMCFG_H
+
+/* Define if you have <sys/processor.h> (solaris, aix/powerpc).  */
+#undef HAVE_SYS_PROCESSOR_H
+
+/* Define if you have <sys/times.h> (e.g. nanosleep).  */
+#undef HAVE_SYS_TIMES_H
+
+/* Define if you have <sys/pstat.h> (hp-ux).  */
+#undef HAVE_SYS_PSTAT_H
+
+/* Define if you have <machine/inline.h> (hp-ux).  */
+#undef HAVE_MACHINE_INLINE_H
+
+/* Define if you have <pmapi.h> (aix).  */
+#undef HAVE_PMAPI_H
+
+/* Define if you have <procfs.h> (solaris).  */
+#undef HAVE_PROCFS_H
+
+/* Define if you have <mach/mach_time.h> (darwin).  */
+#undef HAVE_MACH_MACH_TIME_H
+
+/* Define if you have POSIX nanosleep() (unistd.h).  */
+#undef HAVE_NANOSLEEP
+
+/* Define if you have BSD usleep() (unistd.h).  */
+#undef HAVE_USLEEP
+
+/* Define if you have the posix times().  */
+#undef HAVE_TIMES
+
+/* Define if you have gethrtime()/gethrvtime() (solaris).  */
+#undef HAVE_GETHRTIME
+
+/* Define if you have the posix clock_gettime().  */
+#undef HAVE_CLOCK_GETTIME
+
+/* Define if you have CLOCK_REALTIME for clock_gettime().  */
+#undef HAVE_CLOCK_REALTIME
+
+/* Define if you have CLOCK_MONOTONIC for clock_gettime().  */
+#undef HAVE_CLOCK_MONOTONIC
+
+/* Define if you have CLOCK_PROCESS_CPUTIME_ID for clock_gettime().  */
+#undef HAVE_CLOCK_PROCESS_CPUTIME_ID
+
+/* Define if you have CLOCK_THREAD_CPUTIME_ID for clock_gettime().  */
+#undef HAVE_CLOCK_THREAD_CPUTIME_ID
+
+/* Define if you have CLOCK_PROFILE for clock_gettime().  */
+#undef HAVE_CLOCK_PROFILE
+
+/* Define if you have CLOCK_PROF for clock_gettime().  */
+#undef HAVE_CLOCK_PROF
+
+/* Define if you have CLOCK_SGI_CYCLE for clock_gettime().  */
+#undef HAVE_CLOCK_SGI_CYCLE
+
+/* Define if you have read_real_time in sys/time.h (aix).  */
+#undef HAVE_READ_REAL_TIME
+
+/* Define if you have processor_info in <sys/processor.h> (solaris).  */
+#undef HAVE_PROCESSOR_INFO
+
+/* Define to a GCC asm instruction to get real clock cycles.  */
+#undef CPU_REAL_CYCLES_ASM
+
+/* Define how to get the real cycles value from the counter.  */
+#undef CPU_REAL_CYCLES_VALUE
+
+/* Define to a GCC asm instruction to get virtual clock cycles.  */
+#undef CPU_VIRTUAL_CYCLES_ASM
+
+/* Define how to get the virtual cycles value from the counter.  */
+#undef CPU_VIRTUAL_CYCLES_VALUE
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Stack tracing -------------------------------------------------------- */
+
+/* Define if you have pstack (usually in /usr/proc/bin) to the full
+   path of that program.  */
+#undef PROG_PSTACK
+
+/* Define if you have c++filt to the full path of that program.  */
+#undef PROG_CXXFILT
+
+/* Define if you have the <excpt.h> header file.  */
+#undef HAVE_EXCPT_H
+
+/* Define if you have the <exception.h> header file.  */
+#undef HAVE_EXCEPTION_H
+
+/* Define if you have the <rld_interface.h> header file.  */
+#undef HAVE_RLD_INTERFACE_H
+
+/* Define if you have the <pdsc.h> header file.  */
+#undef HAVE_PDSC_H
+
+/* Define if you have U_STACK_TRACE in -lcl.  */
+#undef HAVE_U_STACK_TRACE
+
+/* Define if you have backtrace and backtrace_symbols_fd (glibc 2.1).  */
+#undef HAVE_BACKTRACE_SYMBOLS_FD
+
+/* Define if you have xl__trkbk in -lxlf90.  */
+#undef HAVE_XL_TRBK
+
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* ---------------------------------------------------------------------- */
+/* Dynamic linker ------------------------------------------------------- */
+
+/* Define if `dlopen' exists. */
+#undef HAVE_DLOPEN
+#undef HAVE_DLOPEN_DECL
+
+/* Define if `shl_load' exists. */
+#undef HAVE_SHL_LOAD
+#undef HAVE_SHL_LOAD_DECL
+
+/* Define if `load' exists. */
+#undef HAVE_LOAD
+#undef HAVE_LOAD_DECL
+
+/* Define if you have the <loader.h> header file.  */
+#undef HAVE_LOADER_H
+
+/* Define if `ldr_next_module' exists. */
+#undef HAVE_LDR_NEXT_MODULE
+#undef HAVE_LDR_NEXT_MODULE_DECL
+
+/* Define if you have the <link.h> header file.  */
+#undef HAVE_LINK_H
+
+/* Define if `dladdr' exists. */
+#undef HAVE_DLADDR
+#undef HAVE_DLADDR_DECL
+
+/* Define if `dlinfo' exists. */
+/* #undef HAVE_DLINFO */
+/* #undef HAVE_DLINFO_DECL */
+
+/* Define if `_r_debug' exists. */
+#undef HAVE_R_DEBUG
+
+/* Define if `link_map' has `l_map_start' member. */
+#undef HAVE_LINK_MAP_L_MAP_START
+
+/* Define if you have the <elf.h> header file.  */
+#undef HAVE_ELF_H
+
+/* Define if you have the <sgidefs.h> header file.  */
+#undef HAVE_SGIDEFS_H
+
+/* Define if you have the <mach-o/dyld.h> header file.  */
+#undef HAVE_MACH_O_DYLD_H
+
+#endif /* CLASSLIB_CONFIG_H */

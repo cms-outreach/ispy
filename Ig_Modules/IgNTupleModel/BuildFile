@@ -1,0 +1,10 @@
+<Use name=Ig_Framework/IgObjectBrowser>
+<Use name=Ig_Modules/IgCommonData>
+<Use name=Ig_Imports/classlib>
+
+<Export>
+  <Use name=Ig_Framework/IgObjectBrowser>
+  <Use name=Ig_Modules/IgCommonData>
+  <Use name=Ig_Imports/classlib>
+  <Lib name=Ig_ModulesIgNTupleModel>
+</Export>

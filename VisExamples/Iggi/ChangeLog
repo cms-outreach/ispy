@@ -1,0 +1,9 @@
+2008-04-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Build dependencies.
+	* IgEventMenu.h, IgEventMenu.cc: Event menu navigation.
+	* Iggi.h, Iggi.cc: Studio setup.
+	* iglet.cc: Definition of the iglet.
+
+	* Iguana event navigation.
+

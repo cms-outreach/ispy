@@ -1,0 +1,299 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+	* test/BuildFile: Modify to use the CMSSW config.
+
+2007-03-06  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgPythonService.h, IgPythonState.h, config.h,
+	IgPythonService.cc, IgPythonState.cc: Move to classlib and
+	IgPluginManager. 
+
+2006-08-01  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* test/test_SimpleScript.cc: Test fixed.
+
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonFactory.h, IgPythonCompleter.cc, IgPythonInterpreter.cc,
+	IgPythonOStream.cc, IgPythonStream.cc, test_PythonStream.cc,
+	test_SimpleCommunication.cc, test_SimpleScript.cc, BuildFile:
+	extra semicolumns removed for ANSI C++ compliancy.
+
+2005-09-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonService.cc, IgPythonState.cc: forgot to modify the
+	include paths from IgQtPython to IgPython.
+
+2005-08-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonService.h, IgPythonState.h, IgPythonState.pyste,
+	IgPythonService.cc, IgPythonState.cc, BuildFile: IgPythonState and
+	IgPythonService moved here from IgQtPython because Qt indipendent.
+
+2005-03-16  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* test/test_PythonStream.cc: Check the existence of the test file.
+	
+2005-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, python/BuildFile, test/BuildFile: Port to new SCRAMV1.
+	
+2004-08-04  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonStream.h : fixed to use new IgPythonStreambuf API.
+
+2004-07-14  Lassi A. Tuura  <lat@maccms05.cern.ch>
+
+	* IgPythonInterpreter.cc (interpret, eval): Break down the code to
+	a simpler form to read and make GCC 3.3 on OS X happier (python
+	2.3.4 and boost 1.31.0).
+
+2004-07-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonStream.h: now it is possible to obtain the underlying
+	IgPythonInterpreter object. Source beautification.
+
+	* IgPythonInterpreter.h: more code beautification. 
+
+	* IgPythonInterpreter.h, IgPythonInterpreter.cc: source
+	beautification. Extra semi-columns removed.
+
+2004-06-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonInterpreter.h: workaround for python 2.3
+	naming conflict with Qt.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgPythonFactory.h (create): now takes arguments as a
+	string.
+
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Removed the unused packages.
+
+2003-09-17  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Move to using SEAL Foundation and removed the 
+	Qt dependency.
+	
+	*test/SimpleDerived.cc: Removed the unused headers and fix for std 
+	namespace.
+
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Move to using SEAL Foundation.
+
+2003-05-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgPythonStream.cc (IgPythonStreambuf): removed overflow()
+	and xpuntn().
+	
+	* interface/IgPythonStream.h (IgPythonStreambuf): Now is derived 
+	from stringbuf so that reimplementing xpuntn() and overflow() is
+	not necessary anymore.
+
+	* test/test_PythonStream.cc (main): moved test.py to test/.
+
+	* interface/IgPython*.h (IgPythonFactory): documentation
+	fixes and additions.
+
+	* test/BuildFile: added test_ in front of filenames
+
+2003-05-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+	* test/SimpleScript.cc: renamed to test/test_SimpleScript.cc
+
+	* test/SimpleCommunication.cc: renamed to test/test_SimpleCommunication.cc
+
+	* test/PythonStream.cc: renamed to test/test_PythonStream.cc
+
+	* Buildfile: removed the <use> of IgStudio.
+
+        * src/BuildFile: removed
+
+	* src/plugin.cc: removed
+	
+	* src/IgPythonInterpreter.cc: Corrected all the string to char* 
+	warnings.
+
+	* interface/IgPythonFactory.h (loadScript): multiline string
+	warning removed.
+
+2003-04-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/IgPythonFactory.h (loadScript): reworked script
+	loading code which now handles multiple PYTHONPATH definitions.
+	The code is in python as well, but might be 
+
+2003-04-24  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgPythonInterpreter.cc (redirectError): workaround to the
+	bug which used to make the application crash whenever one tried to
+	redirect bot Output and Error. It seems it was due to the double
+	use of "new class_<IgPythonOStream>".So I created to different
+	classes, one for the output stream the other for the error stream. 
+
+	* interface/IgPythonFactory.h (create): uses eval() instead of
+	temporary variable...
+
+	* src/IgPythonInterpreter.cc (completeName): reworked to use
+	the IgPythonCompleter object.
+	(IgPythonInterpreter): Fixed derived IgPythonCompleter class name.
+	(eval): same as interpret but uses Py_eval_input.
+
+	* python/BuildFile: python wrapper uses IgPython module.
+
+	* python/IgPythonCompleter.pyste (IgPythonCompleter): wrapper
+	for IgPythonCompleter virtual interface.
+
+	* src/IgPythonInterpreter.cc (IgPythonInterpreter): removed some 
+	old comments.
+	(IgPythonInterpreter): Added code to initialize the completer.
+
+	* interface/IgPythonInterpreter.h (IgPythonInterpreter): added
+	support for completer object.
+
+	* src/IgPythonCompleter.cc (isValid): basic dummy implementation.
+	(completeName): basic dummy implementation.
+
+	* interface/IgPythonCompleter.h (IgPythonCompleter): this class
+	performs syntax check and code completion for python. This is
+	actually an interface class which gets extended in python.
+
+2003-04-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgPythonStream.cc (completeName): wraps IgPythonInterpreter::completeName()
+
+	* src/IgPythonInterpreter.cc (completeName): This methods calls
+	the share/Completer.py python script to complete passed string.
+	(execute): Changed using iostream instead of QT.
+	(IgPythonInterpreter): __globals__ variable in python is a pointer
+	to the global namespace.
+
+	* interface/IgPythonInterpreter.h (IgPythonInterpreter): added
+	completeName() method which complete an object name basing
+	completion on python dictionary.
+
+2003-04-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile: Made plugin Use Ig_Modules/IgStudio in order to be
+	able to compile src/plugin.cc
+	* src/plugin.cc: Added to provide proper iguana plugin mechanism
+	for python.	
+	* src/plugin.cc: removed unneded includes. 
+
+2003-04-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgPythonInterpreter.cc (redirectOutput): fixed a typo:
+	stderr->stdout. "import sys" moved.
+	(redirectError): removed commented code."import sys" moved
+	(IgPythonInterpreter): "import sys" moved here.
+
+2003-04-16  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgPythonStream.cc (redirectError): redirects python sys.stderr
+	to wanted ostream.
+	(redirectOutput): redirects python sys.stdout to wanted ostream.  
+
+	* interface/IgPythonOStream.h (IgPythonOStream): This class wraps
+	ostreams in order to be able to redirect output.
+
+	* src/IgPythonInterpreter.cc (IgPythonInterpreter): Initializes
+	the error stream to std::cerr. Added body for redirectError().
+
+	* interface/IgPythonInterpreter.h (IgPythonInterpreter): added
+	methods redirectError() and redirectOutput() to redirect python
+	sys.stderr and sys.stdout streams.
+
+2003-04-14  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/IgPythonStream.h: A std::iostream like interface to
+	the python interpreter...
+
+	* interface/IgPythonInterpreter.h (IgPythonInterpreter): added
+	operator[] which is a shortcut to getGlobalNamespace()[variable].
+
+	* interface/IgPythonFactory.h (set): used to set the name of the
+	concrete object the factory creates.
+
+2003-04-11  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* interface/IgPythonFactory.h (IgPythonFactory): Constructor is
+	now void. you must configure the python script via either
+	loadScript() or setScript().
+
+2003-04-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile: fixed boost-python to boost_python
+
+2003-04-09  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgSingleton.h: renamed from interface/PrivateSingleton.h
+	removed Private namespace as now it is a private include.
+	(class IgSingleton): class renamed from Singleton.
+
+	* test/SimpleScript.cc: fixed because of include file renaming.
+
+	* test/SimpleCommunication.cc: fixed because of include file renaming.
+
+	* src/IgPythonInterpreter.cc: fixed because of include file renaming.
+
+	* interface/IgPythonFactory.h: fixed because of include file renaming.
+
+	* interface/IgPythonInterpreter.h: renamed from interface/IgPythonInterpreter.h
+
+	* src/IgPythonInterpreter.cc: renamed from IgPythonInterpreterService.cc
+
+2003-04-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/SimpleCommunication.cc (main): removed the part concerning
+	python interpreter service.
+	Added cassert include explicitly.
+	Fixed IgPythonInterpreterService include path.
+
+	* test/BuildFile: Added SimpleCommunication.cc example.
+
+2003-04-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/SimpleScript.cc (main): changed to use the new
+	IgPythonInterpreter syntax.
+	
+
+	* src/IgPythonInterpreterService.cc (IgPythonInterpreter): removed
+	singleton for python environment.
+
+	* interface/IgPythonInterpreterService.h: removed the
+	InterpreterFactory, pending overhaul.
+
+	* src/IgPythonInterpreterService.cc (namespace): here I initialize
+	the python environment. 
+	(namespace): disposer removed
+
+	* interface/PrivateSingleton.h: This contains a general purpose
+	singleton, might be useful in future.
+	(nakedPtr): must return a reference to a pointer
+	* interface/IgPythonInterpreterService.h: Simplified by removing
+	singleton stuff for python initialization: now the interpreter
+	gets initialized/finalized in an unnamed namespace as soon as the
+	module gets loaded/disposed.
+	The Singleton class is moved to its own include file.
+
+	* BuildFile: Change export to match the new package name.
+
+	* test/SimpleScript.cc: changed include path to match the new package name.
+	Fixed mispelt include name.
+
+	* interface/IgPythonFactory.h: Changed to match new package name: IgPython.
+	(IgPythonFactory): changed to use the new
+	IgPythonInterpreterService factory.
+	(IgPythonFactory):  Changed to match new package name: IgPython.
+
+	* src/IgPythonInterpreterService.cc: Changed to match new package name: IgPython.
+
+	* interface/config.h: Changed to match new package name: IgPython.
+
+	* IgPythonInterpreterService.h: Changing stuff to match new
+	package name: IgPython
+

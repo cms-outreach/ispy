@@ -1,0 +1,8 @@
+<Use name=Ig_Modules/Ig3DBaseWindow>
+<Use name=Ig_Modules/Ig2DBrowser>
+
+<Export>
+  <Use name=Ig_Modules/Ig3DBaseWindow>
+  <Use name=Ig_Modules/Ig2DBrowser>
+  <Lib name=Ig_ModulesIg2DWindow>
+</Export>

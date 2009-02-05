@@ -1,0 +1,17 @@
+### PATCH soqt
+--- src/Inventor/Qt/common/viewers/SoGuiViewer.cpp.in.orig	Fri Oct 17 12:17:45 2003
++++ src/Inventor/Qt/common/viewers/SoGuiViewer.cpp.in	Fri Oct 17 12:20:48 2003
+@@ -1011,8 +1011,10 @@
+   // rotated.
+   const float SLACK = 0.001f;
+ 
+-  this->camera->nearDistance = nearval * (1.0f - SLACK);
+-  this->camera->farDistance = farval * (1.0f + SLACK);
++  if (fabs (this->camera->nearDistance.getValue () - nearval * (1.0f - SLACK)) < 0.00001)
++    this->camera->nearDistance = nearval * (1.0f - SLACK);
++  if (fabs (this->camera->farDistance.getValue () - farval * (1.0f + SLACK)) < 0.00001)
++    this->camera->farDistance = farval * (1.0f + SLACK);
+ 
+ 
+   // FIXME: there's a possible optimization to take advantage of here,
+

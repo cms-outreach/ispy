@@ -1,0 +1,9 @@
+<Use name=Ig_Modules/IgCommonData>
+<Use name=Ig_Modules/IgQtBrowser>
+<Use name=Ig_Modules/IgConfig>
+
+<Export>
+  <Use name=Ig_Modules/IgCommonData>
+  <Use name=Ig_Modules/IgQtBrowser>
+  <Lib name=Ig_ModulesIgStudio>
+</Export>

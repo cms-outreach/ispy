@@ -1,0 +1,554 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-09  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: CPPFLAGS used instead of CXXFLAGS.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Use Iguana flag.
+	
+2007-03-06  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, IgQtAppContextService.h, IgQtAppCrashAlertService.h,
+	IgQtAppLoopService.h, IgQtScheduledEvent.h,
+	IgQtAppActiveService.cc, IgQtAppContextService.cc,
+	IgQtScheduledEvent.cc, IgQtAppCrashAlertService.cc, IgQtAppDebug.cc,
+	IgQtObjectMenuService.cc, IgQtAppDebugService.cc,
+	IgQtAppImageService.cc, IgQtAppLoopService.cc,
+	IgQtAppMenuService.cc, IgQtAppToolBarService.cc,
+	IgQtAppWindowService.cc, IgQtObjectMenuService.cc,
+	IgQtObjectMenu.cc, plugin.cc, IgQtAppStatusBarService.cc: Move to
+	classlib.
+	
+2006-12-21  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQtAppHelp.cc: Replace netscape with mozilla.
+	
+2006-06-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgQWidgetStackSite.h, src/IgQWidgetStackSite.cc,
+	src/IgQDockWindowSite.cc: Now IgQDockWindowSite and IgQWidgetStackSite
+	are by default hidden and become visible only when something is hosted
+	in these.
+	
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* PyWrapper.orig (boost): extra ; removed for ANSI C++
+	compliance.
+
+2006-03-08  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: IGUANA_VERSION CXXFLAG added again as it will not build if
+	checked out in a dev area.
+
+2006-03-07  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Cleanup (removed IGUANA_VERSION CXXFLAG).
+
+2005-12-15  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Removed boost python dependency.
+	* python/BuildFile: Added boost_python dependency.
+
+2005-08-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtAppMenuService.cc: some assertions added.
+
+	* IgQtAppLoopService.h, IgQtScheduledEvent.h,
+	 IgQtScheduledEventExecutor.h, IgQtAppLoopService.cc,
+	 IgQtScheduledEvent.cc, IgQtScheduledEventExecutor.cc: now the
+	 IgQtAppLoopService allows to schedule callbacks as soon as
+	 possible. This is required for initialization when using the web
+	 application because the event loop is already running when setup
+	 of different services occurs.
+
+	* IgQtAppExtensions.cc, IgQtAppLoopService.cc,
+	IgQtAppLoopService.h: event loop does not require a QWidget to be
+	specified in order to work.
+
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQToolBoxSite.cc, IgQToolBoxSite.h: IgSite for the widget
+	QToolBox added.
+
+	* IgQtObjectMenuService.cc (IgQtObjectMenuService): commented code
+	removed.
+
+2005-06-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtAppActiveService.h, IgQtObjectMenuService.h: IgObserver
+	renamed to IgDispatcher.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* PyWrapper.cc: Moved to PyWrapper.orig to avoid duplicate
+	compilation. 
+ 
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2005-02-07  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQWorkspaceSite.h, IgQWorkspaceSite.cc: Not derived from QObject
+        and not broadcasting IgQtAppActiveMessage message any more.
+
+2005-02-02  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, python/BuildFile: Move python dependencies lower.
+
+2004-12-16  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppImageService.h, IgQtAppImageService.cc: Method added to
+	register QPixmap*.
+	
+	* IgQtAppDebug.h, IgQtAppDebug.cc: state tree display added, format
+	of saving the information into file is improved (spaces are added
+	for each child item).
+	
+	* IgQtAppDebugService.h: New menu ID for state tree added.
+
+2004-12-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQWidgetStackSite.cc, IgQWorkspaceSite.cc, IgQtSiteStack.cc:
+	Make use of IgDocumentDataRoot to get/set the current root name.
+
+2004-11-18  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppDebug.h, IgQtAppDebug.cc: showProfiler method added to load the
+	profile on demand.
+	
+	* IgQtAppDebugService.h, IgQtAppDebugService.cc: Menu item for Show
+	Profiler added and connected to the showProfile slot of IgQtAppDebug.
+
+2004-10-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQtAppDebug.cc: Add full program name to pass it to the debugger.
+
+2004-09-01  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQWorkspaceSite.h, IgQWorkspaceSite.cc: IgQWorkspaceSite is not
+	inherited from QWorkspace any more and now it uses IgQtWorkspace.
+	
+	* BuildFile: Added dependency on IgQt due to use of IgQtWorkspace.
+
+2004-08-26  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppActiveService.h, IgQtAppActiveService.cc: New service added
+	for Application activation.
+	
+	* IgQWorkspaceSite.h, IgQWorkspaceSite.cc: Inherited from QWorkspace and
+	re-implemented the windowActivationChange to broadcast the
+	IgQtAppActiveMessage.
+
+2004-08-19  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppHelp.h, IgQtAppHelp.cc: netscape member function made static
+	to be used from outside without creating IgQtAppHelp object.
+
+2004-08-18  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppMenuService.cc: Removed unused header.
+	
+	* IgQtAppHelp.cc: Viewer buttons' help documentation is now part of the 
+	IGUANA documentation, so fixed the path for it.
+
+2004-08-11  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppContextService.h, IgQtAppContextService.cc: Tool bar buttons
+	with not SLOT provided are now disabled.
+	
+	* IgQtAppToolBarService.cc: Disable the buttons which do not have
+	any slot.
+
+2004-08-09  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppToolBarService.cc: ToolTips and WhatsThis info added
+	for tool buttons, added getToolBarButton method to get the
+	toolBarButton.
+
+2004-08-09  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* PyWrapper.cc: added to avoid wrong initialization order of the
+	bound classes.  
+
+2004-07-05  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* ChangeLog: python directory is not yet added in this release,
+	once we will have boost 1.31.0 then we can add those new python
+	bindings.
+
+2004-07-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQWorkspaceSite.cc (host): hack to fix the window size on
+	startup.
+
+2004-06-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgQWorkspaceSite_boost.cc, IgQtSiteStack_boost.cc,
+	IgQtSite_boost.cc: python bindings added.
+	
+	* IgQtSiteStack.cc, IgQtSiteStack.h, IgQWidgetStackSite.cc,
+	IgQWidgetStackSite.h: cascade and tile method added.
+
+	* IgQDockAreaSite.cc: now orientation depends on the parent
+	QSplitter.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtAppMenuService.h (IgQtAppMenuService): "Save as..." and
+	"Print" moved to "File" menu.
+
+	* IgQtAppContextService.cc (focusIn): logging output commented
+	out.
+
+	* IgQWidgetStackSite.cc, IgQWidgetStackSite.h: now this is a
+	IgQtSiteStack.
+
+	* IgQtSiteStack.cc, IgQtSiteStack.h: this class is the baseclass
+	for all those site which are actually a stack of sites. This
+	includes the IgQWorkspaceSite and IgQWidgetStack site.
+
+2004-05-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppHelpService.cc, IgQtAppHelp.cc: Icons used from IgIcons instead
+	IgQT.
+
+2004-04-30  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppMenuService.cc: Call the disconnectMenuItem for the menu
+	item as the addOnFocusIn also made the connection thats why for saving
+	and printing we were asked twice.
+
+2004-04-30  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQDockWindowSite.cc, IgQDockWindowSite.cc: now widget inside it
+	resize correctly.
+	
+	* IgQWidgetStackSite.cc, IgQWidgetStackSite.h: new site for
+	stacking widget. 
+
+2004-03-25  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtAppMenuService.h,IgQtAppMenuService.cc (insertItem): added
+	method to add a (possibly) context sensitive entry to a menu.
+
+2004-03-18  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtAppMenuService.cc: various assertions added.
+
+2004-03-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtAppContextService.h, IgQtAppContextService.cc: added methods
+	to separately add callbacks for focus in and focus out.
+
+	* IgQtAppToolBarService.cc: back to the old way of registering
+	toolbuttons in the map.
+	
+2004-03-04  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQtCallbacks.h, IgQtCallbacks.cc: New callback for
+	enabling/disabling QWidgets on context change.
+
+	* IgQtAppToolBarService.cc: now tool buttons enable/disable status
+	is automatically registered into the context.
+
+2004-03-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgQWorkspaceSite.cc (cascade): now has API for cascading
+	windows, rather then just tiling them.
+
+	* IgQtAppMenuService.cc (subMenu): security checks in case some of
+	the pointers are 0.
+	(findbyName): method to get menu elements by their name.
+	(isIdThere): method to check whether one of the elements is there
+	by using its ID. 
+
+	* IgQtAppMenuService.h: added findByName() and isIdThere() method
+	declaration.
+	
+	* IgQtAppContextService.cc: implemented a service which uses
+	IgState to keep track of context. Context sensitive parts can
+	register callbacks which are going to be called to focus in or
+	focus out the wanted context when the context changes.
+
+	* IgQtAppToolBarService.cc, IgQtAppToolBarService.h: implemented a
+	service to create and manage toolbars and toolbuttons. Each
+	toolbar is created only once, just like their buttons. It uses
+	IgQtAppContextService to keep track of focus.
+
+	* IgQtCallbacks.cc, IgQtCallbacks.h: utility callbacks to create
+	connections between qobjects and enable/disable tabs in a
+	QTabWidget.
+
+	* IgQtAppImageService.cc, IgQtAppImageService.h : new image service
+	which allows to easily manage QPixmaps.
+
+	* IgQDockAreaSite.cc, IgQDockAreaSite.h, IgQDockWindowSite.cc,
+	  IgQDockWindowSite.h, plugin.cc: added IgSites for QDockArea and
+	  QDockWindows.
+
+2003-12-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQtObjectMenuService.cc: Remove tear-off handle from the object menu.
+
+2003-10-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQWorkspaceSite.h, plugin.cc: Cleanup.
+		
+2003-10-06  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQWorkspaceSite.h, IgQWorkspaceSite.cc, plugin.cc: New site:
+	workspace.
+		
+2003-09-26  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgQtAppDebug.h, IgQtAppDebug.cc: Export of the lists (as tab
+	separated ASCII text) from the list views of the Debug windows is
+	added. OK button is renamed to Close to indicate that there is no
+	action behind - it just closes the window.
+	
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Clean up.
+	
+	* IgQtAppContextService.cc, IgQtAppCrashAlertService.h,
+	IgQtAppCrashAlertService.cc, IgQtApPDebug.cc,
+	IgQtAppLoopService.h, IgQtAppLoopService.cc,
+	IgQtAppMenuService.cc, IgQtAppStatusBarService.cc,
+	IgQtAppToolBarService.cc, IgQtAppWindowService.cc,
+	IgQtObjectMenu.cc, IgQtObjectMenuService.cc, plugin.cc, config.h,
+	src/BuildFile: Move to using SEAL Foundation classes and plug-in
+	manager.  In shared library display window, use Filename for file
+	name operations.
+
+2003-08-14  Ianna Osborne  <Ianna.Osborne@cern.ch>
+	
+	* IgQtAppHelp.h, IgQtAppHelp.cc: Add more slots to handle more
+	menu items: request for viewer buttons information, IGUANA web
+	page, bug reporting system, about Qt. Add initialisation of the
+	help service. Add netscape browser runner. Add icons on the menu
+	item about IGUANA and on a dialog box.
+
+	* IgQtAppHelpService.h, IgQtAppHelpService.cc: Add more help
+	service menu items: viewer buttons, about Qt, IGUANA web page, bug
+	report.
+
+	* src/BuildFile: Add IGUANA_VERSION definition.
+
+2003-08-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+	
+	* IgQtAppHelp.h, IgQtAppHelp.cc, IgQtAppHelpService.h,
+	IgQtAppHelpService.cc: New files - help service with two menu items. The
+	first provides about information and the second switches to whatsthis
+	mode.
+	
+	* IgQtAppExtensions.cc: Install help service.
+
+2003-07-10  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAppWindowService.h,IgQtAppWindowService.cc: Newly added files
+	to access the application main Window Widget.
+	
+	* IgQtAppExtensions.cc: IgQtAppWindowService service installed.
+
+2003-05-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppDebug.cc (rundebug): Fix debugger invocation.
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc, IgQtAppDebug.cc, xtypeinfo.h: Plug-in manager update.
+	Remove redundant type info.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* xtypeinfo.h: Add export as per classlib changes.
+
+2002-09-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppDebug.cc (IgQtAppDebugPluginsInfo): Skip duplicates.
+
+2002-09-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* Adjust to plug-in management changes.
+
+2002-09-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppStatusBarService.h, IgQtAppStatusBarMessage.cc
+	(setMessage): Provide more overloaded variants.  Sync X to make
+	sure the message changes are propagated to the GUI.
+
+2002-09-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppStatusBarService.h, IgQtAppStatusBarService.cc: Finish.
+
+2002-08-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSession to IgState migration.
+
+2002-04-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtObjectMenuService.h, IgQtObjectMenuService.cc: Add
+	post-action update support.
+
+	* IgQtObjectMenu.h, IgQtObjectMenu.cc: Implement missing methods.
+	Fix several bugs in submenu handling.  Add support for separators
+	in bulk operations.
+
+2002-03-21  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtObjectMenu.h, IgQtObjectMenu.cc, IgQtObjectMenuMessage.h,
+	IgQtObjectMenuService.h, IgQtObjectMenuService.cc: New files,
+	implement object-specific context menu service and utilities.
+
+2002-03-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQHSplitterSite.h, IgQHSplitterSite.cc,
+	IgQVSplitterSite.h, IgQVSplitterSite.cc:
+	New files, add specialised splitters.
+	* IgQSplitterSite.h, IgQSplitterSite.cc: Support them.
+	* plugin.cc: Publish them.
+
+	* BuildFile: Remove reference to plugin_makefile.mk.
+	* src/BuildFile: Move it here.
+
+	* IgQtAppLoopService.h, IgQtAppLoopService.cc: Add post-loop
+	actions.
+
+2002-01-16  Ianna Gaponenko  <ianna.gaponenko@cern.ch>
+
+	* IgQtAppDebug.h, IgQtAppDebug.cc: close slot has been replaced
+	by reimplemented event handler hideEvent that receives widget
+	hide events.
+	
+2002-01-15  Ianna Gaponenko  <ianna.gaponenko@cern.ch>
+
+	* IgQtAppDebug.h: Don't use semicolons after Q_OBJECT.
+
+2001-11-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* Adjust to session and selection changes in core library.
+	Tidy up extension naming conventions.
+
+2001-11-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Great renaming and general clean-up patch.
+
+2001-08-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppDebugService.cc, IgQtAppMenuService.cc: Insert menu tear
+	off handles and give the torn-off menus captions.
+
+2001-07-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppDebug.h, IgQtAppDebug.cc
+	(IgQtAppDebug): Split into several info display classes.
+	(IgQtAppDebugInfo): New base dialog class for the info lists.
+	Provide a skeleton structure with optional timed refreshes.
+	(IgQtAppDebugResourceInfo): Show resource consumption.
+	(IgQtAppDebugLibrariesInfo): Show loaded shared libraries.
+	(IgQtAppDebugPluginsInfo): Show plugin cache info.
+
+	* IgQtAppDebugService.h, IgQtAppDebugService.cc: Reflect
+	IgQtAppDebug changes.  Add notes on other things to display.
+
+2001-07-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppContextService.h, IgQtAppContextService.cc,
+	IgQtAppCrashAlertService.h, IgQtAppCrashAlertService.cc,
+	IgQtAppDebugService.h, IgQtAppDebugService.cc,
+	IgQtAppLoopService.h, IgQtAppLoopService.cc,
+	IgQtAppMenuService.h, IgQtAppMenuService.cc,
+	IgQtAppStatusBarService.h, IgQtAppStatusBarService.cc,
+	IgQtAppToolBarService.h, IgQtAppToolBarService.cc: Make the main
+	window argument optional so that it must be supplied on the first
+	creation and can be dropped on a subsequent access.
+
+2001-07-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtAppExtensions.h, IgQtAppExtensions.cc: Install common Qt
+	application extensions (listed below).
+
+	* IgQtAppContextService.h, IgQtAppContextService.cc: New
+	application extension skeleton for current user attention.
+
+	* IgQtAppCrashAlertService.h, IgQtAppCrashAlertService.cc: New
+	applicatoin extension skeleton for dealing with application
+	instabilities.
+
+	* IgQtAppDebug.h, IgQtAppDebugService.h, IgQtAppDebug.cc,
+	IgQtAppDebugService.cc: New application extension skeleton to
+	provide application debugging utilities.
+
+	* IgQtAppLoopService.h, IgQtAppLoopService.cc: New application
+	extension to manage the Qt main loop.
+
+	* IgQtAppMenuService.h, IgQtAppMenuService.cc: New application
+	extension to manage the main window menus.
+
+	* IgQtAppStatusBarService.h, IgQtAppStatusBarService.cc: New
+	application extension skeleton to manage the main window status
+	bar.
+
+	* IgQtAppToolBarService.h, IgQtAppToolBarService.cc: New
+	application extension skeleton to manage the main window tool bar.
+
+2001-07-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* Reflect object browser architecture changes: use session when
+	creating objects.
+
+2001-04-11  Lassi A. Tuura  <lat@iki.fi>
+
+	* Change child widget hosting to a dual call protocol.  The first
+	determines the parent widget for the child site, the second places
+	the child widget into the parent.  Required for widgets that make
+	a distinction between the two steps, most notably the main window
+	widget and layout managers.
+
+2001-03-30  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile, plugin.cc: Make this package a plugin.
+
+	* IgQMainWindowSite.h, IgQMainWindowSite.cc, IgQSplitterSite.h,
+	IgQSplitterSite.cc, IgQWidgetSite.h, IgQWidgetSite.cc: New browser
+	sites based on QMainWindow, QSplitter and QWidget, respecitively.
+
+	* IgQtBadSiteError.h, IgQtBadSiteError.cc: New error type thrown
+	by IgQtSite for an incompatible site.
+
+	* IgQtSite.h, IgQtSite.cc: Do not make this a widget, just a site,
+	and let the inheriting class decide what type of a widget this is.
+	Throw an IgQtBadSiteError if the given site is not a Qt site.
+	(selfFrom, self): New methods to turn a site into a widget.
+	(hostFrom, host): New methods to turn the site's child hosting
+	area into a widget -- in case that is different from the site's
+	widget, as is the case with the main window for example.
+
+2001-03-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Try to work around SCRAM linking issues.
+
+2001-03-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* New package for convenience of Qt-based browsers.
+
+	* config.h: New.
+
+	* IgQtSite.h, IgQtSite.cc: New, a Qt widget site.

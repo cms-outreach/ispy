@@ -1,0 +1,589 @@
+2005-12-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* rpm-preamble.file: %cmsos, %cmsplatf, %pkgreqs, %cmscomp,
+	%cmscompilerv are now evaluated only once per spec. This is done
+	using the %{expand:...} macro.
+	
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	
+	* BuildFile, src/BuildFile: Merge the branch to HEAD.
+
+2004-10-27  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* module-check: Removed from the release. Now SEAL tools are used
+	to check the module.
+
+2004-07-08  Lassi A. Tuura  <lat@maccms05.cern.ch>
+
+	* inst-files/boost.spec: "install -D" is not portable, use mkdir
+	-p/install pair.
+
+	* inst-files/lapack.spec: Patch vanished, use a different URL.
+
+2004-07-08  Lassi A. Tuura  <lat@iki.fi>
+
+	* inst-files/lcg-tool-conf.spec: Require wxPython.
+
+	* inst-files/python.spec: Change version to 2.3.4.
+
+	* inst-files/wxPython.spec: Change version.
+
+	* inst-files/*.spec: Remove trailing white space.
+
+	* inst-files/psyco.spec: New.
+	* inst-files/ipython.spec: New.
+	* inst-files/elementtree.spec: New.
+
+2004-07-08  Lassi A. Tuura  <lat@maccms05.cern.ch>
+
+	* install.sh (download_getit): For CVS checkouts, try mangling the
+	repository and password twice, once for new cvs, and if that
+	fails, another for older cvs.
+	(rpmspec, rpmsrc, rpmeval): Use perl instead of sed for line
+	ranges due to differences between GNU and BSD seds.
+	(rpmspec): Fix perl problem with rewriting over existing file (-i
+	option) -- it wipes out the file contents on OS X for some reason.
+	BSD sed can't handle $ in an alternative, so pull it out and use a
+	separate expression.
+
+	* inst-files/cmsos.file: Improve OS X version handling and rename
+	platform to "osx" from "macosx" to be compatible with LCG choices.
+
+	* inst-files/scram-build.file: CMS configuration is different
+	from LCG configuration, so fix up both.
+
+	* inst-files/lcg-scram-build.file: Pass platform through on OS X.
+
+	* inst-files/cms-tool-conf.spec: Require lots more stuff.
+
+	* inst-files/python.spec: Fix install_name for the OS X dylib.
+	Add library symlink without dots in the version for boost.
+
+	* inst-files/boost.patch (python.jam): Remove tons of OS X
+	specific Python crud that doesn't work for us.  It wants to pick
+	up the system python framework so badly it doesn't work with
+	separately installed python at all -- we just want the standard
+	unix branch.
+
+	* inst-files/coin.spec, coin.patch: Pick newer version of Coin3D,
+	the old version doesn't build due to forced -Werror in snapshot
+	versions and warnings from GCC 3.3+.  Add patch to handle OS X
+	Tiger (already fixed in Coin CVS).
+
+	* inst-files/wxPython.spec: Remove patch.
+
+2004-06-03  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Pass RPM custom arguments everywhere.
+
+	* inst-files/gcc.spec: Update download location.
+
+	* inst-files/lcg-tool-conf.spec: Handle python version properly.
+
+	* inst-files/cppunit.spec: Add CERN-specific test driver.
+
+	* install.sh: Apply version overrides everywhere.
+
+2004-05-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Move rpmrecurse up and clean up names.  Take a list
+	of "already done" for rpmrecurse, it needs to be different for
+	different callers.
+
+	* inst-files/boost.patch, inst-files/boost.spec: More python
+	fixes.  Adapt to new library locations and other funkiness.
+
+	* inst-files/castor.spec: Desperate attempts with new version.
+
+	* inst-files/edg-rls-client.spec: Download binary kit from SPI,
+	old RPMs are not valid for new versions.
+
+	* inst-files/wxPython.spec: Desperate attempts to make it build.
+
+2004-05-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Do all stages recursively if not doing all packages.
+
+	* inst-files/expat.spec: Remove OS X hacks, now unnecessary.
+
+	* inst-files/gccxml.spec: Clean up and fix errors.
+
+	* inst-files/python.spec, inst-files/python-osx.patch: Update OS X
+	patch and dylib creation from fink.
+
+	* inst-files/qmtest.spec: Update download location.
+
+	* inst-files/root.spec, inst-files/root-osx.patch: Remove patch.
+
+2004-05-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* inst-files: Update various specs for current configuration.
+
+	* install.sh: Split specs, files and patches to "inst-files".
+	Build binary RPMs recursively.  Add help.
+
+2004-04-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* install.sh: fixed problem with sourceforge new directory layout.
+
+2004-01-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (root): Add OS X root patch from Fons/Massimo.
+
+2004-01-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (libcompat, castor): Update cuserid.c location.
+
+2004-01-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh
+	(patchy, cernlib): Remove patchy, and don't build it in cernlib.
+	(coin): Download snapshot from CVS, FTP server lost them.
+	(gccxml, gccxml-new, gccxml-old): Split into two for different
+	compilers, an attempt to work around many different combinations.
+	(lcg-tool-conf, cms-tool-conf): Pick right gccxml.
+
+2004-01-08  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Accept new options "-version" (to override package
+	version) and "-define" (convenience short cut to "-pass").
+	(rpmvars): Take into account package version overrides.
+	(soqt, qt): Make variable names unique.  Use version number only
+	for tar ball in case complex version number is given.
+	(qutexmlrpc): Pick up system qt definition if given.
+
+2004-01-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Add many more command line options.  Add more docs.
+	(download_getit): Support special "cvs" download method.  Put back
+	support for trying downloads several times, still required by e.g.
+	sourceforge.
+	(rpminit): Add comments to maybe copy system rpmdb.  Don't define
+	$rpm, we want rpm to use system database so it detects if we are
+	picking up system libraries.
+	(rpmcmd): New, add --dbpath option where needed.
+	(rpmvars): Always "cd" to a known starting point.
+	(rpmspec): Make existing package install writable before zapping it.
+	(rpmsrc, rpmeval): No need to use --dbpath with "rpm".  Tidy up.
+	(rpmbin): Allow "-force" option to force building a RPM even if
+	one already exists.  Pass custom options to rpm.
+	(rpmchecklibs): New function for validating RPMs we've made.
+	(main): Do checking if requested.
+	(rpm-preamble/initenv): More robust parsing.
+	(gcc): Add comments why --enable-__cxa_atexit can't be used.
+	(expat, openssl, python): Rearrange and make python use more of
+	libraries we've built ourselves.  Note which libraries are still
+	getting picked up from the system -- do we need private installs?
+	(root): Use $ROOTSYS instead of --prefix to get correct install.
+	(gccxml): Requires a lot more variants for different GCCs.
+	(SCRAM, lcg-tool-conf, cms-tool-conf, scram-build,
+	lcg-scram-build, cms-scram-build, SEAL, POOL, PI, IGNOMINY,
+	IGUANA, COBRA, Geometry, OSCAR, ORCA, IGUANACMS, FAMOS): New,
+	initial support for installing SCRAM and SCRAM-based projects.
+	(lcg-osx-toolpatch, seal-osx-toolpatch): New patches.
+
+	* module-check (scan_module): Also recognise symbol type "?", most
+	symbols in the new NVIDIA GL libraries somehow get this type.
+	Just pretend it's known.
+
+2003-12-05  Lassi A. Tuura  <lat@iki.fi>
+
+	* install-oprofile.sh: new script which installs oprofile 0.7.1 in
+	/sw/oprofile.
+	
+	* install.sh (AIDA_XMLStore, geant4): Fix package references.
+
+	* install.sh: Adding back control on which steps to execute.
+	(download_getit): Only try different hosts, there should not be a
+	need to try several times any more.
+	(rpmvars, rpmspec, rpmbin): Use category as part of name and path.
+	Process all types of package requirements (or at least try to).
+	Name profile init script always the same way.  Remove clean-up
+	rules so they don't clutter up the build logs.  Remove dead code.
+	(rpmsrc, rpmeval): Be more robust for variations in RPM output.
+	(cmsos): Recognise Fedore Core before RedHat.
+	(rpm-preamble): Just use category as part of package paths.
+	Remove definitions of "__check_files" and "debug_package", their
+	definitions on Fedora Core cause trouble.  Handle more RPM output
+	variants for "pkgreqs".
+	(patchy): Use public web server where possible.
+
+2003-12-03  Lassi A. Tuura  <lat@sealg5.cern.ch>
+
+	* install.sh (Xerces-C): Download URL changed.
+
+2003-12-02  Lassi A. Tuura  <lat@sealg5.cern.ch>
+
+	* install.sh (download_getit): Fix string manipulation.
+	(download_curl, download_wget): Download to temporary file.
+
+2003-12-02  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Rework downloading to force lookup of aliases; too
+	many sourceforge mirrors are broken.  Rename sourceforge download
+	server to dl.sourceforge.net.
+
+2003-12-02  Lassi Tuura  <lat@cern.ch>
+
+	* install.sh (rpmeval): Description is not necessarily the last
+	field, so delete any other sections that follow it.
+	(rpmbin): Use rpmbuild instead of rpm to build.
+
+2003-12-02  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh
+	(Gemini): Disabled.
+	(cmsim): Don't link generator libs, they are not built.
+	(Xerces-C): Xerces now installs versioned library links itself.
+
+2003-12-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (cmsos): Fix for SuSE linux.
+
+	* install.sh (pythia, photos): Removed, no longer needed.
+
+	* install.sh
+	(castor): New version, changed source location and Imakefiles.
+	(cernlib): Download sources from a better place, this should
+	be the right version of the sources.
+	(cmsim): Disable build of the main program.
+	(Xerces-C): Source tree has changed.
+
+2003-12-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh
+	(clhep): New version changed tar ball layout.
+	(swig, Lizard): Disabled, not needed at present.
+	(minuit, FML, AIDA_Function_FML, AIDA_Fitter_FML,
+	AIDA_Plotter_Grace): Unify how packages are disabled.
+	(pythia, photos): Unify unavailability message.
+	(unixodbc, myodbc, otl, edg-rls-client): Define rules.
+	(Xerces-C): Fix source location.
+
+2003-11-28  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh
+	(pcre): Update version and download from original source.
+	(gsl): Update version.
+	(clhep): Update version.
+	(patchy): Use pre-built binaries on linux.
+	(oval): Update version.
+	(pythia, photos): New, download pre-built binaries on linux.
+	(cmsim): Use custom pythia and photos versions.  Install binary.
+	(Xerces-C): Update version.
+	(edg-rls-client, myodbc, otl, unixodbc): New.
+
+2003-11-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (mysql++): Another fix, this time to a class that has
+	disabled copy constructors even though the sources copy it around.
+	Now builds on Linux.
+
+	* install.sh (mysql++): Fix const bug in the patch.
+
+	* install.sh (gcc): Disable __cxa_atexit, Qt's uic dies spuriously
+	on exit after main()'s done if it is enabled.
+
+	* install.sh (compilerv): Pick only the first two digits.
+
+	* install.sh: Fix gts builds on OS X.
+
+	* install.sh: Better glib version; pkgconfig no longer needed.
+
+	* install.sh: Do conditional compilation properly, skipping builds
+	but making RPMs on platforms where something should be skipped.
+	Fix the variable definitions in profile.d scripts so that they can
+	contain shell expansions.  Build ccache 2.3.  Add fixes to build
+	patchy correctly on linux (byte-order issues), and make sure csh
+	never sources the init files, and use the right -fugly-* options
+	(not all g77 compilers support the old single -fugly option).
+	Build SWIG and Lizard.  Tiny fix for cmsim sources.
+
+2003-11-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Build patchy, cernlib requires it; pick it up from
+	cernlib.  Always package all the sources, otherwise the source
+	RPMs are not platform-independent.  Remove cernlib varargs patch,
+	it isn't needed (how did I end up with sources that needed it?).
+
+2003-11-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: More fixes for CERNLIB build rule.
+
+2003-11-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Check that the path allows CERNLIB to be built.
+	Create a lowercase symlink for "BUILD" if CERNLIB is included.
+
+2003-11-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: When unsetting variables, ignore exit status so that
+	RPM won't quit if the variable is not set.  Evaluate the full RPM
+	file name when checking if the RPM exists.  Pick a Coin snapshot
+	that fits our needs, avoids having to carry patches.
+
+2003-11-18  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Various clean-ups and improvements, should build
+	most packages cleanly on both RH 7.x and OS X.
+
+2003-11-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: More fixes, now builds nearly all RPMs.
+
+2003-11-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Properly %prep nearly all packages.
+
+2003-11-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Various updates, now builds easiest binary RPMs.
+
+2003-11-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: First RPM version.  Creates spec files and source
+	RPMs for every package, but doesn't build anything yet.  Patches
+	available on the net downloaded to avoid bloat.
+
+2003-10-28  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (build_soqt): Accept version after "tgs" or "coin".
+
+2003-10-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: New, we now need SealBase for validation tools.
+	* src/BuildFile: New, build the module loading validator.
+	* src/module-load-check.cpp: New, make sure module loads.
+	* src/module-check: Warn about ignored undefined symbols.
+
+2003-10-21  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Add initial RPM build proto notes.
+	(build_shift): Renamed to...
+	(build_castor): New.  Build using Castor distribution instead of
+	the CERNLIB tar balls, the Castor one actually works.  Redo OS X
+	port, including all the patches.
+	(build_cernlib): Adjust to castor library rename.
+	(build_coin): Add reminder to speed up the build.
+
+2003-10-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (build_soqt): Apply patch that removes constant
+	re-rendering issue with TGS Inventor.
+
+2003-10-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Add flag to avoid entire build including download.
+	Add new flag to build debian binary packages from installation
+	tree.  When making packages, turn off entire build process.
+
+2003-10-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* iguana, iguana-cms: Add front-end wrapper scripts for future
+	reference and possible use by others.
+
+	* install.sh (buils_shift): Always apply imake patch.  Apply OS X
+	patch separately.  Remove duplicate patch data.
+
+2003-10-09  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Reorganise initial functions.  Move all environment
+	setup code to a separate function.  Re-order so we can override
+	compiler version, and force use of system compiler on OS X.
+	Define directory part order only in "pkgprefix", and use the
+	function everywhere as appropriate, including initial setup of
+	environment variables for compiler paths etc.  Define new
+	variables to separate various build stages (step_source,
+	step_patch, step_build, step_test) and use them in all the build
+	rules.  Test that each step actually does what it is supposed to
+	do and only that.  Remove ability to use system python, always
+	build it; avoids problems with determining where to pick it up.
+	Capitalise message text more consistently.  Separate patch
+	application into a function of its own so it can be skipped easier
+	without disturbing current directory manipulations.  Make sure we
+	cd into the correct directories always.  When checking out from
+	CVS, let caller pass the "-r" option for the tag so that both "-r"
+	and "-D" can be used.  Put build logs into architecture-specific
+	directory too.  Track packages that have been processed in this
+	command invocation to avoid repetitive build attempt when we are
+	not actually building anything, only downloading etc.  Add more
+	comments on the origin of various patches and build hacks.
+	(build_gcc): Do normal bootstrap, remove special flags.
+	(build_libg2cso): Make it more obvious this is only for OS X.
+	(build_ccache): Clean up cache creation.
+	(build_uuid): Apply build patch and configure flags per system.
+	(build_zlib): Reminder on possibly having to change version num.
+	(build_python): Snatch patch from Fink for OS X.  Build dynamic
+	library for OS X; the standard build only makes an archive.
+	(build_boost): Use self-built python.  Make post-build visible.
+	(build_shift): Move earlier.  Apply OS X patches and hacks to get
+	it to build.  Use own build logic to avoid having to build imake.
+	(build_cernlib): Require shift.  Rearrange for build steps.
+	(build_root): Pass "-r" option for pkgcvs.
+	(build_gccxml, dobuild_gccxml_gcc, dobuild_gccxml_gccxml):
+	Rearrange into two separate functions for new build steps.  Reduce
+	xml.c to a patch from the original instead of full embedded file.
+	(build_qmtest): Point to our own python.  Rearrange for new steps.
+	(build_qt): Set environment variables after "pkgsrc", it affects
+	current directory.  LD_LIBRARY_PATH was incorrectly set.  Enable
+	"-stl" option for configure.
+	(build_coin): Use --disable-libtool-lock.
+	(build_openssl): Rearrange for steps.
+	(build_expat): Update libtool on OS X to get shared library.
+	(dobuild_anaphe): Take extra links and makefile overrides as args.
+	(build_* (anaphe stuff)): Pass the options as required.  Hack in
+	externals they earlier went unused.  Still a few packages fail to
+	build (e.g. Gemini, due to -lminuit).
+	(build_geant4): Require clhep.
+	(build_cmsim): Download build infrastructure instead of patch.
+	Build also libraries, then the binary.  Fix binary build.
+
+2003-10-06  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (distcc, ccache): Use only if specifically requested.
+	(build_gcc): Build f77.  Enable shared libraries and __cxa_exit().
+	(build_bz2lib): Fix build rules to use right shared lib suffix.
+	(build_python): Build in source directory.
+	(build_cernlib): Apply OS X patch only on that platform.
+	(build_valgrind): Fix source download syntax.
+	(build_AIDA): Simple version numbers now available on FTP site.
+	(dobuild_anaphe): Allow cross-package links to be installed.
+	(build_* (all anaphe)): Use them -- really only in XMLStore.
+	(build_mysqlpp): Apply patches.
+
+2003-10-03  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (pv_gcc, pv_AIDA): Fix.
+	(download): Auto-select between curl and wget.
+	(pushvar, popvar): Fix typo to really enable the stack.
+	(build_gcc): Fix typo, separate configure and make lines.
+	(build_cernlib): Change download base to asisftp.
+	(build_shift): Download from asisftp cernlib base.  Stop
+	attempt to build if only downloading.
+	(build_valgrind): Add build commands.
+	(build_AIDA): Fix version number handling.
+	(build_anaphedev): Download from anaphe server; change
+	patch to only include OS X specific parts.
+	(build_mysql, build_mysqlpp): Fix download base.
+
+2003-10-03  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh (pkgsrc): Stay in srcdir if copying sources.
+	(dobuild): Save current working directory across packages.
+	(build_uuid): Fix configure command line options for linux.
+	Apply OS X-specific build patch separately on OS X only.
+
+2003-09-30  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Add support for reversed architecture directory
+	location in the installation (before package vs. after package)
+	for compatibility with LCG-style installation.
+
+2003-09-30  Lassi A. Tuura  <lat@pb-d-128-141-36-110.cern.ch>
+
+	* install.sh
+	(build_zlib): Add generic branch for non-Darwin builds.
+	(build_valgrind): Valgrind is IA32 only, not just Linux.
+
+2003-09-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Build Xerces-C, MySQL, MySQL++ and RFIO.
+	(fetch):  Extract uncompressed tar files too.
+	(build_geant4): Try enabling debugging by default.
+
+2003-09-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* module-check: Allow symbols to be ignored.  Better command
+	line option handling.
+
+2003-09-25  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* install.sh: --disable-libtool-lock option added for soqt
+	build to avoid the locking problem on AFS.
+	* make-release: Removed the setup of TGSInventor as it is now 
+	default in the CMS configuration.
+
+2003-09-24  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* module-check: Track who wanted which library and print out a
+	trace when unresolved symbols are found.  Pick up more symbol
+	types ("A" and "I") for OS X.
+
+	* install.sh
+	(pkgsrc): Extract into build tree instead with "-src".
+	(cernlib): Copy sources into the installation tree.
+	(cmsim): New, preliminary incomplete support for cmsim build.
+
+2003-09-22  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* module-check (scan_module): otool output shows the dependency
+	name encoded in the binary, not the location at which the library
+	is found at run-time, so search in DYLD_LIBRARY_PATH if the path
+	is relative.
+
+	* install.sh (build_geant4): Do not move Geant4 libraries, OS X
+	encodes library installation location into the library itself so
+	moving them is not a good idea if it can be avoided.
+	(build_boost): Update the installation location in the libraries,
+	the prefix used by the boost build system is not usable.
+
+2003-09-19  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* install.sh: Change build logging to not mix file descriptors.
+	Fix SoQt builds to work on both Linux and OS X.  Build AIDA and
+	Anaphe packages.
+
+2003-09-18  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* install.sh: Move TGS Inventor fix into a package of its own so
+	code that uses TGS Inventor but not SoQt can use it.
+
+2003-09-18  Lassi A. Tuura  <lat@iki.fi>
+
+	* module-check: New script to check for unresolved symbols
+	in shared libraries.  To be used for plug-in modules.
+
+	* install.sh: Support picking up system Qt; fix handling for
+	system TGS Inventor and Qt.  Allow package version to be
+	overridden from command line.  Fix Linux version guess.  More
+	consistency in build rules for packages using system versions.
+	Fix $type logic for qt and soqt.  Set LD_LIBRARY_PATH for soqt so
+	the inventor fix library is found.  Set -pthread in soqt to get
+	the right build type.
+
+2003-09-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Much improved.
+
+2003-09-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: Add distcc support.
+
+2003-09-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* install.sh: New external software installation tool.
+
+2003-09-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* mkosxapp: New utility to make OS X .apps from binaries.
+
+2003-08-20 Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* make-release: Script modified to use the cvs url to select
+	TGSInventor as default for OpenInventor.
+	
+2003-06-25  George Alverson <George.Alverson@cern.ch>
+
+	* msvc: Blank, classlib, Ig3DBrowser, Ig3DModel, IgApplication,
+	IgCommonData, IgObjectBrowser, IgOpenInventor, IgPluginManager,
+	IgQt, IgQtBrowser, IgQtTwigBrowser, IgSoReaderAppDriver,
+	IgTextModel, iguana: re-synch existing scripts with current
+	configuration.
+
+	* gl2ps, Ig3DExtensions, Ig3DSystem, Ig3DView, IgCommon3DReps,
+	IgCommonOps, IgGenericDetector, IgGenericDetectorMain,
+	IgGenericDetectorSetup, IgTextBrowser, IgSoViewerAppDriver,
+	IgStudio, IgUserGUIDriver, IgUserGuiExtension: Add new scripts

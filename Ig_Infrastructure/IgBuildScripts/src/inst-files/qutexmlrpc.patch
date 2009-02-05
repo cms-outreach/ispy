@@ -1,0 +1,13 @@
+### PATCH qutexmlrpc
+--- src/qutexr.pro       Sat Feb 22 03:55:27 2003
++++ src/qutexr.pro Tue Sep  9 21:01:25 2003
+@@ -3,7 +3,7 @@
+ ######################################################################
+ 
+ TEMPLATE = lib 
+-CONFIG += staticlib
++# CONFIG += staticlib
+ INCLUDEPATH += .
+ 
+ # Input
+

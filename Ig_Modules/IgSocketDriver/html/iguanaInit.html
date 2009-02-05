@@ -1,0 +1,78 @@
+<SCRIPT language="JavaScript">
+var httpRequest;
+if (window.ActiveXObject) // for IE
+  httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+else if (window.XMLHttpRequest) // for other browsers
+  httpRequest = new XMLHttpRequest();
+
+function hasCookie(NameOfCookie)
+{
+  if (document.cookie.length > 0)
+  {
+    begin = document.cookie.indexOf(NameOfCookie+"=");
+    if (begin >= 0)
+       return true;
+  }
+  return false;
+}
+
+function setCookie(NameOfCookie, value, expiredays, path)
+{
+  var ExpireDate = new Date ();
+  ExpireDate.setTime(ExpireDate.getTime() + (expiredays * 24 * 3600 * 1000));
+  if((path == null) || (path==""))
+    path = "/";
+
+  document.cookie = NameOfCookie + "=" + value +
+  ((expiredays == null) ? "" : "; expires=" + ExpireDate.toGMTString())+
+  "; path=" + path;
+}
+
+function delCookie (NameOfCookie, path)
+{
+  if((path == null) || (path==""))
+    path = "/";
+  document.cookie = NameOfCookie + "=" + "; expires=Thu, 01-Jan-70 00:00:01 GMT" +
+                    ((path == null) ? "" : "; path=" + path);
+}
+
+function LoadIfCookies()
+{
+  setCookie("CheckingCookie", "dummy", 1);
+  if (!hasCookie("CheckingCookie"))
+  {
+    document.write("<center><h3>COOKIES DISABLED!.</h3><b>We are sorry but we need cookies to be enabled for atleast this site.</b></center><br>");
+    document.write("Please read about <a href=\"http://www.google.com/cookies.html\"><b>how to enable cookies here</b></a> and then come back to this site and enable the cookies.<br>");
+    document.write("Click <A href=\""+proxy+"\"><b>here</B></A> once cookies are enable for atleast this site.<br><br>");
+    document.write("If you have any questions please <a href=\"mailto:hn-cms-visualization@cern.ch?subject=IGUANA Web: Cookie enabling\">contact us</a>.");
+    return false;
+  }
+  else {
+    delCookie("CheckingCookie")
+    return true;
+  }
+}
+
+function processRequest()
+{
+  if (httpRequest.readyState == 4)
+  {
+    if (httpRequest.status == 502)
+      delCookie("igtarget", proxy);
+    parent.location.href = proxy + "/Studio/login";
+  }
+}
+
+if(LoadIfCookies())
+{
+  setCookie("cookies", "1", null , proxy);
+  if ((proxy!= "") && (hasCookie("igtarget")))
+  {
+    httpRequest.open("GET", proxy + "/ping", true);
+    httpRequest.onreadystatechange = function() { processRequest(); };
+    httpRequest.send("");
+  }
+  else
+    parent.location.href = proxy + "/Studio/login";
+}
+</SCRIPT>

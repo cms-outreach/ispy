@@ -1,0 +1,12 @@
+<use name=Ig_Modules/IgOIVBrowser>
+<use name=Ig_Modules/IgStudio>
+<use name=Ig_Modules/IgWebStudio>
+<use name=Ig_Modules/IgSocketDriver>
+<use name=Ig_Framework/IgObjectBrowser>
+<use name=Ig_Modules/IgLegoModel>
+<use name=qt>
+
+<export>
+	<lib name=Ig_ModulesIgWebLego>
+</export>
+

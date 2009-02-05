@@ -1,0 +1,86 @@
+#!/bin/csh
+
+#
+#   This script will generate a tar file per supported operating
+#   system for IGUANA
+#
+#   Arguments:
+#   version number (e.g., V1_0_1 )
+#   -v              verbose
+#
+
+# argument processing
+if ( $#argv == 0  || $1 == '-h' || $1 == '--help' ) then
+  echo $0 'Offsite Release Generator'
+  echo 'Arguments: version number of release, ex: ' $0 'V1_0_1'
+  echo 'Switches: -v (verbose)'
+  echo '          -h or --help (help.. this message)'
+  exit
+endif
+
+set wordy = ''
+
+foreach thisArg ($argv)
+  echo $thisArg
+  switch ($thisArg)
+    case -v:
+      set wordy = 'v'
+      breaksw
+    case -h:
+      echo 'Use -h as the first argument'
+      breaksw
+    case -*:
+      echo 'Unrecognized switch: ' $thisArg
+      breaksw
+    default:
+      set ReleaseVersion = $thisArg
+      breaksw
+  endsw
+end
+
+# Generate the offsite release files
+set prodStem = 'IGUANA'
+
+# generate exclusion file for tar
+set ReleaseDir = '/afs/cern.ch/cms/Releases/'${prodStem}'/'${prodStem}'_'${ReleaseVersion}
+if ( ! -d $ReleaseDir ) then 
+  echo 'Unable to find release area ' ${ReleaseDir}
+  exit
+endif
+
+cd ${ReleaseDir}
+if ( $wordy == 'v' ) then
+  echo 'Working in directory ' $ReleaseDir
+endif
+set rDirs = `ls ${ReleaseDir}/lib`
+
+set pid = $$
+set tmpfile = tmp_${pid}
+
+if ( ! -d tar ) then
+  if ( $wordy == 'v' ) then
+    echo 'Creating tar directory ' `pwd`/tar
+  endif
+  mkdir tar
+endif
+
+foreach distSet ( $rDirs ) 
+  if ( -e $tmpfile ) then
+    rm $tmpfile
+  endif
+  touch $tmpfile
+  foreach osDir ( $rDirs)
+    if ($distSet != $osDir) then
+      echo 'lib/'$osDir | cat - >>! $tmpfile 
+      echo 'bin/'$osDir | cat - >>! $tmpfile 
+    endif
+  end
+  if ( $wordy == 'v' ) then
+    echo 'Generating the release file for ' $distSet
+  endif
+  set distFile = tar/${prodStem}_${ReleaseVersion}_${distSet}.tgz
+  tar c${wordy}fX - $tmpfile lib src | gzip > $distFile
+  echo $distFile 'created by ' `whoami` ' at ' `date` | cat - >>! DistributionHistory
+end
+
+rm $tmpfile

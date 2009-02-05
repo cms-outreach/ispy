@@ -1,0 +1,28 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, IgWebLegoService.cc, plugin.cc: Move to
+	classlib and IgPluginManager.
+	
+2006-01-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgWebLegoService.cc: using a QIODevice in place of QSocket.
+
+2005-10-31  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgWebLegoService.cc, IgWebLegoService.h: ::create is now only a
+	wrapper around ::doCreate ().
+
+2005-09-22  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+        * BuildFile, ChangeLog, IgWebLegoService.h, config.h,
+	IgWebLegoService.cc, plugin.cc: files imported to repository.
+
+        * BuildFile, ChangeLog, IgWebLegoService.h, config.h,
+	IgWebLegoService.cc, plugin.cc: files imported to repository.
+

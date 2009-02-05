@@ -1,0 +1,149 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>IgQtSlider</class>
+<widget class="QWidget">
+    <property name="name">
+        <cstring>Threshold_Panel</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>261</width>
+            <height>64</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>Threshold Slider</string>
+    </property>
+    <property name="layoutMargin" stdset="0">
+    </property>
+    <vbox>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>6</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QGroupBox">
+            <property name="name">
+                <cstring>GroupBox1</cstring>
+            </property>
+            <property name="sizePolicy">
+                <sizepolicy>
+                    <hsizetype>5</hsizetype>
+                    <vsizetype>1</vsizetype>
+                    <horstretch>0</horstretch>
+                    <verstretch>0</verstretch>
+                </sizepolicy>
+            </property>
+            <property name="title">
+                <string>Threshold</string>
+            </property>
+            <property name="layoutMargin" stdset="0">
+            </property>
+            <vbox>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <property name="margin">
+                    <number>11</number>
+                </property>
+                <property name="spacing">
+                    <number>6</number>
+                </property>
+                <widget class="QLayoutWidget">
+                    <property name="name">
+                        <cstring>Layout1</cstring>
+                    </property>
+                    <hbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <property name="margin">
+                            <number>0</number>
+                        </property>
+                        <property name="spacing">
+                            <number>6</number>
+                        </property>
+                        <widget class="QSlider">
+                            <property name="name">
+                                <cstring>Slider</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                        </widget>
+                        <widget class="QLabel">
+                            <property name="name">
+                                <cstring>Units</cstring>
+                            </property>
+                            <property name="text">
+                                <string>Arb Units</string>
+                            </property>
+                        </widget>
+                        <spacer>
+                            <property name="name">
+                                <cstring>Spacer4</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Horizontal</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Minimum</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>20</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QLineEdit">
+                            <property name="name">
+                                <cstring>SliderTextValue</cstring>
+                            </property>
+                            <property name="maximumSize">
+                                <size>
+                                    <width>60</width>
+                                    <height>32767</height>
+                                </size>
+                            </property>
+                            <property name="frameShape">
+                                <enum>LineEditPanel</enum>
+                            </property>
+                            <property name="frameShadow">
+                                <enum>Sunken</enum>
+                            </property>
+                        </widget>
+                    </hbox>
+                </widget>
+            </vbox>
+        </widget>
+    </vbox>
+</widget>
+<connections>
+    <connection>
+        <sender>SliderTextValue</sender>
+        <signal>returnPressed()</signal>
+        <receiver>Threshold_Panel</receiver>
+        <slot>textValueChangedSlot()</slot>
+    </connection>
+    <connection>
+        <sender>Slider</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>Threshold_Panel</receiver>
+        <slot>sliderValueChangedSlot(int)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">IgQtSlider.ui.h</include>
+</includes>
+<slots>
+    <slot>sliderValueChangedSlot( int )</slot>
+    <slot>textValueChangedSlot()</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

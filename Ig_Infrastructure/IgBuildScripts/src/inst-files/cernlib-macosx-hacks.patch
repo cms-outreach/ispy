@@ -1,0 +1,35 @@
+### PATCH cernlib-macosx-hacks
+diff -uNr src.orig/config/MacOSX.cf src/config/MacOSX.cf
+--- src.orig/config/MacOSX.cf   Thu Jan  1 09:00:00 1970
++++ src/config/MacOSX.cf        Wed Jan 17 21:23:17 2001
+@@ -85,7 +85,7 @@
+ #define HasVoidSignalReturn YES
+ 
+ #ifndef DependFlags
+-#define DependFlags -I/usr/include/ansi -I/usr/include/bsd
++#define DependFlags -I/usr/include/ansi -I/usr/include/bsd -I/sw/include
+ #endif
+ 
+ #define InstallCmd	install	/* unlink old */
+@@ -129,8 +129,8 @@
+ #undef CcCmd
+ #undef CplusplusCmd
+ #ifdef MacOSXArchitecture
+-#define CcCmd cc -arch "ppc" -no-cpp-precomp
+-#define CplusplusCmd          c++ -no-cpp-precomp
++#define CcCmd cc -arch "ppc" -no-cpp-precomp -I/sw/include
++#define CplusplusCmd          c++ -no-cpp-precomp -I/sw/include
+ #endif
+ #ifndef CcCmd
+ #define CcCmd cc
+--- src.orig/scripts/cernlib~   Mon Sep 16 16:12:24 2002
++++ src/scripts/cernlib Wed Oct  2 00:09:37 2002
+@@ -213,7 +216,7 @@
+          CERNLIB="$CERNLIB -lnsl -lcrypt -ldl"
+      fi
+      if [ "$Msys" = "Darwin" ] ; then
+-        CERNLIB="$CERNLIB -L/usr/local/lib/system -lcompat -ldl"
++        CERNLIB="$CERNLIB $CERN/$gver/lib/libcompat.a -L/sw/lib -ldl"
+      fi
+    fi
+   

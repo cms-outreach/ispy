@@ -1,0 +1,37 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, plugin.cc: Move to classlib
+	and IgPluginManager.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Add dependencies on IGUANA studio.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+
+	* BuildFile: Port to new SCRAMV1.
+
+2004-05-18  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgHelloWorldView.cc: IgQtSiteStack.h added to make it compile.
+
+2004-04-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, src/BuildFile, IgHelloWorldView.cc,
+	IgHelloWorldView.h, IgHelloWorldButton.cc, IgHelloWorldButton.h,
+	config.h, plugin.cc: Newly added tutorial on how to create an
+	IgView and embed your custom Qt Widget in it.
+

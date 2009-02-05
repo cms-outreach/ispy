@@ -1,0 +1,6 @@
+<Use name=Ig_Modules/Ig3DBaseModel>
+
+<Export>
+  <Use name=Ig_Modules/Ig3DBaseModel>
+  <Lib name=Ig_ModulesIgLegoModel>
+</Export>

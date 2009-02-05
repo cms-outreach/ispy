@@ -1,0 +1,86 @@
+2007-03-28  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, Ig2DViewPropertiesCategory.cc, plugin.cc: Move to
+	classlib and IgPluginManager. 
+
+	* BuildFile: Use Iguana flag.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, src/BuildFile: Port to new SCRAMV1.
+
+2004-12-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DWindow.cc: 2DModel obtained from model manager, so now
+	creating first 2D window will take time.
+
+2004-08-27  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* *.cc: Removed tool tips.
+
+2004-08-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DViewPropertiesCategory.h, Ig2DViewPropertiesCategory.cc: Fixed the
+	2D view category to properly registered for focus in/out.
+	
+	* Ig2DWindow.cc: Properly registered the borswer for the 2D view category.
+
+2004-08-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DViewPropertiesCategory.cc: Registered the 2D view properties
+	category.
+
+2004-05-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/Ig2DViewPropertiesCategory.cc (registerMe): now using the
+	correct source for setCuttingPlane() slot.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DWindow.cc (Ig2DWindow): using the new IgQtSiteStack api for
+	naming windows.
+
+2004-05-14  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DViewPropertiesCategory.h, Ig2DViewPropertiesCategory.cc:
+	Cleanup the code.
+	
+	* Ig2DWindow.cc: Removed unused headers.
+	
+	* BuildFile: Cleanup.
+
+2004-03-25  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DWindow.cc (Ig2DWindow): browser uses the window state, not
+	the page state. 
+
+2004-03-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DWindow.cc (Ig2DWindow): using new IgView title API.
+
+2004-03-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DViewPropertiesCategory.cc (registerMe): registration in
+	to the tab in the contextService is done by base class, now.
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, Ig2DWindow.h, Ig2DWindow.cc, plugin.cc, config.h: new
+	view which instantiates control categories necessary for
+	Ig2DBrowser and creates a window containing an Ig2DBrowser in the
+	multiwindow environment.
+
+	* Ig2DViewPropertiesCategory.h, Ig2DViewPropertiesCategory.cc:
+	moved here from Ig2DBrowser.
+

@@ -1,0 +1,45 @@
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h: Move to classlib.
+	
+2006-03-01  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* autoprint.xpm: Newly added icon for automatic bitmap printing.
+	* IgImageIDs.h: Added Image Id for auto-printing.
+
+2005-07-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* print_views.xpm: Newly added icons for default views printing.
+	* IgImageIDs.h: Added Image Id for default view printing.
+
+2004-12-16  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgImageIDs.h: MAGE_ID_WHATS_THIS_PICKING added.
+
+2004-10-19  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgImageIDs.h: Newly added class for providing image ids.
+
+2004-08-17  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* control_centre.xpm, grid.xpm, home.xpm, inverse.xpm, ortho.xpm,
+	perspective.xpm, pick.xpm, seek.xpm, view.xpm, view_all.xpm,
+	xz_small.xpm, yx_small.xpm, yx_small_col.xpm, yz_small.xpm,
+	zoom_minus.xpm, zoom_plus.xpm: Updated icons to look sharper on
+	the screen.
+	
+2004-08-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* control_centre.xpm: New icon for control centre.
+	
+	* yx_small_col.xpm: Removed the x, y and z text.
+
+2004-06-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* *.xpm: Moved all icons from IgQt to IgIcons.
+
+2004-05-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IGUANA_SPLASH.xpm, iguana-medium.xpm, iguana-mini.xpm,
+	iguana-small.xpm: Icons moved from IgQt to make the other packages not 
+	depends on IgQt just for Icons.

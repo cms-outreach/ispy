@@ -1,0 +1,8 @@
+* FileAcl, FileMapping bits into IOFlags
+* Any other random bits (SubProcess, ...) into IOFlags
+
+* Filename::relativeTo
+* FileGlobIterator (remove Filename::glob)
+
+* Remove all protected data
+* Class documentation

@@ -1,0 +1,110 @@
+2008-12-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* VisDTRecSegment4D.cc, VisEvent.cc, VisCSCSegment.cc,
+	VisPFCluster.cc, VisSiPixelCluster.cc, VisSiStripDigi.cc,
+	VisTrack.cc, VisEvent.cc: Replace forward slash with underscore. 
+	* VisCaloTower.cc: Add more properties, replace forward slash with
+	underscore. 
+	* VisLocalPosition.cc: Cleanup.
+	* VisMET.cc, VisJet.cc, VisPixelDigi.cc, VisSiPixelRecHit.cc,
+	VisSiStripCluster.cc: Replace forward slash with underscore, cast
+	to an appropriate type.
+
+2008-12-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* python/VisEvent_cfi.py: Configuration for the event analyzer.
+	* VisEvent.h, VisEvent.cc: Event id.
+	* VisCSCSegment.cc, VisCaloTower.cc, VisDTRecSegment4D.cc,
+	VisSiStripDigi.cc, VisTrack.cc: Cast to type.
+	* VisLocalPosition.cc: Pixel tracking rechits also included.
+
+2008-11-21  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* VisSiPixelRecHit.cc: Check existence of the local position.
+	* python/iggi_cfg.py: Latest configuration.
+
+2008-11-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* VisLocalPosition.h, VisLocalPosition.cc: New class to
+	facilitate retrieval of a local position which is transient in
+	some cases.
+	* VisTrack.h, VisTrack.cc: Use storage from IguanaService. Use the
+	above class to calculate the local positions.
+	* VisCSCSegment.cc, VisCaloTower.cc, VisDTRecSegment4D.cc,
+	VisJet.cc, VisMET.cc, VisPFCluster.cc, VisPixelDigi.cc,
+	VisSiPixelCluster.cc, VisSiPixelRecHit.cc, VisSiStripCluster.cc,
+	VisSiStripDigi.cc: Use storage from IguanaService.
+	* VisDTRecSegment4D_cfi.py, VisMET_cfi.py, VisPFCluster_cfi.py,
+	VisPixelDigi_cfi.py, VisSiPixelCluster_cfi.py,
+	VisSiPixelRecHit_cfi.py, VisSiStripCluster_cfi.py,
+	VisSiStripDigi_cfi.py: Python configuration fragments for
+	analyzers. 
+
+2008-11-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* *.h, *.cc: Updated for migration to CMSSW_2_1_10.
+
+2008-07-25  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Add PF data formats library.
+
+	* IgCollection.h, IgCollection.cc: Separation of declaration and
+	definition from Giulio.
+	* VisTrack.cc: Hit collection updated to include directions.
+
+2008-07-24  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* VisTrack.cc: Collection of Tracks contains associations to Track
+	extras and hits. Unnecessary ID removed.
+
+2008-07-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* VisTrack.cc: Add a detailed hits name.
+
+	* VisTrack.cc: Added rec hits and their associations with the
+	Tracks.
+
+2008-07-22  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* VisTrack.cc: Adapt to the new ig file format.
+	* IguanaService.cc: Adapt to the new ig file format.
+	* data/iggi.cfg: Test configuration to produce Tracks in new
+	format.
+	* IgCollection.h: Giulio's file.
+
+2008-06-24  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* data/iguana.cfg: Test configuration to produce all available
+	data types.
+
+	* VisCSCSegment.h, VisCSCSegment.cc: Display CSC track segments.
+	* VisDTRecSegment4D.h, VisDTRecSegment4D.cc: Display DT track
+	segments.
+	* VisPixelDigi.h, VisPixelDigi.cc: Display Pixel digis.
+	* VisSiPixelCluster.h, VisSiPixelCluster.cc: Display Pixel
+	clusters.
+	* VisSiPixelRecHit.h, VisSiPixelRecHit.cc: Display Pixel rechits.
+	* VisSiStripCluster.h, VisSiStripCluster.cc: Display SiStrip
+	clusters.
+	* VisSiStripDigi.h, VisSiStripDigi.cc: Display SiStrip digis.
+	* BuildFile: Add dependencies on the above data types.
+	* VisJet.cc, VisTrack.cc: Migrate to CMSSW_2_1_X series.
+
+2008-04-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* VisJet.h, VisJet.cc: Use CaloTowers and an energy cut.
+	* VisMET.h, VisMET.cc: Display MET.
+	* VisCaloTowers.cc: Tag CaloTowers with raw detid.
+
+2008-04-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IguanaService.h, IguanaService.cc: Iguana service to configure
+	output.
+	* VisCaloTower.h, VisCaloTower.cc: CaloTower analyzer.
+	* VisJet.h, VisJet.cc: CaloJet analyzer.
+	* VisTrack.h, VisTrack.cc: Track analyzer.
+	* BuildFile: Include dependencies.
+	* plugins/BuildFile, plugins/Module.cc: Define Iguana service.
+
+	* Iguana analyzers.
+

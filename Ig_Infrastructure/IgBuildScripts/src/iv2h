@@ -1,0 +1,11 @@
+#!/bin/sh
+# Generate Inventor header file from an Inventor file; the file will contain
+# a static const char array with the contents of the Inventor file, much like
+# a XPM file would.
+
+for arg; do
+  NAME=`echo "$arg" | sed 's|.*/||; s|\.iv$||' | tr '[a-z]' '[A-Z]'`
+  echo "static const char [] IV_${NAME} ="
+  cat "$arg" | sed -e 's/\\/\\\\/g; s/"/\\"/g; 3,$ s/^[ \t]*@.*//' \
+		   -e 's/^/  "/; s/$/\\n"/; $ s/$/;/'
+done

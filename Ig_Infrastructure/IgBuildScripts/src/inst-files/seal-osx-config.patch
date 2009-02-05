@@ -1,0 +1,60 @@
+### PATCH seal-osx-config
+--- config/BuildFile~	Mon Oct 13 11:09:12 2003
++++ config/BuildFile	Sat Dec  6 16:06:21 2003
+@@ -48,7 +48,12 @@
+  CCcompiler := Linux-gcc
+ </Architecture>
+ 
+-<Architecture name=macos1026_gcc31>
++<Architecture name=macosx28_gcc33>
++ <External ref=gcc3>
++ CCcompiler := Darwin-gcc3
++</Architecture>
++
++<Architecture name=macosx30_gcc33>
+  <External ref=gcc3>
+  CCcompiler := Darwin-gcc3
+ </Architecture>
+--- config/RequirementsDoc~	Wed Oct 29 19:01:58 2003
++++ config/RequirementsDoc	Sat Dec  6 16:06:37 2003
+@@ -5,7 +5,11 @@
+ <select name=msvcwrap>
+ <select name=RX>
+ </architecture>
+-<architecture name=macos1026_gcc31>
++<architecture name=macosx28_gcc33>
++<select name=gcc3>
++<select name=g77gcc3>
++</architecture>
++<architecture name=macosx30_gcc33>
+ <select name=gcc3>
+ <select name=g77gcc3>
+ </architecture>
+--- config/Runtime~	Fri Oct 17 17:10:22 2003
++++ config/Runtime	Sat Dec  6 15:35:48 2003
+@@ -15,7 +15,6 @@
+ <Runtime name=PATH value="$(LOCALTOP)/$(SCRAM_ARCH)/tests/bin" type=path></Runtime>
+ <Runtime name=PATH value="$(RELEASETOP)/$(SCRAM_ARCH)/tests/bin" type=path></Runtime>
+ <Runtime name=LD_LIBRARY_PATH value="$(LOCALTOP)/$(SCRAM_ARCH)/tests/lib" type=path></Runtime>
+-<Runtime name=DYLD_LIBRARY_PATH value=$LD_LIBRARY_PATH type=path></Runtime>
+ <Runtime name=PYTHONPATH value="$(LOCALTOP)/$(SCRAM_ARCH)/tests/lib" type=path></Runtime>
+ <Runtime name=PYTHONPATH value="$(LOCALTOP)/$(SCRAM_ARCH)/lib" type=path></Runtime>
+ 
+--- config/compilers.mk~	Thu Nov 20 12:22:38 2003
++++ config/compilers.mk	Sat Dec  6 20:48:21 2003
+@@ -83,12 +83,12 @@
+ # gcc 3.x Mac OS X
+ #----------------------------------------------
+ ifeq ($(CCcompiler),Darwin-gcc3)
+-FFLAGS += -fno-common
+ CXXFLAGS += -pipe -ansi -pedantic -W -Wall \
+ 	-Wno-non-virtual-dtor -Wno-long-long -Wno-long-double \
+ 	-Wwrite-strings -Wpointer-arith \
+ 	-Woverloaded-virtual -ftemplate-depth-64 \
+-	-fmessage-length=0
++	-fmessage-length=0 -fno-common
++CFLAGS += -fno-common
+ ifeq ($(findstring dbg,$(SCRAM_ARCH)),)
+ # CXXFLAGS += -O2 # -fomit-frame-pointer
+ endif
+

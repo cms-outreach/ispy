@@ -1,0 +1,27 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, BuildFile, IgRZViewPropertiesCategory.cc,
+	IgRZWindow.cc, plugin.cc: Move to classlib and IgPluginManager.
+	
+2005-10-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgRZWindow.cc: Rename the menu title for view properties.
+
+2005-08-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgRZWindow.h, IgRZWindow.cc: Name cleanup.
+
+2004-06-28  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgRZLightsCategory.h, IgRZViewPropertiesCategory.h,
+	IgRZLightsCategory.cc, IgRZViewPropertiesCategory.cc,
+	IgRZWindow.cc, plugin.cc, BuildFile, src/BuildFile: New files for RZ
+	window.
+
+	* New package for RZ window.

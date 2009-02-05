@@ -1,0 +1,6 @@
+<use name=SoQt>
+<use name=Ig_Modules/Ig3DMaterialEditor>
+
+# Material editor application
+<bin file=test_MaterialEditor.cc></bin>
+

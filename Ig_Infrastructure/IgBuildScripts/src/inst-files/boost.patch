@@ -1,0 +1,88 @@
+### PATCH boost
+--- boost/python/converter/rvalue_from_python_data.hpp.orig	Mon Aug 18 16:13:06 2003
++++ boost/python/converter/rvalue_from_python_data.hpp	Mon Aug 18 16:13:27 2003
+@@ -97,7 +97,7 @@
+         && (!defined(__DECCXX_VER) || __DECCXX_VER > 60590014) \
+         && !defined(BOOST_PYTHON_SYNOPSIS) /* Synopsis' OpenCXX has trouble parsing this */
+     // This must always be a POD struct with m_data its first member.
+-    BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>,stage1) == 0);
++    // BOOST_STATIC_ASSERT(BOOST_PYTHON_OFFSETOF(rvalue_from_python_storage<T>,stage1) == 0);
+ # endif
+     
+     // The usual constructor 
+--- tools/build/v1/darwin-tools.jam	Wed Oct  8 11:15:28 2003
++++ tools/build/v1/darwin-tools.jam	Wed Oct  8 11:16:21 2003
+@@ -60,7 +60,7 @@
+ else
+ {
+     flags darwin LINKFLAGS <target-type>$(SHARED_TYPES) :
+-        -Wl,-dynamic -nostartfiles -Wl,-dylib -Wl,-ldylib1.o ;
++        -single_module -Wl,-dynamic -nostartfiles -Wl,-dylib -Wl,-ldylib1.o ;
+ }
+ 
+ 
+--- tools/build/v1/python.jam	Thu May 13 10:34:23 2004
++++ tools/build/v1/python.jam	Thu May 13 10:34:42 2004
+@@ -104,11 +104,6 @@
+     PYTHON_ROOT = $(PYTHON_ROOT:J=" ") ;
+     PYTHON_INCLUDES ?= $(PYTHON_ROOT)/include/python$(PYTHON_VERSION) ;
+     PYTHON_FRAMEWORK ?= $(PYTHON_ROOT) ;
+-    while $(PYTHON_FRAMEWORK:D=) != Python.framework
+-    {
+-        PYTHON_FRAMEWORK = $(PYTHON_FRAMEWORK:D) ;
+-    }
+-    PYTHON_FRAMEWORK = $(PYTHON_FRAMEWORK:D)/Python ;
+ 
+     PYTHON_PROPERTIES ?=
+       <sysinclude>$(PYTHON_INCLUDES)
+@@ -276,7 +276,8 @@
+         {
+             properties += <link-format>bundle ;
+         }
+-        properties += <framework>$(PYTHON_FRAMEWORK) ;
++        properties += <library-path>$(PYTHON_LIB_PATH) ;
++        properties += <find-library>python$(PYTHON_VERSION_NODOT) ;
+     }
+     return $(properties) ;
+ }
+--- tools/build/v1/python.jam.x	Wed Jul  7 09:55:32 2004
++++ tools/build/v1/python.jam	Wed Jul  7 09:56:36 2004
+@@ -62,10 +62,6 @@
+     CYGWIN_PYTHON_DEBUG_DLL_PATH ?= $(CYGWIN_PYTHON_DEBUG_ROOT)/bin ;
+     CYGWIN_PYTHON_DEBUG_LIB_PATH ?= $(CYGWIN_PYTHON_DEBUG_ROOT)/lib/python$(CYGWIN_PYTHON_DEBUG_VERSION)/config ;
+ }
+-else if $(UNIX) && $(OS) = MACOSX
+-{
+-    PYTHON_EMBEDDED_LIBRARY = ;
+-}
+ else
+ {
+     PYTHON_EMBEDDED_LIBRARY = python$(PYTHON_VERSION) dl util ;
+@@ -87,27 +83,6 @@
+     PYTHON_DEBUG_DLL ?= [ GLOB $(PATH) $(Path) : python$(PYTHON_VERSION_NODOT)_d.dll ] ;
+     PYTHON_IMPORT_LIB ?= [ GLOB $(PYTHON_LIB_PATH) : libpython$(PYTHON_VERSION_NODOT).* ] ;
+     PYTHON_DEBUG_IMPORT_LIB ?= [ GLOB $(PYTHON_LIB_PATH) : libpython$(PYTHON_VERSION_NODOT).* ] ;
+-}
+-else if $(UNIX) && $(OS) = MACOSX
+-{
+-    if ! $(PYTHON_ROOT)
+-    {
+-        if [ GLOB /System/Library/Frameworks : Python.framework ]
+-        {
+-            PYTHON_ROOT ?= /System/Library/Frameworks/Python.framework/Versions/$(PYTHON_VERSION) ;
+-        }
+-        else
+-        {
+-            PYTHON_ROOT ?= /Library/Frameworks/Python.framework/Versions/$(PYTHON_VERSION) ;
+-        }
+-    }
+-    PYTHON_ROOT = $(PYTHON_ROOT:J=" ") ;
+-    PYTHON_INCLUDES ?= $(PYTHON_ROOT)/include/python$(PYTHON_VERSION) ;
+-    PYTHON_FRAMEWORK ?= $(PYTHON_ROOT) ;
+-
+-    PYTHON_PROPERTIES ?=
+-      <sysinclude>$(PYTHON_INCLUDES)
+-      ;
+ }
+ else if $(UNIX)
+ {

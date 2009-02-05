@@ -1,0 +1,4 @@
+IgOProfConfiguration=Class("IgOProfConfiguration","Ig_Modules/IgQtProfileService/src/IgOProfConfiguration.h")
+IgOProfConfigurationSingleton=Class("IgOProfConfigurationSingleton","Ig_Modules/IgQtProfileService/src/IgOProfConfiguration.h")
+exclude(IgOProfConfiguration.proc)
+set_policy(IgOProfConfigurationSingleton.instance, return_internal_reference() )

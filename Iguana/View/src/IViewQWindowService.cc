@@ -1,0 +1,37 @@
+//<<<<<< INCLUDES                                                       >>>>>>
+
+#include "Iguana/View/interface/IViewQWindowService.h"
+#include <classlib/utils/DebugAids.h>
+
+//<<<<<< PRIVATE DEFINES                                                >>>>>>
+//<<<<<< PRIVATE CONSTANTS                                              >>>>>>
+//<<<<<< PRIVATE TYPES                                                  >>>>>>
+//<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
+//<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
+//<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
+
+IG_DEFINE_STATE_ELEMENT (IViewQWindowService, "Services/Qt/Main Window");
+
+//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
+//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
+//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
+
+IViewQWindowService::IViewQWindowService (IgState *state, QWidget *mainWindow)
+    : m_state (state),
+      m_mainWindow (mainWindow)
+{
+    ASSERT (state);
+    ASSERT (mainWindow);
+    state->put (s_key, this);
+}
+
+IViewQWindowService::~IViewQWindowService (void)
+{
+    ASSERT (m_state);
+    ASSERT (m_mainWindow);
+    m_state->detach (s_key);
+}
+
+QWidget *
+IViewQWindowService::mainWindow (void)
+{ return m_mainWindow; }

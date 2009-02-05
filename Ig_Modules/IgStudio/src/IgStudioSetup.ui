@@ -1,0 +1,252 @@
+<!DOCTYPE UI><UI version="3.2" stdsetdef="1">
+<class>IgStudioSetup</class>
+<author>Ianna Osborne</author>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>IgStudioSetup</cstring>
+    </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>373</width>
+            <height>228</height>
+        </rect>
+    </property>
+    <property name="caption">
+        <string>IGUANA Setup</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <property name="margin">
+            <number>11</number>
+        </property>
+        <property name="spacing">
+            <number>6</number>
+        </property>
+        <widget class="QLayoutWidget" row="1" column="0">
+            <property name="name">
+                <cstring>m_layout5</cstring>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLayoutWidget" row="0" column="0">
+                    <property name="name">
+                        <cstring>m_layout4</cstring>
+                    </property>
+                    <vbox>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <widget class="QListBox">
+                            <property name="name">
+                                <cstring>m_configs</cstring>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>List of all available extensions</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>&lt;p&gt;The list of currently available extensions is collected from plugin databases defined by &lt;b&gt;$SEAL_PLUGINS&lt;/b&gt; environment variable.&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QButtonGroup">
+                            <property name="name">
+                                <cstring>m_viewButtonGroup</cstring>
+                            </property>
+                            <property name="title">
+                                <string>View as</string>
+                            </property>
+                            <property name="exclusive">
+                                <bool>true</bool>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>This option will set a type of the scene graph view for OpenInventor-based applications.</string>
+                            </property>
+                            <grid>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QLayoutWidget" row="0" column="0">
+                                    <property name="name">
+                                        <cstring>m_layout3</cstring>
+                                    </property>
+                                    <hbox>
+                                        <property name="name">
+                                            <cstring>unnamed</cstring>
+                                        </property>
+                                        <widget class="QCheckBox">
+                                            <property name="name">
+                                                <cstring>m_3DcheckBox</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>3D</string>
+                                            </property>
+                                            <property name="checked">
+                                                <bool>true</bool>
+                                            </property>
+                                        </widget>
+                                        <widget class="QCheckBox">
+                                            <property name="name">
+                                                <cstring>m_2DcheckBox</cstring>
+                                            </property>
+                                            <property name="text">
+                                                <string>2D</string>
+                                            </property>
+                                        </widget>
+                                    </hbox>
+                                </widget>
+                            </grid>
+                        </widget>
+                    </vbox>
+                </widget>
+                <widget class="QLayoutWidget" row="0" column="1">
+                    <property name="name">
+                        <cstring>m_layout1</cstring>
+                    </property>
+                    <grid>
+                        <property name="name">
+                            <cstring>unnamed</cstring>
+                        </property>
+                        <spacer row="2" column="0">
+                            <property name="name">
+                                <cstring>m_spacer</cstring>
+                            </property>
+                            <property name="orientation">
+                                <enum>Vertical</enum>
+                            </property>
+                            <property name="sizeType">
+                                <enum>Expanding</enum>
+                            </property>
+                            <property name="sizeHint">
+                                <size>
+                                    <width>20</width>
+                                    <height>60</height>
+                                </size>
+                            </property>
+                        </spacer>
+                        <widget class="QPushButton" row="1" column="0">
+                            <property name="name">
+                                <cstring>m_cancel</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Cancel</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+C</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Terminate setup</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>&lt;p&gt;&lt;b&gt;Cancel Button:&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Canceling setup will cause termination of the IGUANA application.&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="3" column="0">
+                            <property name="name">
+                                <cstring>m_help</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;Help</string>
+                            </property>
+                            <property name="accel">
+                                <string>Alt+H</string>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Enter "What's This" mode</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>&lt;p&gt;&lt;b&gt;Help Button:&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Clicking on the button will change cursor in the &lt;b&gt;&lt;i&gt;what's this&lt;/i&gt;&lt;/b&gt; mode.&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                        <widget class="QPushButton" row="0" column="0">
+                            <property name="name">
+                                <cstring>m_ok</cstring>
+                            </property>
+                            <property name="text">
+                                <string>&amp;OK</string>
+                            </property>
+                            <property name="default">
+                                <bool>true</bool>
+                            </property>
+                            <property name="toolTip" stdset="0">
+                                <string>Load selected extension</string>
+                            </property>
+                            <property name="whatsThis" stdset="0">
+                                <string>&lt;p&gt;&lt;b&gt;OK Button:&lt;/b&gt;&lt;/p&gt;&lt;p&gt;Accept &lt;i&gt;&lt;b&gt;selected&lt;/b&gt;&lt;/i&gt; extension from the configuration list to be loaded.&lt;p&gt;&lt;/p&gt;The extension can be loaded by left mouse button &lt;b&gt;double-click&lt;/b&gt; on the selected item.&lt;/p&gt;</string>
+                            </property>
+                        </widget>
+                    </grid>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QLabel" row="0" column="0">
+            <property name="name">
+                <cstring>m_label</cstring>
+            </property>
+            <property name="text">
+                <string>Please select configuration</string>
+            </property>
+            <property name="alignment">
+                <set>AlignVCenter</set>
+            </property>
+        </widget>
+    </grid>
+</widget>
+<connections>
+    <connection>
+        <sender>m_configs</sender>
+        <signal>returnPressed(QListBoxItem*)</signal>
+        <receiver>IgStudioSetup</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_configs</sender>
+        <signal>doubleClicked(QListBoxItem*)</signal>
+        <receiver>IgStudioSetup</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_cancel</sender>
+        <signal>clicked()</signal>
+        <receiver>IgStudioSetup</receiver>
+        <slot>reject()</slot>
+    </connection>
+    <connection>
+        <sender>m_ok</sender>
+        <signal>clicked()</signal>
+        <receiver>IgStudioSetup</receiver>
+        <slot>accept()</slot>
+    </connection>
+    <connection>
+        <sender>m_help</sender>
+        <signal>clicked()</signal>
+        <receiver>IgStudioSetup</receiver>
+        <slot>helpSlot()</slot>
+    </connection>
+    <connection>
+        <sender>m_3DcheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>IgStudioSetup</receiver>
+        <slot>m_3DcheckBox_toggled(bool)</slot>
+    </connection>
+    <connection>
+        <sender>m_2DcheckBox</sender>
+        <signal>toggled(bool)</signal>
+        <receiver>IgStudioSetup</receiver>
+        <slot>m_2DcheckBox_toggled(bool)</slot>
+    </connection>
+</connections>
+<includes>
+    <include location="local" impldecl="in implementation">IgStudioSetup.ui.h</include>
+</includes>
+<slots>
+    <slot>helpSlot()</slot>
+    <slot>m_3DcheckBox_toggled( bool )</slot>
+    <slot>m_2DcheckBox_toggled( bool )</slot>
+</slots>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

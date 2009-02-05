@@ -1,0 +1,53 @@
+window.Window3D = function (state, parent, id, title)
+{
+    if (arguments.length > 0)
+    {
+        this.init (state, parent, id, title);
+    }
+}
+
+Window3D = window.Window3D;
+importClass ("Studio.Window")
+Window3D.inherits (Window);
+
+Window3D.method ('init', function (state, parent, id, title) {
+    this.uber ('init', state, parent, id, title, "Window3D.prototype.onloadCallback (this, '" + id + "')");
+    importClass ("Studio.Browser3D")
+	this.browser = new Browser3D (this, id, 156, 156);
+	this.addFocusInCallback (new Callback_0_1 (this, "onFocusIn", state));
+	this.addFocusOutCallback (new Callback_0_1 (this, "onFocusOut", state));	
+	state.lookup ("Update Service").dispatcher.addObserver (this.browser.updateCallback);
+//	this.onTitleClick (id);
+});
+
+Window3D.method ('onloadCallback', function (placeHolder, id) {
+	placeHolder.setAttribute ("onload", "");
+	if (placeHolder == null)
+		return;
+	var parent = placeHolder.parentNode;
+//	this.browser = new Browser3D (parent, id, 156, 156);
+	parent.removeChild (placeHolder);
+});
+
+Window3D.method ('onFocusIn', function (state) {
+	var toolbar = state.lookup ("Toolbars/Toolbar3D");
+	
+	toolbar.buttons["VIEW_ALL"].setOnClickCallback (new Callback_1 (this.browser, "viewAll"));
+	toolbar.buttons["ZOOM_IN"].setOnClickCallback (new Callback_0_1 (this.browser, "zoom", -0.1));
+	toolbar.buttons["ZOOM_OUT"].setOnClickCallback (new Callback_0_1 (this.browser, "zoom", 0.1));
+	toolbar.buttons["UP"].setOnClickCallback (new Callback_0_2 (this.browser, "moveCameraScreen", 0., 0.05)); 
+	toolbar.buttons["DOWN"].setOnClickCallback (new Callback_0_2 (this.browser, "moveCameraScreen", 0, -0.05)); 
+	toolbar.buttons["LEFT"].setOnClickCallback (new Callback_0_2 (this.browser, "moveCameraScreen", -0.05, 0.)); 
+	toolbar.buttons["RIGHT"].setOnClickCallback (new Callback_0_2 (this.browser, "moveCameraScreen", 0.05, 0.)); 
+});
+
+Window3D.method ('onFocusOut', function (state) {
+	var toolbar = state.lookup ("Toolbars/Toolbar3D");
+	toolbar.buttons["VIEW_ALL"].setOnClickCallback (null);			
+	toolbar.buttons["ZOOM_IN"].setOnClickCallback (null);
+	toolbar.buttons["ZOOM_OUT"].setOnClickCallback (null);
+	toolbar.buttons["UP"].setOnClickCallback (null); 
+	toolbar.buttons["DOWN"].setOnClickCallback (null); 
+	toolbar.buttons["LEFT"].setOnClickCallback (null); 
+	toolbar.buttons["RIGHT"].setOnClickCallback (null); 
+});

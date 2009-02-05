@@ -1,0 +1,77 @@
+fhandlers:
+  get_handle () / get_io_handle () / get_output_handle ()
+   ( == io_handle by default)
+  set_io_handle ()
+  
+  hclose(h) = CloseHandle (h)
+  handle inheritance?
+  
+  
+  nonblocking
+  hit_eof ()/set_eof?
+  
+  ready_for_read()?
+  select_read/write/except
+  get_guard?
+
+sockets:
+  get_socket () = (int) get_handle ()
+  ioctl, fcntl
+  select stuff
+  hclose (h) = close()
+
+pipe:
+  create/get guard
+  select stuff
+  hit/set eof
+
+======================================================================
+universal i/o selector architecture (FIXME: is this by nature mt?
+maybe can make the various "threads" co-operate on time quanta?):
+  - records
+     - [startup, peek, verify, cleanup]
+     - ready (masks), selected (masks) (+ "saw error", win msgq handle-p)
+     - pointer to iochannel
+     - wait handle
+     - next record
+
+  - main driver
+     - if has file descriptor
+        - unix: feed fd to selector method stack
+	- windows: if it is directly selectable, add fd to handle list
+	  (spawn threads if too many handles?)
+
+     - otherwise (most windows things, random i/o like objects without fd)
+        - for each channel create records (or automatically record
+	  groups, one group per record owner type?)
+           - record = ch->select(mask)
+	   - if ! record, return ok
+	   - if record->ready -> always_ready
+	   - if record->wmsgq -> msgq
+	   - chain it to the records
+	- if nothing -> sleep
+	- if always_ready -> return
+	- timeout? = wait
+	   (- insert signal in the list of waited things)
+	   - scan list of records
+	     - win: if too many handles -> fail (create another thread
+	       with all current wait objects and add the thread to
+	       this list?)
+	     - start it up
+	     - if no wait handle, continue to next
+	     - if wait handle seen previously, continue
+	     - add wait handle to array
+	   - mark time
+	   - wait loop (this should be doable without threads for all
+	      but windows sockets; but threads are ok
+	     - wait (msgq or normal)
+	     - bail out (signal) failure or timeout
+	     - scan list of records
+	       - if saw error, bail out
+	       - if msgq handle or waited handle + verify -> accept it
+	     - if accepted break
+	     - if time was infinite or not yet surpassed, loop back
+	- cleanup
+	- if ! timeout, update states for each record
+	   - if it has no peek or peek is successful:
+	      - update and count result of "selected & ready" (each bit)

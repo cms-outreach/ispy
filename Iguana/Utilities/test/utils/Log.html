@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+  <title>Learning Lizard/Anaphe/AIDA by examples</title>
+            
+  <style type="text/CSS">
+        <!--
+	h1 {color: darkgreen}
+        h2 {color: darkgreen}
+        h3 {color: darkblue}
+        h4 {color: darkred}
+        -->
+    </style>
+</head>
+     <body bgcolor="#ffffff">
+       
+<h2>Example how to use SealBase Log &nbsp;</h2>
+        
+<p>First step is to instrument the code using the LOG macro. If #NLOG compilation
+flag is not enabled, #LOG() expands to code that will dump the output to
+the logging device. </p>
+<p>Usage: <br>
+</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;<b> LOG ( level, what , mode, expression) </b><br>
+</p>
+<p></p>
+<ul>
+  <li><b>    level</b>: the level at and beyond which this output should
+be dumped.  Zero is the lowest level, and -1 is interpreted as "always".<br>
+  </li>
+</ul>
+<ul>
+  <li><b>what</b>: indicates the type of dump.  The value should be either
+    <font face="Courier New, Courier, monospace">trace</font>, <font
+ face="Courier New, Courier, monospace">error</font> or <font
+ face="Courier New, Courier, monospace">warning</font>.</li>
+</ul>
+<ul>
+  <li><b>mode: </b>debugging mode flag.  This indicates the context in which
+this output was written.  It can be one of the #logflag modes (usually starting
+with @c LF), e.g., @c LFgeneral.</li>
+</ul>
+<ul>
+  <li><b>expression</b>: the expression to dump.  It should be in the standard
+stream insertion format; the first left shift operator is supplied by the
+macro. <br>
+  </li>
+</ul>
+<p><br>
+</p>
+<p>When you run the program you can define where to send the log messages
+by setting the LOG environment variable. <br>
+For example: <br>
+</p>
+<ul>
+  <li>export LOG=stderr &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;# for sending
+output to standard error</li>
+  <li>export LOG=file:/tmp/myFile.log &nbsp; &nbsp; &nbsp; &nbsp;# to send
+output to a file <br>
+  </li>
+</ul>
+<p><br>
+</p>
+       
+<address>         <br>
+</address>
+<br>
+</body>
+</html>

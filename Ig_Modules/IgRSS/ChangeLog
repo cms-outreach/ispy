@@ -1,0 +1,26 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+2006-01-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, ChangeLog, IgRSSCreator.h, config.h, IgRSSCreator.cc:
+	files added to repository.
+
+	* BuildFile, ChangeLog, IgRSSCreator.h, config.h, IgRSSCreator.cc:
+	files added to repository.
+
+
+2006-01-09  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, ChangeLog, IgRSSCreator.h, config.h, IgRSSCreator.cc:
+	files added to repository.
+
+	* BuildFile, ChangeLog, IgRSSCreator.h, config.h, IgRSSCreator.cc:
+	files added to repository.
+
+
+2005-10-28  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, ChangeLog, IgRSSCreator.h, config.h, IgRSSCreator.cc:
+	files added to repository.

@@ -1,0 +1,1 @@
+IgRepresentable=Class("IgRepresentable", "Ig_Framework/IgObjectBrowser/interface/IgRepresentable.h")

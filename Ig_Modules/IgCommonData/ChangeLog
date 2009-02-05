@@ -1,0 +1,126 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, IgTwig.h, IgTwig.cc, BuildFile: Move to classlib.
+
+	* IgSimpleTwig_boost.cc, IgSimpleTwig_boost.h, IgTwig_boost.cc:
+	Move to classlib. 
+	
+2006-06-07  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* PyWrapper.orig : removes extra ; for ANSI C++ compliancy. 
+
+2005-03-03  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* PyWrapper.cc: Move to PyWrapper.orig.
+	* PyWrapper.orig: New file to avoid conflicts with builds with
+	SCRAMV1.
+	
+	* BuildFile, python/BuildFile: Update for SCRAMV1.
+
+2004-09-14  Giulio Eulisse  <giulio.eulisse@cern.ch>
+	
+	* PyWrapper.cc, IgCompoundTwig_boost.cc, IgSimpleTwig_boost.cc:
+	IgCompoundTwig bindings added.
+
+2004-08-24  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgTwig_boost.cc: fixes to have it compiling with the old
+	BROKEN version of boost_python.
+
+2004-07-21  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test_GDTwigNavigation.py: example for exploiting the new twig
+	tree navigation capabilities.
+
+	* PyIgTwigNavigation.py: python scripting interface for enabling,
+	disabling twigs. 
+
+2004-07-15  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgTwig.cc, IgTwig.h, IgTwig_boost.cc: lookup method added for
+	browsing the twig tree by passing the relative or absolute path.
+
+2004-07-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/xtypeinfo.h: addded.
+
+	* plugin.cc: XTYPEINFO_DEF removed for IgSimpleTwig_Wrapper  
+
+	* python/IgSimpleTwig_boost.h: added.
+
+	* python/plugin.cc (XTYPEINFO_DEF_1): now python wrappers for
+	twigs are defined here.
+
+	* python/BuildFile: dependency on boost_python added.
+
+	* BuildFile: dependency on boost_python now is only for the python
+	subdir.
+
+2004-06-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSimpleTwig_boost.cc (createIgSimpleTwig): workaround for
+	creating simpleTwigs in python. 
+
+	* IgTwig_boost.cc: using correct policy for add method.
+
+	* PyWrapper.cc: providing custom PyWrapper to force init order. 
+
+2004-06-10  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* python/BuildFile: Corrected path to IgObjectBrowser bindings.
+
+	* xtypeinfo.h, plugin.cc: added xtypeinfo for python wrapper
+	object so that IgSimpleTwigs created in python get represented as
+	well.
+	
+	* BuildFile: temporarily added dependency on boost_python, TO BE
+	FIXED.
+
+	* python/BuildFile IgSimpleTwig_boost.cc IgDatum.pyste
+	IgTwig_boost.cc: python bindings added.
+
+2003-11-28  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgTwig.cc, IgTwig.h: (fullName): added method which returns the
+	complete path of the twig in the tree. 
+
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Clean up.
+
+	* IgTwig.h, IgTwig.cc, config.h: Move to SEAL Foundation classes.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* xtypeinfo.h: Add export as per classlib changes.
+
+2002-09-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgTwig.h: Add mask flags for object update notifications.
+
+	* xtypeinfo.h: Include xtypeinfo for objects clients will need.
+
+2001-09-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgTwig.cc (attributes): Use direct pair constructor to avoid
+	compiler differences in std::pair copy constructors.
+
+2001-08-24  Lassi A. Tuura  <lat@iki.fi>
+
+	* Rewrite for more layering for different subclasses.  In
+	particular, make the base class as small as possible.  Remove
+	property maps; provide accessor maps instead.
+
+2001-07-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* New package to host the base twig and datum types.

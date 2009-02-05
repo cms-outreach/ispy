@@ -1,0 +1,47 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, plugin.cc, IgHelloDriver.cc, config.h: Move to classlib
+	and IgPluginManager.
+
+2006-01-10  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgHelloDriver.cc: Added comments to check clcommit.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+
+	* BuildFile: Port to new SCRAMV1.
+
+2003-09-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgHelloDriver.cc, config.h, plugin.cc, BuildFile, src/BuildFile:
+	Move to SEAL Foundation classes and plug-in manager.  Clean up
+	build files.
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Plug-in manager update.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-09-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* Adjust to plug-in management changes.
+
+2002-09-14  Lassi A. Tuura  <lat@iki.fi>
+
+	* New minimal "hello world" application driver demo.

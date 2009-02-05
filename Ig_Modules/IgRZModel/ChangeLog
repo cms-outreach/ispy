@@ -1,0 +1,16 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h: Move to classlib.
+	
+2005-06-28  Ianna Osborne  <Ianna.Osborne@cern.ch>
+	
+	* IgRZModel.h, IgRZRep.h, config.h, xtypeinfo.h, IgRZModel.cc,
+	IgRZRep.cc, plugin.cc: New files for lego model and rep.
+
+	* New package for the RZ model. 

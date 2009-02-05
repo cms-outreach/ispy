@@ -1,0 +1,144 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+<link rel="home" href="http://iguana.cern.ch/">
+<link rev="made" href="mailto:iguana-developers@cern.ch">
+<link rel="stylesheet" href="../weblayout.css" type="text/css">
+<meta name="originator" content="IGUANA Developers">
+<meta http-equiv="Reply-to" content="iguana-developers@cern.ch">
+<meta http-equiv="Keywords" content="LHC, CMS, IGUANA, interactive,
+  graphics, visualisation, toolkit, event display, OpenGL, OpenInventor,
+  developer guide, Profiling, oprofile, MemProfLib, memory profiling">
+
+<title>IGUANA Developer Guide</title>
+</head>
+
+<body bgcolor="#ffffff">
+<TABLE>
+<TR><TD><CENTER><H1>Profiling tools in Iguana</H1></CENTER></TD></TR>
+<TR>
+<TD>
+<H2>Introduction:</H2>
+    Several profiling tools can be found in IGUANA to ease the duty of
+    finding CPU/memory intensive part of your program. 
+  <H2>oprofile:</H2>
+    <H3>What it is:</H3>
+      oprofile is a lightweight, kernel based profiling facility.		
+      It is possible to use oprofile at CERN via a nice, in progress, 
+      <A HREF="http://iguana.web.cern.ch">iguana</A> based GUI.<BR> 
+      The GUI is now part of IGUANA &gt; 4.2.2 .
+      If you want to do profiling, but you don't want to
+      install oprofile on your machine you can use lxcmse1.cern.ch
+  .
+    
+  <H2>MemProfLib:</H2>
+    <H3>What it is:</H3>
+      MemProfLib is a shared library which can either be preloaded
+      using LD_PRELOAD mechanism or used directly inside IGUANA.
+      In the first place it was though as a memory profiling tool
+      which used glibc malloc hooks to keep track of all the memory
+      allocation. 
+      Then it was extended to include speed profiling via JProf like,
+      SIGALARM mechanism.
+    
+    <H3>How to make it work:</H3>
+      MemProfLib can be found in the Ig_Imports/MemProfLib of IGUANA
+      development version (on CVS). Since it is a work in progress(feedback
+      VERY welcome) it is a moving target. One of the most
+      stable/functional versions is tagged with MEMPROFLIB-0_9_0.
+      Once you have compiled it with 
+      <TABLE CLASS="shell"><TR><TD># scram b</TD></TR></TABLE>
+      it can be activated in
+      two different ways.
+      The general purpose way of operating it is obtained by running
+      the program to be profiled with:
+      <TABLE CLASS="shell">
+	<TR><TD># 
+	  LD_PRELOAD=IGUANA_ROOT/lib/Linux__2.4/libMemProfLib.so program-to-be-profiled
+	</TD></TR>
+      </TABLE>
+      another possibility is to use it within IGUANA with:
+      <TABLE CLASS="shell">
+	<TR><TD># 
+	  iguana --memproflib
+	</TD></TR>
+      </TABLE>
+      both way of proceeding will start the profiler, and in the end
+      the results are dumped to a file with a gprof like format.      
+    
+    <H3>Output file:</H3>
+      The flat profiling informations contains entries as the following:
+      <TABLE CLASS="textfile"><TR><TD CLASS="code"><PRE>
+-----------------------------------------------------------
+     492651028 465775672 1/1   _ZN17G4SteppingManager11InvokePSDIPEj  (/afs/cern.ch/sw/geant4/releases/specific/redhat73/gcc-3.2/geant4.5.1.p01/lib/libG4tracking.so) [631]
+[0]  465775672 465750904 1  _ZN16G4Transportation12PostStepDoItERK7G4TrackRK6G4Step (/afs/cern.ch/sw/geant4/releases/specific/redhat73/gcc-3.2/geant4.5.1.p01/lib/libG4transportation.so)
+          1032      1032 1/1   _ZN11G4AllocatorI15G4CountedObjectI12G4VTouchableEE12MallocSingleEv (/afs/cern.ch/sw/geant4/releases/specific/redhat73/gcc-3.2/geant4.5.1.p01/lib/libG4tracking.so) [1912]
+         23736     23736 1/1   _ZN11G4Navigator25LocateGlobalPointAndSetupERK10Hep3VectorPS1_bb (/afs/cern.ch/cms/Releases/COBRA/COBRA_7_2_3/lib/.4::Linux(void)/libG4volumes.so) [1269]
+------------------------------------------------------------</PRE></TD></TR></TABLE>
+      since the output is C++ mangled we can unmangle it with
+      <TABLE CLASS="shell">
+	<TR><TD># 
+	  c++filt &gt; result-file.flat
+	</TD></TR>
+      </TABLE>
+      Which results in:
+      <TABLE CLASS="textfile"><TR><TD CLASS="code"><PRE>
+------------------------------------------------------------
+    492651028 465775672 1/1    G4SteppingManager::InvokePSDIP(unsigned) (/afs/cern.ch/sw/geant4/releases/specific/redhat73/gcc-3.2/geant4.5.1.p01/lib/libG4tracking.so) [631]
+[0] 465775672 465750904 1    G4Transportation::PostStepDoIt(G4Track const&amp;, G4Step const&amp;) (/afs/cern.ch/sw/geant4/releases/specific/redhat73/gcc-3.2/geant4.5.1.p01/lib/libG4transportation.so)
+         1032      1032 1/1    G4Allocator&gt;G4CountedObject&gt;G4VTouchable&gt; &gt;::MallocSingle() (/afs/cern.ch/sw/geant4/releases/specific/redhat73/gcc-3.2/geant4.5.1.p01/lib/libG4tracking.so) [1912]
+        23736     23736 1/1    G4Navigator::LocateGlobalPointAndSetup(Hep3Vector const&amp;, Hep3 Vectorconst*, bool, bool) (/afs/cern.ch/cms/Releases/COBRA/COBRA_7_2_3/lib/.4::Linux(void)/libG4volumes.so) [1269]
+------------------------------------------------------------ </PRE></TD></TR></TABLE>
+      This gives the profiling information for the function G4Transportation::PostStepDoIt(G4Track const&amp;, G4Step const&amp;) (the
+      one indented and with the [0] index on the extreme left), which
+      is called by G4SteppingManager::InvokePSDIP(unsigned) and which
+      calls G4Allocator&gt;G4CountedObject&gt;G4VTouchable&gt; &gt;::MallocSingle()
+      and G4Navigator::LocateGlobalPointAndSetup(Hep3Vector const&amp;, Hep3 Vectorconst*, bool, bool).<BR>
+      In the first column we have the cumulative sum of all the memory
+      allocated by each function in total.<BR>
+      The second column has different meaning if you consider the
+      actual function, its callees or its children.<BR>
+      For the actual function (G4Transportation::PostStepDoIt(G4Track const&amp;, G4Step const&amp;) ) being examined it is the amount of
+      memory allocated within the function itself, and not by the
+      children.<BR> 
+      For the children it is the amount of memory allocated
+      when called by the parent function G4Transportation::PostStepDoIt(G4Track const&amp;, G4Step const&amp;).<BR>
+      For the callees (only G4SteppingManager::InvokePSDIP(unsigned) in
+      this example, but could be more) it is the amount of memory allocated when
+      calling G4Transportation::PostStepDoIt(G4Track const&amp;, G4Step const&amp;) from each of them.
+      The indexes between the squared brackets are for easy lookup of
+      functions and correspond to the index between squared brackets
+      which is found in the leftmost position.
+    
+    <H3>Options:</H3>
+      It is possible to specify a variety of options via MEMPROF env
+      variable.
+      <UL>
+	<LI>tree: dump the complete call-tree</LI>
+	<LI>noflat: do not output gprof style profile information</LI>
+	<LI>profilespeed: Profile speed rather than mallocs</LI>
+	<LI>byselfsorting: orders the entries in the gprof style
+	  profiler with the one which allocated more memory by themselves
+	  (without children allocations) first.</LI>
+      </UL>
+      Moreover it is possible to filter out some symbols and their
+      children from the profiling. In the ~/.memproflibrc file you can
+      put statement like:
+      <TABLE CLASS="textfile"><TR><TD CLASS="code"><PRE>
+exclude dlopen
+exclude malloc</PRE></TD></TR></TABLE>
+      No entries for them appear in the flat file and their
+      contribution is added to their parent.
+    
+  <H2>References:</H2>
+     Oprofile main site on sourceforge.......<A HREF="http://oprofile.sf.net">http://oprofile.sf.net</A><BR>
+     Another non intrusive profiling facility......<A HREF="http://kcachegrind.sf.net">http://kcachegrind.sf.net</A><BR>
+     Jprof:mozilla  profiling facility......<A HREF="http://lxr.mozilla.org/mozilla/source/tools/jprof/README.html">http://lxr.mozilla.org/mozilla/source/tools/jprof/README.html</A><BR>
+     A little note on how to install on redhat 7.3.1-CERN.......<A HREF="oprofile-note.ps">oprofile-note.ps</A><BR>
+    A little presentation about oprofile and the GUI.......<A HREF="oprofile-presentation.pdf">oprofile-presentation.pdf</A><BR>  
+  </TD>
+<TD></TD>
+</TR>
+</TABLE></BODY>
+</HTML>

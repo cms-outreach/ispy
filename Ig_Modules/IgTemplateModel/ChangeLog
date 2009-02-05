@@ -1,0 +1,31 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, IgTemplateEngine.h, IgTemplateItemDB.h, xtypeinfo.h,
+	IgTemplateEngine.cc, IgTemplateItemDB.cc, IgTemplateModel.cc,
+	plugin.cc: Move to classlib and IgPluginManager.
+
+	* test_IgTemplate.cpp, test_IgTemplate02.cpp: Move to classlib and
+	IgPluginManager. 
+	
+2005-10-21  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgTemplateEngine.cc, test_IgTemplate.cpp, test_IgTemplate02.cpp:
+	Parsing is now more reliable (template can start with @@@ and two
+	consecutive macros are allowed). Added more tests. Using ASSERT in
+	tests.
+
+	* BuildFile, IgTemplateEngine.h, IgTemplateItem.h,
+	IgTemplateItemDB.h, IgTemplateModel.h, IgTemplateRep.h,
+	IgTextModelTemplateItem.h, IgTwigFullnameTemplateItem.h, config.h,
+	xtypeinfo.h, IgTemplateEngine.cc, IgTemplateItem.cc,
+	IgTemplateItemDB.cc, IgTemplateModel.cc, IgTemplateRep.cc,
+	IgTextModelTemplateItem.cc, IgTwigFullnameTemplateItem.cc,
+	plugin.cc, BuildFile, test_IgTemplate.cpp, test_IgTemplate02.cpp:
+	files added to the repository.
+

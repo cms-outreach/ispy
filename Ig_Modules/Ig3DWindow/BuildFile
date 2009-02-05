@@ -1,0 +1,12 @@
+<Use name=Ig_Modules/Ig3DBrowser>
+<Use name=Ig_Modules/Ig3DCategories>
+<Use name=Ig_Modules/Ig3DBaseWindow>
+<Use name=Ig_Extensions/IgOpenInventor>
+
+<Export>
+  <Use name=Ig_Modules/Ig3DBrowser>
+  <Use name=Ig_Modules/Ig3DCategories>
+  <Use name=Ig_Modules/Ig3DBaseWindow>
+  <Use name=Ig_Extensions/IgOpenInventor>
+  <Lib name=Ig_ModulesIg3DWindow>
+</Export>

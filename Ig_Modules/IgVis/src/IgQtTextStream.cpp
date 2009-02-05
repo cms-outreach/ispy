@@ -1,0 +1,21 @@
+// IgQtTextStream.cpp: implementation of the IgQtTextStream class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "Ig_Modules/IgVis/interface/IgQtTextStream.h"
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+IgQtTextStream::IgQtTextStream()
+{
+
+	setDevice(&theBuffer);
+	theBuffer.open(IO_ReadWrite);
+}
+
+IgQtTextStream::~IgQtTextStream()
+{
+	theBuffer.close();
+}

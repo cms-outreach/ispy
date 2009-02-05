@@ -1,0 +1,12 @@
+<Use name=Ig_Framework/IgObjectBrowser>
+<Use name=Ig_Extensions/IgQt>
+
+ <makefile> 	 
+   CPPFLAGS += -DIGUANA_VERSION='"$(SCRAM_PROJECTVERSION)"' 	 
+ </makefile>
+ 
+ <Export>
+  <Use name=Ig_Framework/IgObjectBrowser>
+  <Use name=Ig_Extensions/IgQt>
+  <Lib name=Ig_ModulesIgQtBrowser>
+</Export>

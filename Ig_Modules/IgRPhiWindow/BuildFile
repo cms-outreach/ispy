@@ -1,0 +1,10 @@
+<Use name=Ig_Modules/Ig3DBaseWindow>
+<Use name=Ig_Modules/IgRPhiBrowser>
+<Use name=Ig_Modules/Ig3DCategories>
+
+<Export>
+  <Use name=Ig_Modules/Ig3DBaseWindow>
+  <Use name=Ig_Modules/IgRPhiBrowser>
+  <Use name=Ig_Modules/Ig3DCategories>
+  <Lib name=Ig_ModulesIgRZWindow>
+</Export>

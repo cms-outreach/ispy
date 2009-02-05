@@ -1,0 +1,60 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+	* iglet.cc: Rename to xtypeinfo.cc.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-08  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, IgTableModel.h, xtypeinfo.h, IgSimpleTableModel.cc:
+	Move to classlib and IgPluginManager.
+	
+2005-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Port to SCRAMV1.
+
+2003-09-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Tidy up.
+
+	* IgTableModel.h, IgSimpleTableModel.cc, config.h, xtypeinfo.h:
+	Move to using SEAL Foundation classes.
+
+2002-10-16  Lassi A. Tuura  <lat@iki.fi>
+
+	* config.h: Default Windows to DLL use.  Unify.
+
+2002-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* xtypeinfo.h: Add export as per classlib changes.
+
+2001-11-01  Lassi A. Tuura  <lat@iki.fi>
+
+	* Great renaming and general clean-up patch.
+
+2001-07-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile, plugin.cc: We no longer record model information, so
+	stop being a plug-in.
+
+2001-03-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgCell.cc: New.  Define the missing class to allow the library
+	to load without a crash.
+
+	* plugin.cc: Reformat.
+
+2001-03-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Try to work around SCRAM linking issues.
+
+	* IgSimpleTableModel.cc: Define missing virtual methods so that
+	the library will load.
+
+2001-03-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* Fix typos so the package will compile.
+

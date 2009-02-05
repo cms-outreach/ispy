@@ -1,0 +1,12 @@
+
+<bin name=test_IgTemplate01 file=test_IgTemplate.cpp>
+<Flags CXXFLAGS=-g>
+<use name=Ig_Modules/IgTemplateModel>
+<use name=Ig_Modules/IgCommonData>
+</bin>
+
+<bin name=test_IgTemplate02 file=test_IgTemplate02.cpp>
+<Flags CXXFLAGS=-g>
+<use name=Ig_Modules/IgTemplateModel>
+<use name=Ig_Modules/IgCommonData>
+</bin>

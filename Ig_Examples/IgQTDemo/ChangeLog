@@ -1,0 +1,62 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, plugin.cc: Move to classlib
+	and IgPluginManager.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+
+	* BuildFile: Port to new SCRAMV1.
+
+2004-01-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgQtDemoExtension.cc: Harmonise example names.
+
+2003-10-10 Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* Resize the main window to the "standard" IGUANA size.
+	
+2003-10-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQTDemo.cc: /afs/cern.ch/cms/external/gcc-3.2/Qt/3.2.1 used for
+	the examples. Help menu removed.
+	
+2003-09-25  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQTDemoExtension.h, IgQTDemoExtension.cc, config.h,
+	src/BuildFile: Newly added files to make Qt Demo a plug-in for
+	Studio Sessions.	
+	
+	* IgQTDemo.h, IgQTDemo.cc: Re-written to load default Qt 
+	examples from the Qt installation area if no command line
+	argument provided. Examples from Qt version 3.2.1 are used.
+	
+	* test/BuildFile, IgQTDemo.cpp, demo.txt: Not needed any more as
+	now IgQTDemo is a plug-in and Qt examples to run through it are
+	hard coded.
+
+2003-05-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Chaneg the name of IgQTDemo executable to
+	example_IgQTDemo.
+	
+	* demo.txt: Changes path of Qt demo executables for new
+	Qt version 3.1.2.
+
+2003-05-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQTDemo.cc: fstream used instead of fstream.h to avoid
+	  warning due to the strstream.h header. Remove unused 
+	  headers.

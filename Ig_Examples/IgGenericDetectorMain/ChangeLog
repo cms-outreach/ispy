@@ -1,0 +1,73 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile, IgGDMain.cc, plugin.cc: Move to classlib
+	and IgPluginManager.
+
+	* config.h: Move to classlib.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+
+2004-12-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgGDMain.cc: Set currentRoot to "Generic/Detector", 
+
+2004-11-03  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Now only depends on IgStudio.
+	
+	* IgGDMain.cc: IgStudio/IgMDIView used instead of Ig3DView/Ig3DMDIView.
+
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile, IgGDMain.cc: Removed unused packages/includes.
+
+2004-03-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgGDMain.cc (setup): Fallback code for single window iguana
+	removed.
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgGDMain.cc (setup): now it is possible to enable MDI view by
+	using IGUANA_MDI env variable. 
+
+2004-01-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgGDMain.cc (setup): Use new "invalidate" instead of "update".
+
+2003-11-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgGDMain.cc (setup): 2d view enabled if environment variable
+	ENABLE_2D_VIEW is enabled.
+
+	* BuildFile: changed to include support for the 2D view.
+
+2003-09-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgGDMain.cc, plugin.cc, config.h, BuildFile, src/BuildFile:
+	Move to SEAL Foundation classes and plug-in manager.
+
+2003-03-27  Lassi A. Tuura  <lat@iki.fi>
+
+	* plugin.cc: Plug-in manager update.
+
+2003-03-25  George Alverson <George.Alverson@cern.ch>
+
+    *   ChangeLog created.
+
+    *   config.h: Added for use with Windows dll's
+
+    *   plugin.cc: Modified to use config.h for use with Windows dll's

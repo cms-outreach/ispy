@@ -1,0 +1,12 @@
+### PATCH cernlib-macosx-g77-link
+--- src/config/MacOSX.cf.orig	Mon Nov 17 18:23:49 2003
++++ src/config/MacOSX.cf	Mon Nov 17 18:24:00 2003
+@@ -74,7 +74,7 @@
+ 
+ # define BuildXvExt     NO
+ #define OptimizedCDebugFlags -O -fPIC -pipe
+-#define ExtraLoadFlags -L/usr/X11R6/lib
++#define ExtraLoadFlags -L/usr/X11R6/lib -lcc_dynamic
+ 
+ #define BuildExamples YES
+ 

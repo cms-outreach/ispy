@@ -1,0 +1,27 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h, BuildFile,
+	IgRPhiViewPropertiesCategory.cc, IgRPhiWindow.cc, plugin.cc: Move
+	to classlib and IgPluginManager.
+	
+2007-03-02  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgRPhiWindow.cc: Add a grid button for the RPhi windows.
+	
+2005-09-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgRPhiWindow.cc: Disable some of the buttons on the toolbar.
+
+2005-08-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgRPhiViewPropertiesCategory.h, IgRPhiViewPropertiesCategory.cc,
+	IgRPhiWindow.h, IgRPhiWindow.cc, config.h, plugin.cc, BuildFile:
+	New files for RPhi window.
+
+	* New package for RPhi window.

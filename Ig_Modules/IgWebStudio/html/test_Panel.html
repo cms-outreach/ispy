@@ -1,0 +1,32 @@
+<!DOCTYPE html 
+     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<head>
+<title>Foo</title>
+</head>
+<script type="text/javascript" src="Studio/getScript?name=Inheritance.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=HTTPRequest.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=Callback.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=Dispatcher.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=Widget.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=Evt.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=Panel.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=Window.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=State.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=StateManager.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=BrowserLego.js"></script>
+<script type="text/javascript" src="Studio/getScript?name=WindowLego.js"></script>
+<script type="text/javascript">
+function foo ()
+{
+alert ("foo");
+}
+state = new State ();
+new StateManager (state);
+parentDiv = document.createElement ("div");
+new WindowLego (state, parentDiv, "id" , "title");
+</script>
+<body>
+</body>
+</html>

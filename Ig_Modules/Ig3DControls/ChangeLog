@@ -1,0 +1,305 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, Ig3DRangeControl.h, Ig3DAngleControl.cc,
+	Ig3DBoolControl.cc, Ig3DCameraRotControl.cc, Ig3DCameraUtils.cc,
+	Ig3DColorControl.cc, Ig3DEnumControl.cc, Ig3DFieldControl.cc,
+	Ig3DMBoolControl.cc, Ig3DMColorControl.cc, Ig3DMStringControl.cc,
+	Ig3DPlaneControl.cc, Ig3DRotationControl.cc,
+	Ig3DRotationFControl.cc, Ig3DStringControl.cc,
+	Ig3DUnitVec3fControl.cc, Ig3DVec2fControl.cc, Ig3DVec3fControl.cc,
+	Ig3DVec4fControl.cc, Ig3DVectorBaseControl.cc,
+	Ig3DVectorControl.cc, Ig3DZoomControl.cc, IgQtAxisAlignment.cc:
+	Move to classlib.
+
+	* Ig3DRangeMControl.h: Use classlib.
+
+2006-04-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgQtAxisAlignment.cc: Memory leak fixed.
+
+2005-07-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/Ig3DEnumControl.cc: Make use of coin3d addtional features for
+	getting the Enum name and values to automatically update the Enum
+	control.
+
+2005-03-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Port to new SCRAMV1.
+
+2004-12-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3D*Long*.h, Ig3D*Long*.cc: Removed *.cc files, Long are now typedef to
+	Int32.
+
+2004-12-02  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DColorControl.cc, Ig3DMColorControl.cc: QSpacerItem removed for
+	the proper formating.
+
+2004-10-29  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DMBoolControl.h, Ig3DMBoolControl.cc, Ig*StringControl.h,
+	Ig*StringControl.cc: Newly added classes to control SoMFBool, SoSFString
+	and SoMFString. 
+
+2004-10-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DVectorControl.h: isChanged () moved to Ig3DVectorBaseControl.
+
+2004-10-18  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DFieldControl.h, Ig3DFieldControl.cc: New signal settingsChanged (void)
+	added.
+	
+	* Ig3DPlaneControl.h, Ig3DRotationFControl.h, Ig3DRotationFControl.cc,
+	Ig3DPlaneControl.cc: Slots for settingsChanged (void) signals added.
+	
+	* Ig3DRotationFControl.h, Ig3DVec2fControl.h, Ig3DVec4fControl.h,
+	Ig3DVectorBaseControl.h, Ig3DRotationFControl.cc, Ig3DVec2fControl.cc,
+	Ig3DVec4fControl.cc, Ig3DVectorBaseControl.cc: Newly added classes to
+	control a general vector of size 'n', classes to control Vec2f, Vec3f,
+	rotation.
+	
+	* Ig3DPlaneControl.h, Ig3DPlaneControl.cc: getSettingString and 
+	setSettingString methods added to get and set the plane's controllers
+	step/range/precisons.
+	
+	* Ig3DRangeControl.h, Ig3DRangeMControl.h: getSettingString and
+	setSettingString methods added.
+	
+	* Ig3DVectorControl.h, Ig3DVectorControl.cc, Ig3DUnitVec3fControl.h,
+	Ig3DUnitVec3fControl.cc: Moved to use new generalize vector.
+
+2004-09-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DVec3fControl.h, Ig3DVec3fControl.cc: Inventor/fields/SoSFVec3f.h
+	header file moved to the .h from .cc.
+	
+	* Ig3DVectorControl.h, Ig3DVectorControl.cc: Added syncSettings to sync
+	the range/step/precision for x, y and z controls, emited the signal when
+	the controls setting are changed, editSettings not needed any more.
+	
+	* Ig3DUnitVec3fControl.cc: No need to set the range/step for x, y and z
+	contorls, setting value to x will automatically be set for y and z. 
+	
+2004-09-06  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DFieldControl.h, Ig3DFieldControl.cc: settingsChanged signal and
+	fieldSettingsChanged slot added to notify the listener about the change
+	of the field limits/steps/precision.
+	
+	* Ig3DRangeControl.h, Ig3DRangeMControl.h: Connected the settingsChanged
+	signal from the range control to the fieldSettingsChanged slot so that
+	whenever the range control limits/steps are changed the settingsChanged
+	signal of the 3D control can be emited.
+
+2004-09-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DColorControl.h, Ig3DColorControl.cc, Ig3DMColorControl.h,
+	Ig3DMColorControl.cc: RGB controllers (QSlider) added to directly
+	change the color of light or 3d node.
+
+2004-08-27  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* *.cc: Removed all ToolTips.
+
+2004-08-23  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DUnitVec3fControl.cc: x, y and z controls now not allowed to
+	change the min and max vlaues (range is -1, 1).
+	
+	* Ig3DVectorControl.h, Ig3DVectorControl.cc: editSettings added
+	to set the step and precision for all x, y, z.
+
+2004-08-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* *.h, *.cc: Newtemplate based implementation of the controls,
+	now its easy to have new controls. Added many new controls for
+	Multi Fields e.g. SoMFInt32, SoMFShort etc.
+
+2004-06-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAxisAlignment.cc: Moved icons from IgQt to IgIcons.
+
+2004-05-14  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Cleanup.
+
+2004-04-25  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DMColorControl.h, Ig3DMColorControl.cc, Ig3DMFloatControl.h,
+	Ig3DMFloatControl.cc: Newly added classes to control SoMFFloat and
+	SOMFColor fields.
+	
+	* Ig3DFieldControl.h, Ig3DFieldControl.cc: change the SoSField to
+	SoField so that we can now control SoFM* fields also.
+
+2004-04-22  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DFieldControl.h, Ig3DFieldControl.cc: clearFiled public method
+	added to set the feild value to 0.
+
+2004-03-04  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DEnumControl.h, Ig3DEnumControl.cc, Ig3DUInt32Control.h,
+	Ig3DUInt32Control.cc: New controls added to control UInt32 and
+	Enum SoFields.
+	
+2004-01-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAxisAlignment.cc: x, y and z pixmaps are replaced by
+	yz, xz and yx pixmaps.
+
+2003-11-24  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgQtAxisAlignment.cc: Update size of the pixmaps.
+
+2003-10-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DUnitVec3fControl.h, Ig3DVec3fControl.h, Ig3DUnitVec3fControl.cc,
+	Ig3DVec3fControl.cc: 3rd argument Styleadded to the constructors and 
+	make the Ig3DUnitVec3fControl to have a DirectionStyle. QWhatsThis 
+	help messages added. Labels for DirectionStyle added.
+	
+	* Ig3DBoolControl.cc: Label of check box passed at the creation of 
+	checkbox.
+	
+	* Ig3DColorControl.cc, Ig3DFloatControl.cc, IgQtAxisAlignment.cc: 
+	QWhatsThis help messages added.
+	
+	* Ig3DPlaneControl.cc: Ig3DUnitVec3fControl used instead of 
+	Ig3DVectorControl to control the normal of the plane.
+	
+2003-10-02  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAxisAlignment.h, IgQtAxisAlignment.cc: Pixmap added for x, y
+	and z alignment, fixed the size of alignment buttons, tool tips 
+	added.
+	
+2003-10-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgQtAxisAlignment.h, IgQtAxisAlignment.cc: Newly added files to
+	handle axis alignment.
+	
+	* Ig3DVectorControl.h, Ig3DVectorControl.cc: Alignment code is removed
+	and used from IgQtAxisAlignment.
+	
+	* Ig3DCameraRotControl.cc: Tooltips added.	
+	
+2003-09-29  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DAngleControl.h, Ig3DAngleControl.cc, Ig3DInt32Control.h,
+	Ig3DInt32Control.cc, Ig3DShortControl.h, Ig3DShortControl.cc:
+	Newly added classes to control angles, Int32 Sofeilds and short 
+	Sofields.
+	
+	* Ig3DBoolControl.h, Ig3DBoolControl.cc: Method added to provide
+	control over the underlaying QCheckBox object and make use of 
+	editable signal to enable/disable the bool control.
+	
+	* Ig3DColorControl.h, Ig3DColorControl.cc: Add tool tips and make use
+	of editable signal to enable/disable the color control. Method 
+	added to provide access to the color control widget.
+	
+	* Ig3DFloatControl.cc: Make use of editable signal to enable/disable
+	the float control.
+	
+	* Ig3DPlaneControl.h, Ig3DPlaneControl.cc: Make use of editable signal
+	to enable/disable the plane and distance controls. Method added to
+	provide access to the underlaying direction and distance controls.
+	
+	* Ig3DRotationControl.cc: Make use of tracking signal to reset the 
+	changed value to "0" when tracking is "ON" and do not reset the changed
+	value when tracking is "OFF" so that the IgQtRangeControl can keep 
+	accumulating the changed value.
+	
+	* Ig3DVectorControl.cc: Make use of editable signal to enable/disable
+	the x,y and z float controls. emit the clean signal once constructed so
+	that x, y and z float control become clean. Added the rotation button 
+	for the RotationStyle controls and make it working properly.
+	
+2003-09-18  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Remove reference to TGSInventorFix, it is now part
+	of the TGS Inventor tool.
+
+2003-09-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DBoolControl.cc, Ig3DCameraRotControl.cc, Ig3DCameraUtils.cc,
+	Ig3DColorControl.cc, Ig3DFieldControl.cc, Ig3DFloatControl.cc,
+	Ig3DPlaneControl.cc, Ig3DRotationControl.cc,
+	Ig3DUnitVec3fControl.cc, Ig3DVec3fControl.cc,
+	Ig3DVectorControl.cc, Ig3DZoomControl.cc,
+	config.h, BuildFile:
+	Move to SEAL Foundation classes.
+
+2003-07-24  George Alverson <George.Alverson@cern.ch>
+
+	* Ig3DUnitVec3fControl: Add _copysign for WIN32
+
+2003-07-18  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DFloatControl.cc: Fixed for accumulating the changed value when
+	tracking was not on and set dirty bit when set value from control.
+	
+	* Ig3DVectorControl.cc: Fixed for accumulating the changed value when
+	tracking was not on, use of QToolButton instead of IgQtPixButton
+	
+2003-07-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DColorControl.h, Ig3DColorControl.cc: IgQtPixButton is replaced
+	by QPushButton. Change the style of button to show the selected
+	color in center.
+	
+	* Ig3DPlaneControl.cc: Added the StepperPart and SliderPart part for
+	the distance.
+	
+2003-07-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+	
+	* Ig3DVectorControl.h, Ig3DVectorControl.cc: Made xControl (void),
+	yControl (void) and zControl (void) public. Fixed to work properly.
+	
+	* Ig3DUnitVec3fControl.cc: Proper initialization.
+	
+2003-04-07  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DFieldControl.cc: included Inventor/fields/SoField.h
+	instead of Inventor/fields/SoSField.h to work with both
+	TGSInventor and Coin3D.
+
+2003-03-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DFieldControl.cc: Add missing destructor.
+
+2003-03-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* Ig3DFloatControl.h, Ig3DFloatControl.cc: Expose range control
+	part options and provide access to the control.  Use base class
+	content management.
+
+	* Ig3DPlaneControl.h, Ig3DPlaneControl.cc: Add show() and hide()
+	methods to manage subcomponents that are not handled by the base
+	class.  Use base class content management.
+
+	* Ig3DVectorControl.h, Ig3DVectorControl.cc: Unify part selectors
+	to use int, not unsigned.  Use base class content management.
+
+	* Ig3DBoolControl.cc, Ig3DColorControl.cc: Use base class content
+	management.
+
+	* Ig3DCameraUtils.h, Ig3DCameraUtils.cc: Don't use a real camera
+	but the relevant fields (oritentation, position, focal distance)
+	instead.  This permits use with other camera-like objects like
+	viewpoints.
+
+	* BuildFile: Add reference to OpenInventor.
+
+2003-03-25  Lassi A. Tuura  <lat@iki.fi>
+
+	* New package, 3D-related control panel controls.  Initial import
+	of not-yet-complete code (it does compile).

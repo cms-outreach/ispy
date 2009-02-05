@@ -1,0 +1,134 @@
+2007-03-28  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h, plugin.cc: Move to classlib and
+	IgPluginManager.
+	
+	* BuildFile: Use Iguana flag.
+
+2005-04-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* Ig2DBrowser.cc: Turn off the head light.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Port to new SCRAMV1.
+
+	* src/BuildFile: Port to new SCRAMV1.
+
+2004-12-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DBrowser.cc: Fixed the scene graph dragging using the mouse
+	middle button.
+
+2004-11-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DBrowser.cc: Fixed the mouse movement when left mouse button is
+	pressed.
+
+2004-10-20  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DBrowser.cc: Fixed the mouse zoom in/out for multiple windows
+	by checking the mouse foucs on the browsers parent widget, fixed the
+	zooming using the mouse middle button, eventCallback now only deals
+	with the specific things we need for 2D browser and rest is handled
+	by SoQt.
+
+2004-09-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DBrowser.h: code beautification.
+
+2004-08-26  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBrowser.cc: Picking on the 2D browser is now working, we just 
+	return false when viewing mode is off. 
+
+2004-08-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DBrowser.cc: rotations of the clipping plane changed to match
+	those of 2D.
+
+2004-05-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DBrowser.cc (noMouseMovementCallback): fixed mouse control. 
+
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig2DBrowser.cc: Removed unused includes.
+
+2004-03-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/Ig2DBrowser.cc (noMouseMovementCallback): mouse wheel code
+	put back again.
+
+	* Ig2DBrowser.cc (noMouseMovementCallback): mouse controls changed
+	again...
+
+	* Ig2DBrowser.cc (noMouseMovementCallback): mouse wheel control
+	moved to Ig3DBaseBrowser. Mouse controls inverted.
+
+2004-03-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DBrowser.cc: now you can actually move in a 2d view in an
+	appropriate way.
+
+	* Ig2DBrowser.cc: removed possibility to rotate the model. Added
+	possibility to zoom via scroll wheel. 
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DBrowser.cc: removed inclusion of Ig2DViewPropertiesCategory.h 
+
+	* Ig2DViewPropertiesCategory.cc, Ig2DViewPropertiesCategory.h:
+	moved to Ig2DWindow(second attempt...)
+
+
+	* Ig2DBrowser.cc, Ig2DBrowser.h: control categories initialization
+	code moved to Ig2DBrowser. added methods to change the cutting
+	plane used to obtain the 2d view.
+
+	* Ig2DViewPropertiesCategory.cc, Ig2DViewPropertiesCategory.h:
+	moved to Ig2DWindow.
+ 
+2004-01-14  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DBrowser.cc, Ig2DBrowser.h: added virtual methods to
+	initialise menu, widget and category. Overriding parent's methods
+	for building the trims. These create a 2D specific widget layout
+	and menus. Making it a Q_OBJECT.
+
+
+2003-12-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DBrowser.cc (Ig2DBrowser): camera is in orthographic mode by
+	default.
+
+2003-12-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/Ig2DViewPropertiesCategory.cc (setCuttingPlane): wait cursor
+	is set while waiting for the cut operation to complete.
+
+2003-11-28  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig2DBrowser.cc, Ig2DBrowser.h: now it instantiate an
+	Ig2DViewPropertiesCategory and registers it in the control panel.
+	Added proper member variable to keep track of it.
+	
+	* Ig2DViewPropertiesCategory.cc, Ig2DViewPropertiesCategory.h:
+	control center category for 2D view properties. 
+
+2003-10-28  Lassi A. Tuura  <lat@iki.fi>
+
+	* New package, initially just a copy of the 3D browser.  To be
+	updated later to proper 2D-only view.
+

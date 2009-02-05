@@ -1,0 +1,31 @@
+2007-03-12  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile, config.h, IgCommonHistoReps.h, plugin.cc: Removed.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, BuildFile, IgCommonHistoReps.h, plugin.cc: Move to
+	classlib and IgPluginManager.
+	
+2005-11-25  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/plugin.cc: Added hippodraw namespace.
+
+2005-05-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* plugin.cc: logging via std::cerr removed.
+
+2005-05-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* plugin.cc: Changes to doUpdate and doRepresent multimethods so
+	that now the histogram model is derived from an IgNTupleModel.
+
+	* BuildFile: Dependency on IgNTupleModel added.
+
+2005-04-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, ChangeLog, IgCommonHistoReps.h, config.h,
+	  plugin.cc: First import.
+
+	* New package for doing representations of histograms.
+

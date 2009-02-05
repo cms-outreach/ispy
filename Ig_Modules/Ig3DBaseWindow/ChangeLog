@@ -1,0 +1,245 @@
+2007-03-28  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, Ig3DBaseWindow.cc, IgCommonViewCategory.cc,
+	IgCommonViewPropertiesCategory.cc, IgExaminerViewerCategory.cc,
+	IgGL2PSPrintCategory.cc, IgGLRenderCategory.cc,
+	IgQtApplicationCategory.cc, IgSceneManagerCategory.cc: Move to
+	classlib. 
+	
+2006-04-27  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Added label for feedback axis.
+
+2006-03-01  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* Ig3DBaseWindow.h, Ig3DBaseWindow.cc: Added a toolbar button for
+	an automatic bitmap printing.
+
+2005-07-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Update of control centre called on focusIn to
+	properly update the control centre categories for the selected window.
+
+2005-07-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.h: TOOLBAR_ID_3D2D_PRINT_DEFAULT_VIEWS ID added.
+
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DBaseWindow.cc: listen/unlisten renamed to add/remove in
+	IgDispatcher.
+
+2005-04-18  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* Ig3DBaseWindow.h, Ig3DBaseWindow.cc: Remove "whats this" picking
+	tool bar button and corresponding callback (a place holder for
+	non-existing service). Auto-format the code according to the
+	project de-facto standards.
+
+2005-04-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Ig3DBaseBrowser::foucsOut() called on
+	the window's foucsOut.
+
+2005-03-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Port to new SCRAMV1.
+
+2004-12-16  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Fixed toolbar visibility bug due to which
+	toolbarVisibilityChanged was called multiple times, whats this picking
+	toolbar button added.
+
+2004-12-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Moved to new IgModelModel and create windows under
+	state where the current root document data, code cleanup.
+
+2004-12-02  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgExaminerViewerCategory.cc, IgGL2PSPrintCategory.cc,
+	IgGLRenderCategory.cc, IgQtApplicationCategory.cc,
+	IgSceneManagerCategory.cc: Moved to use new category top area.
+	
+2004-11-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoMaterialCategory.h, IgSoMaterialCategory.cc: Removed.
+	
+	* Ig3DObjectCategory.h: Moved to Ig3DCategories.
+
+2004-10-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig*Category.h, Ig*Category.cc: Newly added categories.
+	IgCommonViewPropertiesCategory is broken into 5 categories.
+	
+	* IgCommonViewPropertiesCategory.h, IgCommonViewPropertiesCategory.cc:
+	It is no more a category. It now provides an easy way to add the
+	GLRender, QtApplication, GL2PS etc categories.
+	
+	* Ig3DBaseWindow.cc: Make use of the new IgCommonViewPropertiesCategory
+	category.
+
+2004-10-22  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Fixed the browser size.
+
+2004-10-20  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.cc: hide the scroll view.
+
+2004-10-19  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.h, Ig3DBaseWindow.cc: IMAGE_ID_* moved to
+	IgIcons/IgImageIDs and image service is created in the studio driver.
+
+2004-10-18  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.cc: Hided the scrol area for the
+	common view properties category.
+
+2004-08-27  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+	
+	* *.cc: Removed tool tips.
+
+2004-08-20  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.h, IgCommonViewPropertiesCategory.cc:
+	popup menu, viewing and decoration buttons are removed.
+
+2004-08-18  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.h, IgCommonViewPropertiesCategory.cc:
+	Make the feedback visibility size available again.
+	
+	* Ig3DBaseWindow.cc: Separator inserted after the Toolbar menu item.
+
+2004-08-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.cc: Registered the common view
+	properties category, removed feedback, grid, zoom, camera
+	invert/toggle buttons (already available on the tool bar).
+	
+	* Ig3DBaseWindow.cc: Caption of the 3D browser added again.
+
+2004-08-13  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgCommonViewPropertiesCategory.cc: Grid visibility is connected
+	to it's being enabled.
+	
+2004-08-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.h, Ig3DBaseWindow.cc: Tool buttons added for
+	print, save and control centre, make the tool bar close able,
+	moved grid button to the Ig3DWindow.
+
+2004-08-10  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Detail WhatsThis information added.
+
+2004-08-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.h, IgCommonViewPropertiesCategory.cc:
+	Used proper type of controls for controlling Feedback Size (uint) and
+	Redraw Priority (uint) and tAntialiasing Passes(unit).
+	
+	* Ig3DBaseWindow.h, Ig3DBaseWindow.cc: Fixed the pick and view mode toggle
+	button. Seek button disabled when pick mode is selected.
+
+2004-07-14  Lassi A. Tuura  <lat@maccms05.cern.ch>
+
+	* Ig3DObjectCategory.h (clear): Simplify and correct code.
+
+2004-07-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DBaseWindow.cc: menu setup and focusIn/focusOut callbacks are
+	initialised in here.
+
+2004-06-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.h, IgCommonViewPropertiesCategory.cc:
+	New Tab added for setting printing options (Currently only printing
+	options that can be edited are for GL2PS printing), moved icons from
+	IgQt to IgIcons.
+	
+	* Ig3DBaseWindow.cc: Menu and short-cut keys updated, moved icons from
+	IgQt to IgIcons.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DBaseWindow.cc (Ig3DBaseWindow): added new toolbar button to
+	toggle camera type. 
+
+2004-05-14  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Cleanup.
+
+2004-05-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.cc: Set the site size to maximum (No 100 X 100 site).
+
+2004-04-22  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DBaseWindow.h, Ig3DBaseWindow.cc: focusIn and focusOut virtual
+	methods added.
+
+2004-04-21  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgCommonViewPropertiesCategory.h, IgCommonViewPropertiesCategory.cc:
+	Fixed the zoomIn and zoomOut buttons to work with MDI.
+
+2004-03-18  Giulio Eulisse  <giulio.eulisse@cern.ch> 
+
+	* Ig3DObjectCategory.h (object): now return 0 if no objects are
+	there.
+	(clear) clears all the objects in the object list of the category.
+	(registerBrowser) needed for keeping track of focus changes.
+	
+2004-03-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DBaseWindow.cc (watchBrowser): title is now handled by the
+	base IgView class. We just set the widget caption here, once a
+	browser to be watched has been registered. 
+
+2004-03-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgCommonViewPropertiesCategory.cc,
+	IgCommonViewPropertiesCategory.h, Ig3DBaseWindow.cc,
+	Ig3DBaseWindow.cc: : IgCommonViewPropertiesCategory control
+	category now follows focus
+
+	* Ig3DBaseWindow.h: back to old ToolButtons IDs.
+	
+2004-03-04  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DObjectCategory.h: flags to pass to Control category added.
+
+2004-03-04  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DBaseWindow.h: ToolButtons ID renumbered.
+
+	* Ig3DBaseWindow.cc (initToolBar): now "pick" and "view" buttons
+	actually do what they are supposed to. 
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DBaseWindow.h, BuildFile: model manager has been moved to
+	IgObjectBrowser package: code fixed here accordingly.
+
+2004-03-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DBaseWindow.cc, Ig3DBaseWindow.h, config.h, BuildFile: first
+	attempt of multiwindow environment. This is the base class for the
+	single windows in the MDI workspace which observe an Ig3DModel. It
+	basically instantiates control categories and toolbars common to
+	both 2D and 3D Views. It is duty of the child class to create the
+	appropriate browser.
+
+	* IgCommonViewPropertiesCategory.h, IgSoMaterialCategory.h,
+	IgCommonViewPropertiesCategory.cc, IgSoMaterialCategory.cc,
+	Ig3DObjectCategory.h: moved here from Ig3DBaseBrowser.
+

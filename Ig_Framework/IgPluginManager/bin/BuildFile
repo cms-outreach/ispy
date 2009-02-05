@@ -1,0 +1,13 @@
+<bin file=IgModuleLoadCheck.cpp>
+  <use name=Ig_Imports/classlib>
+  <Flags INSTALL_SCRIPTS=IgModuleSymCheck>
+</bin>
+<bin file=IgPluginDump.cpp>
+  <use name=Ig_Imports/classlib>
+  <use name=Ig_Framework/IgPluginManager>
+</bin>
+<bin file=IgPluginRefresh.cpp>
+  <use name=Ig_Imports/classlib>
+  <use name=Ig_Framework/IgPluginManager>
+</bin>
+

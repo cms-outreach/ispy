@@ -1,0 +1,148 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+	* xtypeinfo.cc: New xtype info declaration.
+	* IgIVView.h, IgIVView.cc: Use more generic IgBrowser.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h, plugin.cc, BuildFile, IgIVView.cc,
+	IgSoTwig.cc: Move to classlib and IgPluginManager.
+	
+2006-10-10  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Added the missing dependency on Ig_Modules/IgCommon3DReps
+
+2005-04-24  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgIVView.cc: Fixed the destructor to properly delete the data
+	members e.g. delete the m_state in last (not first).
+
+2005-04-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgIVView.cc: Bug fixed due to which the lights exceeded the
+	max number of OpenGL lights.
+	* src/plugin.cc: Added only the childs of the node instead of node
+	itself. This fixed the problem of having multiple nasted nodes. 
+	
+2005-04-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgIVView.cc: Do not read the same iv file twice. Remove Twig
+	options menu. Invalidation of Twigs removed - not needed - the
+	Twigs have just been created. Remove not needed header files.
+
+2005-04-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgIVView.cc: Pop up a file browser dialog first, while analyzing
+	the argument list remove the arguments - no need for a static
+	variable to keep track of it. Center the dialog within the
+	application, not in the middle of the screen. Remove non existing
+	Pick service.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+2005-03-03  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Move to use new SCRAMV1.
+
+2005-01-03  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.cc: Magic node set for the newly added model.
+
+2004-12-13  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.h, IgIVView.cc: Cleanup, now uses Ig3DWindow.
+
+2004-11-29  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.cc: "--ivfile|-iv" are now used instead of "-f".
+
+2004-11-22  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.h, IgIVView.cc: IgQtTwigBrowser dependency removed. It is
+	now loaded by loading the "Twig" plugin, IgQtObjectMenuService
+	added, 
+
+2004-11-19  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.h, IgIVView.cc: static flag added to avoid reading the
+	same iv file passed via command-line by each new IV Viewer. -f 
+	command-line arg used instead of --ivfile.
+
+2004-11-18  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.cc: --ivfile <file> commandline argyment is now used to
+	provide the iv file name to be loaded by the IgIVView. 
+
+2004-11-01  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Now depneds on Ig3DCategories instead of Ig3DWindow.
+	
+	* IgIVView.h, IgIVView.cc: Removed unused IgSoMaterialCategory and
+	other categories are now used from Ig3DCategories package instead of
+	Ig3DWindow.
+
+2004-10-28  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.cc: Make use of new IgCommonViewPropertiesCategory.
+
+2004-10-27  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* plugin.cc: Fixed for IgSoTwig.
+
+2004-10-26  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.cc: Model passed to the 3D Browser.
+	
+	* IgSoTwig.h, IgSoTwig.cc: Moved from IgSoReaderAppDriver.
+
+2004-10-21  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.cc: Added the destructor.
+
+2004-10-20  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.cc: Categories menu item moved under "View" menu, re-arrange
+	the code to only create things when file exists and readable.
+
+2004-10-19  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* IgIVView.h, IgIVView.cc: Added all the toolbar buttons, categories
+	etc.
+
+2004-08-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgIVView.h, IgIVView.cc: Remove rebuildControls for the viewer
+	since it was failing to do so without a 3D window opened and it
+	doesn't have anything to control anyway.
+
+2004-07-27  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgIVView.cc: IgIVView now has a separate IgSelectionService, so
+	that it does not interfere with the other views.
+
+2004-07-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgIVView.cc: Using seal LOG () for debugging.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgIVView.h, IgIVView.cc, plugin.cc, config.h
+	src/BuildFile: Raw Open Inventor file viewer. 
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile, IgIVView.h, IgIVView.cc, plugin.cc, config.h
+	src/BuildFile: Raw Open Inventor file viewer. 
+
+

@@ -1,0 +1,1 @@
+IgPythonCompleter=Class("IgPythonCompleter","Ig_Modules/IgPython/interface/IgPythonCompleter.h")

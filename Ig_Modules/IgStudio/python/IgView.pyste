@@ -1,0 +1,5 @@
+IgView=Class("IgView", "Ig_Modules/IgStudio/interface/IgView.h")
+set_policy (IgView.page, return_value_policy (reference_existing_object))
+set_policy (IgView.state, return_value_policy (reference_existing_object))
+Include ("Ig_Framework/IgObjectBrowser/interface/IgState.h")
+Include ("Ig_Modules/IgStudio/interface/IgPage.h")

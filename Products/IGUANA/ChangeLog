@@ -1,0 +1,7 @@
+2008-07-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile.xml: Added dependencies on classlib and Coin3D.
+
+	* New logging file.
+	
+

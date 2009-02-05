@@ -1,0 +1,316 @@
+2007-03-28  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* iglet.cc: New plugin definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, Ig3DWindow.cc, plugin.cc, BuildFile: Move to
+	classlib. 
+	
+2007-03-02  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* Ig3DWindow.cc: Update detailed help messages.
+	
+2005-07-11  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.h, Ig3DWindow.cc: Added cameraToggled slot to proprtly
+	update the camera toggle button if camera is toggled by view point,
+	added printing of default views functionality.
+	
+
+2005-06-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc: listen/unlisten renamed to add/remove in
+	IgDispatcher.
+
+2005-04-12  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.cc: Removed addOnFoucsIn/Out callbacks
+	which were already added by Ig3DBaseWindow.
+
+2005-03-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Remove as not needed for SCRAM V1.0.1.
+	* BuildFile: Define it to be plugin here.
+
+2005-03-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/BuildFile: Port to new SCRAMV1.
+	* BuildFile: Port to new SCRAMV1.
+
+	* BuildFile: Add missing library.
+
+2004-11-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3D*Category.*: Moved to Ig3DCategories package.
+	
+	* Ig3DWindow.h, Ig3DWindow.cc: Categories used from Ig3DCategories
+	package.
+	
+	* Ig3DViewpointsCategory.h, Ig3DViewpointsCategory.cc: save and load
+	buttons added to save and load view points.
+
+2004-10-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.CC: new controls for MBool and
+	String added.
+
+2004-10-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DAnimsCategory.cc, Ig3DClipsCategory.cc, Ig3DLightsCategory.cc,
+	Ig3DSlicersCategory.cc: Fixed for multiple browsers.
+
+2004-10-27  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DLightsCategory.h, Ig3DLightsCategory.cc: Fixed to
+	construct the already saved lights from the iv file.
+
+2004-10-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DAnimsCategory.h, Ig3DAnimsCategory.cc, Ig3DClipsCategory.h,
+	Ig3DClipsCategory.cc, Ig3DSlicersCategory.h, Ig3DSlicersCategory.cc:
+	Fixed the reconstruction of clips, slicers and animators. Now these
+	could be properly reconstructed from saved .iv files.
+	
+	* Ig3DViewpointsCategory.h, Ig3DViewpointsCategory.cc: Fixed to
+	construct the already saved view points.
+	
+2004-10-19  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+	
+	* Ig3DWindow.cc: IMAGE_ID_* used from IgImageIDs.
+
+2004-10-18  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Added new controllers to control
+	Vec2f, Vec4f, rotation and plane.
+
+2004-10-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DAnimsCategory.h, Ig3DAnimsCategory.cc: bool controller for new
+	reset field added.
+
+2004-09-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DViewpointsCategory.h, Ig3DViewpointsCategory.cc: New browserFocusIn,
+	browserFocusOut, cameraToggled, methods added. Now view point category is
+	also registered for each browser. Now one can control the camera for
+	multiple 3D browsers and toggled camera.
+	
+	* Ig3DWindow.cc: View point category now registered for each 3D browser.
+
+2004-09-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Added control for SoSFVec3f,
+	simplified code.
+
+2004-09-06  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Make the changes made via
+	control setting dialog box persistant, also now these these are saved
+	and will be applied to any field of the same type.
+
+2004-08-31  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.cc: Grid button fixed to work with multiple windows.
+
+2004-08-30  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.cc: Decoded name added.
+
+2004-08-27  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Removed browserFocusOut and
+	pickMessage methods and now only update the category when control
+	centre get focus.
+	
+	* Ig3DWindow.cc: Registered the view point category here so it will
+	only be available for 3D windows.
+	
+	* *.cc: Removed tooltips.
+
+2004-08-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Make use of new services
+	e.g. pick service, foucs in/out service to update the category
+	with the currently selected node on the 3D browser. Fixed the crashing
+	problem when the node is delete from the scene graph.
+	
+	* Ig3DWindow.h, Ig3DWindow.cc: Removed the "Manipulate" item from the
+	twig popup menu, now node should be manipulated by changing to the
+	pick mopde and selecting the node on the scene graph ( i.e. on the
+	3D browser). 
+
+2004-08-23  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.cc: Bug fixed which was causing iguana to crash when
+	2nd time a node is requested to be manipulated by the node manipulator.
+
+2004-08-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DAnimsCategory.cc, Ig3DClipsCategory.cc, Ig3DLightsCategory.cc,
+	Ig3DSlicersCategory.cc: Fixed the order of callbacks. first browser
+	changed callback and then the focus in/out.
+	
+2004-08-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* Ig3DWindow.cc, Ig3DWindow.h: Add grid.
+
+2004-08-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DFieldPlanesCategory.cc: Spelling correction.
+	
+	* Ig3DWindow.cc: WhatsThis information added for the tool bar buttons,
+	moved Grid button from Ig3DBaseWindow to here,  
+	
+
+2004-08-10  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.cc: Detail WhatsThis information added for tool bar
+	buttons.
+
+2004-08-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.cc: Added IMAGE_ID_PERSPECTIVE and IMAGE_ID_ORTHO to the
+	icon set for the camera toggle button.
+	
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Re-implemented to use the
+	new field controls.
+
+	* Ig3DAnimsCategory.cc: Fixed the ranges and min values for different
+	fields.
+
+2004-07-12  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc (Ig3DWindow): using IgQtSiteStack API for naming
+	the windows.
+
+2004-06-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.cc: Menu and short-cut keys updated.
+
+2004-05-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc: orthographic camera toolbar button is now a
+	toggle button.
+
+2004-05-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc (initToolBar): added new toolbar button to change
+	projection. Using IgQtSiteStack api for setting the name of the
+	window.
+
+2004-05-14  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: Added dependency on IgOpenInventor.
+	
+2004-05-03  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+	
+	* Ig3DLightsCategory.cc: Head light added.
+	
+	* Ig3DWindow.cc: Set the name of the head light.
+
+2004-04-26  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Added the clearCategory and
+	the destructor to cleanup the category for each new node, put the 
+	category in to the state.
+	
+	* g3DWindow.cc: Make use of IgControlCategory::clearCategory method
+	to clean up the category instead of deleting and creating it, cleanup
+	of unused code.
+
+2004-04-25  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.h, Ig3DWindow.cc: Ig3DNodeCategory category added to
+	manipulate the shapes, repNode member function added to add the
+	Ig3DNodeCategory category to the control centre.
+	
+	* Ig3DNodeCategory.h, Ig3DNodeCategory.cc: Newly aded control categoy
+	to manipulate the material and shapes.
+
+2004-04-22  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DWindow.h, Ig3DWindow.cc: overriden foucsIn and focusOut methods
+	added, repMenu fixed to first delete the menu items which might be
+	added by other browser and then add its own.
+
+2004-04-21  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DAnimsCategory.h, Ig3DAnimsCategory.cc, Ig3DClipsCategory.h,
+	Ig3DClipsCategory.cc, Ig3DSlicersCategory.h, Ig3DSlicersCategory.cc:
+	browserChanged (), registerBrowser() methods added to handle multiple
+	browsers, removed the "Ig3DBaseRep *root" argument from the constructor.
+	
+	* Ig3DWindow.h, Ig3DWindow.cc: repMenu added for repSlice and repClip,
+	new registerBrowser methods used for slicers, clips and anims
+	categories, 
+	
+2004-03-25  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc (Ig3DWindow): browser gets the state from the
+	window and not from the state. 
+
+2004-03-18  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DFieldPlanesCategory.cc (colorMapChanged): unused argument
+	commented out.
+
+	* Ig3DLightsCategory.cc, Ig3DLightsCategory.h : category is now
+	sensitive to focus changes.
+
+2004-03-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc (Ig3DWindow): using the new IgView title API.
+
+2004-03-05  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DFieldPlanesCategory.h, Ig3DFieldPlanesCategory.cc: New control 
+	category tp control the IgSoFieldPlane.
+	
+	* Ig3DSlicersCategory.cc: thickness range set to (0, SHRT_MAX).
+
+2004-03-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc (initToolBar): feedback button status follows
+	focus.
+
+2004-03-04  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc: "invert" tool button now works.
+
+2004-03-03  Shahzad Muzaffar  <Shahzad.Muzaffar@cern.ch>
+
+	* Ig3DAnimsCategory.h, Ig3DClipsCategory.h, Ig3DSlicersCategory.h,
+	Ig3DViewpointsCategory.h, Ig3DAnimsCategory.cc, Ig3DViewpointsCategory.cc:
+	Fixed to inculde IgSo headers from g_Extensions/IgOpenInventor instead
+	of Ig_Modules/Ig3DBaseBrowser.
+
+2004-03-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc (initCategories): uses registerMe () to resister
+	in to the context service.
+
+	* Ig3DWindow.cc (initCategories): now an Ig3DWindow registers
+	its categories in the ContextService so that they are
+	enabled/disabled on focus changes.
+
+2004-03-02  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* Ig3DWindow.cc (initCategories): removed registration of the
+	 browser into its categories. This should be done using state and
+	 context service.
+
+	* Ig3DWindow.cc, Ig3DWindow.h, plugin.cc, config.h: new view that
+	instantiates control categories for all the Ig3DBrowser and
+	creates a window in the multiwindow environment which contains an
+	Ig3DBrowser watching a 3DModel.
+
+	* Ig3DAnimsCategory.cc, Ig3DClipsCategory.cc,
+	Ig3DLightsCategory.cc, Ig3DSlicersCategory,
+	Ig3DViewpointsCategory.cc, IgLightsCategory.ui,
+	Ig3DAnimsCategory.h, Ig3DClipsCategory.h, Ig3DLightsCategory.h,
+	Ig3DSlicersCategory.h, Ig3DViewpointsCategory.h: moved here from
+	Ig3DBrowser.
+

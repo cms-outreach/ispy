@@ -1,0 +1,17 @@
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+	* plugin.cc: Remove.
+	* xtypeinfo.cc: New xtype info definition.
+
+2007-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* config.h, xtypeinfo.h: Move to classlib.
+	
+2005-08-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgRPhiModel.h, IgRPhiRep.h, config.h, xtypeinfo.h,
+	IgRPhiModel.cc, IgRPhiRep.cc, plugin.cc, BuildFile: New files for
+	RPhi model and rep.
+	
+	* New package for the RPhi model. 
