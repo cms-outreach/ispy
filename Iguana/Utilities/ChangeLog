@@ -1,3 +1,56 @@
+2008-12-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* classlib/iobase/SubProcess.h, src/iobase/SubProcess.cpp,
+	src/iobase/UnixSubProcess.cpp, src/iobase/WindowsSubProcess.cpp:
+	Add support for redirecting standard error in child process.
+
+	* test/iobase/SubProcess04.cpp: Generate output on stderr.
+	* test/iobase/SubProcess05.cpp: New test, suppress stderr output.
+	* Makefile.am: Build new SubProcess05 test.
+
+2008-11-17  Lassi A. Tuura  <lat@iki.fi>
+
+	* classlib/utils/Regexp.h, src/utils/Regexp.cc: Avoid excess
+	strlen() calls for std::string method variants.
+
+2008-11-11  Lassi A. Tuura  <lat@iki.fi>
+
+	* src/iobase/FileNameLock.cpp, src/iobase/Filename.cpp,
+	src/iobase/LogSocket.cpp, src/iobase/Socket.cpp,
+	src/iobase/TempFile.cpp, src/iobase/UnixFilename.cpp,
+	src/iobase/UnixTempFile.cpp, src/iotools/BufferInputStream.cpp,
+	src/iotools/BufferOutputStream.cpp, src/iotools/PushBackBuffer.cpp,
+	src/iotools/PushBackInputStream.cpp, src/iotools/ReadBuffer.cpp,
+	src/iotools/ReadWriteBuffer.cpp, src/iotools/WriteBuffer.cpp,
+	src/utils/Argz.cpp, src/utils/DebugAids.cpp, src/utils/Error.cpp,
+	src/utils/ProcessInfo.cpp, src/utils/Regexp.cpp,
+	src/utils/ResourceInfo.cpp, src/utils/SharedLibrary.cpp,
+	src/utils/Signal.cpp, src/utils/StringFormat.cpp,
+	src/utils/StringOps.cpp, src/utils/SystemError.cpp,
+	src/utils/SystemInfo.cpp, src/utils/Time.cpp, src/utils/UUID.cpp,
+	src/zip/BZCompressor.cpp, src/zip/BZDecompressor.cpp,
+	src/zip/InteractiveDecompressor.cpp, src/zip/ZCompressor.cpp,
+	src/zip/ZDecompressor.cpp, src/zip/ZipArchive.cpp,
+	src/zip/ZipInputStream.cpp, src/zip/ZipMember.cpp,
+	src/zip/ZipOutputStream.cpp, src/zip/ZipUtils.cpp:
+	Add headers and more helpful braces as indicated by GCC 4.
+
+2008-10-15  Lassi A. Tuura  <lat@iki.fi>
+
+	* cfg/boostrap.sh, config.guess, config.sub, cfg/ltmain.sh:
+	Regenerate using a more recent version of autotools chain.
+
+2008-07-22  Lassi A. Tuura  <lat@iki.fi>
+
+	* src/utils/StringOps.cpp (replace): Advance location by one if an
+	empty regexp match is replaced with an empty replacement string.
+	* test/utils/StringsOps04.cpp: Add a test for said condition.
+
+2008-07-09  Lassi A. Tuura  <lat@iki.fi>
+
+	* StringOps.cpp: Fix buggy use of incorrect separator width in
+	splitting strings with a std::string separator.
+
 2008-07-03  Lassi A. Tuura  <lat@iki.fi>
 
 	* StringOps.h, StringOps.cpp: Support operations on bare C strings

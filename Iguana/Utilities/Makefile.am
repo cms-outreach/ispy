@@ -544,6 +544,7 @@ check_PROGRAMS =			\
   test_iobase_SubProcess02		\
   test_iobase_SubProcess03		\
   test_iobase_SubProcess04		\
+  test_iobase_SubProcess05		\
   test_iobase_SubStorage01		\
   test_iobase_SubStorage02		\
   test_iobase_SubStorage03		\
@@ -838,6 +839,9 @@ test_iobase_SubProcess03_LDFLAGS		= -lclasslib
 
 test_iobase_SubProcess04_SOURCES		= test/iobase/SubProcess04.cpp
 test_iobase_SubProcess04_LDFLAGS		= -lclasslib
+
+test_iobase_SubProcess05_SOURCES		= test/iobase/SubProcess05.cpp
+test_iobase_SubProcess05_LDFLAGS		= -lclasslib
 
 test_iobase_SubStorage01_SOURCES		= test/iobase/SubStorage01.cpp
 test_iobase_SubStorage01_LDFLAGS		= -lclasslib

@@ -1,5 +1,7 @@
 #include "test/Test.h" 
 #include "classlib/iobase/SubProcess.h"
+#include "classlib/iobase/Filename.h"
+#include "classlib/iobase/File.h"
 #include "classlib/utils/Argz.h"
 #include "classlib/utils/TimeInfo.h"
 #include "classlib/utils/Signal.h"
@@ -22,10 +24,14 @@ int TEST(int argc, char **argv)
 	// to make "argv" argument to Argz appear as an expression,
 	// anything else is too late.
 	std::cout << "main running\n" << std::flush;
+	IOChannel *nil = 0;
+	File nul(Filename::null(), IOFlags::OpenRead | IOFlags::OpenWrite);
 	SubProcess s1 (Argz (0 + argv [0], "output").argz (),
-		       SubProcess::First);
+		       SubProcess::First | SubProcess::NoCloseError,
+		       nil, nil, &nul);
 	SubProcess s2 (Argz (0 + argv [0], "input").argz (),
-		       SubProcess::Last, &s1);
+		       SubProcess::Last | SubProcess::NoCloseError,
+		       &s1, nil, &nul);
 
 	TimeInfo::msleep (80);
 	std::cout << "main, s1 ready = " << s1.done () << std::endl;

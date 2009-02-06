@@ -4,6 +4,7 @@
 #include "classlib/utils/BitOps.h"
 #include "classlib/utils/DebugAids.h"
 #include <algorithm>
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
@@ -186,6 +187,7 @@ ReadBuffer::unget (const void *data, IOSize n)
     CHECK_BUFFER ();
 
     if (IOSize (m_current - m_buffer) < n)
+    {
 	if (IOSize (m_limit - m_end) < n)
 	{
 	    // There's room at the end, move the data further up in the
@@ -217,6 +219,7 @@ ReadBuffer::unget (const void *data, IOSize n)
 	    m_limit	= buf + newsize;
 	    if (m_pback) m_pback = m_current + oldpback;
 	}
+    }
 
     // There's now enough room in the buffer.  Copy the data into the
     // front end of it.  Ensure again our buffer bounds look valid.

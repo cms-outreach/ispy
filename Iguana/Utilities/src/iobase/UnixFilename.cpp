@@ -7,6 +7,8 @@
 #include "classlib/utils/DebugAids.h"
 #include "classlib/utils/Time.h"
 #include "classlib/sysapi/Filename.h"
+#include <cstdlib>
+#include <cstring>
 #include <cstdio>
 #ifndef _WIN32
 

@@ -12,8 +12,9 @@
 #include "classlib/utils/Environment.h"
 #include "classlib/sysapi/Filename.h"
 #include "src/utils/StringHack.h"
-#include <map>
 #include <iostream>
+#include <cstdlib>
+#include <map>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
@@ -784,10 +785,12 @@ Filename::expandPrefix (Filename &name, const Filename &defdir)
     // cannot be a drive or a share on Windows.
     m_name = dirstr;
     if (! empty ())
+    {
 	if (name.isRelative ())
 	    m_name = asDirectory ();
 	else
 	    m_name = asFile ();
+    }
 
     // Finally, append the name part.  We have set things up to work
     // correctly in the three cases we can encounter.  The name should
@@ -1308,6 +1311,7 @@ Filename::cwd (void)
 
     do
 	if (! (dir = getcwd (buf, n)))
+        {
 	    if (! buf)
 		buf = new char [n = INITIAL_LENGTH];
 	    else if (errno == ERANGE)
@@ -1325,15 +1329,16 @@ Filename::cwd (void)
 		else
 		    ::free (dir);
 		 throw FileSystemError ("getcwd()", errno);
-	     }
-     while (! dir);
+	    }
+        }
+    while (! dir);
 
-     Filename result (dir);
-     if (buf)
-	 delete [] buf;
-     else
-	 ::free (dir);
-     return result;
+    Filename result (dir);
+    if (buf)
+	delete [] buf;
+    else
+	::free (dir);
+    return result;
  }
 
  /** @fn Filename Filename::cwd (char drive)

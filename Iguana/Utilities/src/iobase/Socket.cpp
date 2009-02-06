@@ -418,10 +418,12 @@ Socket::write (const void *from, IOSize n)
 	const unsigned char *start = (const unsigned char *) from + written;
 	if ((s = ::send (SOCKETFD (), (const RECV_ARG_TYPE) start,
 			 n, m_oob ? MSG_OOB : 0)) < 0)
+	{
 	    if (written)
 		break;
 	    else
 		throw NetworkError ("send()", ERRNO);
+	}
     }
 
     return written;
@@ -441,10 +443,12 @@ Socket::write (const void *from, IOSize n, const SocketAddress &dest)
 	if ((s = ::sendto (SOCKETFD (), (const RECV_ARG_TYPE) start,
 			   n, m_oob ? MSG_OOB : 0, dest.address (),
 			   dest.size ())) < 0)
+	{
 	    if (written)
 		break;
 	    else
 		throw NetworkError ("sendto()", ERRNO);
+	}
     }
 
     return written;

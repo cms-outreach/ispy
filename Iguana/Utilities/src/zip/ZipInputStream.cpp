@@ -145,6 +145,7 @@ ZipInputStream::fill (void *buffer, IOSize length)
     // arrange for that dummy byte to be provided.
 
     if (! (length = std::min (IOSized (m_compressed), length)))
+    {
 	if (! m_dummy)
 	{
 	    m_dummy = true;
@@ -153,6 +154,7 @@ ZipInputStream::fill (void *buffer, IOSize length)
 	}
 	else
 	    throw ZError (Z_DATA_ERROR);
+    }
 
     length = m_input->read (buffer, length);
     m_compressed -= length;
@@ -254,20 +256,26 @@ ZipInputStream::findHeader (void)
 	else if (ch == 0x50 && (ch = m_input->read ()) != 0x4b)
 	    continue;
 	else if ((ch = m_input->read ()) == 0x01)
+        {
 	    if ((ch = m_input->read ()) == 0x02)
 		return DIR_HEADER_MAGIC;
 	    else
 		continue;
+        }
 	else if (ch == 0x03)
+        {
 	    if ((ch = m_input->read ()) == 0x04)
 		return ENTRY_HEADER_MAGIC;
 	    else
 		continue;
+        }
 	else if (ch == 0x05)
+        {
 	    if ((ch = m_input->read ()) == 0x06)
 		return END_HEADER_MAGIC;
 	    else
 		continue;
+        }
 
 	ch = m_input->read ();
 	m_total++;

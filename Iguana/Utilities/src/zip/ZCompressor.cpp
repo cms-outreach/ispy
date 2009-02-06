@@ -3,6 +3,7 @@
 #include "classlib/zip/ZCompressor.h"
 #include "classlib/zip/ZError.h"
 #include "classlib/utils/DebugAids.h"
+#include <cstring>
 #include <zlib.h>
 
 namespace lat {

@@ -148,12 +148,14 @@ InteractiveDecompressor::doInput (void)
     // freed space in the output buffer.
     decompress ();
     if (! m_decompressor->finished () && m_decompressor->more ())
+    {
 	if (! in)
 	    // FIXME: Oops, decompressor wants more input but we are
 	    // at eof.  Should throw some sort of an exception here.
 	    ASSERT (false);
 	else
 	    waitForInput ();
+    }
 
      // Make sure output side will wake up.
     if (/* FIXME? m_out && */ ! m_outputting)

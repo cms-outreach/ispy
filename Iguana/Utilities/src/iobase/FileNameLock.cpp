@@ -11,6 +11,7 @@
 #include "classlib/utils/Unwind.h"
 #include "classlib/sysapi/Filename.h"
 #include "classlib/sysapi/FileNameLock.h"
+#include <cstdlib>
 #include <cctype>
 
 namespace lat {

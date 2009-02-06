@@ -3,6 +3,7 @@
 #include "classlib/utils/SystemError.h"
 #include "classlib/utils/StringFormat.h"
 #include "classlib/sysapi/SystemError.h"
+#include <cstring>
 
 namespace lat {
 using namespace SysErr;

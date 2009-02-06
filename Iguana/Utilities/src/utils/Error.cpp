@@ -58,7 +58,7 @@ Error::explain (int depth /* = -1 */) const
     std::string result (explainSelf ());
     Error	*chain = next ();
 
-    if (chain && depth < 0 || depth > 0)
+    if (chain && (depth < 0 || depth > 0))
     {
 	result += " (because of ";
    	result += chain->explain (depth < 0 ? depth : depth-1);

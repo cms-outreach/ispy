@@ -2,6 +2,7 @@
 
 #include "classlib/zip/ZipMember.h"
 #include "classlib/utils/Time.h"
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

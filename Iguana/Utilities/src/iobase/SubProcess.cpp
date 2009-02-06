@@ -19,6 +19,7 @@ SubProcess::SubProcess (void)
     : m_status (-1),
       m_input (0),
       m_output (0),
+      m_error (0),
       m_pipe (0),
       m_sub (0)
 {}
@@ -27,36 +28,49 @@ SubProcess::SubProcess (const char **argz, unsigned flags /* = One */)
     : m_status (-1),
       m_input (0),
       m_output (0),
+      m_error (0),
       m_pipe (0),
       m_sub (0)
 { run (argz, flags); }
 
-SubProcess::SubProcess (const char **argz, unsigned flags,
-			Pipe *pipe, IOChannel *other /* = 0 */)
+SubProcess::SubProcess (const char **argz,
+			unsigned flags,
+			Pipe *pipe,
+			IOChannel *other /* = 0 */,
+			IOChannel *error /* = 0 */)
     : m_status (-1),
       m_input (0),
       m_output (0),
+      m_error (0),
       m_pipe (0),
       m_sub (0)
-{ run (argz, flags, pipe, other); }
+{ run (argz, flags, pipe, other, error); }
 
-SubProcess::SubProcess (const char **argz, unsigned flags,
-			SubProcess *input, IOChannel *output /* = 0 */)
+SubProcess::SubProcess (const char **argz,
+			unsigned flags,
+			SubProcess *input,
+			IOChannel *output /* = 0 */,
+			IOChannel *error /* = 0 */)
     : m_status (-1),
       m_input (0),
       m_output (0),
+      m_error (0),
       m_pipe (0),
       m_sub (0)
-{ run (argz, flags, input, output); }
+{ run (argz, flags, input, output, error); }
 
-SubProcess::SubProcess (const char **argz, unsigned flags,
-			IOChannel *input, IOChannel *output /* = 0 */)
+SubProcess::SubProcess (const char **argz,
+			unsigned flags,
+			IOChannel *input,
+			IOChannel *output /* = 0 */,
+			IOChannel *error /* = 0 */)
     : m_status (-1),
       m_input (0),
       m_output (0),
+      m_error (0),
       m_pipe (0),
       m_sub (0)
-{ run (argz, flags, input, output); }
+{ run (argz, flags, input, output, error); }
 
 SubProcess::~SubProcess (void)
 { detach (); }
@@ -72,7 +86,8 @@ SubProcess::~SubProcess (void)
     allocate an output pipe() and redirect the output to the pipe's
     sink; the sink will be closed in the parent process.  If @a flags
     includes #Last but not #Read, the subprocess will inherit the
-    parent's standard output. */
+    parent's standard output.  The subprocess always inherits the
+    parent's standard error. */
 pid_t
 SubProcess::run (const char **argz, unsigned flags /* = One */)
 {
@@ -81,7 +96,7 @@ SubProcess::run (const char **argz, unsigned flags /* = One */)
     ASSERT (flags & First);
 
     // Pass it on to the real work horse
-    return dorun (argz, flags, 0, 0, 0);
+    return dorun (argz, flags, 0, 0, 0, 0);
 }
 
 /** Run a command in subprocess.
@@ -120,10 +135,17 @@ SubProcess::run (const char **argz, unsigned flags /* = One */)
     #run() with a #SubProcess argument.
 
     The @a flags may include #First and #Last as long as they do not
-    conflict with the above conventions.  */
+    conflict with the above conventions.
+    
+    If @a error is non-null, it is used for standard error output
+    from the subprocess.  Otherwise the subprocess inherits the
+    parent's standard error. */
 pid_t
-SubProcess::run (const char **argz, unsigned flags,
-		 Pipe *pipe, IOChannel *other /* = 0 */)
+SubProcess::run (const char **argz,
+		 unsigned flags,
+		 Pipe *pipe,
+		 IOChannel *other /* = 0 */,
+		 IOChannel *error /* = 0 */)
 {
     // Require user to tell what they want.  Relying on #First and
     // #Last is too confusing.
@@ -133,7 +155,7 @@ SubProcess::run (const char **argz, unsigned flags,
     // Decide what to do with the args.
     if (flags & Read)
 	return dorun (argz, flags | NoCloseInput,
-		      other, pipe->sink (),
+		      other, pipe->sink (), error,
 		      pipe->source ());
     else if (flags & Write)
     {
@@ -141,7 +163,7 @@ SubProcess::run (const char **argz, unsigned flags,
 	    flags |= NoCloseOutput;
 
 	return dorun (argz, flags,
-		      pipe->source (), other,
+		      pipe->source (), other, error,
 		      pipe->sink ());
     }
     else
@@ -184,10 +206,17 @@ SubProcess::run (const char **argz, unsigned flags,
     If this is the last subprocess of the chain and @a output is null
     the subprocess will inherit the parent's standard output.  Giving
     #Read and not giving #Last (directly or implied) is equivalent:
-    in both cases the output will be created and redirected to.  */
+    in both cases the output will be created and redirected to.
+    
+    If @a error is non-null, it is used for standard error output
+    from the subprocess.  Otherwise the subprocess inherits the
+    parent's standard error. */
 pid_t
-SubProcess::run (const char **argz, unsigned flags,
-		 SubProcess *input, IOChannel *output /* = 0 */)
+SubProcess::run (const char **argz,
+		 unsigned flags,
+		 SubProcess *input,
+		 IOChannel *output /* = 0 */,
+		 IOChannel *error /* = 0 */)
 {
     ASSERT (! output || ! (flags & Read));
     ASSERT (! (flags & Read) || ! output);
@@ -202,12 +231,12 @@ SubProcess::run (const char **argz, unsigned flags,
 	ASSERT (input->pipe ());
 	ASSERT (input->pipe ()->source ());
 	ASSERT (input->pipe ()->source ()->fd () != IOFD_INVALID);
-	return dorun (argz, flags, input->pipe ()->source (), output, 0);
+	return dorun (argz, flags, input->pipe ()->source (), output, error, 0);
     }
     else
     {
 	ASSERT (! (flags & Write));
-	return dorun (argz, flags, 0, output, 0);
+	return dorun (argz, flags, 0, output, error, 0);
     }
 }
 
@@ -247,10 +276,17 @@ SubProcess::run (const char **argz, unsigned flags,
     the subprocess output is redirected to the sink of the pipe.  The
     sink is closed in the parent.  The parent is assumed to read the
     output from the my @c pipe()->source(), or to chain another process
-    to this one. */
+    to this one.
+    
+    If @a error is non-null, it is used for standard error output
+    from the subprocess.  Otherwise the subprocess inherits the
+    parent's standard error. */
 pid_t
-SubProcess::run (const char **argz, unsigned flags,
-		 IOChannel *input, IOChannel *output /* = 0 */)
+SubProcess::run (const char **argz,
+		 unsigned flags,
+		 IOChannel *input,
+		 IOChannel *output /* = 0 */,
+		 IOChannel *error /* = 0 */)
 {
     ASSERT (input || ! (flags & Write));
 
@@ -260,13 +296,13 @@ SubProcess::run (const char **argz, unsigned flags,
     if (output && ! (flags & Read))
 	flags |= NoCloseOutput;
 
-    return dorun (argz, flags, input, output, 0);
+    return dorun (argz, flags, input, output, error, 0);
 }
 
 pid_t
 SubProcess::dorun (const char **argz, unsigned flags,
 		   IOChannel *input, IOChannel *output,
-		   IOChannel *cleanup)
+		   IOChannel *error, IOChannel *cleanup)
 {
     // Check we are not already open
     if (m_sub)
@@ -276,6 +312,7 @@ SubProcess::dorun (const char **argz, unsigned flags,
     ASSERT (! m_sub);
     ASSERT (! m_input);
     ASSERT (! m_output);
+    ASSERT (! m_error);
     ASSERT (! m_pipe);
 
     // Check that the command is not empty
@@ -298,9 +335,10 @@ SubProcess::dorun (const char **argz, unsigned flags,
     // Remember the I/O channels
     m_input = input;
     m_output = output;
+    m_error = error;
 
     // Pass it on to the platform
-    pid_t child = sysrun (argz, flags, input, output, cleanup);
+    pid_t child = sysrun (argz, flags, input, output, error, cleanup);
 
     // Wait right away if it was to run synchronously
     if (flags & Synchronous)
@@ -316,6 +354,10 @@ SubProcess::input (void) const
 IOChannel *
 SubProcess::output (void) const
 { return m_output; }
+
+IOChannel *
+SubProcess::error (void) const
+{ return m_error; }
 
 Pipe *
 SubProcess::pipe (void) const
@@ -336,6 +378,7 @@ SubProcess::detach (void)
     m_status = -1;
     m_input = 0;
     m_output = 0;
+    m_error = 0;
 }
 
 } // namespace lat

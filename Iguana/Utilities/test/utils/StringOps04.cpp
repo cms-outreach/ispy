@@ -26,5 +26,7 @@ int TEST(int, char **argv)
     VERIFY(StringOps::replace("a/b", Regexp("^([^/]+)"), "x/\\1/y") == "x/a/y/b");
     VERIFY(StringOps::replace("a/b", Regexp("^([^/]+)"), "x/\\1") == "x/a/b");
 
+    VERIFY(StringOps::replace("a/b", Regexp("^"), "") == "a/b");
+
     return 0;
 }

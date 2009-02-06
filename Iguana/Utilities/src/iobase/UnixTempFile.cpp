@@ -5,6 +5,7 @@
 #include "classlib/utils/Time.h"
 #include "classlib/utils/DebugAids.h"
 #include "classlib/sysapi/TempFile.h"
+#include <cstdlib>
 #include <cstdio>
 #ifndef _WIN32
 

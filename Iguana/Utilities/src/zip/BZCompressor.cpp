@@ -3,6 +3,7 @@
 #include "classlib/zip/BZCompressor.h"
 #include "classlib/zip/BZError.h"
 #include "classlib/utils/DebugAids.h"
+#include <cstring>
 #define BZ_NO_STDIO
 #include <bzlib.h>
 #include <zlib.h>

@@ -122,31 +122,51 @@ public:
 	Synchronous	= 16,		//< Run synchronously
 	Search		= 32,		//< Search path for command
 	NoCloseInput	= 64,		//< Don't close input pipe in parent
-	NoCloseOutput	= 128		//< Don't close output pipe in parent
-	// CleanEnv	= 256		//< Clean up safe environment
-	// CloseFds	= 512		//< Close all "other" file descriptors
+	NoCloseOutput	= 128,		//< Don't close output pipe in parent
+	NoCloseError    = 256		//< Don't close error pipe in parent
+	// CleanEnv	= 512		//< Clean up safe environment
+	// CloseFds	= 1024		//< Close all "other" file descriptors
     };
 
     SubProcess (void);
     SubProcess (const char **argz, unsigned flags = One);
-    SubProcess (const char **argz, unsigned flags,
-		Pipe *pipe, IOChannel *other = 0);
-    SubProcess (const char **argz, unsigned flags,
-		SubProcess *input, IOChannel *output = 0);
-    SubProcess (const char **argz, unsigned flags,
-		IOChannel *input, IOChannel *output = 0);
+    SubProcess (const char **argz,
+		unsigned flags,
+		Pipe *pipe,
+		IOChannel *other = 0,
+		IOChannel *error = 0);
+    SubProcess (const char **argz,
+		unsigned flags,
+		SubProcess *input,
+		IOChannel *output = 0,
+		IOChannel *error = 0);
+    SubProcess (const char **argz,
+		unsigned flags,
+		IOChannel *input,
+		IOChannel *output = 0,
+		IOChannel *error = 0);
     virtual ~SubProcess (void);
 
     virtual pid_t	run (const char **argz, unsigned flags = One);
-    virtual pid_t	run (const char **argz, unsigned flags,
-			     Pipe *pipe, IOChannel *other = 0);
-    virtual pid_t	run (const char **argz, unsigned flags,
-			     SubProcess *input, IOChannel *output = 0);
-    virtual pid_t	run (const char **argz, unsigned flags,
-			     IOChannel *input, IOChannel *output = 0);
+    virtual pid_t	run (const char **argz,
+			     unsigned flags,
+			     Pipe *pipe,
+			     IOChannel *other = 0,
+			     IOChannel *error = 0);
+    virtual pid_t	run (const char **argz,
+			     unsigned flags,
+			     SubProcess *input,
+			     IOChannel *output = 0,
+			     IOChannel *error = 0);
+    virtual pid_t	run (const char **argz,
+			     unsigned flags,
+			     IOChannel *input,
+			     IOChannel *output = 0,
+			     IOChannel *error = 0);
 
     virtual IOChannel *	input (void) const;
     virtual IOChannel *	output (void) const;
+    virtual IOChannel *	error (void) const;
     virtual Pipe *	pipe (void) const;
     virtual pid_t	pid (void) const;
 
@@ -163,15 +183,16 @@ public:
 private:
     pid_t		dorun (const char **argz, unsigned flags,
 			       IOChannel *input, IOChannel *output,
-			       IOChannel *cleanup);
+			       IOChannel *error, IOChannel *cleanup);
     pid_t		sysrun (const char **argz, unsigned flags,
 				IOChannel *input, IOChannel *output,
-				IOChannel *cleanup);
+				IOChannel *error, IOChannel *cleanup);
     void		sysdetach (void);
 
     int			m_status;
     IOChannel		*m_input;
     IOChannel		*m_output;
+    IOChannel		*m_error;
     Pipe		*m_pipe;
 # ifdef _WIN32
     void		*m_sub;

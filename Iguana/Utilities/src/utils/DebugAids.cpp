@@ -7,6 +7,7 @@
 #include "classlib/utils/BitTraits.h"
 #include "classlib/utils/StringFormat.h"
 #include "classlib/sysapi/DebugAids.h"
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

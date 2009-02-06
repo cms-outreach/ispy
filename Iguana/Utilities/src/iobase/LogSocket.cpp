@@ -3,6 +3,7 @@
 #include "classlib/utils/Log.h"
 #include "classlib/iobase/LocalSocket.h"
 #include "classlib/iobase/InetSocket.h"
+#include <cstring>
 #include <cctype>
 #include <cstdio>
 #if HAVE_NEW

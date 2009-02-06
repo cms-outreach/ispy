@@ -4,6 +4,7 @@
 #include "classlib/utils/DebugAids.h"
 #include "classlib/utils/SystemError.h"
 #include "classlib/sysapi/SharedLibrary.h"
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

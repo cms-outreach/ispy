@@ -3,7 +3,9 @@
 #include "classlib/utils/StringFormat.h"
 #include "classlib/utils/DebugAids.h"
 #include <iostream>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstring>
+#include <cstdio>
 #include <limits.h>
 #include <math.h>
 

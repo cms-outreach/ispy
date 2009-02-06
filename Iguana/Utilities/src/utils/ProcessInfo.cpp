@@ -5,6 +5,7 @@
 #include "classlib/utils/DebugAids.h"
 #include "classlib/sysapi/ProcessInfo.h"
 #include "classlib/sysapi/Windows.h"
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

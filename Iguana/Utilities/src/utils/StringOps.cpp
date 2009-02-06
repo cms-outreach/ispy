@@ -3,6 +3,7 @@
 #include "classlib/utils/StringOps.h"
 #include "classlib/utils/Regexp.h"
 #include "classlib/utils/DebugAids.h"
+#include <cstring>
 #include <cctype>
 
 namespace lat {
@@ -1655,7 +1656,7 @@ StringOps::split (const std::string	&s,
 		  int			last /* = 0 */)
 {
     return split (s.c_str(), s.size(),
-		  splitpos (s.c_str(), s.size(), sep.c_str(), s.size(), flags,
+		  splitpos (s.c_str(), s.size(), sep.c_str(), sep.size(), flags,
 			    splitmax (nmax, first, last)),
 		  nmax, first, last);
 }
@@ -2708,7 +2709,7 @@ StringOps::replace (const char		*s,
 	std::string replacement (replace (s, match, with));
 	result.replace (match.matchPos () + delta, match.matchLength (), replacement);
 	delta += int(replacement.size()) - match.matchLength();
-	offset = match.matchEnd();
+	offset = std::max(offset+1, match.matchEnd());
     }
 
     return result;

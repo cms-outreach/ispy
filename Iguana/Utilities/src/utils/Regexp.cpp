@@ -6,6 +6,7 @@
 #include "classlib/utils/DebugAids.h"
 #include "pcre.h"
 #include <regex.h>
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
@@ -451,10 +452,12 @@ Regexp::POSIXRep::search (const char *subject, int offset, int limit,
 	// lack a match offset concept,so we have to simulate it by
 	// twiddling the flags.
 	if (offset > 0)
+	{
 	    if ((m_opts & MultiLine) && subject [offset-1] == '\n')
 		rxflags &= ~REG_NOTBOL;
 	    else
 		rxflags |= REG_NOTBOL;
+	}
 
 	// Try matching; in case of failure bail out.
 	if ((rc = regexec (m_rx, subject + offset, novec, &ovec[0], rxflags)))
@@ -773,28 +776,31 @@ Regexp::study (void)
 // FIXME: set match length to the partial accepted length
 // (e.g. pat "blue", s "blutak" -> len = 3).
 bool
-Regexp::exactMatch (const char *s) const
+Regexp::doExactMatch(const char *s, size_t len) const
 {
     ASSERT(s);
-    size_t len = strlen(s);
     RegexpMatch m;
-    return search (s, 0, 0, &m) == 0 && size_t (m.matchEnd ()) == len;
+    return doSearch(s, len, 0, 0, &m) == 0 && size_t(m.matchEnd()) == len;
 }
 
 bool
-Regexp::exactMatch (const std::string &s) const
-{ return exactMatch(s.c_str()); }
+Regexp::exactMatch(const char *s) const
+{ return doExactMatch(s, strlen(s)); }
 
 bool
-Regexp::match (const char *s, int offset /* = 0 */,
-	       int flags /* = 0 */, RegexpMatch *result /* = 0 */) const
-{
-    ASSERT (s);
-    size_t len = strlen(s);
+Regexp::exactMatch(const std::string &s) const
+{ return doExactMatch(s.c_str(), s.size()); }
 
+bool
+Regexp::doMatch(const char *s, size_t len,
+		int offset, int flags,
+		RegexpMatch *result) const
+{
+    ASSERT(s);
+    //
     // An invalid pattern always fails to match.  Don't touch
     // the result, it is assumed to be only added to.
-    if (! m_rep || ! m_rep->good ())
+    if (! m_rep || ! m_rep->good())
 	return -1;
 
     // Adjust offset
@@ -809,33 +815,39 @@ Regexp::match (const char *s, int offset /* = 0 */,
 
     // Clear last match
     if (result && ! (flags & MatchContinue))
-	result->reset ();
+	result->reset();
 
     // FIXME: This is efficient for pcre but not for posix; the latter
     // provides no means to stop search() from moving in the string
     // instead of just testing at `offset'.
-    return m_rep->search (s, offset, len,
-			  (flags & ~MatchAll) | MatchAnchored,
-			  result)
+    return m_rep->search(s, offset, len,
+			 (flags & ~MatchAll) | MatchAnchored,
+			 result)
 	== offset;
 }
+bool
+Regexp::match(const char *s,
+	      int offset /* = 0 */, int flags /* = 0 */,
+	      RegexpMatch *result /* = 0 */) const
+{ return doMatch(s, strlen(s), offset, flags, result); }
 
 bool
-Regexp::match (const std::string &s, int offset /* = 0 */,
-	       int flags /* = 0 */, RegexpMatch *result /* = 0 */) const
-{ return match (s.c_str(), offset, flags, result); }
+Regexp::match(const std::string &s,
+	      int offset /* = 0 */, int flags /* = 0 */,
+	      RegexpMatch *result /* = 0 */) const
+{ return doMatch (s.c_str(), s.size(), offset, flags, result); }
 
 // Returns offset of first match or -1.
 int
-Regexp::search (const char *s, int offset /* = 0 */,
-		int flags /* = 0 */, RegexpMatch *result /* = 0 */) const
+Regexp::doSearch(const char *s, size_t len,
+		 int offset, int flags,
+		 RegexpMatch *result) const
 {
-    ASSERT (s);
-    size_t len = strlen(s);
+    ASSERT(s);
 
     // An invalid pattern always fails to match.  Don't touch
     // result, it is assumed to be only added to.
-    if (! m_rep || ! m_rep->good ())
+    if (! m_rep || ! m_rep->good())
 	return -1;
 
     // Adjust offset
@@ -850,30 +862,37 @@ Regexp::search (const char *s, int offset /* = 0 */,
 
     // Clear last match
     if (result && ! (flags & MatchContinue))
-	result->reset ();
+	result->reset();
 
     // Match
-    return m_rep->search (s, offset, len, flags, result);
+    return m_rep->search(s, offset, len, flags, result);
 }
 
 int
-Regexp::search (const std::string &s, int offset /* = 0 */,
-		int flags /* = 0 */, RegexpMatch *result /* = 0 */) const
-{ return search (s.c_str(), offset, flags, result); }
+Regexp::search(const char *s,
+	       int offset /* = 0 */, int flags /* = 0 */,
+	       RegexpMatch *result /* = 0 */) const
+{ return doSearch(s, strlen(s), offset, flags, result); }
 
 int
-Regexp::rsearch (const char *s, int offset /* = -1 */,
-		 int flags /* = 0 */, RegexpMatch *result /* = 0 */) const
+Regexp::search(const std::string &s,
+	       int offset /* = 0 */, int flags /* = 0 */,
+	       RegexpMatch *result /* = 0 */) const
+{ return doSearch(s.c_str(), s.size(), offset, flags, result); }
+
+int
+Regexp::doRevSearch(const char *s, size_t len,
+		    int offset, int flags,
+		    RegexpMatch *result) const
 {
-    ASSERT (s);
-    size_t len = strlen(s);
+    ASSERT(s);
 
     // FIXME: If we are going to look for all matches, might as well
     // search forward for all matches and simply reverse the result.
 
     // An invalid pattern always fails to match.  Don't touch
     // the result, it is assumed to be only added to.
-    if (! m_rep || ! m_rep->good ())
+    if (! m_rep || ! m_rep->good())
 	return -1;
 
     // Adjust offset
@@ -888,7 +907,7 @@ Regexp::rsearch (const char *s, int offset /* = -1 */,
     
     // Clear last match
     if (result && ! (flags & MatchContinue))
-	result->reset ();
+	result->reset();
 
     // Look for matches; if we find one, merge results.  Only accept a
     // match at this position; ignore the matches elsewhere.
@@ -902,7 +921,7 @@ Regexp::rsearch (const char *s, int offset /* = -1 */,
 		index = offset;
 
 	    if (result)
-		result->addMatches (m);
+		result->addMatches(m);
 
 	    if (! (flags & MatchAll))
 		break;
@@ -912,8 +931,15 @@ Regexp::rsearch (const char *s, int offset /* = -1 */,
 }
 
 int
-Regexp::rsearch (const std::string &s, int offset /* = 0 */,
-		 int flags /* = 0 */, RegexpMatch *result /* = 0 */) const
-{ return rsearch (s.c_str(), offset, flags, result); }
+Regexp::rsearch(const char *s,
+		int offset /* = -1 */, int flags /* = 0 */,
+		RegexpMatch *result /* = 0 */) const
+{ return doRevSearch(s, strlen(s), offset, flags, result); }
+
+int
+Regexp::rsearch(const std::string &s,
+		int offset /* = 0 */, int flags /* = 0 */,
+		RegexpMatch *result /* = 0 */) const
+{ return doRevSearch(s.c_str(), s.size(), offset, flags, result); }
 
 } // namespace lat

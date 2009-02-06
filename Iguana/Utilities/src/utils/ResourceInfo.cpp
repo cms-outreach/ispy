@@ -4,6 +4,7 @@
 #include "classlib/utils/SystemError.h"
 #include "classlib/utils/DebugAids.h"
 #include "classlib/sysapi/ResourceInfo.h"
+#include <cstring>
 
 // FIXME: On Windows, call GetSystemInfo, GetSystemMetrics (only a few),
 // 

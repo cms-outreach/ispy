@@ -3,7 +3,7 @@
 #include "classlib/iotools/BufferInputStream.h"
 #include "classlib/utils/DebugAids.h"
 #include <algorithm>
-#include <cstdlib>
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

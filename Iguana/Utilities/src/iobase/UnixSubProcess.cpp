@@ -22,7 +22,7 @@ namespace lat {
 pid_t
 SubProcess::sysrun (const char **argz, unsigned flags,
 		    IOChannel *input, IOChannel *output,
-		    IOChannel *cleanup)
+		    IOChannel *error, IOChannel *cleanup)
 {
     // If "input" is specified, use it, otherwise use my stdin.
     int infd = input ? input->fd () : 0;
@@ -30,7 +30,10 @@ SubProcess::sysrun (const char **argz, unsigned flags,
     // If "output" is specified, use it, otherwise use my stdout.
     int outfd = output ? output->fd () : 1;
 
-    // FIXME: Redirect other handles?  stderr?
+    // If "error" is specified, use it, otherwise use my stderr.
+    int errfd = error ? error->fd () : 2;
+
+    // FIXME: Redirect other handles?
     switch (m_sub = fork ())
     {
     case -1:
@@ -58,6 +61,14 @@ SubProcess::sysrun (const char **argz, unsigned flags,
 	    ::close  (outfd);
 	}
 
+	if (errfd != 2)
+	{
+	    if (dup2 (errfd, 2) == -1)
+		_exit (255);
+
+	    ::close  (errfd);
+	}
+
 	// Close other handles we no longer need.  If we are making a
 	// pipe, this is the other end of the pipe the child won't
 	// need.
@@ -76,6 +87,9 @@ SubProcess::sysrun (const char **argz, unsigned flags,
 
 	if (output && ! (flags & NoCloseOutput))
 	    ::close (outfd);
+
+	if (error && ! (flags & NoCloseError))
+	    ::close (errfd);
     }
 
     return m_sub;

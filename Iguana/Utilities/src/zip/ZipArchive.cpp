@@ -16,6 +16,7 @@
 #include "classlib/iotools/SubStorage.h"
 #include "classlib/utils/Time.h"
 #include <algorithm>
+#include <cstring>
 #include <zlib.h> // FIXME: Why do we need Z_DATA_ERROR?
 
 namespace lat {
@@ -58,6 +59,7 @@ public:
 protected:
     virtual IOSize fill (void *buffer, IOSize length) {
 	if (! (length = std::min (IOSized (m_size), length)))
+        {
 	    // See ZipInputStream for description of this gymnastics
 	    if (! m_dummy)
 	    {
@@ -67,6 +69,7 @@ protected:
 	    }
 	    else
 		throw ZError (Z_DATA_ERROR);
+        }
 
 	length = ZInputStream::fill (buffer, length);
 	m_size -= length;

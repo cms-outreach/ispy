@@ -174,6 +174,14 @@ public:
 protected:
     void		uncompile (void);
 
+    bool		doExactMatch(const char *s, size_t len) const;
+    bool		doMatch(const char *s, size_t len, int offset,
+		    		int flags, RegexpMatch *result) const;
+    int			doSearch(const char *s, size_t len, int offset,
+		    		 int flags, RegexpMatch *result) const;
+    int			doRevSearch(const char *s, size_t len, int offset,
+		    		    int flags, RegexpMatch *result) const;
+
     // bool		dosearch (const std::string &s, int offset);
     // void		split (const std::string &s, int limit, int start,
     //			       int end, StringList &into);

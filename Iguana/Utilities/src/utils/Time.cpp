@@ -6,6 +6,7 @@
 #include "classlib/utils/Log.h"
 #include "classlib/sysapi/Time.h"
 #include <iostream>
+#include <cstring>
 #include <cstdio>
 
 // FIXME: msvc++ rtl

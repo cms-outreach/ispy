@@ -1,7 +1,7 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "classlib/utils/Argz.h"
-#include <cstdlib>
+#include <cstring>
 #include <cctype>
 
 namespace lat {

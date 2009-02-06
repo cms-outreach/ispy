@@ -4,6 +4,7 @@
 #include "classlib/utils/BitOps.h"
 #include "classlib/utils/DebugAids.h"
 #include <algorithm>
+#include <cstring>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

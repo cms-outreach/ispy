@@ -24,7 +24,7 @@ namespace lat {
 pid_t
 SubProcess::sysrun (const char **argz, unsigned flags,
 		    IOChannel *input, IOChannel *output,
-		    IOChannel *cleanup)
+		    IOChannel *error, IOChannel *cleanup)
 {
     // Windows wants full command.  (FIXME: quoting?)
     std::string command = Argz (argz).quote ();
@@ -32,12 +32,16 @@ SubProcess::sysrun (const char **argz, unsigned flags,
     // Save the current STDIN/STDOUT, to be restored later.
     HANDLE oldstdin = GetStdHandle (STD_INPUT_HANDLE);
     HANDLE oldstdout = GetStdHandle (STD_OUTPUT_HANDLE);
+    HANDLE oldstderr = GetStdHandle (STD_ERROR_HANDLE);
 
     // If "input" is specified, use it, otherwise use my stdin.
     HANDLE infd = input ? input->fd () : oldstdin;
 
     // If "output" is specified, use it, otherwise use my stdout.
     HANDLE outfd = output ? output->fd () : oldstdout;
+
+    // If "error" is specified, use it, otherwise use my stderr.
+    HANDLE errfd = error ? error->fd () : oldstderr;
 
     // Create non-inheritable duplicates of our ends of the
     // redirections; incopy and outcopy will be our file descriptors
@@ -46,6 +50,7 @@ SubProcess::sysrun (const char **argz, unsigned flags,
     // we just always duplicate.  Is this what we want?)
     HANDLE incopy;
     HANDLE outcopy;
+    HANDLE errcopy;
 
     if (! DuplicateHandle (GetCurrentProcess (), infd,
 			   GetCurrentProcess (), &incopy,
@@ -56,21 +61,34 @@ SubProcess::sysrun (const char **argz, unsigned flags,
 			   GetCurrentProcess (), &outcopy,
 			   0, FALSE, DUPLICATE_SAME_ACCESS))
     {
-	int error = GetLastError ();
+	int errcode = GetLastError ();
 	CloseHandle (incopy);
-	throw IOError ("DuplicateHandle()", error);
+	throw IOError ("DuplicateHandle()", errcode);
+    }
+
+    if (! DuplicateHandle (GetCurrentProcess (), errfd,
+			   GetCurrentProcess (), &errcopy,
+			   0, FALSE, DUPLICATE_SAME_ACCESS))
+    {
+	int errcode = GetLastError ();
+	CloseHandle (incopy);
+	CloseHandle (outcopy);
+	throw IOError ("DuplicateHandle()", errcode);
     }
 
     // Redirect my STDIN/STDOUT for the child to inherit them.
     if (! SetStdHandle (STD_INPUT_HANDLE, infd)
-	|| ! SetStdHandle (STD_OUTPUT_HANDLE, outfd))
+	|| ! SetStdHandle (STD_OUTPUT_HANDLE, outfd)
+	|| ! SetStdHandle (STD_ERROR_HANDLE, errfd))
     {
-	int error = GetLastError ();
+	int errcode = GetLastError ();
 	SetStdHandle (STD_INPUT_HANDLE, oldstdin);
 	SetStdHandle (STD_OUTPUT_HANDLE, oldstdout);
+	SetStdHandle (STD_ERROR_HANDLE, oldstderr);
 	CloseHandle (incopy);
 	CloseHandle (outcopy);
-	throw IOError ("SetStdHandle()", error);
+	CloseHandle (errcopy);
+	throw IOError ("SetStdHandle()", errcode);
     }
 
     // Close the inheritable handles.  If NoClose* flags are given,
@@ -82,6 +100,9 @@ SubProcess::sysrun (const char **argz, unsigned flags,
 
     if (! (flags & NoCloseOutput))
 	CloseHandle (outfd);
+
+    if (! (flags & NoCloseError))
+	CloseHandle (errfd);
 
     // Create the subprocess.
     PROCESS_INFORMATION process;
@@ -95,10 +116,13 @@ SubProcess::sysrun (const char **argz, unsigned flags,
 	int error = GetLastError ();
 	SetStdHandle (STD_INPUT_HANDLE, oldstdin);
 	SetStdHandle (STD_OUTPUT_HANDLE, oldstdout);
+	SetStdHandle (STD_ERROR_HANDLE, oldstderr);
 	CloseHandle (incopy);
 	CloseHandle (outcopy);
+	CloseHandle (errcopy);
 	CloseHandle (infd);
 	CloseHandle (outfd);
+	CloseHandle (errfd);
 	throw IOError ("CreateProcess()", error);
     }
 
@@ -108,6 +132,7 @@ SubProcess::sysrun (const char **argz, unsigned flags,
     // Restore redirected handles
     SetStdHandle (STD_INPUT_HANDLE, oldstdin);
     SetStdHandle (STD_OUTPUT_HANDLE, oldstdout);
+    SetStdHandle (STD_ERROR_HANDLE, oldstderr);
 
     return m_pid;
 }

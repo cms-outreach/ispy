@@ -5,6 +5,7 @@
 #include "classlib/iobase/FileSystemError.h"
 #include "classlib/utils/DebugAids.h"
 #include "classlib/sysapi/TempFile.h"
+#include <cstdlib>
 
 namespace lat {
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

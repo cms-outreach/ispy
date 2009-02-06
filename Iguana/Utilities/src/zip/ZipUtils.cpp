@@ -3,6 +3,7 @@
 #include "classlib/zip/ZipUtils.h"
 #include "classlib/iobase/IOInput.h"
 #include <algorithm>
+#include <cstring>
 #include <cctype>
 
 namespace lat {

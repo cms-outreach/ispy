@@ -9,6 +9,7 @@
 #include "classlib/iotools/StorageOutputStream.h"
 #include "classlib/utils/Time.h"
 #include "classlib/utils/DebugAids.h"
+#include <cstring>
 #include <string>
 #include <zlib.h>
 

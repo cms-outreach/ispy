@@ -3,6 +3,7 @@
 #include "classlib/utils/SystemInfo.h"
 #include "classlib/utils/StringFormat.h"
 #include "classlib/sysapi/SystemInfo.h"
+#include <cstring>
 
 // FIXME: msvc++ rtl
 //  _cpuid

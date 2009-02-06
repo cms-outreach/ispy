@@ -7,6 +7,7 @@
 #include "classlib/utils/ProcessInfo.h"
 #include "classlib/utils/BitTraits.h"
 #include "classlib/sysapi/Signal.h"
+#include <cstring>
 
 /* http://dmawww.epfl.ch/ebt-bin/nph-dweb/dynaweb/SGI_Developer/
      T_IRIX_Prog/@Generic__BookTextView/7525
