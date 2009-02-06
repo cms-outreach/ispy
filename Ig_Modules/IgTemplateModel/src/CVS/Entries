@@ -1,9 +1,9 @@
-/IgTemplateEngine.cc/1.3/Thu Mar  8 09:00:26 2007//
-/IgTemplateItem.cc/1.1/Fri Oct 21 09:56:44 2005//
-/IgTemplateItemDB.cc/1.2/Thu Mar  8 09:00:26 2007//
-/IgTemplateModel.cc/1.2/Thu Mar  8 09:00:26 2007//
-/IgTemplateRep.cc/1.1/Fri Oct 21 09:56:44 2005//
-/IgTextModelTemplateItem.cc/1.1/Fri Oct 21 09:56:44 2005//
-/IgTwigFullnameTemplateItem.cc/1.1/Fri Oct 21 09:56:44 2005//
-/iglet.cc/1.1/Thu Mar 29 07:57:44 2007//
+/IgTemplateEngine.cc/1.3/Fri Feb  6 09:19:37 2009//
+/IgTemplateItem.cc/1.1/Fri Feb  6 09:19:37 2009//
+/IgTemplateItemDB.cc/1.2/Fri Feb  6 09:19:37 2009//
+/IgTemplateModel.cc/1.2/Fri Feb  6 09:19:37 2009//
+/IgTemplateRep.cc/1.1/Fri Feb  6 09:19:37 2009//
+/IgTextModelTemplateItem.cc/1.1/Fri Feb  6 09:19:37 2009//
+/IgTwigFullnameTemplateItem.cc/1.1/Fri Feb  6 09:19:37 2009//
+/iglet.cc/1.1/Fri Feb  6 09:19:37 2009//
 D

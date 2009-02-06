@@ -1,14 +1,14 @@
-/IgMapUniqueIterator.h/1.3/Tue Mar  6 13:51:01 2007//
-/IgModule.h/1.4/Tue Mar 20 17:06:59 2007//
-/IgModuleCache.h/1.4/Tue Mar 20 17:06:59 2007//
-/IgModuleDef.h/1.4/Mon Mar 12 14:03:19 2007//
-/IgModuleDescriptor.h/1.3/Tue Mar  6 13:51:01 2007//
-/IgPluginCapabilities.h/1.1/Tue Mar  6 13:51:01 2007//
-/IgPluginDef.h/1.1/Tue Mar  6 13:51:01 2007//
-/IgPluginError.h/1.5/Tue Mar  6 13:51:01 2007//
-/IgPluginFactory.h/1.8/Tue Mar  6 13:51:01 2007//
-/IgPluginFactoryBase.h/1.3/Tue Mar  6 13:51:01 2007//
-/IgPluginInfo.h/1.3/Tue Mar  6 13:51:01 2007//
-/IgPluginManager.h/1.3/Tue Mar  6 13:51:01 2007//
-/config.h/1.7/Tue Mar  6 13:51:01 2007//
+/IgMapUniqueIterator.h/1.3/Fri Feb  6 09:19:36 2009//
+/IgModule.h/1.4/Fri Feb  6 09:19:36 2009//
+/IgModuleCache.h/1.4/Fri Feb  6 09:19:36 2009//
+/IgModuleDef.h/1.4/Fri Feb  6 09:19:36 2009//
+/IgModuleDescriptor.h/1.3/Fri Feb  6 09:19:36 2009//
+/IgPluginCapabilities.h/1.1/Fri Feb  6 09:19:36 2009//
+/IgPluginDef.h/1.1/Fri Feb  6 09:19:36 2009//
+/IgPluginError.h/1.5/Fri Feb  6 09:19:36 2009//
+/IgPluginFactory.h/1.8/Fri Feb  6 09:19:36 2009//
+/IgPluginFactoryBase.h/1.3/Fri Feb  6 09:19:36 2009//
+/IgPluginInfo.h/1.3/Fri Feb  6 09:19:36 2009//
+/IgPluginManager.h/1.3/Fri Feb  6 09:19:36 2009//
+/config.h/1.7/Fri Feb  6 09:19:36 2009//
 D

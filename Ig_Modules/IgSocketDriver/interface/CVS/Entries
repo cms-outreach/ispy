@@ -1,14 +1,14 @@
-/IgFileManager.h/1.5/Thu Apr  6 10:42:18 2006//
-/IgServerPool.h/1.8/Thu Mar  8 08:06:06 2007//
-/IgServerSocket.h/1.9/Wed Jun  7 08:38:50 2006//
-/IgSession.h/1.1/Tue Aug 16 15:17:37 2005//
-/IgSessionManager.h/1.1/Thu Sep  1 14:25:50 2005//
-/IgSocket.h/1.8/Wed Jun  7 08:38:50 2006//
-/IgSocketDriver.h/1.1/Tue Aug 16 15:17:37 2005//
-/IgSocketDriverInfo.h/1.1/Wed Sep  7 08:47:46 2005//
-/IgWebService.h/1.10/Thu Mar  8 08:06:06 2007//
-/IgWebServiceDB.h/1.3/Thu Mar  8 08:06:06 2007//
-/IgWebServiceProxy.h/1.2/Wed Jun  7 08:38:50 2006//
-/IgWebServiceRegistry.h/1.5/Mon Feb  6 19:38:42 2006//
-/config.h/1.1/Tue Aug 16 15:17:37 2005//
+/IgFileManager.h/1.5/Fri Feb  6 09:19:37 2009//
+/IgServerPool.h/1.8/Fri Feb  6 09:19:37 2009//
+/IgServerSocket.h/1.9/Fri Feb  6 09:19:37 2009//
+/IgSession.h/1.1/Fri Feb  6 09:19:37 2009//
+/IgSessionManager.h/1.1/Fri Feb  6 09:19:37 2009//
+/IgSocket.h/1.8/Fri Feb  6 09:19:37 2009//
+/IgSocketDriver.h/1.1/Fri Feb  6 09:19:37 2009//
+/IgSocketDriverInfo.h/1.1/Fri Feb  6 09:19:37 2009//
+/IgWebService.h/1.10/Fri Feb  6 09:19:37 2009//
+/IgWebServiceDB.h/1.3/Fri Feb  6 09:19:37 2009//
+/IgWebServiceProxy.h/1.2/Fri Feb  6 09:19:37 2009//
+/IgWebServiceRegistry.h/1.5/Fri Feb  6 09:19:37 2009//
+/config.h/1.1/Fri Feb  6 09:19:37 2009//
 D

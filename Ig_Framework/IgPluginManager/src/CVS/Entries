@@ -1,14 +1,14 @@
-/IgModule.cc/1.4/Tue Mar 20 17:06:59 2007//
-/IgModuleCache.cc/1.8/Tue Mar 20 17:06:59 2007//
-/IgModuleDef.cc/1.3/Tue Mar  6 13:51:01 2007//
-/IgModuleDescriptor.cc/1.3/Tue Mar  6 13:51:01 2007//
-/IgPluginCapabilities.cc/1.1/Tue Mar  6 13:51:01 2007//
-/IgPluginError.cc/1.4/Tue Mar  6 13:51:01 2007//
-/IgPluginFactoryBase.cc/1.3/Tue Mar  6 13:51:01 2007//
-/IgPluginInfo.cc/1.3/Tue Mar  6 13:51:01 2007//
-/IgPluginManager.cc/1.4/Tue Mar 20 17:06:59 2007//
-/IgPluginParserError.cc/1.7/Tue Mar  6 13:51:01 2007//
-/IgPluginParserError.h/1.6/Tue Mar  6 13:51:01 2007//
-/debug.cc/1.3/Tue Mar  6 13:51:01 2007//
-/debug.h/1.4/Tue Mar  6 13:51:01 2007//
+/IgModule.cc/1.4/Fri Feb  6 09:19:36 2009//
+/IgModuleCache.cc/1.8/Fri Feb  6 09:19:36 2009//
+/IgModuleDef.cc/1.3/Fri Feb  6 09:19:36 2009//
+/IgModuleDescriptor.cc/1.3/Fri Feb  6 09:19:36 2009//
+/IgPluginCapabilities.cc/1.1/Fri Feb  6 09:19:36 2009//
+/IgPluginError.cc/1.4/Fri Feb  6 09:19:36 2009//
+/IgPluginFactoryBase.cc/1.3/Fri Feb  6 09:19:36 2009//
+/IgPluginInfo.cc/1.3/Fri Feb  6 09:19:36 2009//
+/IgPluginManager.cc/1.4/Fri Feb  6 09:19:36 2009//
+/IgPluginParserError.cc/1.7/Fri Feb  6 09:19:36 2009//
+/IgPluginParserError.h/1.6/Fri Feb  6 09:19:36 2009//
+/debug.cc/1.3/Fri Feb  6 09:19:36 2009//
+/debug.h/1.4/Fri Feb  6 09:19:36 2009//
 D
