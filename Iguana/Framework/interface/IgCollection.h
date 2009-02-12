@@ -695,11 +695,25 @@ public:
     m_propertyPosition++;
     return *this;
   }
+
+  IgCollectionItem &operator=(const std::string &value)
+  {
+    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
+    m_propertyPosition++;
+    return *this;
+  }
+  
+  IgCollectionItem &operator=(const char *value)
+  {
+    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
+    m_propertyPosition++;
+    return *this;
+  }
   
   template <class T, template <class U> class C>
   IgCollectionItem &operator=(C<T> container)
   {
-    ContainersTraits<C,T>::put(m_collection, 
+    ContainerTraits<C,T>::put(m_collection, 
                                m_propertyPosition, 
                                m_position, 
                                container);
@@ -714,12 +728,28 @@ public:
     m_propertyPosition++;
     return *this;
   }
+
+  IgCollectionItem &operator,(const char *value)
+  {
+    assert(m_propertyPosition < m_collection->properties().size());
+    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
+    m_propertyPosition++;
+    return *this;
+  }
+
+  IgCollectionItem &operator,(const std::string &value)
+  {
+    assert(m_propertyPosition < m_collection->properties().size());
+    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
+    m_propertyPosition++;
+    return *this;
+  }
   
   
   template <class T, template <class U> class C>
   IgCollectionItem &operator,(C<T> container)
   {
-    ContainersTraits<C,T>::put(m_collection, 
+    ContainerTraits<C,T>::put(m_collection, 
                                m_propertyPosition, 
                                m_position, 
                                container);
@@ -770,7 +800,7 @@ public:
   
 private:
   template <template <class U> class C, class T>
-  struct ContainersTraits
+  struct ContainerTraits
   {
     static void put (IgCollection *collection, unsigned int &propertyPosition,
              unsigned int position, C<T> container)
@@ -786,25 +816,6 @@ private:
     }
   };
 
-  template <class T>
-  struct StringToContainerAdaptor
-  {
-    typedef typename std::basic_string<T> StringType;
-  };
-
-  template<class T>
-  struct ContainersTraits<StringToContainerAdaptor, T>
-  {
-    static void put (IgCollection *collection, unsigned int &propertyPosition, 
-             unsigned int position, typename StringToContainerAdaptor<T>::StringType value)
-    {
-      collection->getHandleByPosition(propertyPosition)
-                  .get<std::basic_string<T> >(position) = value;
-      propertyPosition++;
-    }
-  };
-
-  
   IgCollection *m_collection;
   unsigned int m_position;
   unsigned int m_propertyPosition;

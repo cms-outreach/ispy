@@ -1,3 +1,7 @@
+2009-02-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollection.h: Fixes for string handling.
+
 2009-02-02  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* test/source.cpp, test/consumer.cpp: Fixes for 4.3.2.
