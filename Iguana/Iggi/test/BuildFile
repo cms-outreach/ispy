@@ -1,9 +1,0 @@
-<use name=Qt>
-
-<bin file=test_IggiTrajectory.cpp></bin>
-<bin file=test_IggiTrack.cpp></bin>
-<bin file=test_IgHits.cpp></bin>
-<bin file=test_IgRectangle.cpp></bin>
-<bin file=test_IgTrapezoid.cpp></bin>
-<bin file=test_IgCircleSector.cpp></bin>
-<bin file=test_IgTrack.cpp></bin>

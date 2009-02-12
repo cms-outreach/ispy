@@ -1,6 +1,0 @@
-Include("Ig_Modules/IgQtProfileService/src/IgOProfConfiguration.h")
-Include("Ig_Modules/IgQtProfileService/src/IgOProfRepresentable.h")
-Include("Ig_Modules/IgQtProfileService/src/IgOProfProcessRepresentable.h")
-Include("Ig_Modules/IgQtProfileService/src/IgOProfRepresentableInterface.h")
-IgOProfRepresentableConcrete=Class("IgOProfRepresentableConcrete","Ig_Modules/IgQtProfileService/src/IgOProfRepresentableConcrete.h")
-set_policy(IgOProfRepresentableConcrete.getProcess, return_internal_reference() )

@@ -1,8 +1,0 @@
-<Use name=Qt>
-<Use name=Ig_Framework/IgObjectBrowser>
-
-<Export>
-  <Use name=Qt>
-  <Use name=Ig_Framework/IgObjectBrowser>
-  <Lib name=Ig_ModulesIgFileProxy>
-</Export>

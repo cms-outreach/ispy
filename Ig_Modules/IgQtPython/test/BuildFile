@@ -1,3 +1,0 @@
-<Use name="Ig_Modules/IgQtPython">
-<Lib name=util>
-<bin file="test_PythonShell.cc">Python Shell GUI</bin>

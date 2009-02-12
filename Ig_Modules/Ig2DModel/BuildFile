@@ -1,8 +1,0 @@
-<Use name=Ig_Modules/Ig3DBaseModel>
-<Use name=Ig_Extensions/IgOpenInventor>
-
-<Export>
-  <Use name=Ig_Modules/Ig3DBaseModel>
-  <Use name=Ig_Extensions/IgOpenInventor>
-  <Lib name=Ig_ModulesIg2DModel>
-</Export>

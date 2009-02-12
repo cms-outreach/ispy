@@ -1,5 +1,0 @@
-<Use name=Ig_Modules/IgStudio>
-
-<Export>
-  <Lib name=Ig_ExamplesIgHelloWorldView>
-</Export>

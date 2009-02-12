@@ -1,6 +1,0 @@
-<Use name=Ig_Framework/IgObjectBrowser>
-
-<Export>
-  <Use name=Ig_Framework/IgObjectBrowser>
-  <Lib name=Ig_ModulesIgTableModel>
-</Export>

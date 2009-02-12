@@ -1,6 +1,0 @@
-<Use name=Ig_Modules/IgVis>
-
-<Export>
-  <Use name=Ig_Modules/IgVis>
-  <Lib name=IgVisEx>
-</Export>

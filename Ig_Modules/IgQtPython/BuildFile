@@ -1,8 +1,0 @@
-<Use name=Ig_Modules/IgPython>
-<Use name=Ig_Modules/IgStudio>
-
-<Export>
-  <Use name=Ig_Modules/IgPython>
-  <Use name=Ig_Modules/IgStudio>
-  <Lib name=Ig_ModulesIgQtPython>
-</Export>

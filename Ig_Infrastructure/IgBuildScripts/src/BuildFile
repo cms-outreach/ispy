@@ -1,2 +1,0 @@
-<Flags INSTALL_SCRIPTS="module-check makeoxapp iv2h">
-<Flags SKIP_FILES=module-load-check.cpp>

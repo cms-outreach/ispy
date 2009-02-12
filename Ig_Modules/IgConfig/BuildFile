@@ -1,8 +1,0 @@
-<use name=Ig_Framework/IgObjectBrowser>
-<use name=qt>
-
-<export>
-  <use name=Ig_Framework/IgObjectBrowser>
-  <use name=qt>
-  <lib name=Ig_ModulesIgConfig>
-</export>

@@ -1,7 +1,0 @@
-<use name=Ig_Modules/IgCommon3DReps>
-<use name=Ig_Modules/IgCommonOps>
-<use name=Ig_Modules/Ig3DCategories>
-<use name=Ig_Modules/IgLegoModel>
-<use name=Ig_Modules/IgStudio>
-<use name=openinventor>
-<use name=qt>

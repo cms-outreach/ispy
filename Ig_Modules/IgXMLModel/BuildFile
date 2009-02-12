@@ -1,8 +1,0 @@
-<use name=Qt>
-<Use name=Ig_Modules/IgCommonData>
-
-<Export>
-  <Use name=Ig_Modules/IgCommonData>
-  <Use name=qt>
-  <Lib name=Ig_ModulesIgXMLModel>
-</Export>

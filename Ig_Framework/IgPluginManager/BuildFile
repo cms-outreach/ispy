@@ -1,6 +1,0 @@
-<use name=Ig_Imports/classlib>
-
-<export>
- <lib name=Ig_FrameworkIgPluginManager>
- <use name=Ig_Imports/classlib>
-</export>

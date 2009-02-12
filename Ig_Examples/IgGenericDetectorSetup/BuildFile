@@ -1,8 +1,0 @@
-<use name=Ig_Modules/IgStudio>
-<use name=Ig_Modules/Ig3DWindow>
-
-<Export>
-  <use name=Ig_Modules/IgStudio>
-  <use name=Ig_Modules/Ig3DWindow>
-  <Lib name=Ig_ExamplesIgGenericDetectorSetup>
-</Export>

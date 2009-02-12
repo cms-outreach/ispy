@@ -1,3 +1,0 @@
-Include("Ig_Modules/IgQtProfileService/src/IgOProfRepresentableInterface.h")
-IgOProfPythonBrowser=Class("IgOProfPythonBrowser","Ig_Modules/IgQtProfileService/src/IgOProfPythonBrowser.h")
-IgOProfPythonMapBrowser=Class("IgOProfPythonMapBrowser","Ig_Modules/IgQtProfileService/src/IgOProfPythonMapBrowser.h")

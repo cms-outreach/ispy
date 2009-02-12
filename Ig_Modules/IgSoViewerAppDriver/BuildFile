@@ -1,8 +1,0 @@
-<Use name=SoQt>
-<Use name=Ig_Framework/IgObjectBrowser>
-
-<Export>
-  <Use name=SoQt>
-  <Use name=Ig_Framework/IgObjectBrowser>
-  <Lib name=Ig_ModulesIgSoViewerAppDriver>
-</Export>

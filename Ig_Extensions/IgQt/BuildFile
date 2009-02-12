@@ -1,8 +1,0 @@
-<Flags CPPDEFINES="HAVE_UNISTD_H">
-<Use name=Qt>
-
-<export>
-  <Lib name=Ig_ExtensionsIgQt>
-  <Flags CPPDEFINES="HAVE_UNISTD_H">
-  <Use name=Qt>
-</export>

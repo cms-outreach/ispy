@@ -1,9 +1,0 @@
-<use name=sockets>
-<export>
-  <use name=sockets>
-  <use name=zlib>
-  <use name=bz2lib>
-  <use name=pcre>
-  <use name=uuid>
-  <lib name=classlib>
-</export>

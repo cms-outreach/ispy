@@ -1,2 +1,0 @@
-Include("Ig_Modules/IgQtProfileService/src/IgOProfConfiguration.h")
-IgOProfSymbolRepresentable=Class("IgOProfSymbolRepresentable","Ig_Modules/IgQtProfileService/src/IgOProfSymbolRepresentable.h")

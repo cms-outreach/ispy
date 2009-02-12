@@ -1,6 +1,0 @@
-<Use name=Ig_Framework/IgPluginManager>
-
-<Export>
- <Use name=Ig_Framework/IgPluginManager>
- <Lib name=Ig_FrameworkIgObjectBrowser>
-</Export>

@@ -1,4 +1,0 @@
-Include("Ig_Modules/IgQtProfileService/src/IgOProfConfiguration.h")
-Include("Ig_Modules/IgQtProfileService/src/IgOProfSymbolRepresentable.h")
-IgOProfProcessRepresentable=Class("IgOProfProcessRepresentable","Ig_Modules/IgQtProfileService/src/IgOProfProcessRepresentable.h")
-set_policy(IgOProfProcessRepresentable.getSymbol, return_internal_reference())

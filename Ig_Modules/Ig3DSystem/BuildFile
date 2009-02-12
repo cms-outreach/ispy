@@ -1,8 +1,0 @@
-<Use name=Ig_Modules/IgQtBrowser>
-<Use name=SoQt>
-
-<Export>
-  <Use name=Ig_Modules/IgQtBrowser>
-  <Use name=SoQt>
-  <Lib name=Ig_ModulesIg3DSystem>
-</Export>

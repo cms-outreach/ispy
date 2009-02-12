@@ -1,3 +1,0 @@
-<Bin name=iggi file=Iggi.cpp>
- <Use name=Iguana/Iggi>
-</Bin>

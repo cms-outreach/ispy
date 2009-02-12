@@ -1,8 +1,0 @@
-<Use name=SoQt>
-<Use name=Ig_Imports/classlib>
-
-<Export>
-  <Use name=SoQt>
-  <Use name=Ig_Imports/classlib>
-  <Lib name=Ig_ModulesIg3DMaterialEditor>
-</Export>

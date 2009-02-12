@@ -1,7 +1,0 @@
-<use name=Ig_Modules/IgStudio>
-<use name=Ig_Modules/IgNTupleModel>
-
-<Export>
-  <use name=Ig_Modules/IgStudio>
-  <Lib name=Ig_ModulesIgNTupleApp>
-</Export>

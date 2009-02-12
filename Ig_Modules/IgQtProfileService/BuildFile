@@ -1,9 +1,0 @@
-<Use name=Ig_Modules/IgStudio>
-<Use name=Ig_Modules/IgPython>
-<Lib name=iberty>
-
-<Export>
-  <Use name=Ig_Modules/IgStudio>
-  <Use name=Ig_Modules/IgPython>
-  <Lib name=Ig_ModulesIgQtProfileService>
-</Export>

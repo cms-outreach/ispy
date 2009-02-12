@@ -1,9 +1,0 @@
-<use name=qt>
-<use name=Ig_Modules/IgXMLModel>
-<use name=Ig_Modules/IgSocketDriver>
-<use name=Ig_Modules/IgStudio>
-
-<export>
-	<lib name=Ig_ModulesIgWebTree>
-</export>
-
