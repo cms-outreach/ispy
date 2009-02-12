@@ -1,0 +1,173 @@
+#!/usr/bin/env perl
+
+BEGIN { $^W = 1; }
+use strict;
+
+use Config;
+my $arch = $Config{archname};
+my $verbose = 0;
+my @ignored = ("__data_start");
+my @userignored;
+
+while (scalar @ARGV && $ARGV[0] =~ /^-/) {
+  if ($ARGV[0] eq '-v' || $ARGV[0] eq '--verbose') {
+    $verbose = 1;
+    shift (@ARGV);
+  } elsif ($ARGV[0] eq '-i' || $ARGV[0] eq '--ignore') {
+    die "--ignore requires an argument\n" if (scalar @ARGV < 2);
+    push(@userignored, $ARGV[1]);
+    shift (@ARGV);
+    shift (@ARGV);
+  } else {
+    die "unrecognised option $ARGV[0]\n";
+  }
+}
+
+# Classify a symbol reported by "nm".
+sub symbol_class {
+    my $label = shift;
+    return 'WEAK' if ($label eq 'W' || $label eq 'V' || substr($label,-1,1) eq '*');
+    return 'COMMON' if ($label eq 'C');  # || $label eq 'B'?
+    return 'TEXT' if ($label eq 'T');
+    return undef if ($label eq 'S' && index($arch, "solaris") != -1);
+    return 'DATA';
+}
+
+# Scan a shareed library for it's dependencies (ldd/otool).  Create a
+# table of symbols it defines and needs.  Arguments are a hash table
+# of a libraries and the name of the file.
+sub scan_module {
+    my ($data, $file) = @_;
+    return if (exists $data->{$file});
+    if (! -f $file) {
+	print "$file: warning: file does not exist\n";
+	return;
+    }
+
+    print "examining $file\n" if $verbose;
+
+    my $libdata = { NEEDED => [], LIBDEPS => [], UNDEF => {},
+		    TEXT => {}, WEAK => {}, DATA => {}, COMMON => {} };
+    $data->{$file} = $libdata;
+
+    # Read shared library dependencies.
+    if ($arch =~ /darwin/) {
+	open(LDD, "otool -L '$file' |") || die "$file: cannot run otool: $!\n";
+	while (<LDD>) {
+	    chomp; next if (! /^\s+(\S+)\s+\(.*\)$/);
+	    my $mod = $1;
+	    if ($mod !~ m|^/|) {
+		my @search = grep (-f "$_/$mod", split (/:/, $ENV{DYLD_LIBRARY_PATH}));
+		if (scalar @search) {
+		    $mod = "$search[0]/$mod";
+		}
+	    }
+
+	    my $modrx = quotemeta($mod);
+	    next if ($mod eq $file || $file =~ m|/$modrx$|);
+	    push(@{$libdata->{LIBDEPS}}, $mod);
+	}
+	close (LDD);
+    } else {
+	open(LDD, "ldd '$file' 2>&1 | grep -v 'not have execute permission' |")
+	    || die "$file: cannot run ldd: $!\n";
+	while (<LDD>) {
+	    chomp;
+	    if (/^\s+(\S+)\s+=>\s+\(0x[0-9a-fA-F]+\)$/)
+	    {
+		# Skip it, some strange magic library?
+	    }
+	    elsif (/^\s+(\S+)\s+=>\s+(not found|\S+)(\s+\(0x[0-9a-fA-F]+\))?$/)
+	    {
+	        if ($2 eq "not found") {
+		    print "$file: warning: dependent shared library `$1' not found\n";
+	        } else {
+		    push(@{$libdata->{LIBDEPS}}, $2);
+	        }
+	    }
+	    elsif (/^\s+(\S+)\s+\(0x[0-9a-fA-F]+\)$/)
+	    {
+		push(@{$libdata->{LIBDEPS}}, $1);
+	    }
+	}
+	close (LDD);
+    }
+
+    # Collect undefined and defined symbols
+    my $cmd = ("nm" . ($arch =~ /darwin/ ? "" : " -D")
+		   . ($arch =~ /solaris/ ? " -l -p" : "")
+		   . " '$file' |");
+    open(NM, $cmd) || die "$file: cannot read symbols: $!\n";
+    while (<NM>) {
+	if (/^0*\s+U\s+(\S+)$/) {
+	    $libdata->{UNDEF}{$1} = 1;
+	} elsif (/^[0-9a-fA-F]+\s+([AICWTDBGRSV?]\*?)\s+(\S+)$/) {
+	    my $symclass = &symbol_class($1);
+	    next if (! $symclass);
+	    $libdata->{$symclass}{$2} = 1;
+	}
+    }
+    close(NM);
+
+    # Scan all the dependent libraries
+    foreach my $module (@{$libdata->{LIBDEPS}}) {
+	scan_module ($data, $module);
+	push(@{$data->{$module}{NEEDED}}, $file);
+    }
+}
+
+sub show_mod_deps {
+    my ($seen, $data, $module, $depth) = @_;
+    return if $seen->{$module};
+    $seen->{$module} = 1;
+    print ("    ", "  " x $depth, "needed by ", $module, "\n");
+    foreach my $mod (@{$data->{$module}{NEEDED}}) {
+       show_mod_deps ($seen, $data, $mod, $depth + 1);
+    }
+}
+
+my $have_undefs = 0;
+foreach my $module (@ARGV) {
+    # Collect library dependencies 
+    my %data = ();
+    &scan_module (\%data, $module);
+
+    # Collect definitions and uses
+    my %undefs = ();
+    my %defs = ();
+    foreach my $file (keys %data) {
+	map { push(@{$undefs{$_}}, $file); } keys %{$data{$file}{UNDEF}};
+	map { $defs{$_} = 1; } keys %{$data{$file}{TEXT}};
+	map { $defs{$_} = 1; } keys %{$data{$file}{DATA}};
+	map { $defs{$_} = 1; } keys %{$data{$file}{COMMON}};
+	map { $defs{$_} = 1; } keys %{$data{$file}{WEAK}};
+    }
+
+    # Remove defined symbols
+    map { delete $undefs{$_} } keys %defs;
+
+    # Remove ignored symbols
+    foreach my $sym (keys %undefs) {
+	if (grep($sym =~ /$_/, @ignored) && exists $undefs{$sym}) {
+	    delete $undefs{$sym};
+	}
+	if (grep($sym =~ /$_/, @userignored) && exists $undefs{$sym}) {
+	    print ("$module: warning: undefined symbol $sym ignored\n");
+	    delete $undefs{$sym};
+	}
+    }
+
+    # Warn if there are undefined and set error code
+    if (scalar keys %undefs) {
+	$have_undefs = 1;
+	print ("$module: undefined symbols\n");
+	foreach my $undef (keys %undefs) {
+	    print ("  $undef\n");
+	    foreach my $mod (@{$undefs{$undef}}) {
+		show_mod_deps ({}, \%data, $mod, 2);
+	    }
+	}
+    }
+}
+
+exit($have_undefs);
