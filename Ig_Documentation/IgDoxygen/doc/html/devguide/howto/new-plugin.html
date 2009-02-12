@@ -1,0 +1,497 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+<link rel="home" href="http://iguana.cern.ch/">
+<link rev="made" href="mailto:iguana-developers@cern.ch">
+<link rel="stylesheet" href="../../weblayout.css" type="text/css">
+<meta name="originator" content="IGUANA Developers">
+<meta http-equiv="Reply-to" content="iguana-developers@cern.ch">
+<meta http-equiv="Keywords" content="LHC, CMS, IGUANA, interactive,
+  graphics, visualisation, toolkit, event display, OpenGL, OpenInventor,
+  how to, create plug-in">
+
+<title>IGUANA Developer Guide: How To Create a Plug-in</title>
+</head>
+
+<body bgcolor="#ffffff">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+ <!-- Top icon: fixes navigation bar width -->
+ <td align="left" valign="top"><table width="100%" border="0">
+  <tr><td><img src="../../images/pad.gif" width="20" height="1" alt=""></td>
+   <td valign="top"><img src="../../images/mini.gif" width="98" height="64"
+     border="0" alt="Yo!"></td>
+   <td><img src="../../images/pad.gif" width="70" height="1" alt="*"></tr></table></td>
+
+ <!-- Top banner: title -->
+ <td colspan="2"><table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr><td align="left" colspan="2"><font face="Arial, Helvetica" size="-1">
+     <font color="#FF00FF">I</font><font color="#009900">nteractive</font>
+     <font color="#FF00FF">G</font><font color="#009900">raphics</font>
+     <font color="#009900">For</font>
+     <font color="#FF00FF">U</font><font color="#009900">ser</font>
+     <font color="#FF00FF">ANA</font><font color="#009900">lysis</font>
+     <font color="#0020FF">(Version @VERSNUM@)</font></td></tr>
+  <tr valign="bottom"><td align="left"><img src="../../images/title.gif" width="208"
+    height="62"  border="0" alt="IGUANA"></td>
+   <td align="right"><font face="Arial, Helvetica" size="+2"><b>
+    Developer Guide:<br>How To Create a Plug-in</b></font></td></tr>
+  <tr><td colspan="2" align="left"><hr align="left" noshade="noshade"></td></tr>
+ </table></td></tr>
+
+<tr valign="top"><td>
+ <!-- Left context navigation bar. -->
+ <!-- Navigation button row. -->
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+   <td align="left"><a href="../howto/"><img src="../../images/arrow-up.gif"
+    width="34" height="34" alt="[Up]" border="0"></a></td>
+   <td align="right"><a href="new-package.html"><img src="../../images/arrow-left.gif"
+    width="34" height="34" alt="[Prev]" border="0"></a>
+    <a href="new-driver.html"><img src="../../images/arrow-right.gif"
+    width="34" height="34" alt="[Next]" border="0"></a></td></tr>
+ </table></td>
+ <td>&nbsp;</td>
+ <td>&nbsp;</td></tr>
+
+<tr valign="top"><td bgcolor="#ffffdd">
+ <!-- Navigation bar. -->
+ <table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr><td class="nav1"><img src="../../images/pad.gif"
+    width="10" height="1" hspace="2" alt=" "></td>
+   <td class="nav1" colspan="3"><b>Quick Links</b></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../../releases.html">Releases</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/lxr.html">LXR Index</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="http://isscvs.cern.ch/cgi-bin/viewcvs.cgi/?cvsroot=iguana">CVS</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/faqs.html">FAQs</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/problems.html">Problems?</a></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../index.html">IGUANA</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../install/">Installation</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../userguide/">User Guide</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../devguide/">Developer Guide</a></b></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../conventions.html">Conventions</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../deps.html">Dependencies</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../arch.html">Architecture</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../howto/">How To...?</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="build.html">Build</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-package.html">Create a Package</a></td></tr>
+  <tr><td class="nav3s">&nbsp;</td><td class="nav3s">&nbsp;&nbsp;</td>
+   <td class="nav3s"><img src="../../images/marker.gif"
+    width="10" height="10" hspace="2" alt="&gt;"></td>
+   <td class="nav3s">Create a Plug-in</td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-driver.html">Create a Driver</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-service.html">Create a Service</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-model.html">Create a Model</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-browser.html">Create a Browser</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-representable.html">Create a Representable</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-repmap.html">Create a Rep Mapping</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="update-config.html">Update Configuration</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="other-projects.html">Work With Other Projects</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="release.html">Release IGUANA</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="debug.html">Debug</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="webpages.html">Update Web Pages</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="screenshot.html">Make a Screen Shot</a></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../apiref/">API Reference</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../info/">More Information</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td>
+   <td class="nav1" colspan="3"><hr noshade="noshade" border="1"></td></tr>
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><form
+    method="get" action="http://www.google.com/custom">
+    <font face="Helvetica, Arial, Sans-Serif" size="-1">
+     <a href="http://www.google.com/search"><img src="../../images/google.gif" border="0"
+      alt="Google Search" width="16" height="16"></a>
+     <input type="text" name="q" size="11">
+     <input type="hidden" name="cof"
+     value="LW:98;L:http://iguana.cern.ch/snapshot/images/mini.gif;LH:64;AH:center;S:http://iguana.cern.ch;AWFID:9ebb11a906c88373;">
+     <input type="hidden" name="domains" value="iguana.web.cern.ch">
+     <input type="hidden" name="sitesearch" value="iguana.web.cern.ch">
+     <b><input value="Search" type="submit"></b></font></form>
+     <!-- <br><input type="radio" name="sitesearch" value="" checked> Search WWW
+      <input type="radio" name="sitesearch" value="iguana.web.cern.ch"> Search IGUANA</font> -->
+    </form>
+   </td></tr></table>
+</td>
+<td>&nbsp;</td>
+
+<td width="100%" align="left" valign="top">
+ <h3><a name="overview">Overview</a></h3>
+
+ <!-- FIXME: link all this stuff the class docs! -->
+ <div class="sect1"><p>Plug-in packages differ from normal packages
+   in that they must have an entry point to make the capabilities of
+   the plug-in available to the IGUANA architecture.  Usually -- but
+   not always -- this also means that some extra information about the
+   classes in the plug-in must also made be available.  This is not
+   strictly a feature of plug-ins, only most plug-ins will need to do
+   so.  A package should provide this additional information if the
+   use of its classes with the IGUANA architecture requires it,
+   whether or not that package is a plug-in.  Therefore, you may need
+   to follow this how-to even if you are not writing a plug-in.  (The
+   classes that must have this additional description are listed <a
+   href="#xtypeinfo">below</a>.)</p>
+
+   <p>The additional information required by IGUANA architecture is
+   the class inheritance structure of certain classes, provided using
+   <tt>xtype_info</tt> from <tt>Ig_Imports/classlib</tt> in two parts:
+   a declaration (<a href="#xtypeinfo">the first step</a>) and a
+   definition (<a href="#plugin">the second step</a>).  We do not yet
+   have an automatic procedure for extracting this information for all
+   classes, so we describe only the classes that absolutely need it.
+   However, <i>the classes that are described, must be described
+   correctly.</i> If the description is incorrect, the architecture
+   will do most silly things; the problems are rather difficult to
+   track.  Therefore, please do not copy and paste code in these steps
+   -- write it with thought.</p>
+
+   <p>In addition to providing the extended type information, plug-ins
+   must define an entry point.  The latter part of this how-to
+   describes the steps to create the entry points, get the plug-in
+   registered and to verify that it works as expected.  All in all,
+   the steps are as follows:</p>
+   <ul>
+     <li> Create a new package with code you want.  Follow the steps
+	  in the guide to <a href="new-package.html">create a new package</a>
+	  and the guides that explain how to create a
+	  <a href="new-repmap.html">representation conversion</a>,
+	  <a href="new-browser.html">browser</a>, or
+	  <a href="new-service.html">service</a>.
+     <li> <a href="#xtypeinfo">Add <tt>interface/xtypeinfo.h</tt></a>
+     <li> <a href="#plugin">Add <tt>src/plugin.cc</tt></a>
+     <li> <a href="#buildfile">Modify <tt>BuildFile</tt></a>
+     <li> <a href="#build">Build the package</a>
+     <li> <a href="#check">Check the plug-in with <tt>iguana</tt></a>
+   </ul>
+
+   <p>In this how-to we assume that you are creating a model package
+   called <tt>IgFooModel</tt>.  We assume that your package has the
+   class <tt>IgFooModel</tt> that inherits from the usual base
+   classes in the architecture core (see the other how-to guides for
+   more profound examples).  We also assume it provides a service
+   called <tt>IgFooService</tt> that is somehow specific to the use
+   of the model, and this service has two runtime-loaded extensions,
+   <tt>IgFooBarExtension</tt> and <tt>IgFooBazExtension</tt>.  Note
+   that we also assume that you are using the IGUANA C++ templates
+   (automatically available in our emacs customisation).</p>
+ </div>
+
+ <h3><a name="xtypeinfo">Add <tt>interface/xtypeinfo.h</tt></a></h3>
+
+ <div class="sect1"><p>In this step you will <i>declare</i> the
+   extended type information for the classes that need to be descibed.
+   The declaration should be public so that other packages can include
+   it -- for example to further describe inherited classes.  Our
+   convention is <tt>interface/xtypeinfo.h</tt> for the declaration
+   and <tt>src/plugin.cc</tt> for the definition; follow these
+   conventions also for packages that are not plug-ins.</p>
+
+   <p>The classes that must be described are those that participate in
+   multi-methods: classes inheriting from <tt>IgRepresentable</tt>,
+   <tt>IgRep</tt> or <tt>IgModel</tt>.  (This assuming only the
+   multi-methods defined in <tt>IgObjectBrowser</tt>).  You should
+   describe the entire inheritance structure of the classes, so you
+   may need to describe intermediate classes as well.  If you the
+   classes are already described in some other package, do not declare
+   them in yours; just create a dependency on the other package (see
+   the <a href="#buildfile"><tt>BuildFile</tt></a> step).  If your
+   classes inherit from external classes with large inheritance trees
+   (such as Geant4 or Qt classes), and those intermediate classes are
+   never used directly in extended type info mechanisms such as
+   multi-methods, you are allowed to skip the externals in the
+   description.  Do note however that the description is completely
+   outside the classes so it is perfectly possible to describe any
+   external class.</p>
+
+   <p>Let us begin.  Create <tt>interface/xtypeinfo.h</tt>.  It should
+   include only two files: first the <tt>config.h</tt> of your package
+   and then <tt>&lt;classlib/xtypeinfo.h&gt;</tt>.  For each class that
+   is to be described, first forward declare the class and then the
+   extended type information with <tt>XTYPEINFO_DECLARE</tt>.  Your
+   header should now look like this:</p>
+
+   <pre>#ifndef IG_FOO_MODEL_XTYPEINFO_H
+# define IG_FOO_MODEL_XTYPEINFO_H
+
+//&lt;&lt;&lt;&lt;&lt;&lt; INCLUDES                                   &gt;&gt;&gt;&gt;&gt;&gt;
+
+# include "Ig_Modules/IgFooModel/interface/config.h"
+# include &lt;classlib/xtypeinfo.h&gt;
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC DEFINES                             &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC CONSTANTS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC TYPES                               &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IgFooModel;
+
+XTYPEINFO_DECLARE (IgFooModel);
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC VARIABLES                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC FUNCTIONS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; CLASS DECLARATIONS                         &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE PUBLIC FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE MEMBER FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+
+#endif // IG_FOO_MODEL_XTYPEINFO_H</pre>
+ </div>
+
+ <h3><a name="plugin">Add <tt>src/plugin.cc</tt></a></h3>
+ <div class="sect1"><p>In this step you will do two things: you will
+   <i>define</i> the extended type information for the classes that
+   were mentioned in the <a href="#xtypeinfo">previous step</a>, and
+   define the plug-in description entry point.  All this should go in
+   <tt>src/plugin.cc</tt>.</p>
+
+   <p>First add the following includes:</p>
+   <ul>
+     <li> Include the headers for all the classes declared in
+	  <tt>xtypeinfo.h</tt> (it is not necessary to include
+	  your <tt>config.h</tt> directly -- all your headers
+	  already include it).
+     <li> Include your <tt>xtypeinfo.h</tt>.
+     <li> Include <tt>xtypeinfo.h</tt> headers from all packages
+	  that define classes your classes inherit from.
+     <li> Include <tt>IgObjectBrowser/interface/IgPluginDef.h</tt>.
+   </ul>
+
+   <p>Now, using <tt>XTYPEINFO_DEF</tt> macros in the "class structure
+   initialisation" section, add type info definitions for the classes
+   mentioned in <a href="#xtypeinfo"><tt>xtypeinfo.h</tt></a>.  There
+   are several variants of the macro, depending on the number of base
+   classes (0, 1, 2, 3 or 4).  The first argument is the name of your
+   class.  Subsequent arguments are a pair of class name, inheritance
+   type for each direct base class in the order they were specified in
+   the class definition.  The second argument of the pair should be
+   <tt>true</tt> for virtual inheritance, <tt>false</tt> otherwise.
+   The compiler must have seen a <tt>XTYPEINFO_DECLARE</tt> for every
+   class named in <tt>XTYPEINFO_DEF</tt> -- hence you had to include
+   <tt>xtypeinfo.h</tt> headers from all relevant packages above.  If
+   your package is not a plug-in but simply needs to provide extended
+   type information, you are done; skip the rest of this how-to.</p>
+
+   <p>Next, in the "private types" section, declare a new class to
+   describe your plug-in, named after your package -- for example
+   <tt>IgFooModelPlugin</tt> for <tt>IgFooModel</tt> package.
+   Inherit the class from <tt>IgPluginDef</tt> and add overrides for
+   the <tt>query</tt> and <tt>attach</tt> methods.  In the "class
+   structure initialisation", introduce the plug-in registration entry
+   point with <tt>DEFINE_IGUANA_PLUGIN</tt>; the macro takes as an
+   argument the name of your plug-in class.</p>
+
+   <p>Finally, in the "member function definitions" section, define
+   the <tt>query</tt> and <tt>attach</tt> methods.  In <tt>query</tt>
+   describe your plug-in using the <tt>IgPluginDef::declare*</tt>
+   methods.  In <tt>attach</tt> add factories for each entity declared
+   in <tt>query</tt>, using the <tt>IgPluginDef::install*</tt>
+   methods (capabilities do not need factories but you might need to
+   add some other special code into <tt>attach</tt>).  For any class
+   that you install a factory for you will also need to include its
+   header as well as the corresponding factory header from
+   <tt>IgObjectBrowser</tt> (see the other how-to guides for
+   specifics).</p>
+
+   <p>Your <tt>src/plugin.cc</tt> should now look like this:</p>
+
+   <pre>//<<<<<< INCLUDES                                   >>>>>>
+
+#include "Ig_Modules/IgFooModel/interface/IgFooModel.h"
+#include "Ig_Modules/IgFooModel/interface/IgFooBarExtension.h"
+#include "Ig_Modules/IgFooModel/interface/IgFooBazExtension.h"
+#include "Ig_Modules/IgFooModel/interface/xtypeinfo.h"
+
+#include "Ig_Framework/IgObjectBrowser/interface/IgPluginDef.h"
+#include "Ig_Framework/IgObjectBrowser/interface/IgSimpleBrowserFactory.h"
+#include "Ig_Framework/IgObjectBrowser/interface/IgSimpleExtensionFactory.h"
+#include "Ig_Framework/IgObjectBrowser/interface/xtypeinfo.h"
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE DEFINES                            &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE CONSTANTS                          &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE TYPES                              &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IgFooModelPlugin : public IgPluginDef
+{
+public:
+    virtual void	query (void);
+    virtual void	attach (void);
+};
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE VARIABLE DEFINITIONS               &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC VARIABLE DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; CLASS STRUCTURE INITIALIZATION             &gt;&gt;&gt;&gt;&gt;&gt;
+
+DEFINE_IGUANA_PLUGIN (IgFooModelPlugin);
+XTYPEINFO_DEF_1 (IgFooModel, IgModel, false);
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE FUNCTION DEFINITIONS               &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC FUNCTION DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; MEMBER FUNCTION DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+
+void
+IgFooBrowserPlugin::query (void)
+{
+    declareExtension ("Runtime/Services/Foo/Bar");
+    declareExtension ("Runtime/Services/Foo/Baz");
+}
+
+void
+IgFooBrowserPlugin::attach (void)
+{
+    installExtension ("Runtime/Services/Foo/Bar",
+		      new IgSimpleExtensionFactory
+		      &lt;IgFooBarExtension&gt;);
+    installExtension ("Runtime/Services/Foo/Baz",
+		      new IgSimpleExtensionFactory
+		      &lt;IgFooBazExtension&gt;);
+}</pre>
+ </div>
+
+ <h3><a name="buildfile">Modify <tt>BuildFile</tt></a></h3>
+
+ <div class="sect1"><p>Most of the work is now done.  You still need
+   to modify your SCRAM <tt>BuildFile</tt> to build and register your
+   package as a plug-in.  This consist of two steps: you must link
+   your plug-in shared library against all other libraries it needs
+   -- it cannot have any unresolved symbols -- and register it into
+   your project's <tt>iguana-plugins</tt> database.  Please refer
+   first to the <a href="new-package.html#buildfile">the corresponding
+   section of the package creation how-to</a> to see how we achieve
+   this linking.</p>
+
+   <p>We augment the default receipe with a registration of the shared
+   library created by the new package into the plug-in repository by
+   including <tt>plugin_makefile.mk</tt> from the project's
+   <tt>config</tt> directory (<tt>$(LOCALTOP)/$(projconfigdir)</tt>).
+   In projects other than IGUANA this fragment causes shared libraries
+   to be linked against their dependencies.  In IGUANA this is the
+   default and enabled for all packages.</p>
+
+   <p>Your <tt>BuildFile</tt> in the package root directory should
+   now look like this:</p>
+
+   <pre>&lt;Use name=Ig_Framework/IgObjectBrowser&gt;
+&lt;Use name=Ig_Extensions/IgQt&gt;
+&lt;External ref=Qt&gt;
+
+&lt;Export&gt;
+  &lt;Lib name=IgFooBrowser&gt;
+&lt;/Export&gt;
+
+include $(LOCALTOP)/$(projconfigdir)/plugin_makefile.mk</pre>
+ </div>
+
+ <h3><a name="build">Build the package</a></h3>
+
+ <div class="sect1"><p>You are now ready to build your plug-in with
+   <tt>scram build</tt>.  You should see your library linked against
+   other libraries and the creation of an XML file in
+   <tt>lib/</tt><i>arch</i><tt>iguana-plugins</tt>.  Note that
+   in IGUANA your package must be mentioned in the build order to
+   build it from the top level.  See <a href="new-package.html#buildorder">the
+   new package</a> how-to for the instructions.</p>
+ </div>
+
+ <h3><a name="check">Check the plug-in with <tt>iguana</tt></a></h3>
+
+ <div class="sect1"><p>Once your package has been built, verify that
+   <tt>iguana</tt> can load the library and discover its properties.
+   Running the following two commands should produce output that
+   includes the entities from your plug-in:</p>
+   <pre>$ eval `scram runtime -sh`
+$ iguana --list</pre>
+
+   <p>If you do not see the output you expected, turn on debugging:</p>
+   <pre>$ env LOG=stderr: iguana --list</pre>
+
+   <p>The debugging output will be verbose.  Look for messages in the
+   <tt>plugin-manager</tt> category saying "loading shared library".
+   If there are problems with the library, this will be followed by a
+   dynamic linker error message mentioning the first missing symbol.
+   Common causes for errors include forgetting to link against some
+   other library, forgetting to run <tt>moc</tt> (your package should
+   have class <tt>libExamp</tt> in <tt>config/BuildFile</tt>), and
+   forgetting to define one or more virtual functions.</p>
+
+   <p>You should also exercise the types defined in your library with
+   debugging enabled as shown above.  Look for messages in
+   <tt>xtypeinfo</tt> category that say "inventing a xtype_info for
+   an unknown type `...'".  These will show up if you attempt to refer
+   to <tt>xtype_info</tt> for types for which it was not defined
+   (e.g. by applying a multi-method to an object when the <i>real</i>
+   type of that object has no extended type info definition).  You
+   need to perform a proper test discover these, it is unusual for
+   them to show up in mere plug-in registration.</p>
+
+   <table border="0" class="admon.note" cellspacing="0" cellpadding="0">
+    <tr valign="top"><td><img src="../../images/admon-caution.gif"
+      width="29" height="29" vspace="10" hspace="10" alt="Note"></td>
+     <td>In projects other than IGUANA the <tt>$IGUANA_PLUGINS</tt>
+     environment variable is currently not set correctly due to a
+     SCRAM bug.  After running <tt>scram runtime</tt>, make sure
+     the variable includes the following directories, in this order:
+     <tt>lib/</tt><i>arch</i><tt>/iguana-plugins</tt> in your project
+     area, then in your base release, then in IGUANA release.
+    </td></tr></table>
+ </div>
+</td></tr>
+
+<tr>
+ <td bgcolor="#ffffdd"><table border="0" width="100%"><tr>
+   <td align="left"><a href="mailto:iguana-developers@cern.ch"><img
+    src="../../images/mailto.gif" border="0" width="14" height="10"
+    alt="[Mail]"></a></td>
+   <td align="right"><font face="Arial, Helvetica"
+    size="-2">$Date: 2006/09/11 07:45:25 $</font></td></tr></table></td>
+ <td><font face="Arial, Helvetica" size="-2">&nbsp;</font></td>
+ <td><font face="Arial, Helvetica" size="-2">&nbsp;</font></td></tr>
+</table>
+</body>
+</html>

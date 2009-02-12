@@ -1,0 +1,614 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
+
+<html>
+<head>
+<link rel="home" href="http://iguana.cern.ch/">
+<link rev="made" href="mailto:iguana-developers@cern.ch">
+<link rel="stylesheet" href="../../weblayout.css" type="text/css">
+<meta name="originator" content="IGUANA Developers">
+<meta http-equiv="Reply-to" content="iguana-developers@cern.ch">
+<meta http-equiv="Keywords" content="LHC, CMS, IGUANA, interactive,
+  graphics, visualisation, toolkit, event display, OpenGL, OpenInventor,
+  how to, create browser model">
+
+<title>IGUANA Developer Guide: How To Create a Browser Model</title>
+</head>
+
+<body bgcolor="#ffffff">
+<table width="100%" border="0" cellspacing="0" cellpadding="0">
+<tr>
+ <!-- Top icon: fixes navigation bar width -->
+ <td align="left" valign="top"><table width="100%" border="0">
+  <tr><td><img src="../../images/pad.gif" width="20" height="1" alt=""></td>
+   <td valign="top"><img src="../../images/mini.gif" width="98" height="64"
+     border="0" alt="Yo!"></td>
+   <td><img src="../../images/pad.gif" width="70" height="1" alt="*"></tr></table></td>
+
+ <!-- Top banner: title -->
+ <td colspan="2"><table border="0" width="100%" cellspacing="0" cellpadding="0">
+  <tr><td align="left" colspan="2"><font face="Arial, Helvetica" size="-1">
+     <font color="#FF00FF">I</font><font color="#009900">nteractive</font>
+     <font color="#FF00FF">G</font><font color="#009900">raphics</font>
+     <font color="#009900">For</font>
+     <font color="#FF00FF">U</font><font color="#009900">ser</font>
+     <font color="#FF00FF">ANA</font><font color="#009900">lysis</font>
+     <font color="#0020FF">(Version @VERSNUM@)</font></td></tr>
+  <tr valign="bottom"><td align="left"><img src="../../images/title.gif" width="208"
+    height="62"  border="0" alt="IGUANA"></td>
+   <td align="right"><font face="Arial, Helvetica" size="+2"><b>
+    Developer Guide: How To<br>Create a Browser Model</b></font></td></tr>
+  <tr><td colspan="2" align="left"><hr align="left" noshade="noshade"></td></tr>
+ </table></td></tr>
+
+<tr valign="top"><td>
+ <!-- Left context navigation bar. -->
+ <!-- Navigation button row. -->
+ <table width="100%" border="0" cellspacing="0" cellpadding="0">
+  <tr>
+   <td align="left"><a href="../howto/"><img src="../../images/arrow-up.gif"
+    width="34" height="34" alt="[Up]" border="0"></a></td>
+   <td align="right"><a href="new-service.html"><img src="../../images/arrow-left.gif"
+    width="34" height="34" alt="[Prev]" border="0"></a>
+    <a href="new-browser.html"><img src="../../images/arrow-right.gif"
+    width="34" height="34" alt="[Next]" border="0"></a></td></tr>
+ </table></td>
+ <td>&nbsp;</td>
+ <td>&nbsp;</td></tr>
+
+<tr valign="top"><td bgcolor="#ffffdd">
+ <!-- Navigation bar. -->
+ <table width="100%" border="0" cellspacing="0" cellpadding="1">
+  <tr><td class="nav1"><img src="../../images/pad.gif"
+    width="10" height="1" hspace="2" alt=" "></td>
+   <td class="nav1" colspan="3"><b>Quick Links</b></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../../releases.html">Releases</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/lxr.html">LXR Index</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="http://isscvs.cern.ch/cgi-bin/viewcvs.cgi/?cvsroot=iguana">CVS</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/faqs.html">FAQs</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../../main/problems.html">Problems?</a></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../index.html">IGUANA</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../install/">Installation</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../userguide/">User Guide</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../devguide/">Developer Guide</a></b></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../conventions.html">Conventions</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../deps.html">Dependencies</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../arch.html">Architecture</a></td></tr>
+  <tr><td class="nav2">&nbsp;</td><td class="nav2">&nbsp;&nbsp;</td>
+   <td class="nav2" colspan="2"><a href="../howto/">How To...?</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="build.html">Build</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-package.html">Create a Package</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-plugin.html">Create a Plug-in</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-driver.html">Create a Driver</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-service.html">Create a Service</a></td></tr>
+  <tr><td class="nav3s">&nbsp;</td><td class="nav3s">&nbsp;&nbsp;</td>
+   <td class="nav3s"><img src="../../images/marker.gif"
+    width="10" height="10" hspace="2" alt="&gt;"></td>
+   <td class="nav3s">Create a Model</td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-browser.html">Create a Browser</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-representable.html">Create a Representable</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="new-repmap.html">Create a Rep Mapping</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="update-config.html">Update Configuration</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="other-projects.html">Work With Other Projects</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="release.html">Release IGUANA</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="debug.html">Debug</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="webpages.html">Update Web Pages</a></td></tr>
+  <tr><td class="nav3">&nbsp;</td><td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3">&nbsp;&nbsp;</td>
+   <td class="nav3"><a href="screenshot.html">Make a Screen Shot</a></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../apiref/">API Reference</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><b><a
+   href="../../info/">More Information</a></b></td></tr>
+
+  <tr><td class="nav1">&nbsp;</td>
+   <td class="nav1" colspan="3"><hr noshade="noshade" border="1"></td></tr>
+  <tr><td class="nav1">&nbsp;</td><td class="nav1" colspan="3"><form
+    method="get" action="http://www.google.com/custom">
+    <font face="Helvetica, Arial, Sans-Serif" size="-1">
+     <a href="http://www.google.com/search"><img src="../../images/google.gif" border="0"
+      alt="Google Search" width="16" height="16"></a>
+     <input type="text" name="q" size="11">
+     <input type="hidden" name="cof"
+     value="LW:98;L:http://iguana.cern.ch/snapshot/images/mini.gif;LH:64;AH:center;S:http://iguana.cern.ch;AWFID:9ebb11a906c88373;">
+     <input type="hidden" name="domains" value="iguana.web.cern.ch">
+     <input type="hidden" name="sitesearch" value="iguana.web.cern.ch">
+     <b><input value="Search" type="submit"></b></font></form>
+     <!-- <br><input type="radio" name="sitesearch" value="" checked> Search WWW
+      <input type="radio" name="sitesearch" value="iguana.web.cern.ch"> Search IGUANA</font> -->
+    </form>
+   </td></tr></table>
+</td>
+<td>&nbsp;</td>
+
+<td width="100%" align="left" valign="top">
+ <!-- FIXME: link all this stuff the class docs! -->
+ <h3><a name="overview">Overview</a></h3>
+ <div class="sect1"><p>In IGUANA browsers are viewers of a <i>model</i>,
+   an abstract representation of the data at hand.  This guide
+   explains how to design a simple browser model; you will probably
+   want to read it together with the <a href="new-browser.html">guide
+   to create a browser</a> as the two are interconnected.  To create a
+   model follow these steps:</p>
+   <ul>
+     <li> <a href="new-package.html">Create a new package</a> for the
+	  model.  In IGUANA create <tt>Ig_Modules/IgSomeThingModel</tt>.
+     <li> <a href="#design">Design the model and rep classes.</a>
+     <li> <a href="#define">Define the model and rep classes.</a>
+     <li> <a href="#implement">Implement the model and rep classes.</a>
+     <li> <a href="#xtypeinfo">Add <tt>interface/xtypeinfo.h</tt></a>
+     <li> <a href="#plugin">Add <tt>src/plugin.cc</tt></a>
+     <li> <a href="#buildfile">Modify <tt>BuildFile</tt></a>
+     <li> <a href="#build">Build the package</a>
+   </ul>
+
+   <p>This receipe assumes that you are using the IGUANA C++ templates
+   (automatically available in our emacs customisation).</p>
+ </div>
+
+ <h3><a name="design">Design the model and rep classes</a></h3>
+ <div class="sect1"><p>A model has one or more <i>representations</i>,
+   or <i>reps</i>.  Using the MVC (Model-View-Controller) design, the
+   browser is the viewer and the controller, while the model together
+   with the reps is the model part.  However do note that the model
+   and the reps <i>are</i> view-specific from the application point of
+   view, and therefore can and should include visual representation
+   details that would not be appropriate for the application objects.
+   The IGUANA architecture provides a number of mechanisms for the
+   application objects, their reps and the models to interact, but
+   nothing for the interaction of browsers and models.</p>
+
+   <p>For the purposes of this discussion we assume that the browser
+   will display the contents of the model in a GUI window.  We assume
+   that the model will be <i>simple</i>: it will include the rep of at
+   most one object.  (A more complex model would represent several
+   objects simultaneously, reflecting the relations of the original
+   objects as relations among the reps.)  Furthermore we assume that
+   the application object cannot be changed via this model -- and
+   therefore browsers attached to this model must be viewers.  We
+   also assume that the browser and therefore its model are to be
+   generic: it should and can work with pretty much any object, it
+   is not targeted to specific functionality in specific objects.
+   We also restrict ourselves such that the browser has minimal
+   presentation capability -- the basic rep we will provide will
+   have all the functionality the clients will ever need.  (For a
+   more complex scenario where the browser will have a fair amount
+   of flexibility, please refer to the <a href="FIXME">developer's
+   tutorial</a>.)  Finally, we assume the browser will be a passive
+   viewer: it will not provide selection or sub-object detail picking
+   that ought to be communicated to other browsers.</p>
+
+   <p>Given these assumptions, our design choices are as follows:</p>
+   <ul>
+     <li> We will not use the application objects directly as reps.
+	  This is generally the case, but especially so since we will
+	  want to be able to represent any application object without
+	  imposing a specific interface on them, and since there will
+	  be visual knowledge involved in the reps.<p>
+
+     <li> As we will be showing only one object at the time, the size
+	  or complexity of the model and the reps are not a major
+	  issue -- we will use the simplest convenient design.<p>
+
+     <li> Since editing is not possible, the model does not need to
+	  provide the browser an interface to change the reps. It does
+	  however need to provide an interface for the browser to
+	  listen for changes made elsewhere in the application.  The
+	  burden to track actual rep updates will remain with the
+	  representation methods -- little will be done about this in
+	  the reps or the model itself.<p>
+
+     <li> We assume that browser is simple and therefore does not need
+	  to interact with the reps to manage selection or visual
+	  appearance.  This restricts the clients to use the reps we
+	  design here.<p>
+   </ul>
+ </div>
+
+ <h3><a name="define">Define the model and rep classes</a></h3>
+ <div class="sect1"><p>Let us call the model <tt>IgTextModel</tt> and
+   the rep class <tt>IgTextRep</tt>.  The class for notifying browsers
+   about model changes we will call <tt>IgTextModelEvent</tt>.  Create
+   the corresponding header files, <tt>interface/IgTextRep.h</tt>,
+   <tt>interface/IgTextModel.h</tt> and
+   <tt>interface/IgTextModelEvent.h</tt>.  Opening new files with
+   those names in emacs will automatically insert the header file and
+   basic class structure if you are using our C++ customisation
+   layer.</p>
+
+   <p>The files should look something like this:</p>
+   <pre>#ifndef IG_TEXT_MODEL_IG_TEXT_REP_H
+# define IG_TEXT_MODEL_IG_TEXT_REP_H
+                                                                    
+//&lt;&lt;&lt;&lt;&lt;&lt; INCLUDES                                   &gt;&gt;&gt;&gt;&gt;&gt;
+
+# include "Ig_Modules/IgTextModel/interface/config.h"
+# include "Ig_Framework/IgObjectBrowser/interface/IgRep.h"
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC DEFINES                             &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC CONSTANTS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC TYPES                               &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IgTextModel;
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC VARIABLES                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC FUNCTIONS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; CLASS DECLARATIONS                         &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IG_TEXT_MODEL_API IgTextRep : public IgRep
+{
+public:
+    IgTextRep (IgTextModel *model, std::string &amp;stuff);
+    // implicit copy constructor
+    // implicit assignment operator
+    // implicit destructor
+
+    virtual IgRepContext *	context (void) const;
+    virtual IgModel *		model (void) const;
+    virtual const std::string &amp;	text (void) const;
+
+protected:
+    virtual void		context (IgRepContext *context);
+
+private:
+    IgTextModel			*m_model;
+    IgRepContext		*m_context;
+    std::string			m_text;
+};
+
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE PUBLIC FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE MEMBER FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+
+#endif // IG_TEXT_MODEL_IG_TEXT_REP_H</pre>
+
+   <pre>#ifndef IG_TEXT_MODEL_IG_TEXT_MODEL_H
+# define IG_TEXT_MODEL_IG_TEXT_MODEL_H
+                                                                    
+//&lt;&lt;&lt;&lt;&lt;&lt; INCLUDES                                   &gt;&gt;&gt;&gt;&gt;&gt;
+
+# include "Ig_Modules/IgTextModel/interface/config.h"
+# include "Ig_Framework/IgObjectBrowser/interface/IgModel.h"
+# include "Ig_Framework/IgObjectBrowser/interface/IgObserver.h"
+# include &lt;classlib/callback.h&gt;
+# include &lt;vector&gt;
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC DEFINES                             &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC CONSTANTS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC TYPES                               &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IgTextRep;
+class IgTextModelEvent;
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC VARIABLES                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC FUNCTIONS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; CLASS DECLARATIONS                         &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IG_TEXT_MODEL_API IgTextModel : public IgModel
+{
+public:
+    typedef IgObserver&lt;IgTextModelEvent&gt;::Observer Observer;
+    enum EventType { TextChanged };
+
+    IgTextModel (void);
+    ~IgTextModel (void);
+
+    virtual void	listen (EventType event,
+				const Observer &amp;listener);
+    virtual void	unlisten (EventType event,
+				  const Observer &amp;listener);
+    virtual void	changed (void);
+
+    virtual IgTextRep *	text (void) const;
+    virtual void	set (IgTextRep *rep);
+    virtual void	change (IgTextRep *rep);
+    virtual void	remove (IgTextRep *rep);
+
+private:
+    typedef IgObserver&lt;IgTextModelEvent&gt; Listeners;
+
+    IgTextRep		*m_current;
+    Listeners		m_listeners;
+
+    // undefined semantics
+    IgTextModel (const IgTextModel &amp;);
+    IgTextModel &operator= (const IgTextModel &amp;);
+};
+
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE PUBLIC FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE MEMBER FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+
+#endif // IG_TEXT_MODEL_IG_TEXT_MODEL_H</pre>
+
+   <pre>#ifndef IG_TEXT_MODEL_IG_TEXT_MODEL_EVENT_H
+# define IG_TEXT_MODEL_IG_TEXT_MODEL_EVENT_H
+                                                                    
+//&lt;&lt;&lt;&lt;&lt;&lt; INCLUDES                                   &gt;&gt;&gt;&gt;&gt;&gt;
+
+# include "Ig_Modules/IgTextModel/interface/config.h"
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC DEFINES                             &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC CONSTANTS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC TYPES                               &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IgTextModel;
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC VARIABLES                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC FUNCTIONS                           &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; CLASS DECLARATIONS                         &gt;&gt;&gt;&gt;&gt;&gt;
+
+class IG_TEXT_MODEL_API IgTextModelEvent
+{
+public:
+    IgTextModelEvent (IgTextModel *source);
+    // implicit copy constructor
+    // implicit assignment operator
+    // implicit destructor
+
+    IgTextModel *	source (void) const;
+
+private:
+    IgTextModel		*m_source;
+};
+
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE PUBLIC FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; INLINE MEMBER FUNCTIONS                    &gt;&gt;&gt;&gt;&gt;&gt;
+
+inline
+IgTextModelEvent::IgTextModelEvent (IgTextModel *source)
+    : m_source (source)
+{}
+
+inline IgTextModel *
+IgTextModelEvent::source (void) const
+{
+    return m_source;
+}
+
+#endif // IG_TEXT_MODEL_IG_TEXT_MODEL_EVENT_H</pre>
+ </div>
+
+ <h3><a name="implement">Implement the model and rep classes</a></h3>
+ <div class="sect1"><p>Now implement the classes in
+   <tt>src/IgTextRep.cc</tt> and <tt>src/IgTextModel.cc</tt> as
+   follows.</p>
+
+   <pre>//&lt;&lt;&lt;&lt;&lt;&lt; INCLUDES                                   &gt;&gt;&gt;&gt;&gt;&gt;
+                                                                    
+#include "Ig_Modules/IgTextModel/interface/IgTextRep.h"
+#include "Ig_Modules/IgTextModel/interface/IgTextModel.h"
+#include "Ig_Framework/IgObjectBrowser/interface/IgRepContext.h"
+#include &lt;classlib/debug.h&gt;
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE DEFINES                            &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE CONSTANTS                          &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE TYPES                              &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE VARIABLE DEFINITIONS               &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC VARIABLE DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; CLASS STRUCTURE INITIALIZATION             &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE FUNCTION DEFINITIONS               &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC FUNCTION DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; MEMBER FUNCTION DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+
+IgTextRep::IgTextRep (IgTextModel *model,
+		      const std::string &amp;text)
+    : m_model (model),
+      m_context (0),
+      m_text (text)
+{}
+
+IgTextRep::~IgTextRep (void)
+{
+    // The destruction may come upon me in two ways: the
+    // object is going away and the context is deleting me,
+    // or something else (= the model) is killing me.  I
+    // can tell the difference from asking the context for
+    // its rep -- if it is null, then it is the context that
+    // is destroying me, and I must take not to delete the
+    // context myself.
+
+    // Make sure model knows I am gone.
+    m_model-&gt;remove (this);
+
+    // Make the context go away if we are not being deleted
+    // by it.
+    ASSERT (m_context);
+    if (m_context-&gt;rep ())
+    {
+        ASSERT (m_context-&gt;rep () == this);
+        m_context-&gt;erase (false);
+        delete m_context;
+    }
+}
+
+void
+IgTextRep::context (IgRepContext *context)
+{
+    ASSERT (! m_context);
+    ASSERT (context);
+    m_context = context;
+}
+
+//////////////////////////////////////////////////////////
+IgRepContext *
+IgTextRep::context (void) const
+{ return m_context; }
+
+IgModel *
+IgTextRep::model (void) const
+{ return m_model; }
+
+//////////////////////////////////////////////////////////
+const std::string &amp;
+IgTextRep::text (void) const
+{ return m_text; }
+</pre>
+
+   <pre>//&lt;&lt;&lt;&lt;&lt;&lt; INCLUDES                                   &gt;&gt;&gt;&gt;&gt;&gt;
+                                                                    
+#include "Ig_Modules/IgTextModel/interface/IgTextModel.h"
+#include "Ig_Modules/IgTextModel/interface/IgTextModelEvent.h"
+#include "Ig_Modules/IgTextModel/interface/IgTextRep.h"
+#include &lt;classlib/debug.h&gt;
+#include &lt;algorithm&gt;
+
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE DEFINES                            &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE CONSTANTS                          &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE TYPES                              &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE VARIABLE DEFINITIONS               &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC VARIABLE DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; CLASS STRUCTURE INITIALIZATION             &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PRIVATE FUNCTION DEFINITIONS               &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; PUBLIC FUNCTION DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+//&lt;&lt;&lt;&lt;&lt;&lt; MEMBER FUNCTION DEFINITIONS                &gt;&gt;&gt;&gt;&gt;&gt;
+
+IgTextModel::IgTextModel (void)
+    : m_current (0)
+{}
+
+IgTextModel::~IgTextModel (void)
+{ delete m_current; }
+
+//////////////////////////////////////////////////////////
+void
+IgTextModel::listen (EventType /* event */,
+	             const Observer &amp;listener)
+{ m_listeners.listen (listener); }
+
+void
+IgTextModel::unlisten (EventType /* event */,
+		       const Listener &amp;listener)
+{ m_listeners.unlisten (listener); }
+
+void
+IgTextModel::changed (void)
+{ m_listeners.broadcast (IgTextModelEvent (this)); }
+
+//////////////////////////////////////////////////////////
+IgTextRep *
+IgTextModel::text (IgTextRep *rep)
+{ return m_current; }
+
+//////////////////////////////////////////////////////////
+void
+IgTextModel::set (IgTextRep *rep)
+{
+    if (m_current != rep)
+        delete m_current;
+    m_current = rep;
+    changed ();
+}
+
+void
+IgTextModel::change (IgTextRep *rep)
+{
+    ASSERT (rep);
+    if (m_current == rep)
+        changed ();
+}
+
+void
+IgTextModel::remove (IgTextRep *rep)
+{
+    ASSERT (rep);
+    if (m_current != rep)
+    {
+        m_current = 0;
+        changed ();
+    }
+}</pre>
+ </div>
+
+ <h3><a name="xtypeinfo">Add <tt>interface/xtypeinfo.h</tt></a></h3>
+ <div class="sect1"><p>Follow the corresponding section in the <a
+   href="new-plugin.html#xtypeinfo">plug-in creation how-to</a> to
+   provide the extended type information for <tt>IgTextRep</tt> and
+   <tt>IgTextModel</tt>.</p>
+ </div>
+
+ <h3><a name="plugin">Add <tt>src/plugin.cc</tt></a></h3>
+ <div class="sect1"><p>Follow the corresponding section in the <a
+   href="new-plugin.html#plugin">plug-in creation how-to</a> to
+   define the extended type information for <tt>IgTextRep</tt> and
+   <tt>IgTextModel</tt>.  You do not need to define any plug-in
+   properties for this package, nor make it a plug-in -- just
+   define the extended type information.</p>
+ </div>
+
+ <h3><a name="buildfile">Modify <tt>BuildFile</tt></a></h3>
+ <div class="sect1"><p>Nothing extraordinary here.  You'll need
+   dependencies on <tt>IgObjectBrowser</tt> and anything else you
+   used.  In this example we only depend on the C++ standard library
+   so nothing special needs to be mentioned.  The <tt>BuildFile</tt>
+   in the package root directory should now look like this:</p>
+
+   <pre>&lt;Use name=Ig_Framework/IgObjectBrowser&gt;
+&lt;Export&gt;
+  &lt;Lib name=IgTextModel&gt;
+&lt;/Export&gt;</pre>
+ </div>
+
+ <h3><a name="build">Build the package</a></h3>
+ <div class="sect1"><p>You are now ready to build your plug-in with
+   <tt>scram build</tt>.  You should see your library linked against
+   other libraries.  Note that in IGUANA your package must be
+   mentioned in the build order to build it from the top level.  See
+   <a href="new-package.html">the new package</a> how-to for the
+   instructions.</p>
+ </div>
+</td></tr>
+
+<tr>
+ <td bgcolor="#ffffdd"><table border="0" width="100%"><tr>
+   <td align="left"><a href="mailto:iguana-developers@cern.ch"><img
+    src="../../images/mailto.gif" border="0" width="14" height="10"
+    alt="[Mail]"></a></td>
+   <td align="right"><font face="Arial, Helvetica"
+    size="-2">$Date: 2006/09/11 07:45:25 $</font></td></tr></table></td>
+ <td><font face="Arial, Helvetica" size="-2">&nbsp;</font></td>
+ <td><font face="Arial, Helvetica" size="-2">&nbsp;</font></td></tr>
+</table>
+</body>
+</html>

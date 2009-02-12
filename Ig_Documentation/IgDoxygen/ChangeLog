@@ -1,0 +1,137 @@
+2007-02-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html, releases.html: Updated for IGUANA_6_15_1.
+
+2007-01-31  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html, releases.html: Updated for IGUANA_6_15_0.
+
+2007-01-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html, releases.html: Updated for IGUANA_6_14_0.
+
+2007-01-10  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html, releases.html: Updated for IGUANA_6_14_0.
+
+2006-12-21  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html, releases.html: Updated for IGUANA_6_14_0.
+
+2006-11-06  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* doc/html/main/relnotes.html: Updated for IGUANA_6_13_0.
+	
+2006-09-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+	
+	* : Testing CVS commit for the sender.
+
+2006-09-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* doc/search/*.html: Fixed the CVSView link.
+
+2006-08-22  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_13_0_g4_81(released only for
+	non-debug arch).
+	releases.html: Updated for IGUANA_6_13_0_g4_81.
+
+2006-07-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_12_2(released only for non-debug
+	arch).
+	* deps.html : Released only for non-debug arch.
+	releases.html: Updated for IGUANA_6_12_2.
+
+2006-07-27  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_12_2.
+
+2006-07-20  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_12_1.
+	* releases.html: Updated for IGUANA_6_12_1.
+
+2006-07-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* releases.html: Updated for IGUANA_6_12_0.
+
+2006-07-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_12_0.
+
+2006-07-06  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* releases.html: Updated for IGUANA_6_11_1.
+
+2006-07-05  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_11_1.
+
+2006-06-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* releases.html: Updated for IGUANA_6_11_0.
+
+2006-06-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_11_0.
+
+2006-06-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* releases.html: Updated for IGUANA_6_10_0
+
+2006-06-08  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* relnotes.html: Updated for IGUANA_6_10_0.
+
+2006-05-23  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* scripts/cor_with_arr_htm.prl, scripts/lib_comp.prl, scripts/makeDoc.prl,
+	src/cor_with_arr_htm.prl, src/lib_comp.prl, src/makeDoc.prl: Modified to
+	use "/usr/bin/env perl" instead of /usr/local... or perl5.
+
+2005-10-25  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* doc/html/releases.html: Updated for IGUANA_6_3_0.
+	* doc/html/main/relnotes.html: Updated for IGUANA_6_3_0.
+
+2005-10-11  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* doc/html/releases.html: Updated for IGUANA_6_2_0.
+	* doc/html/main/relnotes.html: Updated for IGUANA_6_2_0.
+	
+2005-06-17  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* doc/html/releases.html: Updated for IGUANA_6_0_0.
+	* doc/html/main/relnotes.html: Updated for IGUANA_6_0_0.
+	
+2005-04-05  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* doc/html/index.html: Remove old news.
+	* doc/html/main/news.html: Add old news here.
+
+2005-04-04  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* doc/html/releases.html: Remove links to non-existing releases;
+	Grey out unlinked releases.
+	* doc/main/lxr.html: Update location of LXR.
+	* doc/html/index.html: Update location of wiki page.
+	* doc/main/faqs.html: Add the first question.
+	* doc/main/problems.html: Update location of Savannah.
+
+2005-03-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* doc/html/releases.html: Updated for IGUANA_5_5_1.
+	* doc/html/main/about.html: Updated the IGUANA's developers list.
+
+2005-03-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* doc/html/main/relnotes.html: Release notes updated for IGUANA_5_5_1.
+
+2005-03-03  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* New log file.
+
+	* src directory moved to scripts to make it work without
+	additional template for SCRAMV1.
+
