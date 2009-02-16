@@ -100,7 +100,8 @@ IViewTrackTwig::onNewEvent (IViewEventMessage& message)
 			dx = m.get<double>("ipx");
 			dy = m.get<double>("ipy");
 			dz = m.get<double>("ipz");
-			points.push_back (QPointF (x * 40., y * 40.));
+			// points.push_back (QPointF (x * 40., y * 40.));
+			points.push_back (QPointF (x, y));
 			tangents.push_back (QPointF (dx, dy));
 
 			x = m.get<double>("ox");
@@ -109,7 +110,8 @@ IViewTrackTwig::onNewEvent (IViewEventMessage& message)
 			dx = m.get<double>("opx");
 			dy = m.get<double>("opy");
 			dz = m.get<double>("opz");
-			points.push_back (QPointF (x * 40., y * 40.));
+			// points.push_back (QPointF (x * 40., y * 40.));
+			points.push_back (QPointF (x, y));
 			tangents.push_back (QPointF (dx, dy));
 		    }
 		}

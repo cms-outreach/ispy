@@ -61,7 +61,7 @@ IgHits::calcBoundingRect (void) const
     rec = rec.normalized ();
 	
     // give the rectange a bit of a brim
-    float brim = 5.0;
+    float brim = 0.001;
     rec.setTop ((rec.top () > 0.) ? (rec.top () + brim) : (rec.top () - brim));
     rec.setBottom ((rec.bottom () > 0.) ? (rec.bottom () + brim) : (rec.bottom () - brim));
     rec.setLeft ((rec.left () > 0.) ? (rec.left () + brim) : (rec.left () - brim));
@@ -75,7 +75,7 @@ IgHits::drawPoints (QPainter* painter, const QPen& pen)
 {
     painter->setPen (pen);
 
-    const float circle = 0.4;
+    const float circle = 0.04;
     for (unsigned i = 0; i < m_points.size (); i++)
     {
 	const float x_corner = m_points [i].x () - circle / 2.;

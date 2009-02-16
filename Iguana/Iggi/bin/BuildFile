@@ -1,3 +1,3 @@
-<Bin name=iggi file=Iggi.cpp>
- <Use name=Iguana/Iggi>
+<Bin name=ispy file=Iggi.cpp>
+ <Use name=Iguana/View>
 </Bin>

@@ -1,3 +1,7 @@
+2009-02-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile.xml: Added dependencies on SoQt.
+
 2008-07-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* BuildFile.xml: Added dependencies on classlib and Coin3D.

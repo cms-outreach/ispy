@@ -5,6 +5,7 @@
 #include "Iguana/View/interface/IViewEventTwig.h"
 #include "Iguana/View/interface/IViewReadService.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
+#include "Iguana/View/interface/IViewSceneGraphService.h"
 #include "Iguana/View/interface/Ig3DRep.h"
 #include "Iguana/View/interface/IgRPhiRep.h"
 #include "Iguana/View/interface/IgRZRep.h"
@@ -13,8 +14,14 @@
 #include "Iguana/Iggi/interface/IggiMainWindow.h"
 #include "Iguana/Iggi/interface/IggiScene.h"
 #include "Iguana/Iggi/interface/IgAnnotation.h"
+#include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/View/interface/debug.h"
+#include <Inventor/nodes/SoFont.h>
+#include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoText2.h>
+#include <Inventor/nodes/SoTranslation.h>
 #include <QString>
 #include <QGraphicsProxyWidget>
 #include <QGraphicsTextItem>
@@ -77,13 +84,43 @@ IViewEventTwig::onNewEvent (IViewEventMessage& message)
 	QGraphicsView *graphicsView = mainWindow->graphicsView;
 
 	IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
-	IgAnnotation *ann = new IgAnnotation (QString (m_text.c_str ()), QPoint (-290, -190), QFont ("Arial", 12, QFont::Bold));
+	IgAnnotation *ann = new IgAnnotation (QString (m_text.c_str ()), QPoint (-10, -10), QFont ("Arial", 12, QFont::Bold));
 	QPen pen;
 	pen.setBrush (Qt::lightGray);	
 	ann->setPen (pen);
 	scene->addItem (ann);
 	scene->update ();
     }
+    IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
+    ASSERT (sceneGraphService);
+
+    SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
+    SoSeparator *sep = new SoSeparator;
+    SoMaterial *mat = new SoMaterial;
+    float rgbcomponents [4];
+    IgSbColorMap::unpack (0x8b898900, rgbcomponents); // snow4
+    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+    sep->addChild (mat);
+    
+    SoText2  *eventLabel = new SoText2;
+    eventLabel->string = m_text.c_str ();
+
+    SoFont* labelFont = new SoFont;
+    labelFont->size.setValue (18.0);
+    labelFont->name.setValue ("Arial");
+    sep->addChild (labelFont);
+    
+    SoTranslation *eventLabelTranslation = new SoTranslation;
+    
+    SbVec3f pos = SbVec3f (-2.5,
+                           1.65,
+			   0.0);
+
+    eventLabelTranslation->translation = pos;
+    sep->addChild (eventLabelTranslation);
+    sep->addChild (eventLabel);
+    
+    overlayScene->addChild (sep);
 }
 
 void

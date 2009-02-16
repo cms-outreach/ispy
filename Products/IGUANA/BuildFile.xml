@@ -1,4 +1,6 @@
+<use name="soqt"/>
 <use name="qt"/>
 <use name="classlib"/>
 <use name="pcre"/>
 <use name="openinventor"/>
+

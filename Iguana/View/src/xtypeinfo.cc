@@ -5,6 +5,8 @@
 #include "Iguana/View/interface/IViewEventTwig.h"
 #include "Iguana/View/interface/IViewTrackTwig.h"
 #include "Iguana/View/interface/IViewSiStripDigiTwig.h"
+#include "Iguana/View/interface/IViewTrackingRecHitTwig.h"
+#include "Iguana/View/interface/IViewMuonTwig.h"
 #include "Iguana/View/interface/Ig3DModel.h"
 #include "Iguana/View/interface/IgRPhiModel.h"
 #include "Iguana/View/interface/IgRZModel.h"
@@ -54,6 +56,8 @@ XTYPEINFO_DEF_1 (IViewDTRecSegment4DTwig, IViewQueuedTwig, false);
 XTYPEINFO_DEF_1 (IViewEventTwig, IViewQueuedTwig, false);
 XTYPEINFO_DEF_1 (IViewTrackTwig, IViewQueuedTwig, false);
 XTYPEINFO_DEF_1 (IViewSiStripDigiTwig, IViewQueuedTwig, false);
+XTYPEINFO_DEF_1 (IViewTrackingRecHitTwig, IViewQueuedTwig, false);
+XTYPEINFO_DEF_1 (IViewMuonTwig, IViewQueuedTwig, false);
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////

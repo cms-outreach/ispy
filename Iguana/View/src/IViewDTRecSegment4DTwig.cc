@@ -70,7 +70,8 @@ IViewDTRecSegment4DTwig::onNewEvent (IViewEventMessage& message)
 		double x2 =  x2Handle.get<double> (n);
 		double y2 =  y2Handle.get<double> (n);
 		double z2 =  z2Handle.get<double> (n);
-		IgLine *line = new IgLine (QPointF (x1 * 40., y1 * 40.), QPointF (x2 * 40., y2 * 40.));
+		// IgLine *line = new IgLine (QPointF (x1 * 40., y1 * 40.), QPointF (x2 * 40., y2 * 40.));
+		IgLine *line = new IgLine (QPointF (x1, y1), QPointF (x2, y2));
 		line->setColor (Qt::red);
 		
 		scene->addItem (line);

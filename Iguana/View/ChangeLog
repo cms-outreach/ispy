@@ -1,3 +1,25 @@
+2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Do initialization a bit earlier. 
+
+	* IViewDetectorTwig.h, IViewDetectorTwig.cc: New class to display
+	detector.
+	* IViewMuonTwig.h, IViewMuonTwig.cc: New class to display Muon.
+	* IViewQWindowService.h, IViewQWindowService.cc: A service to
+	access main window.
+	* IViewSceneGraphService.h, IViewSceneGraphService.cc: A service
+	to access scene graphs.
+	* IViewTrackingRecHitTwig.h, IViewTrackingRecHitTwig.cc: A new
+	class to display TrackingRecHit.
+	* IggiApplication.h, IggiApplication.cc: Migrated here from
+	Iguana/Iggi package.
+	* xtypeinfo.h, xtypeinfo.cc: New twig types declared and defined.
+	* IViewRecoContent.cc: New twigs added to the content.
+	* IViewDTRecSegment4DTwig.cc: Do not scale the values.
+	* IViewEventTwig.cc: Add the event label to an overlay scene graph.
+	* IViewSiStripDigiTwig.cc: Add a 3D representation of the digis.
+	* IViewTrackTwig.cc: Do not scale the values.
+
 2008-12-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IViewDTRecSegment4DTwig.cc, IViewEventTwig.cc,

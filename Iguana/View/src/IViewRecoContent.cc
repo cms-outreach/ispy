@@ -5,6 +5,8 @@
 #include "Iguana/View/interface/IViewTrackTwig.h"
 #include "Iguana/View/interface/IViewDTRecSegment4DTwig.h"
 #include "Iguana/View/interface/IViewSiStripDigiTwig.h"
+#include "Iguana/View/interface/IViewTrackingRecHitTwig.h"
+#include "Iguana/View/interface/IViewMuonTwig.h"
 #include <classlib/utils/Callback.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
@@ -57,4 +59,8 @@ IViewRecoContent::init (void)
 //     twig12->selfVisible (true);
     IgTwig *twig13 = new IViewSiStripDigiTwig (state (), rootTwig, "SiStrip Digis");
     twig13->selfVisible (true);
+    IgTwig *twig14 = new IViewTrackingRecHitTwig (state (), rootTwig, "Tracking RecHits");
+    twig14->selfVisible (true);
+    IgTwig *twig15 = new IViewMuonTwig (state (), rootTwig, "Muons");
+    twig15->selfVisible (true);
 }

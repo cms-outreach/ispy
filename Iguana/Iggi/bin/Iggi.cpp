@@ -1,6 +1,6 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
-#include "Iguana/Iggi/interface/IggiApplication.h"
+#include "Iguana/View/interface/IggiApplication.h"
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>

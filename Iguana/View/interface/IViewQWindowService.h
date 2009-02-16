@@ -5,6 +5,8 @@
 
 # include "Iguana/Framework/interface/config.h"
 # include "Iguana/Framework/interface/IgStateElement.h"
+// # include <Quarter/Quarter.h>
+// # include <Quarter/QuarterWidget.h>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -20,17 +22,19 @@ class IGUANA_FRAMEWORK_API IViewQWindowService : public IgStateElement
 {
     IG_DECLARE_STATE_ELEMENT (IViewQWindowService);
 public:
-    IViewQWindowService (IgState *state, QWidget *mainWindow);
+    IViewQWindowService (IgState *state, QWidget *mainWindow); //, SIM::Coin3D::Quarter::QuarterWidget *viewer);
     ~IViewQWindowService (void);
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor
     virtual QWidget *		mainWindow (void);
+//     virtual SIM::Coin3D::Quarter::QuarterWidget * viewer (void);
 
 private:
     IgState			*m_state;
     QWidget			*m_mainWindow;
-
+//     SIM::Coin3D::Quarter::QuarterWidget *m_viewer;
+    
     // undefined semantics
     IViewQWindowService (const IViewQWindowService &);
     IViewQWindowService &operator= (const IViewQWindowService &);

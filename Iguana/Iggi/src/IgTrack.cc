@@ -87,7 +87,7 @@ IgTrack::calcBoundingRect (void) const
     rec = rec.normalized ();
 	
     // give the rectange a bit of a brim
-    float brim = 1.0;
+    float brim = 0.001;
     rec.setTop ((rec.top () > 0.) ? (rec.top () + brim) : (rec.top () - brim));
     rec.setBottom ((rec.bottom () > 0.) ? (rec.bottom () + brim) : (rec.bottom () - brim));
     rec.setLeft ((rec.left () > 0.) ? (rec.left () + brim) : (rec.left () - brim));
@@ -127,7 +127,7 @@ IgTrack::showBBox (bool value /*= false*/)
 void 
 IgTrack::drawPoints (QPainter* painter)
 {
-    const float circle = 4.;
+    const float circle = 0.04;
     for (unsigned i = 0; i < m_points.size (); i++)
     {
 	const float x_corner = m_points[i].x () - circle/2.;

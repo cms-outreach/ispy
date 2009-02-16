@@ -1,3 +1,10 @@
+2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* bin/BuildFile: Rename iggi to ispy.
+	* IggiApplication.h, IggiApplication.cc: Migrated to Iguana/View
+	to avoid circular dependencies.
+	* IgTrack.cc, IgHits.cc: Reduce the size of a circle.
+
 2008-12-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IgAnnotation.cc: Switch off a bounding box drawing.
