@@ -4,7 +4,6 @@
 /IViewEventTwig.h/1.2/Tue Feb 17 09:46:51 2009//
 /IViewMuonTwig.h/1.1/Tue Feb 17 09:46:51 2009//
 /IViewObserver.h/1.1/Tue Feb 17 09:46:51 2009//
-/IViewQWindowService.h/1.4/Tue Feb 17 10:03:42 2009//
 /IViewQueue.h/1.1/Tue Feb 17 09:46:51 2009//
 /IViewQueueProcessor.h/1.1/Tue Feb 17 09:46:51 2009//
 /IViewQueuedTwig.h/1.1/Tue Feb 17 09:46:51 2009//
@@ -28,7 +27,8 @@
 /IgTextModel.h/1.1/Tue Feb 17 09:46:51 2009//
 /IgTextModelEvent.h/1.1/Tue Feb 17 09:46:51 2009//
 /IgTextRep.h/1.1/Tue Feb 17 09:46:51 2009//
-/IggiApplication.h/1.1/Tue Feb 17 10:01:35 2009//
 /debug.h/1.1/Tue Feb 17 09:46:51 2009//
 /xtypeinfo.h/1.2/Tue Feb 17 09:46:51 2009//
+/IViewQWindowService.h/1.4/Tue Feb 17 10:04:38 2009//
+/IggiApplication.h/1.1/Tue Feb 17 10:08:40 2009//
 D
