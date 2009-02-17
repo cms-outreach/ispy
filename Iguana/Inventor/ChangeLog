@@ -1,0 +1,1225 @@
+2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Remove dependency on GL2PS.
+	* IgSoGL2PSAction.h, IgSoGL2PSAction.cc: Migrated from Inventor to
+	GL2PS.
+
+2008-07-31  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoRectHist.cc: Define all color components to be the same.
+	* test_IgSoRectHist.cpp: Add all components to the material.
+
+2008-05-09  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoIdealTrack.h, IgSoIdealTrack.cc: Add a destructor to disconnect 
+	an animation counter.
+	
+2008-05-07 George Alverson <George.Alverson@cern.ch>
+	* IgSoIdealTrack.cc: comment out clamps on t0 and t1 relative to tstart 
+	to allow for cosmics.
+
+2008-04-25  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+	* IgSoRectColHist.cc, IgSoRectColHist.h: corrected the
+	representation of the bins.
+
+2008-04-20 George Alverson <George.Alverson@cern.ch>
+	* IgSoIdealTrack.cc: bugfix: x <-> y problem in atan2 call.
+
+2008-04-11  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+	* IgSoRectColHist.h, IgSoRectColHist.cc: newly added. A similar 
+	class to IgSoRectHist with a different positioning of the towers 
+	with the possibility to provide different colors for different
+	energies.
+
+2008-02-29  George Alverson <George.Alverson@cern.ch>
+	* IgSoIdealTrack.cc: fix problem with neutrals with only p-perp.
+
+2008-02-29  George Alverson <George.Alverson@cern.ch>
+	* IgParticleChar.h, IgParticleChar.cc: add some neutral particles
+	to the databse. Add accessors to get extent of tracking region.
+	* IgSoIdealTrack.h, IgSoIdealTrack.cc: modify to accomodate neutral
+	particles. Fix bug for tracks not starting at vertex in z.
+
+2008-01-31  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+	* IgSoGridPlane.cc, IgSoGridPlaneMap.cc, IgSoGridPlaneMap.h: fixed 
+	normalization and singular matrix problem by adding initialzation 
+	of vectors.
+
+2008-01-07  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+
+	* IgSoGridPlane.h, IgSoGridPlane.cc: Now the grid has more labels
+	between the corners. Additionally the labels' color is changable 
+	in order to get a better contrast to custom background colors.
+	* IgSoGridPlaneMap.h, IgSoGridPlaneMap.cc: Every tenth line in each
+	grid direction has the opposite color compared to the rest of the 
+	grid.
+
+2007-12-07  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+
+	* IgSoGridPlane.h, IgSoGridPlane.cc: Fixed a bug where the 
+	gridplanes weren't removable.
+	* IgSoGridPlaneMap.h, IgSoGridPlaneMap.cc: Finally implemented 
+	the generatePrimitives () method.
+
+2007-11-26  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+
+	*  IgSoGridPlane.h, IgSoGridPlane.cc, IgSoGridPlaneMap.h,
+	IgSoGridPlaneMap.cc: Extended functionality of the grid. Grid 
+	labels added which show the size of the grid. Now the grid is
+	also adjust- and movable.
+
+2007-11-12  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+
+	* IgSoGridPlane.h, IgSoGridPlane.cc, IgSoGridPlaneMap.h, 
+	IgSoGridPlaneMap.cc: Newly added. These grids help to measure
+	distances in the magnetic field representation.
+
+2007-10-23  Serkan Bozyigit <Serkan.Bozyigit@cern.ch>
+
+	* IgSoFieldPlane.h, IgSoFieldPlane.cc, IgSoFieldPlaneMap.h, 
+	IgSoFieldPlane.cc: Extended the field plane to have a detailed
+	window which can have a higher sample density then the base density.
+	Previous structures are changed to five dimensional which directly
+	relate to the five regional planes.
+
+2007-10-23  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* .admin/developers: Added a new developer.
+
+2007-10-15  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* .admin/developers: Added a new administrator.
+
+2007-10-10  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoTower.cc: Introduce complimentary colors for negative
+	values.
+	* test_IgSoTower.cpp: Test it.
+
+2007-09-18  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoRectHist.h: Modify a define to match the class name.
+
+2007-09-17  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoRectHist.h, IgSoRectHist.cc: New class to display a 
+	rectangular histogram.
+	* test_IgSoRectHist.cpp: New test to test the above class.
+	* BuildFile: New test added.
+
+2007-08-23  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoSplineTrack.cc: Return from refresh rather then assert to
+	avoid crashes - CMSSW does not allow proper assertion.
+
+2007-06-06  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoG4Torus.h, IgSoG4Torus.cc: Added a new shape.
+	* test/BuildFile, test_IgSoG4Torus.cpp: Added a test for the new shape. 
+
+2007-04-02  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Migrated from IGUANA and adapted to the new CVS
+	directory structure.
+	* config.h, IgSbField.h, IgSoArrow.h, IgSoCoordinateAxis.h,
+	IgSoG4Box.h, IgSoIdealTrack.h, IgSoPolyVol.h, IgSoSiStrips.h,
+	IgSoTowerRadii.h, IgBSPNode.h, IgSbGraphicContext.h, IgSoAxis.h,
+	IgSoCrystalHit.h, IgSoG4Trap.h, IgSoJet.h, IgSoQuad.h,
+	IgSoSlicerEngine.h, IgSoViewpoint.h, IgBSPTree.h, IgSbString.h,
+	IgSoCalHit.h, IgSoCube.h, IgSoG4Trd.h, IgSoLegoPlot.h,
+	IgSoRotSolid.h, IgSoSlicer.h, IgSoXYZGrid.h, IgBSPTriangle.h,
+	IgSo2DArrow.h, IgSoCircleArc.h, IgSoEllipsoid.h,
+	IgSoGL2PSAction.h, IgSoLegoTowers.h, IgSoRZHist.h,
+	IgSoSphereHit.h, IgSurfaceOperation.h, IgParticleChar.h,
+	IgSo3DErrorBar.h, IgSoCircularHist.h, IgSoFieldPlane.h,
+	IgSoGrid.h, IgSoPcon.h, IgSoShapeKit.h, IgSoSplineTrack.h,
+	IgXYGrid.h, IgSbColorMap.h, IgSoAnimator.h, IgSoClipPlane.h,
+	IgSoFieldPlaneMap.h, IgSoHits.h, IgSoPlaneManip.h,
+	IgSoSimpleTrajectory.h, IgSoTower.h, IgBSPNode.cc, IgSo2DArrow.cc,
+	IgSoCircleArc.cc, IgSoEllipsoid.cc, IgSoGL2PSAction.cc,
+	IgSoLegoTowers.cc, IgSoRZHist.cc, IgSoSphereHit.cc,
+	IgSurfaceOperation.cc, IgBSPTree.cc, IgSo3DErrorBar.cc,
+	IgSoCircularHist.cc, IgSoFieldPlane.cc, IgSoGrid.cc, IgSoPcon.cc,
+	IgSoShapeKit.cc, IgSoSplineTrack.cc, IgBSPTriangle.cc,
+	IgSoAnimator.cc, IgSoClipPlane.cc, IgSoFieldPlaneMap.cc,
+	IgSoHits.cc, IgSoPlaneManip.cc, IgSoSimpleTrajectory.cc,
+	IgSoTower.cc, IgParticleChar.cc, IgSoArrow.cc,
+	IgSoCoordinateAxis.cc, IgSoG4Box.cc, IgSoIdealTrack.cc,
+	IgSoPolyVol.cc, IgSoSiStrips.cc, IgSoTowerRadii.cc,
+	IgSbColorMap.cc, IgSoAxis.cc, IgSoCrystalHit.cc, IgSoG4Trap.cc,
+	IgSoJet.cc, IgSoQuad.cc, IgSoSlicer.cc, IgSoViewpoint.cc,
+	IgSbField.cc, IgSoCalHit.cc, IgSoCube.cc, IgSoG4Trd.cc,
+	IgSoLegoPlot.cc, IgSoRotSolid.cc, IgSoSlicerEngine.cc,
+	IgSoXYZGrid.cc: Migrated from IGUANA and adapted to the new CVS
+	directory structure.
+	* test/BuildFile, test_main.h, test_IgBSPTree.cpp,
+	test_IgSoCalHit.cpp, test_IgSoCube.cpp, test_IgSoG4Trap.cpp,
+	test_IgSoJet.cpp, test_IgSoRotSolid02.cpp, test_IgSoXYZGrid.cpp,
+	test_IgSbColorMap.cpp, test_IgSoCircleArc.cpp,
+	test_IgSoEllipsoid.cpp, test_IgSoG4Trd.cpp, test_IgSoLegoPlot.cpp,
+	test_IgSoRotSolid.cpp, test_iv.cpp, test_IgSo2DArrow.cpp,
+	test_IgSoCircularHist.cpp, test_IgSoFieldPlane.cpp,
+	test_IgSoG4Tubs1.cpp, test_IgSoLegoTowers.cpp,
+	test_IgSoRZHist.cpp, test_SoCube.cpp, test_IgSo3DErrorBar.cpp,
+	test_IgSoCoordinateAxis.cpp, test_IgSoG4Box.cpp,
+	test_IgSoG4Tubs2.cpp, test_IgSoPcon.cpp,
+	test_IgSoSimpleTrajectory.cpp, test_SoNurbsCurve.cpp,
+	test_IgSoArrow.cpp, test_IgSoCrystalHit.cpp, test_IgSoG4Cons1.cpp,
+	test_IgSoGrid.cpp, test_IgSoPgon.cpp, test_IgSoSiStrips.cpp,
+	test_IgSoAxis.cpp, test_IgSoCube2.cpp, test_IgSoG4Cons2.cpp,
+	test_IgSoHits.cpp, test_IgSoPolyVol.cpp, test_IgSoSplineTrack.cpp,
+	test_IgSoCalHit2.cpp, test_IgSoCube3.cpp, test_IgSoG4Cons3.cpp,
+	test_IgSoIdealTrack.cpp, test_IgSoQuad.cpp, test_IgSoTower.cpp:
+	Migrated from IGUANA. Modified for the new directory structure.
+
+2007-03-29  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Modify to use the CMSSW config.
+
+2007-03-06  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	*  BuildFile, test/BuildFile, test_main.h, config.h: Move to
+	classlib and IgPluginManager.
+
+2007-03-02  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgXYGrid.h: The new shape for an RPhi window grid.
+
+2007-02-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgParticleChar.cc: Add a description for an electron. Comment
+	out neutral particles which give inf and nans. Make a line one
+	point thick.
+	* IgSbColorMap.cc: Remove commented out SEAL header.
+	* IgSoGL2PSAction.cc: Auto formatted.
+
+2007-01-31  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/*, interface/*, test/*: Removed IgSoText2 and IgSoMarkerSet
+	classes as now IgSoGL2PSAction handles all of these.
+
+2007-01-31  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoGL2PSAction.h, IgSoGL2PSAction.cc: Added new action for gl2ps
+	rendering. It take cares of printing of linewidth, point size, text and
+	markerset.
+	* IgSoMarkerSet: No more cache invalidattion. Functionality of this is
+	now moved to IgSoGL2PSAction, so no need to use this class any more.
+
+2006-12-21  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgBSPTree.cc, IgSoCrystalHit.cc, IgSoPcon.cc, IgSoPolyVol.cc, 
+	IgSoSiStrips.cc, IgSoSphereHit.cc, IgSoTowerRadii.cc: Set fields to null 
+	for empty shapes. 
+
+2006-12-18  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoShapeKit.cc and descendants IgSo2DArrow.cc, IgSo3DErrorBar.cc, 
+	IgSoArrow.cc, IgSoAxis.cc, IgSoCalHit.cc, IgSoCircleArc.cc, 
+	IgSoCircularHist.cc, IgSoCoordinateAxis.cc, IgSoCrystalHit.cc, 
+	IgSoCube.cc, IgSoEllipsoid.cc, IgSoG4Box.cc, IgSoG4Trap.cc, 
+	IgSoG4Trd.cc, IgSoGrid.cc, IgSoHits.cc, IgSoIdealTrack.cc, IgSoJet.cc,
+	IgSoLegoPlot.cc, IgSoLegoTowers.cc, IgSoPcon.cc, IgSoPolyVol.cc, 
+	IgSoQuad.cc, IgSoRotSolid.cc, IgSoRZHist.cc, IgSoSimpleTrajectory.cc,
+	IgSoSiStrips.cc, IgSoSphereHit.cc, IgSoSplineTrack.cc, IgSoTower.cc,
+	IgSoTowerRadii.cc, IgSoXYZGrid.cc: Tag Nicoletta changes and revert 
+	to the previous separator handling.
+	
+2006-11-14  Nicoletta De Maio <ndemaio@cern.ch>
+
+	* IgSoShapeKit.cc and descendants IgSo2DArrow.cc, IgSo3DErrorBar.cc, 
+	IgSoArrow.cc, IgSoAxis.cc, IgSoCalHit.cc, IgSoCircleArc.cc, 
+	IgSoCircularHist.cc, IgSoCoordinateAxis.cc, IgSoCrystalHit.cc, 
+	IgSoCube.cc, IgSoEllipsoid.cc, IgSoG4Box.cc, IgSoG4Trap.cc, 
+	IgSoG4Trd.cc, IgSoGrid.cc, IgSoHits.cc, IgSoIdealTrack.cc, IgSoJet.cc,
+	IgSoLegoPlot.cc, IgSoLegoTowers.cc, IgSoPcon.cc, IgSoPolyVol.cc, 
+	IgSoQuad.cc, IgSoRotSolid.cc, IgSoRZHist.cc, IgSoSimpleTrajectory.cc,
+	IgSoSiStrips.cc, IgSoSphereHit.cc, IgSoSplineTrack.cc, IgSoTower.cc,
+	IgSoTowerRadii.cc, IgSoXYZGrid.cc: changed constructors so that 
+	instantiated fields are no longer written twice when saving the shape to 
+	a file.
+
+2006-10-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoAnimator.h, IgSoAnimator.cc: Added the write method to properly
+	write the Node (all the connection removed before write).
+
+2006-07-04  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoTower.h, IgSoTower.cc: Restore two colors.
+	* test_IgSoTower.cpp: New test for IgSoTower class.
+	* test/BuildFile: Add the new test to be built.
+
+2006-07-03  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* test_IgSo2DArrow.cpp: New test for IgSo2DArrow class.
+	* test/BuildFile: Add the new test to build.
+
+2006-07-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgSoRZHist.cc, src/IgSoCircularHist.cc: Setting parts to NULL when
+	the energies bin is empty.
+
+2006-04-18  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgSoRZHist.cc: Memory leak fixed by setting the parts to NULL if
+	there are no energies > 0.
+
+2006-04-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* src/IgSoRotSolid.cc: fixed the memory leak (memory leak happened
+	when the lines are not visible).
+	* src/IgSoTower.cc: Memory leak fixed.
+
+2006-04-07  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* test/*.cpp: IgSoText2 initialized.
+
+2006-02-15  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgSoText2.h, src/IgSoText2.cc: Newly added files for
+	printing text using GL2PS.
+	* src/IgSoAxis.cc, src/IgSoFieldPlane.cc, src/IgSoGrid.cc,
+	src/IgSoLegoPlot.cc, src/IgSoLegoTowers.cc, src/IgSoRZHist.cc:
+	IgSoText2 used instead of SoText2.
+	* src/IgSoCircularHist.cc: IgSoText2 used instead of SoText2, fixed for
+	compiler warnings.
+	* IgSoBooleanOperation.*: Renamed to IgSurfaceOperation.*
+	* IgSurfaceOperation.*: Renamed from IgSoBooleanOperation.*
+
+2005-10-24  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoCircularHist.cc, IgSoRZHist.cc: Change labels color to
+	black. Use uniform labels.
+	
+2005-10-06 George Alverson <George.Alverson@cern.ch>
+
+	* src/IgSoRZHist.cc: Add semicolon to keep gcc3.4.3 -pedantic happy
+
+2005-10-03 George Alverson <George.Alverson@cern.ch>
+
+	* src/IgSoCircularHist.cc, IgSoAxis.cc: Add semicolons to keep gcc3.4.3 -pedantic happy 
+
+2005-10-03  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoTower.h, IgSoTower.cc: Memory leak fixed.
+	* IgSoRotSolid.cc: Re-arranged to fix the memory leak, but it still 
+	shows in the valgrind.
+	* test_IgSoLegoTowers.cpp: Add a test shape for negative values.
+
+2005-09-28  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoCircularHist.h, IgSoCircularHist.cc: Use built in
+	annotation instead of IgSoAxis.
+	* test_IgSoCircularHist.cpp: Update and clean-up.
+	* IgSoRZHist.h, IgSoRZHist.cc, test_IgSoRZHist.cpp: New class to
+	represent an R-Z histogram.
+	* test/BuildFile: Added new test for IgSoRZHist shape.
+	* IgSoTower.cc: Remove unnecessary ref of a separator, remove
+	materials, add more logic to avoid generation of two face sets.
+	* test_IgSoLegoTowers.cpp: Add a negative tower to check.
+
+	* IgSoRZHist.cc, IgSoTower.cc, test_IgSoRZHist.cpp: Warnings clean
+	up.
+
+2005-09-14  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoCircularHist.h, IgSoCircularHist.cc,
+	test_IgSoCircularHist.cpp: Use new annotations.
+	* IgSoAxis.h, IgSoAxis.cc: Do not scale the cone and set
+	divisions.
+
+2005-08-23  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoCircularHist.h, IgSoCircularHist.cc,
+	test_IgSoCircularHist.cpp, test/BuildFile: New shape for a
+	circular histogram and its test.
+
+2005-08-18 George Alverson <George.Alverson@cern.ch>
+
+        * interface/SoIdealTrackKit.h
+        * src: all
+        Add/remove semicolons to keep gcc3.4.3 -pedantic happy
+        * src/IgSoFieldPlane.cc, IgSbColorMap.cc, IgBSPTriangle.cc: remove
+        references to seal. Replaced with <assert.h> if necessary. May be undone.
+
+2005-07-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/*.h: 14 include statements removed (suggested by include
+	checker).
+	* src/*.cc: 73 include statements removed and 2 include statements
+	added (suggested by include checker).
+
+2005-06-20  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* interface/IgSoAnimator.h, src/IgSoAnimator.cc: Fixed the animator
+	reset to properly reset the values, memory leaks are fixed by properly
+	deleting the SoCalculator, SoCounter and SoFieldSensor.
+
+2005-06-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoViewpoint.h, IgSoViewpoint.cc: SoSFEnum cameraType added to
+	remember the type of the camera.
+
+2005-06-17  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* test_IgSoCrystalHit.cpp: Add an example of binding colors by face
+	set. 
+
+2005-06-13  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoViewpoint.h: Remove forward declaration of unused class.
+
+2005-06-01  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoTower.cc: Removed lines to speed it up. Adjust pink color.
+	* test/BuildFile: Add more tests.
+
+2005-05-23  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoPainterAction.h: Removed as obsolete.
+
+2005-04-20  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoCrystalHit.h, IgSoCrystalHit.cc: Add an option to draw the
+	shape with or without lines (the latter is default).
+	* IgSoRotSolid.cc: Use empty () rather then size () to check
+	whether the std::vector is empty.
+	
+2005-04-26  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoFieldPlane.cc: Fixed the annotation scale values
+	(we need to multiply the magnitude with the max value).
+
+2005-04-22  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoFieldPlane.h, IgSoFieldPlane.cc: Annotation about
+	gradient of the field added.
+
+2005-04-20  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgTriangulator.h, IgTriangulator.cc, IgNurbMaker.h,
+	IgNurbMaker.cc, IgSoGeneralizedCylinder.h,
+	IgSoGeneralizedCylinder.cc, test_IgSoRotSolid03.cpp: Removed as
+	not used.
+
+2005-04-14  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* IgSoBooleanOperation.cc, IgBSPTriangle.cc, IgBSPTree.cc,
+	IgBSPNode.cc: Get the end of the containers before the loops.
+
+2005-03-07  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* test/BuildFile: Updated to work with SCRAMV1.
+
+2005-03-03  Ianna Osborne <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Updated to work with SCRAMV1.
+	* src/BuildFile, IgSbMath.h, IgSbPainter.h, IgSbPainterPS.h,
+	IgSoViewportRegion.h, IgSbPainter.cc, IgSbPainterPS.cc,
+	IgSoPainterAction.cc, IgSoViewportRegion.cc: Removed as obsolete
+	and not used any more.
+	
+2005-03-02  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoFieldPlane.h, IgSoFieldPlane.cc: write () method removed, now
+	all the fields are written to the IV file and structure is properly
+	initialized on read of IV file.
+	
+	* IgSoPlaneManip.h, IgSoPlaneManip.cc: write() method added to only
+	write the fields (not the childs e.g. SoDragger etc) into the iv file.
+
+2005-03-01  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoFieldPlane.h, IgSoFieldPlane.cc: write() method overridden
+	to only save the IgSoFieldPlaneMap and SoIndexedLineSet in IV
+	file.
+
+2005-02-28  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoPlaneManip.h, IgSoPlaneManip.cc: Bugs  #7133 &  #7134 fixed.
+	Now SoDragger::enableValueChangedCallbacks() are used instead of
+	SoDragger::remove/addValueChangedCallback(), before removing the
+	dragger make sure it was added by checking its ref count and
+	resetting the scaleFactor of Motion matrix to (1,1,1) avoid
+	resizing of nodes in scene graph (i.e. magnetic field).
+
+2005-02-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoClipPlane.cc: Fixed to properly initialized when read from
+	Open Inventor iv file.
+
+2005-02-07  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoRotSolid.cc: Bug fixed which causing test_IgSoG4Cons* &
+	test_IgSoG4Tubs* tests to fail. Crash was happening when back()
+	method was called for a zero size std::vector. It is fixed now
+	by first checking the size of std::vector.
+
+2005-02-01  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoRotSolid.h, IgSoRotSolid.cc: Re-written to show correct
+	shape, lines and shading.
+	* BuildFile, test_IgSoRotSolid03.cpp: Add new test for the above shape.
+
+2005-01-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoRotSolid.cc: Uncomment addition of normals and lines to the 
+	shape. It removes constant warnings from Coin about zero degree triangles.
+	
+2005-01-12  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgBSPNode.cc, IgBSPTree.cc, IgBSPTriangle.cc, IgSoBooleanOperation.cc:
+	Properly ref and unref the created triangles and delete them at the end.
+	This fixes the 2D memory leak.
+
+2005-01-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+        * IgBSPTriangle.cc, IgBSPNode.cc: Code cleanup (removed __COIN__ section).
+
+2004-11-30  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* test/test_IgSoFieldPlane.cpp: IgSoPlaneManip::initClass ()
+	called.
+
+2004-11-23  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* test/test_IgSoLegoTowers.cpp: IgSoMarkerSet initialized.
+
+2004-11-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoTower.cc: Add lines; move to the face set rather then a 
+	triangle set; draw a shape with negative energy correctly.
+	* IgSoTower.cc: Clean up.
+	
+2004-11-04  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoTower.cc, IgSoTowerRadii.cc: Missing header included and fixed
+	SO_KIT_CONSTRUCTOR in IgSoTowerRadii constructor.
+	
+	* IgSoClipPlane.h, IgSoClipPlane.cc: Fixed to work properly with 
+	coin3d (For SoClipPlaneManip we have to call
+	SoClipPlaneManip::setValue).
+
+2004-11-02  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoTower.h, IgSoTower.cc: Remove lines, do not draw a shape with 
+	lower then minEnergy.
+	* IgSoLegoTowers.h, IgSoLegoTowers.cc: Font fixes. Now it doesn't get
+	destroyed on resize of the window.
+	* test_IgSoLegoTowers.cpp: Add different material to the grid.
+	 
+2004-11-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoRotSolid.cc (refresh): FIXED the bug below. It was a
+	spurious memory writing. Two other wrong memory writing fixed.
+	
+	* IgSoRotSolid.cc: Belly button fix. FIXME: the shape is still
+	broken as it misses one wedge sometimes.
+	
+	* test/BuildFile, test_IgSoRotSolid02.cc: added new test for
+	IgSoRotSolid.
+
+2004-10-25  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoClipPlane.h, IgSoClipPlane.cc, IgSoSlicer.h, IgSoSlicer.cc:
+	write (SoWriteAction *) method override to properly write the
+	IgSoClipPlane and IgSoSlicer in the iv file.
+
+2004-10-25  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoTower.h, IgSoTower.cc: New class to draw a trigger tower
+	positioned at eta and phi with two colored energy. 
+	* IgSoTowerRadii.h, IgSoTowerRadii.cc: New class to draw a circle
+	with or without marker in the center in eta and phi.
+	* IgSoLegoTowers.h, IgSoLegoTowers.cc: New class to draw the CMS
+	trigger towers grid (here for faster debugging and also for an iv
+	file reader, later should be generalized).
+	* test_IgSoLegoTowers.cpp, test/BuildFile: New test added to show
+	all of the above shapes.
+	
+2004-10-11  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoAnimator.h, IgSoAnimator.cc: reset feild added to reset the
+	animation.
+
+2004-08-24  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoSimpleTrajectory.h, IgSoSimpleTrajectory.cc: Expose line
+	pattern to be able to change the draw style.
+	* test/BuildFile, test_IgSoSimpleTrajectory.cpp: New test for the
+	IgSoSimpleTrajectory shape.
+
+2004-08-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoGrid.h, IgSoGrid.cc, test_IgSoGrid.cpp: New grid class and
+	its test.
+	* test/BuildFile: Added tag to build IgSoGrid test.
+	
+2004-07-14  Lassi A. Tuura  <lat@maccms05.cern.ch>
+
+	* IgSoClipPlane.cc: Adjust GL includes for OS X.
+
+2004-07-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoMarkerSet.cc, IgSoMarkerSet.h: Moved from
+	Ig_Modules/Ig3DBaseBrowser.
+
+2004-07-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* src/IgSoClipPlane.cc (IgSoClipPlane): adding the shape hints in
+	the constructor. This way we avoid removing it without it
+	being there. 
+
+	* IgSoPlaneManip.cc (IgSoPlaneManip): adding manipulator and
+	callbacks in the constructor. This way we avoid removing them
+	without them being there.
+
+2004-07-01  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgBSPTree.cc (faceToBSP): faceToBSP callback function #ifdeffed
+	out.
+
+2004-05-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgBSPTree.cc: debug output removed. 
+
+2004-04-30: Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoRotSolid.cc: In IgSoRotSolid::refresh method the smooth is set to
+	TRUE when divisions are < 0, also in IgSoRotSolid::makePgon, smooth is
+	set to TRUE if divisions < 0 instead of divisions == -1.
+
+2004-03-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test_*.cpp: Set a window title for the tests according to the
+	tests shape.
+
+2004-03-04: Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSbColorMap.h, IgSbColorMap.cc: getColorMap (ColorMap name) static
+	method added to get a ColorMap.
+	
+	* IgSoFieldPlane.h, IgSoFieldPlane.cc: Make use of IgSoPlaneManip to
+	control the field plane, field sensors added for all the fields,
+	improved the implementation so that field color map and segments are
+	only updated when needed, showMap and showSegments now also available.
+	
+	* IgSoPlaneManip.h, IgSoPlaneManip.cc: getMotionMatrix (SbMatrix &matrix)
+	public method added to get the current rotation of the plane, improved
+	the field sensor attachment.
+	
+	* IgSoClipPlane.cc: Cleanup of some unnecessary code.
+	
+	* IgSoSlicer.cc: Removed some comments.
+
+2004-03-03: Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoAnimator.h, IgSoAnimator.cc, IgSoClipPlane.h, IgSoClipPlane.cc,
+	IgSoSlicer.h, IgSoSlicer.cc, IgSoSlicerEngine.h, IgSoSlicerEngine.cc,
+	IgSoViewpoint.h, IgSoViewpoint.cc:
+	Moved from Ig_Modules/Ig3DBaseBrowser.
+	
+	* IgSoPlaneManip.h, IgSoPlaneManip.cc: New class to manipulate a plane
+	field.
+	
+2004-02-27  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test_IgSoSplineTrack.cpp: Added points to check that the track
+	goes through them, change colours of the tracks.
+	
+2004-02-26 George Alverson <George.Alverson@cern.ch>
+
+	* IgSoSplineTrack.cc: fix 2 bugs introduced in last revision: reported by I. Osborne,
+          test_IgSoSplineTrack.cpp: add full helix to list of tests
+
+2004-02-26: Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgBSPNode.cc: Fixed to compiler with coin3d as well.
+	
+2004-02-25 George Alverson <George.Alverson@cern.ch>
+
+	* IgSoSplineTrack.cpp, IgSoSplineTrack.h: Add sub-division between supplied
+	points for COIN. Some re-organization as well plus treatment of special cases.
+
+2004-02-17  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* BuildFile: External SEAL/Foundation/SealBase added.
+	
+2004-02-05  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoRotSolid.cc (refresh): fixed for volumes with phiDelta <
+	0.08 radians.
+
+2004-02-03  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test_IgBSPTree.cpp (makeTest): workaround for protected
+	destructor..
+
+	* IgSoRotSolid.cc: cosmetic fixes.
+
+2004-02-03  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* test_IgSoBooleanOperation2.cpp: Removed
+	
+2004-01-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoSplineTrack.cc (refresh): now curves are round again...
+
+	* test_IgSoSplineTrack.cpp: making thicker line.
+
+	* test/BuildFile: added bin entry for test_SoNurbsCurve.cpp.
+
+	* IgSoSplineTrack.cc (refresh): knots are now always of the form
+	0,0,0,....,n-3,n-3,n-3. Which makes the NURBS curve start and stop
+	at end points. Using std::vector in place of arrays. Fixed
+	SO_KIT_CATALOG_ENTRY for coordinates: this was responsible for TGS
+	misbehaviour (don't ask me why...). 
+	
+2004-01-29  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test_SoNurbsCurve.cpp: Test of a standard OpenInventor
+	SoNurbCurve node.
+
+2004-01-23  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgBSPTree.cc, IgBSPNode.cc, IgBSPTriangle.cc
+	  IgBSPTree.h, IgBSPNode.h, IgBSPTriangle.h:
+	  lots of improvements to the BSP code. We try to generate the
+	  best partition of the space by subdividing it first using
+	  orthogonal planes and only when the plane subdivision is not
+	  good enough, we pass to real bsp tree. Added many utility
+	  functions and methods to do so.	
+	
+2004-01-16  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* test_IgSoGeneralizedCylinder*.cpp: Removed.
+
+2004-01-15  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgBSPTriangle.cc (good): stabler and more sensate test 
+
+	* IgBSPTree.cc, IgBSPNode.cc, IgBSPTriangle.cc, IgBSPTree.cc,
+	 IgBSPNode.cc, IgBSPTriangle.cc: enhanced BSP-tree
+	 algorithms. IgBSPTriangle::good () method added.
+
+2004-01-14  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* BuildFile: Remove gts and glib external tools.
+
+2004-01-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSbColorMap.h, IgSbColorMap.cc: Add colour conversion
+	utilities.
+
+2004-01-08  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoBooleanOperation.cc: IgSurfaceOperation rewritten from
+	scratch to use own code instead of gts library.  
+
+	* IgBSPTree.cc: now transforming vectors to world
+	coordinates when doing the conversion from node to BSP or from
+	node to list of triangles. Added destructor. Debug output
+	commented out. intersect() method added which works on SoNodes.
+	empty() method implementation added.
+
+	* IgBSPNode.cc: added destructor. Debug output commented out. A
+	couple of leaks have been fixed.
+
+	* IgSoBooleanOperation.h: removed all Gts specific
+	code/dependencies/declarations including IgSoConversionAction. 
+
+	* IgBSPTree.h: added destructor to the interface. Added empty()
+	method which returns true if the BSP has no nodes in it. Added
+	intersect method to intersect SoNodes directly.
+
+	* IgBSPNode.h: added destructor to interface. 
+
+2004-01-07  Lassi A. Tuura  <lat@iki.fi>
+
+	* test/BuildFile: Updated.
+
+	* IgSbField.h, IgSoFieldPlane.h, IgSoFieldPlaneMap.h,
+	IgSbField.cc, IgSoFieldPlane.cc, IgSoFieldPlaneMap.cc,
+	test_IgSoFieldPlane.cpp: New, generalised version of the
+	vector field display used with Geant4.  Allows display of
+	any vector field, just make a suitable IgSbField adapter.
+
+	* IgSbColorMap.h, IgSbColorMap.cc, test_IgSbColorMap.cpp:
+	Make all default color maps references.  Fix jet color map
+	to scale correctly for the 1/8th segments.
+
+	* IgSbColorMap.h, IgSbColorMap.cc, test_IgSbColorMap.cpp: New.
+	Encapsulates color map and some default colour maps.
+
+2004-01-06  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgBSPNode.cc, IgBSPTree.cc, IgBSPTriangle.cc, IgBSPNode.h,
+	IgBSPTree.h, IgBSPTriangle.h: new BSP-Tree classes.
+
+	* test_IgBSPTree.cpp, test/BuildFile: test for BSP-Tree class
+	added.
+
+2003-12-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test_IgSoBooleanOperation1.cpp: test removed because it requires
+	exposing gts stuff in the interface.
+
+2003-12-19 George Alverson <George.Alverson@cern.ch>
+
+	* IgSoIdealTrack.h, IgSoIdealTrack.cc: convert
+          variables concerning experimental environment
+          back to static. Add convenience methods to return
+          ptotal and pt.
+
+	* IgSoPcon.h, IgSoPcon.cc: Put in Coin/TGS check to
+          generate appropriate number of NURB segments to look
+          decent with Coin; also varies with deltaPhi. Fixed cut 
+          faces with appropriate SoShapeHints and
+          check for deltaPhi > 2 Pi. 
+
+2003-12-17  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/BuildFile: test_IgSoBooleanOperation1 target removed.
+	
+	* IgSoBooleanOperation.cc: removed seal dependencies.  Now when
+	encountering a self intersecting surface we drop self intersecting
+	faces.
+
+	* test_IgSoBooleanOperation1.cpp: removed.
+
+2003-12-16  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoShapeKit.cc, IgSoShapeKit.h: re-implemented readInstance ().
+
+2003-12-15  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* BuildFile: added dependency on glib explicitly.
+
+2003-12-15 George Alverson <George.Alverson@cern.ch>
+
+	* IgSoIdealTrack.cc: add code to change maximum
+	  arc spanned by a NURB segment based on OIV implementation
+	  
+2003-12-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoCube.cc: Correct the number of lines.
+
+2003-12-04  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoBooleanOperation.cc: debug code added to dump surfaces
+	to file. 
+	nodeToSurface: More sanity checks.
+
+2003-11-28  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+
+	* IgSoBooleanOperation.cc: removed old commented code.
+	 (nodeToSurface): if a triangle is passed clockwise, revert it to
+	 counterclockwise.
+	 (operator ()): fixed comparison operator for points.
+	 (apply): if IGUANA_DEBUG_SURFACE is set, we dump the surface
+	 information in gts format. Removed some debug output.
+	 All around: cosmetic fixes.
+	
+2003-11-19  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoBooleanOperation.cc, IgSoBooleanOperation.h: new API for
+	IgSurfaceOperation which allows working on a single pair of nodes
+	or surfaces. preShape callback now just creates a new surface,
+	whereas postShape callback inserts it in the list, if the
+	resulting surface is non-empty. Removed some redundant temporary
+	variables.
+
+	* test_IgSoBooleanOperation1.cpp, test_IgSoBooleanOperation2.cpp:
+	added to check the new boolean operations between shapes.
+	
+	* IgSoBooleanOperation.cc, IgSoBooleanOperation.h: freshly added.
+	It provides the IgSoConversionAction class which converts a SoNode
+	to a GtsSurface and the IgSurfaceOperation class which allows to
+	perform boolean operations between shapes.
+	
+	* test/BuildFile: added tests for boolean operations between
+	shapes.
+
+	* IgSoRotSolid.cc (refresh): reordering face vertexes
+	counterclockwise.
+
+	* IgSoShapeKit.cc, IgSoShapeKit.h: added declaration and
+	implementation for virtual functions: callback (), rayPick
+	(), write () and getPrimitiveCount () which are defined in
+	SoBaseKit.
+
+	* BuildFile: changed to use gts library.
+
+2003-10-29  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/test_IgSoRotSolid.cpp (makeTest): changing subdivisions to
+	divisions to match new IgSoRotSolid API.
+
+2003-10-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* test/test_main.h: Use standard comparison syntax.  Unref the top
+	of the scene graph, not a child of the selection.
+
+2003-10-16  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* IgSoG4Cons.cc, IgSoG4Cons.h: removed. Use the new IgSoRotSolid
+	and its method makeCons () instead.
+
+	* IgSoG4Tubs.cc, IgSoG4Tubs.h: removed. Use the new IgSoRotSolid
+	and its method makeTubs () instead.
+
+	* IgSoPgon.cc, IgSoPgon.h: removed. Use the new IgSoRotSolid and
+	its method makePgon instead.
+	
+	* IgSoRotSolid.cc (cleanParts): implementation added.
+	(refresh): subs renamed to divisions. Now uses cleanParts () if
+	the polygon from which the shape is generated has less than 3
+	vertexes. If smooth field is set, the number of divisions is set
+	to phiDelta/5 degrees. Assertions removed. Show contour lines only
+	if showLines is TRUE. If the shape is closed, endCaps parts are
+	set to zero.
+	
+	* IgSoRotSolid.h: "subdivisions" field has been changed to
+	divisions for homogeneity with older shapes.  Added "showLines"
+	field to turn on and off the visualization of contour lines.
+	Added cleanParts () method which sets all the parts of the shape
+	to NULL.
+	
+	* IgSoRotSolid.h: added makePgon,makePcon, makeCons, makeTubs, to
+	fake the behaviour of respective IgSo* classes.
+	
+	* IgSoRotSolid.cc (makePgon): added function which makes a
+	IgSoRotSolid to fake a IgSoPgon.
+	(makePcon): added function which makes a IgSoRotSolid to fake a
+	IgSoPcon.
+	(makeCons): added function which makes a IgSoRotSolid to fake a
+	IgSoG4Cons. 
+	(makeTubs): added function which makes a IgSoRotSolid to fake a
+	IgSoG4Tubs. 
+	
+	* test/test_IgSoPcon.cpp: modified to use the new IgSoRotSolid to
+	fake a real Pcon.
+
+	* test/test_IgSoPgon.cpp: modified to use the new IgSoRotSolid to
+	fake a real Pgon.
+
+	* test_IgSoG4Cons1.cpp, test_IgSoG4Cons2.cpp,
+	test_IgSoG4Cons3.cpp: modified to use the new IgSoRotSolid to fake
+	a real G4Tubs.
+
+	* test_IgSoG4Tubs1.cpp, test_IgSoG4Tubs2.cpp: modified to use the
+	new IgSoRotSolid to fake a real G4Cons.
+
+	* IgSoRotSolid.h: added SoShapeHints to the catalog to support non
+	convex endcaps. Added separated SoIndexedFaceSet to support non
+	convex endcaps.
+	
+	* IgSoRotSolid.cc (refresh): endcaps separated in a different
+	face-set. Hints added to support non convex endcaps.
+
+2003-10-15  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/test_IgSoRotSolid.cpp: Using torus as an example.
+
+	* IgSoRotSolid.h: Added "smooth" field which enables per vertex
+	Gouraud shading.  Rotation angle is now specified as a function of
+	phiStart (the starting angle) and phiDelta (the amount to rotate).
+	
+	* IgSoRotSolid.cc (refresh): cosmetic fixes.  Now uses std::vector
+	for temporaries.  Added code which calculates per vertex normals.
+	Added "smooth" field which enables per vertex Gouraud shading.
+	Removed XORs in the code.  Removed all the assertions.  Now the
+	angle must be specified by phiStart (the starting angle) and
+	phiDelta (the amount to rotate).
+
+	* IgSoRotSolid.cc, IgSoRotSolid.h: changed theta->phi for
+	consistency reasons. Removed debug output.
+	
+	* IgSoRotSolid.cc (refresh): removed all the debug outputs. 
+
+	* test/BuildFile: added test case for the new generic rotational
+	solid.
+	
+	* test/test_IgSoRotSolid.cpp: added test case for the new generic
+	rotational solid.
+
+	* IgSoRotSolid.cc, IgSoRotSolid.h: generic rotational solid. 
+
+2003-10-13  Lassi A. Tuura  <lat@iki.fi>
+
+	* test/test_iv.cpp: New, stand-alone test for an .iv file.
+	* test/csc.iv, test/csc2.iv: New, test for negative scaleFactor.
+	csc2.iv should always show, csc.iv does not show with Coin 2.1.0,
+	it does not handle negative scaleFactor correctly.
+	* test/track.iv: New, test 24-bit depth on track selection.
+	Picking on the track with Coin 2.1.0 crashes X server if it is
+	not using 24 bit color depth.
+	* test/BuildFile: Build test_iv.
+
+2003-10-13  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test_IgSoCube2.cpp, test_IgSoCube3.cpp, test_SoCube.cpp : new
+	tests which create a bunch of SoCube/IgSoCube. 
+
+	* test/BuildFile (skip_files): added entries for a couple of more
+	tests.
+
+	* IgSoArrow.cc (IgSoArrow): setUpConnection parameters changed
+	to (true, true) so that update is performed. Solves bug #1620. 
+	
+	* test/test_main.h (main): if IGUANA_DEBUG_SCENE environment
+	variable is set the scenegraph is dumped to stdout.
+	Default test material now has diffuse color as well.
+	Added support to be able to select objects in the 3d view.
+
+2003-10-10  Lassi A. Tuura  <lat@iki.fi>
+
+	* test/test_main.h: Fix include order.
+	Remove redundant white space.
+
+2003-10-09  Giulio Eulisse  <giulio.eulisse@cern.ch>
+
+	* test/test_main.h (main): if IGUANA_DEBUG_SCENE environment
+	variable is set, than dumps the scenegraph to std::cerr. 
+
+	* (All sources): corrected all the [ ]+"" used in
+	SO_KIT_ADD_CATALOG_ENTRY macro to \\x0 because TGS mistakenly
+	converts them into \\"\\".
+
+2003-10-03  Lassi A. Tuura  <lat@iki.fi>
+
+	* (All sources): Rewrite all shapes.  Add more tests and change
+	all tests to use a common test main routine.  Rename some classes
+	to better names.  Remove a few obsolete shapes.  Unify all sources
+	to common formatting and naming conventions.
+
+2003-09-24  Lassi A. Tuura  <lat@pb-d-128-141-36-93.cern.ch>
+
+	* config.h: Collect general hacks from headers here.
+
+	* (All sources): Remove references to IgCxxFeatures; replace with
+	package-local config.h.  Make sure config.h is always included
+	first.  Clean up include order to include first own class, own
+	package, inventor, and then other headers.  Add a few missing
+	"std::" prefixes where found missing.
+
+2003-09-12  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Remove redundant </external>.
+
+	* config.h, IgSoCoordinateAxis.cc, IgSoCrystalHit.cc: Move to
+	using SEAL/SealPlatform.
+
+	* IgSoViewportRegion.cc: Fix <gl.h> include for OS X.
+
+	* test/BuildFile: Switch to external SoQt.  Add binaries for more
+	test programs.
+
+2003-08-25  George Alverson <George.Alverson@cern.ch>
+
+	* IgSoGeneralizedCylinder.h, IgSoGeneralizedCylinder.cc,
+	test_IgSoGeneralizedCylinder-0.cc (added): Moved setupConnections
+	from protected to public since during setup illegal volumes are
+	generated causing multiple calls to SoDebugError::postWarning when
+	COIN_DEBUG is set. Also modified the documentation and added a new
+	test/example, and added generate/clearAlternateRep.
+
+2003-08-20  George Alverson <George.Alverson@cern.ch>
+
+	* IgLegoDisplayPlot.h, IgLegoDisplayPlot.cc: (from Laurent Duflot
+	<duflot@lal.in2p3.fr>) add code to deal with negative bins by
+	(optionally) displaying them rather than suppressing them.
+
+2003-07-24  George Alverson <George.Alverson@cern.ch>
+
+	* IgSO2DArrow.cc, IgSoCircle.cc, IgSoQuad.cc: removed explicit
+	inclusion of gl.h, was causing non-compilation under WNT/Coin
+
+	* IgSoPainterAction.cc: replace u_short with plain old unsigned
+	short. u_short not available on some platorms.
+
+2003-07-09  George Alverson <George.Alverson@cern.ch>
+
+	* IgSoCoordinateAxis.cc: force update of children upon creation:
+        fixes incorrect initialisation when reading in from a stored iv file.
+
+2003-07-04  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSoGeneralizedCylinder.h, IgSoGeneralizedCylinder.cc,
+	IgNurbMaker.h, IgNurbMaker.cc,
+	IgTriangulator.h, IgTriangulator.cc,
+	test_IgSoGeneralizedCylinder-1.cpp,
+	test_IgSoGeneralizedCylinder-2.cpp,
+	test_IgSoGeneralizedCylinder-3.cpp,
+	test_IgSoGeneralizedCylinder-4.cpp:
+	Add classes from TGS/SGI Inventor contrib/nodes with tests; minor
+	code tweaks to clean up unused variable warnings and use of
+	variable assignments in conditionals.
+
+2003-06-23  George Alverson <George.Alverson@cern.ch>
+
+	* IgParticleChar.cc: add more strange particles
+	* IgSoIdealTrackKit.cc: fix bug in updateTrack which occasionally
+	produced an incorrect result when DeltaT was changed.
+
+2003-05-20  George Alverson <George.Alverson@cern.ch>
+
+	* IgParticleChar.cc: add kaons as particles
+
+2003-05-13  George Alverson <George.Alverson@cern.ch>
+
+	* IgSoIdealTrackKit.cc: remove test for ParticleChar (again). See log below for 2003-03-26.
+
+2003-05-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoJet.h: std::string used instead of string.
+
+	* IgSoXYZGrid.h: std::string used instead of string.
+
+2003-05-13  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSoJet.cc, IgSoJet.h: API char *getInfo() changed to
+	string getInfo().
+
+	* IgSoXYZGrid.cc,IgSoXYZGrid.h: API char *getInfo() changed to
+	string getInfo().
+	
+	* IgLegoDisplayPlot.cc: Explicit type cast style changed.
+	
+	* IgParticleChar.cc: Removed unused variables.
+	
+	* IgSo2DArrow.cc: Removed unused code.
+	 
+	* IgSoCalHitKit.cc: Revert the explicit type cast to int as dividing
+	by 2 instead of 2.0 solved the casting problem.
+	
+	* IgSoCircleArc.cc: Removed unused code.
+	
+	* IgSoIdealTrackKit.cc: Removed unused variable.
+	
+	* IgSoPainterAction.cc: Removed unused variable/code.
+	
+	* IgSoQuad.cc: Removed unused code.
+	
+	* IgSoSiStripDetKit.cc: Revert the explicit type cast changes.
+	
+	* IgSoSplineTrack.cc: Removed unused code.
+	
+2003-05-09  George Alverson <George.Alverson@cern.ch>
+
+        * test_IgSoIdealTrackKit.cpp: add updateTrack() for Coin.
+
+	* IgSoCoordinateAxis.h, IgSoXYZGrid.h: convert obsolete
+          references to SoSFLong into SoSFInt32 references
+
+        * IgSoIdealTrackKit.cc: put in a test to avoid re-initialisation of ParticleChar
+
+2003-05-09  Shahzad Muzaffar <Shahzad.Muzaffar@cern.ch>
+
+	* IgSo3DErrorBar.cc: Removed the unused header strstream.h and
+	  Strstrea.h (Win32) to avoid warnings
+	  
+	* IgSoJet.cc: ostringstream used instead of ostrstream to avoid
+	  warning due to the strstream.h header.
+	
+	* IgSoXYZGrid.cc: ostringstream used instead of ostrstream to avoid
+	  warning due to the strstream.h header.
+	
+	* IgLegoDisplayPlot.cc: Explicit type cast to int from float to
+	  avoid warnings.
+	
+	* IgParticleChar.cc: Comment out 6 unused variables to avoid warnings.
+	
+	* IgSo2DArrow.cc: Comment out 3 unused variables to avoid warnings.
+	
+	* IgSoCalHitKit.cc: Explicit type cast to int from float to avoid
+	  warnings.
+	
+	* IgSoCircleArc.cc: Comment out 2 unused variables to avoid warnings.
+	
+	* IgSoIdealTrackKit.cc: Comment out 1 unused variable to avoid
+	  warning.
+	
+	* IgSoPainterAction.cc: Comment out 1 unused variable to avoid
+	  warning.
+	
+	* IgSoPcon.cc: Comment out 1 unused variables to avoid warnings.
+	
+	* IgSoQuad.cc: Comment out 2 unused variables to avoid warnings.
+	
+	* IgSoSiStripDetKit.cc: Explicit type cast to char* to avoid
+	  warnings.
+	
+	* IgSoSplineTrack.cc: Comment out 1 unused variable to avoid
+	  warning.
+
+2003-04-29  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoG4Cons.cc: More points added.
+
+2003-03-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSoPolyVol.cc, IgSoG4Trap.cc: Provide fall-back nodes without
+	the "Ig" prefix for backward compatibility for reading in already
+	saved .iv files.
+
+2003-03-26  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSoIdealTrackKit.cc (initClass): Initialise IgParticleChar
+	unconditionally without using it, to avoid accessing the table
+	when it is uninitialised, e.g. when loading this node dynamically.
+	The table already protects itself from multiple initialisation.
+
+2003-03-20  George Alverson <George.Alverson@cern.ch>
+
+	* IgSoSplineTrack.cc: add a call to generateChildren in the
+	  constructor to avoid a problem with an uninitialised list when
+	  called from the .so during an input read operation.
+ 
+2003-03-19  Lassi A. Tuura  <lat@iki.fi>
+
+	* BuildFile: Clean up external refs.
+
+2003-03-18  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgSoIdealTrackKit.cc: SO_KIT_CHANGE_NULL_BY_DEFAULT arguments do
+	not take quotes, remove them.
+
+	* IgSoCalHitKit.cc, IgSoSiStripDetKit.cc, IgSoSplineTrack.cc: Use
+	pure float arithmetic to avoid overload ambiguity with SbVec3d.
+
+2003-03-04  George Alverson <George.Alverson@cern.ch>
+
+	* IgSbPainterPS.cc: Removed call to "putPageScaleInStream".
+	  PainterPS now produces full scale eps files rather than a file
+	  scaled by the portrait/landscape ratio (and so removed an empty
+	  surrounding border).
+
+2003-02-20  George Alverson <George.Alverson@cern.ch>
+
+	* Clean up all IgOpenInventor files to use the standard
+	  IG_OPEN_INVENTOR_API mechanism for declaring exported
+	  symbols. Some additional cleanup was done to bring the
+	  documentation into doxygen format.
+	  
+2003-02-11  George Alverson <George.Alverson@cern.ch>
+
+	* Add files previously in either HEPVis (IgSoG4Tubs) or in D0
+	  code.  These are part of the segragation of D0-specific and
+	  general graphics code.  Some may be too specialized to keep here
+	  (SiStrip routines) but as a general HEPVis copy, this is where I
+	  put them to start out.
+
+	* IgSoSiStrips (HEPVis)
+
+	* IgSoSiStripDetKit (HEPVis)
+
+	* IgSoEllipsoid (HEPVis)
+
+	* IgSoQuad (D0)
+
+	* IgSo2DArrow (2D)
+
+	* IgSoCircleArc (2D)
