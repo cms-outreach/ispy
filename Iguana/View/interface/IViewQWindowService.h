@@ -22,18 +22,21 @@ class IGUANA_FRAMEWORK_API IViewQWindowService : public IgStateElement
 {
     IG_DECLARE_STATE_ELEMENT (IViewQWindowService);
 public:
-    IViewQWindowService (IgState *state, QWidget *mainWindow, SIM::Coin3D::Quarter::QuarterWidget *viewer);
+    IViewQWindowService (IgState *state, QWidget *mainWindow, SIM::Coin3D::Quarter::QuarterWidget *viewer, SoRenderManager::Superimposition * super);
     ~IViewQWindowService (void);
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor
     virtual QWidget *		mainWindow (void);
     virtual SIM::Coin3D::Quarter::QuarterWidget * viewer (void);
+    virtual SoRenderManager::Superimposition * super (void);
+    virtual void super (SoRenderManager::Superimposition *);
 
 private:
     IgState			*m_state;
     QWidget			*m_mainWindow;
     SIM::Coin3D::Quarter::QuarterWidget *m_viewer;
+    SoRenderManager::Superimposition 	*m_super;
     
     // undefined semantics
     IViewQWindowService (const IViewQWindowService &);

@@ -21,8 +21,8 @@
 #include "Iguana/View/interface/IViewSceneGraphService.h"
 #include <Quarter/Quarter.h>
 #include <Quarter/QuarterWidget.h>
-#include <Inventor/Qt/SoQt.h>
-#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+// #include <Inventor/Qt/SoQt.h>
+// #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <Inventor/nodes/SoNodes.h>
 #include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoCone.h>
@@ -359,7 +359,7 @@ IggiApplication::doRun (int argc, char *argv[])
     QApplication app (argc, argv);
     setupMainWindow ();
 
-    QWidget * mainwin = SoQt::init(argc, argv, argv[0]);
+//     QWidget * mainwin = SoQt::init(argc, argv, argv[0]);
     initShapes ();
     //    setupMainWindow ();
 
@@ -398,11 +398,11 @@ IggiApplication::doRun (int argc, char *argv[])
   
     new IViewSceneGraphService (state (), mainSep, overlaySep);
 
-    SoQtExaminerViewer * viewer = new SoQtExaminerViewer(mainwin);
-    viewer->setSceneGraph(root);
-    viewer->setFeedbackVisibility (true);
-    viewer->setTitle ("iSpy 3D");
-    viewer->show();
+//     SoQtExaminerViewer * viewer = new SoQtExaminerViewer(mainwin);
+//     viewer->setSceneGraph(root);
+//     viewer->setFeedbackVisibility (true);
+//     viewer->setTitle ("iSpy 3D");
+//     viewer->show();
     
     if (argc == 2)
     {
@@ -420,13 +420,13 @@ IggiApplication::doRun (int argc, char *argv[])
 
     QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), &app, SLOT(quit()));
 
-    SoQt::show(mainwin);
-    SoQt::mainLoop();
+//     SoQt::show(mainwin);
+//     SoQt::mainLoop();
   
-    delete viewer;
-    root->unref();
+//     delete viewer;
+//     root->unref();
 
-    // return app.exec ();
+    return app.exec ();
 
 // FIXME: This part as documented would crashes my X11
 //
@@ -480,7 +480,7 @@ IggiApplication::setupMainWindow (void)
 
     // Add some super imposed text
     SoSeparator * superimposed = create_superimposition("No info");
-    (void)viewer->getSoRenderManager()->addSuperimposition(superimposed);
+    SoRenderManager::Superimposition *super = viewer->getSoRenderManager()->addSuperimposition(superimposed);
     
     viewer->setNavigationModeFile();
     viewer->setSceneGraph(root);
@@ -493,7 +493,7 @@ IggiApplication::setupMainWindow (void)
     scroll->setMinimumSize(300, 200);
     scroll->show ();
 
-    new IViewQWindowService (state (), m_mainWindow, viewer);
+    new IViewQWindowService (state (), m_mainWindow, viewer, super);
     //    new IViewQWindowService (state (), m_mainWindow);
 
     delete splash;
@@ -535,13 +535,10 @@ IggiApplication::nextEvent (void)
 	ASSERT (scene);
 	scene->clear ();
 
-	IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
-	ASSERT (sceneGraphService);
-	SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
-	overlayScene->removeAllChildren ();
-
-	SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-	mainScene->removeAllChildren ();
+	IViewQWindowService *windowService = IViewQWindowService::get (state ());
+	ASSERT (windowService);
+	SoSeparator *sep = dynamic_cast<SoSeparator *>(windowService->viewer ()->getSceneGraph ());
+	sep->removeAllChildren ();
 
 	readZipMember (m_it);
 	m_mainWindow->actionPrevious->setEnabled (true);
@@ -570,13 +567,10 @@ IggiApplication::previousEvent (void)
 	ASSERT (scene);
 	scene->clear ();
 
-	IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
-	ASSERT (sceneGraphService);
-	SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
-	overlayScene->removeAllChildren ();
-
-	SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-	mainScene->removeAllChildren ();
+	IViewQWindowService *windowService = IViewQWindowService::get (state ());
+	ASSERT (windowService);
+	SoSeparator *sep = dynamic_cast<SoSeparator *>(windowService->viewer ()->getSceneGraph ());
+	sep->removeAllChildren ();
     
 	readZipMember (m_it);
 	m_mainWindow->actionNext->setEnabled (true);

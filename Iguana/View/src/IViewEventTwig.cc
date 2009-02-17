@@ -12,8 +12,10 @@
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/View/interface/debug.h"
+#include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoFont.h>
 #include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/nodes/SoTranslation.h>
@@ -118,4 +120,36 @@ IViewEventTwig::onNewEvent (IViewEventMessage& message)
     
 	overlayScene->addChild (sep);
     }
+    if (IViewQWindowService *windowService = IViewQWindowService::get (state ())) 
+    {
+	SoSeparator * root = new SoSeparator;
+	SoText2 * text = new SoText2;
+	SoBaseColor * color = new SoBaseColor;
+	SoOrthographicCamera * orthocam = new SoOrthographicCamera;
+
+	text->string.setValue(m_text.c_str ());
+	color->rgb.setValue(SbColor(1.0, 0.0, 0.0));
+
+	orthocam->height.setValue(1.0);
+	orthocam->nearDistance.setValue(0.0);
+	orthocam->farDistance.setValue(2.0);
+	orthocam->position = SbVec3f(0.0f, 0.0f, 1.0f);
+
+	SoTranslation *eventLabelTranslation = new SoTranslation;
+    
+	SbVec3f pos = SbVec3f (-0.7,
+			       0.4,
+			       0.0);
+
+	eventLabelTranslation->translation = pos;
+
+	root->addChild(orthocam);
+	root->addChild(color);
+	root->addChild(eventLabelTranslation);
+	root->addChild(text);
+
+	SoRenderManager::Superimposition *super = windowService->viewer ()->getSoRenderManager()->addSuperimposition(root);
+	windowService->super (super);
+    }
+    
 }

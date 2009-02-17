@@ -18,14 +18,17 @@ IG_DEFINE_STATE_ELEMENT (IViewQWindowService, "Services/Qt/Main Window");
 
 using namespace SIM::Coin3D::Quarter;
 
-IViewQWindowService::IViewQWindowService (IgState *state, QWidget *mainWindow, QuarterWidget *viewer)
+IViewQWindowService::IViewQWindowService (IgState *state, QWidget *mainWindow, QuarterWidget *viewer,
+					  SoRenderManager::Superimposition *super)
     : m_state (state),
       m_mainWindow (mainWindow),
-      m_viewer (viewer)
+      m_viewer (viewer),
+      m_super (super)
 {
     ASSERT (state);
     ASSERT (mainWindow);
     ASSERT (viewer);
+    ASSERT (super);
     state->put (s_key, this);
 }
 
@@ -44,3 +47,14 @@ IViewQWindowService::mainWindow (void)
 QuarterWidget *
 IViewQWindowService::viewer (void)
 { return m_viewer; }
+
+SoRenderManager::Superimposition *
+IViewQWindowService::super (void)
+{ return m_super; }
+
+void
+IViewQWindowService::super (SoRenderManager::Superimposition *super)
+{
+    m_viewer->getSoRenderManager()->removeSuperimposition (m_super);
+    m_super = super; 
+}
