@@ -2,7 +2,6 @@
 /IgCircleSector.cc/1.1/Mon Feb 16 09:58:54 2009//
 /IgHits.cc/1.3/Mon Feb 16 10:07:33 2009//
 /IgLine.cc/1.1/Mon Feb 16 09:58:54 2009//
-/IgMainWindow.ui/1.4/Mon Feb 16 09:58:54 2009//
 /IgOpenFileDialog.ui/1.1/Mon Feb 16 09:58:54 2009//
 /IgPolarCSControl.cc/1.2/Mon Feb 16 09:58:54 2009//
 /IgPolarCSControl.ui/1.2/Mon Feb 16 09:58:54 2009//
@@ -17,9 +16,10 @@
 /IggiControlCenter.cc/1.1/Mon Feb 16 09:58:54 2009//
 /IggiControlCenter.ui/1.1/Mon Feb 16 09:58:54 2009//
 /IggiItem.cc/1.1/Mon Feb 16 09:58:54 2009//
-/IggiMainWindow.cc/1.4/Mon Feb 16 09:58:54 2009//
-/IggiScene.cc/1.3/Mon Feb 16 09:58:54 2009//
 /IggiTreeItem.cc/1.2/Mon Feb 16 09:58:54 2009//
 /IggiTreeModel.cc/1.4/Mon Feb 16 09:58:54 2009//
 /qrc_iggi.cc/1.1/Mon Feb 16 09:58:54 2009//
+/IgMainWindow.ui/1.4/Tue Feb 17 09:22:01 2009//
+/IggiMainWindow.cc/1.4/Tue Feb 17 09:22:01 2009//
+/IggiScene.cc/1.3/Mon Feb 16 16:54:41 2009//
 D

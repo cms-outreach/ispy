@@ -17,8 +17,8 @@
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
-// #include <Quarter/Quarter.h>
-// #include <Quarter/QuarterWidget.h>
+#include <Quarter/Quarter.h>
+#include <Quarter/QuarterWidget.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -30,7 +30,7 @@
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
-// using namespace SIM::Coin3D::Quarter;
+using namespace SIM::Coin3D::Quarter;
 
 IViewSiStripDigiTwig::IViewSiStripDigiTwig (IgState *state, IgTwig *parent,
 					    const std::string &name /* = "" */)
@@ -84,8 +84,9 @@ IViewSiStripDigiTwig::onNewEvent (IViewEventMessage& message)
 	    scene->addItem (hits);
 	    scene->update ();
 
-// 	    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
-// 	    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
+	    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
+	    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
+
 	    SoSeparator *sep = new SoSeparator;
 	    SoMaterial *mat = new SoMaterial;
 	    float rgbcomponents [4];
@@ -102,9 +103,9 @@ IViewSiStripDigiTwig::onNewEvent (IViewEventMessage& message)
 	    sopoints->numPoints.setValue (n);
 	  
 	    sep->addChild (sopoints);
-// 	    node->addChild (sep);
+	    node->addChild (sep);
 
-// 	    viewer->viewAll ();
+	    viewer->viewAll ();
 
 	    // Now SoQt viewer
 	    SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());

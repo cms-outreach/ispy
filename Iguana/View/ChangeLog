@@ -1,3 +1,7 @@
+2009-02-17  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Add a Quarter window. 
+
 2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IggiApplication.cc: Do initialization a bit earlier. 

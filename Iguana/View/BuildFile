@@ -1,3 +1,4 @@
 <use name=Iguana/Framework>
+<use name=quarter>
 <use name=soqt>
 <use name=coin>

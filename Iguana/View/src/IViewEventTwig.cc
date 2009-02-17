@@ -6,11 +6,6 @@
 #include "Iguana/View/interface/IViewReadService.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
 #include "Iguana/View/interface/IViewSceneGraphService.h"
-#include "Iguana/View/interface/Ig3DRep.h"
-#include "Iguana/View/interface/IgRPhiRep.h"
-#include "Iguana/View/interface/IgRZRep.h"
-#include "Iguana/View/interface/IgLegoRep.h"
-#include "Iguana/View/interface/IgTextRep.h"
 #include "Iguana/Iggi/interface/IggiMainWindow.h"
 #include "Iguana/Iggi/interface/IggiScene.h"
 #include "Iguana/Iggi/interface/IgAnnotation.h"
@@ -91,79 +86,36 @@ IViewEventTwig::onNewEvent (IViewEventMessage& message)
 	scene->addItem (ann);
 	scene->update ();
     }
-    IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
-    ASSERT (sceneGraphService);
+    if (IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ()))
+    {	
+	ASSERT (sceneGraphService);
 
-    SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
-    SoSeparator *sep = new SoSeparator;
-    SoMaterial *mat = new SoMaterial;
-    float rgbcomponents [4];
-    IgSbColorMap::unpack (0x8b898900, rgbcomponents); // snow4
-    mat->diffuseColor.setValue (SbColor (rgbcomponents));
-    sep->addChild (mat);
+	SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
+	SoSeparator *sep = new SoSeparator;
+	SoMaterial *mat = new SoMaterial;
+	float rgbcomponents [4];
+	IgSbColorMap::unpack (0x8b898900, rgbcomponents); // snow4
+	mat->diffuseColor.setValue (SbColor (rgbcomponents));
+	sep->addChild (mat);
     
-    SoText2  *eventLabel = new SoText2;
-    eventLabel->string = m_text.c_str ();
+	SoText2  *eventLabel = new SoText2;
+	eventLabel->string = m_text.c_str ();
 
-    SoFont* labelFont = new SoFont;
-    labelFont->size.setValue (18.0);
-    labelFont->name.setValue ("Arial");
-    sep->addChild (labelFont);
+	SoFont* labelFont = new SoFont;
+	labelFont->size.setValue (18.0);
+	labelFont->name.setValue ("Arial");
+	sep->addChild (labelFont);
     
-    SoTranslation *eventLabelTranslation = new SoTranslation;
+	SoTranslation *eventLabelTranslation = new SoTranslation;
     
-    SbVec3f pos = SbVec3f (-2.5,
-                           1.65,
-			   0.0);
+	SbVec3f pos = SbVec3f (-2.5,
+			       1.65,
+			       0.0);
 
-    eventLabelTranslation->translation = pos;
-    sep->addChild (eventLabelTranslation);
-    sep->addChild (eventLabel);
+	eventLabelTranslation->translation = pos;
+	sep->addChild (eventLabelTranslation);
+	sep->addChild (eventLabel);
     
-    overlayScene->addChild (sep);
-}
-
-void
-IViewEventTwig::update (IgTextRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    rep->setText (m_text);
-}
-
-void
-IViewEventTwig::update (Ig3DRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
-}
-
-void
-IViewEventTwig::update (IgRPhiRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
-}
-
-void
-IViewEventTwig::update (IgRZRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
-}
-
-void
-IViewEventTwig::update (IgLegoRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
+	overlayScene->addChild (sep);
+    }
 }

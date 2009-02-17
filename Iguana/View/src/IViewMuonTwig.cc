@@ -5,11 +5,17 @@
 #include "Iguana/View/interface/IViewMuonTwig.h"
 #include "Iguana/View/interface/IViewReadService.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
+#include "Iguana/View/interface/IViewSceneGraphService.h"
 #include "Iguana/Iggi/interface/IggiMainWindow.h"
 #include "Iguana/Iggi/interface/IggiScene.h"
 #include "Iguana/Iggi/interface/IgHits.h"
 #include "Iguana/Framework/interface/IgCollection.h"
+#include "Iguana/Inventor/interface/IgSbColorMap.h"
+#include "Iguana/Inventor/interface/IgSoSimpleTrajectory.h"
 #include "Iguana/View/interface/debug.h"
+#include <Inventor/nodes/SoDrawStyle.h>
+#include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoSeparator.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -24,9 +30,7 @@
 IViewMuonTwig::IViewMuonTwig (IgState *state, IgTwig *parent,
 			      const std::string &name /* = "" */)
     : IViewQueuedTwig (state, parent, name)
-{
-}
-
+{}
 
 void
 IViewMuonTwig::onNewEvent (IViewEventMessage& message)
@@ -55,7 +59,19 @@ IViewMuonTwig::onNewEvent (IViewEventMessage& message)
 	    IgCollection &points = storage->getCollection ("Points_V1");
 
 	    std::vector<QPointF> qpoints;
-	    
+
+	    IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());	    
+	    ASSERT (sceneGraphService);
+
+	    SoSeparator *soscene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
+	    SoSeparator *sep = new SoSeparator;
+	    SoMaterial *mat = new SoMaterial;
+	    float rgbcomponents [4];
+	    //	    IgSbColorMap::unpack (0xFFA30000, rgbcomponents);
+	    IgSbColorMap::unpack (0xffff0000, rgbcomponents);
+	    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+	    sep->addChild (mat);
+
 	    IgCollectionIterator cit = muons.begin ();
 	    IgCollectionIterator cend = muons.end ();
 	    for (; cit != cend ; cit++) 
@@ -63,6 +79,10 @@ IViewMuonTwig::onNewEvent (IViewEventMessage& message)
 		IgCollectionItem imuon = *cit;
 		double pt = imuon.get<double> ("pt");
 
+		IgSoSimpleTrajectory* reconstructedTrack = new IgSoSimpleTrajectory;
+		reconstructedTrack->lineWidth = 3.0;
+
+		int n = 0;
 		for (IgAssociationSet::Iterator ha = muonTrackerPoints.begin ();
 		     ha != muonTrackerPoints.end ();
 		     ++ha)
@@ -75,8 +95,12 @@ IViewMuonTwig::onNewEvent (IViewEventMessage& message)
 			double z = hm.get<IgV3d>("pos").z ();
 			// qpoints.push_back (QPointF (x * 40., y * 40.));
 			qpoints.push_back (QPointF (x, y));
+			reconstructedTrack->controlPoints.set1Value (n, SbVec3f(x, y, z));
+			reconstructedTrack->markerPoints.set1Value (n, SbVec3f(x, y, z));
+			n++;			
 		    }
 		}
+		sep->addChild (reconstructedTrack);
 	    }
 
 	    IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
@@ -87,6 +111,7 @@ IViewMuonTwig::onNewEvent (IViewEventMessage& message)
 	    hits->setColor (QColor (0x5F021F));	    
 	    scene->addItem (hits);
 	    scene->update ();
+	    soscene->addChild (sep);
 	}
     }
 }

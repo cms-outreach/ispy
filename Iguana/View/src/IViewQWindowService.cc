@@ -16,16 +16,16 @@ IG_DEFINE_STATE_ELEMENT (IViewQWindowService, "Services/Qt/Main Window");
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
-// using namespace SIM::Coin3D::Quarter;
+using namespace SIM::Coin3D::Quarter;
 
-IViewQWindowService::IViewQWindowService (IgState *state, QWidget *mainWindow) //, QuarterWidget *viewer)
+IViewQWindowService::IViewQWindowService (IgState *state, QWidget *mainWindow, QuarterWidget *viewer)
     : m_state (state),
-      m_mainWindow (mainWindow)
-//      m_viewer (viewer)
+      m_mainWindow (mainWindow),
+      m_viewer (viewer)
 {
     ASSERT (state);
     ASSERT (mainWindow);
-    //    ASSERT (viewer);
+    ASSERT (viewer);
     state->put (s_key, this);
 }
 
@@ -33,7 +33,7 @@ IViewQWindowService::~IViewQWindowService (void)
 {
     ASSERT (m_state);
     ASSERT (m_mainWindow);
-    //    ASSERT (m_viewer);
+    ASSERT (m_viewer);
     m_state->detach (s_key);
 }
 
@@ -41,6 +41,6 @@ QWidget *
 IViewQWindowService::mainWindow (void)
 { return m_mainWindow; }
 
-// QuarterWidget *
-// IViewQWindowService::viewer (void)
-// { return m_viewer; }
+QuarterWidget *
+IViewQWindowService::viewer (void)
+{ return m_viewer; }

@@ -22,13 +22,6 @@ public:
     // implicit destructor
     virtual void  onNewEvent (IViewEventMessage& message);
 
-    using IViewQueuedTwig::update;
-    virtual void  update (Ig3DRep *rep);
-    virtual void  update (IgLegoRep *rep);
-    virtual void  update (IgTextRep *rep);
-    virtual void  update (IgRPhiRep *rep);
-    virtual void  update (IgRZRep *rep);
-
 private:    
     std::string	      	m_text;
 };

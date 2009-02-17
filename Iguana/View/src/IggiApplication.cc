@@ -19,8 +19,8 @@
 #include "Iguana/View/interface/IViewRecoContent.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
 #include "Iguana/View/interface/IViewSceneGraphService.h"
-// #include <Quarter/Quarter.h>
-// #include <Quarter/QuarterWidget.h>
+#include <Quarter/Quarter.h>
+#include <Quarter/QuarterWidget.h>
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <Inventor/nodes/SoNodes.h>
@@ -52,6 +52,53 @@
 #include <iostream>
 #include <vector>
 
+#include "Iguana/Inventor/interface/IgParticleChar.h"
+#include "Iguana/Inventor/interface/IgSoShapeKit.h"
+#include "Iguana/Inventor/interface/IgSo2DArrow.h"
+#include "Iguana/Inventor/interface/IgSo3DErrorBar.h"
+#include "Iguana/Inventor/interface/IgSoArrow.h"
+#include "Iguana/Inventor/interface/IgSoAxis.h"
+#include "Iguana/Inventor/interface/IgSoCalHit.h"
+#include "Iguana/Inventor/interface/IgSoCircleArc.h"
+#include "Iguana/Inventor/interface/IgSoCoordinateAxis.h"
+#include "Iguana/Inventor/interface/IgSoCrystalHit.h"
+#include "Iguana/Inventor/interface/IgSoCube.h"
+#include "Iguana/Inventor/interface/IgSoEllipsoid.h"
+#include "Iguana/Inventor/interface/IgSoFieldPlane.h"
+#include "Iguana/Inventor/interface/IgSoFieldPlaneMap.h"
+#include "Iguana/Inventor/interface/IgSoG4Box.h"
+#include "Iguana/Inventor/interface/IgSoG4Trap.h"
+#include "Iguana/Inventor/interface/IgSoG4Trd.h"
+#include "Iguana/Inventor/interface/IgSoGrid.h"
+#include "Iguana/Inventor/interface/IgSoHits.h"
+#include "Iguana/Inventor/interface/IgSoIdealTrack.h"
+#include "Iguana/Inventor/interface/IgSoJet.h"
+#include "Iguana/Inventor/interface/IgSoLegoPlot.h"
+#include "Iguana/Inventor/interface/IgSoLegoTowers.h"
+#include "Iguana/Inventor/interface/IgSoPcon.h"
+#include "Iguana/Inventor/interface/IgSoPolyVol.h"
+#include "Iguana/Inventor/interface/IgSoQuad.h"
+#include "Iguana/Inventor/interface/IgSoRectHist.h"
+#include "Iguana/Inventor/interface/IgSoRectColHist.h"
+#include "Iguana/Inventor/interface/IgSoRotSolid.h"
+#include "Iguana/Inventor/interface/IgSoRZHist.h"
+#include "Iguana/Inventor/interface/IgSoSiStrips.h"
+#include "Iguana/Inventor/interface/IgSoSimpleTrajectory.h"
+#include "Iguana/Inventor/interface/IgSoSphereHit.h"
+#include "Iguana/Inventor/interface/IgSoSplineTrack.h"
+#include "Iguana/Inventor/interface/IgSoTower.h"
+#include "Iguana/Inventor/interface/IgSoTowerRadii.h"
+#include "Iguana/Inventor/interface/IgSoXYZGrid.h"
+#include "Iguana/Inventor/interface/IgSoAnimator.h"
+#include "Iguana/Inventor/interface/IgSoClipPlane.h"
+#include "Iguana/Inventor/interface/IgSoSlicer.h"
+#include "Iguana/Inventor/interface/IgSoSlicerEngine.h"
+#include "Iguana/Inventor/interface/IgSoViewpoint.h"
+#include "Iguana/Inventor/interface/IgSoPlaneManip.h"
+#include "Iguana/Inventor/interface/IgSoCircularHist.h"
+#include "Iguana/Inventor/interface/IgSoGridPlane.h"
+#include "Iguana/Inventor/interface/IgSoGridPlaneMap.h"
+
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 
 lat::logflag LFiggi = { 0, "iggi", true, -1 };
@@ -62,11 +109,147 @@ lat::logflag LFiggi = { 0, "iggi", true, -1 };
 //<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
 //<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
 //<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
+
+static void initShapes (void)
+{
+    IgParticleChar::initParticles ();
+    IgSoShapeKit::initClass ();
+    IgSo2DArrow::initClass ();
+    IgSo3DErrorBar::initClass ();
+    IgSoArrow::initClass ();
+    IgSoAxis::initClass ();
+    IgSoCalHit::initClass ();
+    IgSoCircleArc::initClass ();
+    IgSoCoordinateAxis::initClass ();
+    IgSoCrystalHit::initClass ();
+    IgSoCube::initClass ();
+    IgSoEllipsoid::initClass ();
+    IgSoFieldPlane::initClass ();
+    IgSoFieldPlaneMap::initClass ();
+    IgSoG4Box::initClass ();
+    IgSoG4Trap::initClass ();
+    IgSoG4Trd::initClass ();
+    IgSoGrid::initClass ();
+    IgSoHits::initClass ();
+    IgSoIdealTrack::initClass ();
+    IgSoJet::initClass ();
+    IgSoLegoPlot::initClass ();
+    IgSoLegoTowers::initClass ();
+    IgSoPcon::initClass ();
+    IgSoPolyVol::initClass ();
+    IgSoQuad::initClass ();
+    IgSoRectHist::initClass ();
+    IgSoRectColHist::initClass ();
+    IgSoRotSolid::initClass ();
+    IgSoRZHist::initClass ();
+    IgSoSiStrips::initClass ();
+    IgSoSimpleTrajectory::initClass ();
+    IgSoSphereHit::initClass ();
+    IgSoSplineTrack::initClass ();
+    IgSoTower::initClass ();
+    IgSoTowerRadii::initClass ();
+    IgSoXYZGrid::initClass ();
+    IgSoAnimator::initClass ();
+    IgSoClipPlane::initClass ();
+    IgSoSlicer::initClass ();
+    IgSoSlicerEngine::initClass ();
+    IgSoViewpoint::initClass ();
+    IgSoPlaneManip::initClass();
+    IgSoCircularHist::initClass ();
+    IgSoGridPlane::initClass ();
+    IgSoGridPlaneMap::initClass ();
+}
+
+static SoSeparator * create_background(void)
+{
+  // create a gradient background
+  SoSeparator * root = new SoSeparator;
+  SoBaseColor * color = new SoBaseColor;
+  SoOrthographicCamera * orthocam = new SoOrthographicCamera;
+
+  color->rgb.set1Value(0, SbColor(0.0, 0.0, 1.0));
+  color->rgb.set1Value(1, SbColor(0.0, 0.0, 0.0));
+
+  orthocam->height.setValue(1.0);
+  orthocam->viewportMapping = SoCamera::LEAVE_ALONE;
+  orthocam->nearDistance.setValue(0.0);
+  orthocam->farDistance.setValue(2.0);
+  orthocam->position = SbVec3f(0.0f, 0.0f, 1.0f);
+
+  SoMaterialBinding * mb = new SoMaterialBinding;
+  mb->value = SoMaterialBinding::PER_VERTEX_INDEXED;
+
+  SoCoordinate3 * coords = new SoCoordinate3;
+  coords->point.set1Value(0, SbVec3f(-0.5f, -0.5f, 0.0f));
+  coords->point.set1Value(1, SbVec3f(0.5f, -0.5f, 0.0f));
+  coords->point.set1Value(2, SbVec3f(0.5f, 0.5f, 0.0f));
+  coords->point.set1Value(3, SbVec3f(-0.5f, 0.5f, 0.0f));
+
+  SoIndexedFaceSet * ifs = new SoIndexedFaceSet;
+  ifs->coordIndex.set1Value(0, 0);
+  ifs->coordIndex.set1Value(1, 1);
+  ifs->coordIndex.set1Value(2, 2);
+  ifs->coordIndex.set1Value(3, 3);
+  ifs->coordIndex.set1Value(4, -1);
+
+  ifs->materialIndex.set1Value(0, 0);
+  ifs->materialIndex.set1Value(1, 0);
+  ifs->materialIndex.set1Value(2, 1);
+  ifs->materialIndex.set1Value(3, 1);
+  ifs->materialIndex.set1Value(4, -1);
+
+  SoLightModel * lm = new SoLightModel;
+  lm->model = SoLightModel::BASE_COLOR;
+
+  root->addChild(orthocam);
+  root->addChild(lm);
+  root->addChild(color);
+  root->addChild(mb);
+  root->addChild(coords);
+  root->addChild(ifs);
+
+  return root;
+
+}
+
+// create a simple scene displaying some text to be super-imposed on
+// the normal scene graph
+static SoSeparator * create_superimposition(std::string label)
+{
+    SoSeparator * root = new SoSeparator;
+    SoText2 * text = new SoText2;
+    SoBaseColor * color = new SoBaseColor;
+    SoOrthographicCamera * orthocam = new SoOrthographicCamera;
+
+    text->string.setValue(label.c_str ());
+    color->rgb.setValue(SbColor(1.0, 0.0, 0.0));
+
+    orthocam->height.setValue(1.0);
+    orthocam->nearDistance.setValue(0.0);
+    orthocam->farDistance.setValue(2.0);
+    orthocam->position = SbVec3f(0.0f, 0.0f, 1.0f);
+
+    SoTranslation *eventLabelTranslation = new SoTranslation;
+    
+    SbVec3f pos = SbVec3f (-0.7,
+                           0.4,
+			   0.0);
+
+    eventLabelTranslation->translation = pos;
+
+    root->addChild(orthocam);
+    root->addChild(color);
+    root->addChild(eventLabelTranslation);
+    root->addChild(text);
+
+    return root;
+}
+
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 using namespace lat;
-// using namespace SIM::Coin3D::Quarter;
+using namespace SIM::Coin3D::Quarter;
 
 IggiApplication::IggiApplication (void)
     : m_state (0),
@@ -76,12 +259,12 @@ IggiApplication::IggiApplication (void)
       m_archive (0),
       m_appname (0)
 {
-    // Quarter::init();
+    Quarter::init();
 }
 
 IggiApplication::~IggiApplication (void)
 {
-    // Quarter::clean();
+    Quarter::clean();
 }
 
 IgState *
@@ -174,8 +357,11 @@ int
 IggiApplication::doRun (int argc, char *argv[])
 {
     QApplication app (argc, argv);
-    QWidget * mainwin = SoQt::init(argc, argv, argv[0]);
     setupMainWindow ();
+
+    QWidget * mainwin = SoQt::init(argc, argv, argv[0]);
+    initShapes ();
+    //    setupMainWindow ();
 
     SoSeparator * root = new SoSeparator;
     root->ref();
@@ -188,13 +374,10 @@ IggiApplication::doRun (int argc, char *argv[])
     SoSeparator * mainScene = new SoSeparator;
     mainScene->ref();
     root->addChild(mainScene);
-    
-    SoMaterial * material = new SoMaterial;
-    material->diffuseColor.setValue(1.0, 0.0, 0.0);
-    mainScene->addChild(material);
-    // mainScene->addChild(new SoCone);
-  
-  
+    SoSeparator * mainSep = new SoSeparator;
+    mainSep->ref();
+    mainScene->addChild(mainSep);
+
     // Set up a second camera for the remaining geometry. This camera
     // will not be picked up and influenced by the viewer, so the
     // geometry will be kept static.
@@ -202,24 +385,23 @@ IggiApplication::doRun (int argc, char *argv[])
     SoSeparator * overlayScene = new SoSeparator;
     overlayScene->ref();
     root->addChild(overlayScene);
-
+    
     SoPerspectiveCamera * pcam = new SoPerspectiveCamera;
     pcam->position = SbVec3f(0, 0, 5);
     pcam->nearDistance = 0.1;
     pcam->farDistance = 10;
     overlayScene->addChild(pcam);
-  
-    // Adds a green cone to demonstrate static geometry.
-  
-    SoMaterial * greenmaterial = new SoMaterial;
-    greenmaterial->diffuseColor.setValue(0, 1.0, 0.0);
-    overlayScene->addChild(greenmaterial);
-    // overlayScene->addChild(new SoCone);
 
-    new IViewSceneGraphService (state (), mainScene, overlayScene);
+    SoSeparator * overlaySep = new SoSeparator;
+    overlayScene->addChild(overlaySep);
+    overlaySep->ref ();
+  
+    new IViewSceneGraphService (state (), mainSep, overlaySep);
 
     SoQtExaminerViewer * viewer = new SoQtExaminerViewer(mainwin);
     viewer->setSceneGraph(root);
+    viewer->setFeedbackVisibility (true);
+    viewer->setTitle ("iSpy 3D");
     viewer->show();
     
     if (argc == 2)
@@ -289,19 +471,30 @@ IggiApplication::setupMainWindow (void)
 
 //     root->addChild(new SoCone);
   
-//     QuarterWidget *viewer = new QuarterWidget;
-//     viewer->setSceneGraph(root);
-//     viewer->setMouseTracking (true);
-//     viewer->show();
+    QuarterWidget *viewer = new QuarterWidget;
 
-//     QScrollArea *scroll = new QScrollArea (m_mainWindow->graphicsView);
-//     scroll->setWidget(viewer);
-//     scroll->setWidgetResizable(true);
-//     scroll->setMinimumSize(300, 200);
-//     scroll->show ();
+    // Add some background text
+    SoSeparator * background = create_background();
+    (void)viewer->getSoRenderManager()->addSuperimposition(background,
+							   SoRenderManager::Superimposition::BACKGROUND);
 
-//     new IViewQWindowService (state (), m_mainWindow, viewer);
-    new IViewQWindowService (state (), m_mainWindow);
+    // Add some super imposed text
+    SoSeparator * superimposed = create_superimposition("No info");
+    (void)viewer->getSoRenderManager()->addSuperimposition(superimposed);
+    
+    viewer->setNavigationModeFile();
+    viewer->setSceneGraph(root);
+    viewer->setMouseTracking (true);
+    viewer->show();
+
+    QScrollArea *scroll = new QScrollArea (m_mainWindow->graphicsView);
+    scroll->setWidget(viewer);
+    scroll->setWidgetResizable(true);
+    scroll->setMinimumSize(300, 200);
+    scroll->show ();
+
+    new IViewQWindowService (state (), m_mainWindow, viewer);
+    //    new IViewQWindowService (state (), m_mainWindow);
 
     delete splash;
 }
@@ -341,6 +534,15 @@ IggiApplication::nextEvent (void)
 	IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
 	ASSERT (scene);
 	scene->clear ();
+
+	IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
+	ASSERT (sceneGraphService);
+	SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
+	overlayScene->removeAllChildren ();
+
+	SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
+	mainScene->removeAllChildren ();
+
 	readZipMember (m_it);
 	m_mainWindow->actionPrevious->setEnabled (true);
 	
@@ -367,6 +569,15 @@ IggiApplication::previousEvent (void)
 	IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
 	ASSERT (scene);
 	scene->clear ();
+
+	IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
+	ASSERT (sceneGraphService);
+	SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
+	overlayScene->removeAllChildren ();
+
+	SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
+	mainScene->removeAllChildren ();
+    
 	readZipMember (m_it);
 	m_mainWindow->actionNext->setEnabled (true);
 	
