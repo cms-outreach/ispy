@@ -1,3 +1,7 @@
+2009-02-23  Lassi A. Tuura  <lat@iki.fi>
+
+	* IgState.cc (put): Add braces for clarity.
+
 2009-02-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IgCollection.h: Fixes for string handling.

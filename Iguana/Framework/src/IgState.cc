@@ -123,10 +123,12 @@ void
 IgState::put (IgStateKey index, IgStateElement *element)
 {
     if (index >= m_elements.size ())
+    {
 	if (! element)
 	    return;
 	else
 	    m_elements.resize (index+1, 0);
+    }
 
     if (m_elements [index] != element)
     {

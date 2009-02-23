@@ -1,4 +1,5 @@
 <use name=Iguana/Framework>
+<flags CXXFLAGS="-O0 -ggdb">
 <bin file=test_CollectionIOPerformance.cpp></bin>
 <bin file=test_CreateSimpleAssociations.cpp></bin>
 <bin file=test_CreateWriteReadWriteReadPrintNoAssociations.cpp></bin>
