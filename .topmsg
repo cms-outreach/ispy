@@ -1,0 +1,6 @@
+From: Giulio Eulisse <giulio.eulisse@cern.ch>
+Subject: [PATCH] fixes/fix-associations
+
+Fixes associations bug reported by Ianna.
+
+Signed-off-by: Giulio Eulisse <giulio.eulisse@cern.ch>
