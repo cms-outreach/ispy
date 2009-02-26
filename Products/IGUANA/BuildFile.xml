@@ -4,4 +4,4 @@
 <use name="classlib"/>
 <use name="pcre"/>
 <use name="openinventor"/>
-
+<use name="stdcpphack"/>

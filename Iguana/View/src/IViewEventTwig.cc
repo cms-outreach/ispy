@@ -127,6 +127,10 @@ IViewEventTwig::onNewEvent (IViewEventMessage& message)
 	SoBaseColor * color = new SoBaseColor;
 	SoOrthographicCamera * orthocam = new SoOrthographicCamera;
 
+	SoFont* labelFont = new SoFont;
+	labelFont->size.setValue (12.0);
+	labelFont->name.setValue ("Arial");
+
 	text->string.setValue(m_text.c_str ());
 	color->rgb.setValue(SbColor(1.0, 0.0, 0.0));
 
@@ -146,6 +150,7 @@ IViewEventTwig::onNewEvent (IViewEventMessage& message)
 	root->addChild(orthocam);
 	root->addChild(color);
 	root->addChild(eventLabelTranslation);
+	root->addChild(labelFont);
 	root->addChild(text);
 
 	SoRenderManager::Superimposition *super = windowService->viewer ()->getSoRenderManager()->addSuperimposition(root);

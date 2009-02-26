@@ -13,6 +13,12 @@
 class IgState;
 class IggiMainWindow;
 class IggiTreeModel;
+class QModelIndex;
+class IgDataStorage;
+class IgCollectionTableModel;
+class IgMultiStorageTreeModel;
+class SoSeparator;
+class QTreeView;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
@@ -52,11 +58,21 @@ protected:
     virtual void        setupMainWindow (void);
     virtual int         initState (void);
 
+private slots:
+    void 		collectionChanged (const QModelIndex &index);
+    void		exit (void);
+
 private:
-    int 		doRun (int argc, char *argv[]);
+    int 		doRun (void);
     void		closeFile (void);
     void		loadFile (const QString &fileName);
     void 		readZipMember (lat::ZipArchive::Iterator it);
+    void		closeGeomFile (void);
+    void		loadGeomFile (const QString &fileName);
+    void 		readGeomZipMember (lat::ZipArchive::Iterator it);
+    void		defaultSettings (void);
+    SoSeparator * 	createBackground (void);
+    SoSeparator * 	createSuperimposition (std::string label);
     
     IgState	       *m_state;
     int			m_argc;
@@ -64,8 +80,18 @@ private:
     IggiMainWindow     *m_mainWindow;
     IggiTreeModel      *m_model;
     lat::ZipArchive    *m_archive;
+    lat::ZipArchive    *m_geomArchive;
     char               *m_appname;
     lat::ZipArchive::Iterator m_it; 
+    lat::ZipArchive::Iterator m_geomIt; 
+
+    IgCollectionTableModel 	*m_collectionModel;
+    IgMultiStorageTreeModel 	*m_storageModel; 
+    IgDataStorage 		*m_storage;
+    IgDataStorage 		*m_geomStorage;
+    QTreeView			*m_myTreeView;
+
+    bool	    	m_init;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

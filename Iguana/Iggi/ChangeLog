@@ -1,3 +1,37 @@
+2009-02-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollectionTableModel.h, IgCollectionTableModel.cc: Detailed
+	collection model to view in a table.
+	* IgMultiStorageTreeModel.h, IgMultiStorageTreeModel.cc: A model
+	to add multiple data storages. Currently displayed in a tree
+	view.
+	* IgDataStorageTableModel.h, IgDataStorageTableModel.cc: A model
+	for data storage.
+
+2009-02-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgVariantDelegate.h, IgVariantDelegate.cc: Add support for QUrl
+	type.
+	* IgLocationDialog.cc: Correct the default choice.
+	* IggiMainWindow.cc: Disable Mac and Windows specific choices for
+	Unix application.
+
+2009-02-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSettingsEditor.h, IgSettingsEditor.cc: Test program for
+	a settings editor.
+	* IgLocationDialog.h, IgLocationDialog.cc, IgSettingsTree.h,
+	IgSettingsTree.cc, IgVariantDelegate.h, IgVariantDelegate.cc: New
+	classes for the settings editor.
+	* IggiMainWindow.h, IggiMainWindow.cc: Add slots to handle the
+	settings editor.
+	* IgMainWindow.ui, ui_IgMainWindow.h: Modify to handle visibility
+	of doc windows correctly. Add menus and actions for the settings
+	editor.
+	* test/test_IgSettingsEditor.cpp: Standalone test of the settings
+	editor.
+	* test/BuildFile: Build the new test.
+
 2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* bin/BuildFile: Rename iggi to ispy.

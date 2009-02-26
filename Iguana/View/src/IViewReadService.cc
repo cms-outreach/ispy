@@ -19,6 +19,7 @@ IG_DEFINE_STATE_ELEMENT (IViewReadService, "Services/iView Framework/Reader");
 IViewReadService::IViewReadService (IgState *state)
     : m_state (state),
       m_storage (0),
+      m_esStorage (0),
       m_dispatcher (new IViewEventDispatcher ())
 {
     ASSERT (state);
@@ -37,6 +38,7 @@ void
 IViewReadService::init (void)
 {
     m_storage = new IgDataStorage;
+    m_esStorage = new IgDataStorage;
 }
 
 void
@@ -49,11 +51,28 @@ IViewReadService::preEventProcessing (void)
 }
 
 void
+IViewReadService::preESProcessing (void)
+{
+    if (m_esStorage != 0)
+	delete m_esStorage;
+
+    m_esStorage = new IgDataStorage;
+}
+
+void
 IViewReadService::postEventProcessing (void)
 {
     ASSERT (m_storage);
     delete m_storage;
     m_storage = 0;
+}
+
+void
+IViewReadService::postESProcessing (void)
+{
+    ASSERT (m_esStorage);
+    delete m_esStorage;
+    m_esStorage = 0;
 }
 
 IViewReadService::IViewEventDispatcher *

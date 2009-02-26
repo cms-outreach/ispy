@@ -2,6 +2,7 @@
 
 #include "Iguana/View/interface/IViewQWindowService.h"
 #include <classlib/utils/DebugAids.h>
+#include <Inventor/nodes/SoNodes.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -37,6 +38,10 @@ IViewQWindowService::~IViewQWindowService (void)
     ASSERT (m_state);
     ASSERT (m_mainWindow);
     ASSERT (m_viewer);
+    ASSERT (m_super);
+    m_viewer->getSoRenderManager()->removeSuperimposition (m_super);
+    m_viewer->getSceneGraph ()->unref ();
+    
     m_state->detach (s_key);
 }
 

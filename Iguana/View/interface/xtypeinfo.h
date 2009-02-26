@@ -12,6 +12,7 @@
 
 class IViewQueuedTwig;
 class IViewDTRecSegment4DTwig;
+class IViewDetectorTwig;
 class IViewEventTwig;
 class IViewTrackTwig;
 class IViewSiStripDigiTwig;
@@ -37,6 +38,7 @@ class IgSimpleTextModel;
 
 XTYPEINFO_DECLARE (, IViewQueuedTwig);
 XTYPEINFO_DECLARE (, IViewDTRecSegment4DTwig);
+XTYPEINFO_DECLARE (, IViewDetectorTwig);
 XTYPEINFO_DECLARE (, IViewEventTwig);
 XTYPEINFO_DECLARE (, IViewTrackTwig);
 XTYPEINFO_DECLARE (, IViewSiStripDigiTwig);

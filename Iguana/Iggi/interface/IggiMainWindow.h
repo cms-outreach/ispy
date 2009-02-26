@@ -16,6 +16,11 @@
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
+
+class IgLocationDialog;
+class IgSettingsTree;
+class QSettings;
+
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
@@ -35,7 +40,18 @@ public slots:
     void showRZGrid (bool value);
     void zoomIn ();
     void zoomOut ();
-
+    void writeSettings (bool value);
+    void showSettingsEditor (void);    
+    void about (void);
+    void aboutQt (void);
+    void openSettings (void);
+    void openIniFile (void);
+    void openPropertyList (void);
+    void openRegistryPath (void);
+    void refreshSettingsEditor (void);
+    void setAutoRefresh (bool value);
+    void setFallbacksEnable (bool value);
+    
 private:
     IgPolarCoordSystem* m_RPhiGrid;
     IgPolarCSControl*   m_RPhiGridControl;
@@ -46,6 +62,11 @@ private:
     IggiControlCenter*  m_controlCenter;
     qreal		m_xScale;
     qreal		m_yScale;
+
+    IgLocationDialog 	*locationDialog_;
+    IgSettingsTree 	*settingsTree_;
+
+    void 		setSettingsObject (QSettings *settings);
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

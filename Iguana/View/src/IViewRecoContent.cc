@@ -2,6 +2,7 @@
 
 #include "Iguana/View/interface/IViewRecoContent.h"
 #include "Iguana/View/interface/IViewEventTwig.h"
+#include "Iguana/View/interface/IViewDetectorTwig.h"
 #include "Iguana/View/interface/IViewTrackTwig.h"
 #include "Iguana/View/interface/IViewDTRecSegment4DTwig.h"
 #include "Iguana/View/interface/IViewSiStripDigiTwig.h"
@@ -63,4 +64,6 @@ IViewRecoContent::init (void)
     twig14->selfVisible (true);
     IgTwig *twig15 = new IViewMuonTwig (state (), rootTwig, "Muons");
     twig15->selfVisible (true);
+    IgTwig *twig16 = new IViewDetectorTwig (state (), rootTwig, "Geometry");
+    twig16->selfVisible (true);
 }

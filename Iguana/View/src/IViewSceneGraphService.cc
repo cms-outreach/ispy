@@ -2,6 +2,7 @@
 
 #include "Iguana/View/interface/IViewSceneGraphService.h"
 #include <classlib/utils/DebugAids.h>
+#include <Inventor/nodes/SoNodes.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -32,6 +33,8 @@ IViewSceneGraphService::~IViewSceneGraphService (void)
     ASSERT (m_state);
     ASSERT (m_sceneGraph);
     ASSERT (m_overlaySceneGraph);
+    m_sceneGraph->unref ();
+    m_overlaySceneGraph->unref ();
     m_state->detach (s_key);
 }
 

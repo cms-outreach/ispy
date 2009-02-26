@@ -37,14 +37,19 @@ public:
     // implicit destructor
     IgDataStorage*	dataStorage (void)
 	{ return m_storage; }
+    IgDataStorage*	esStorage (void)
+	{ return m_esStorage; }
 
     void 		preEventProcessing (void);
+    void 		preESProcessing (void);
     void		postEventProcessing (void);
+    void		postESProcessing (void);
     IViewEventDispatcher *dispatcher (unsigned int eventType);
     
 private:
     IgState	      	*m_state;
     IgDataStorage     	*m_storage;
+    IgDataStorage     	*m_esStorage;
 
     IViewEventDispatcher *m_dispatcher;
 

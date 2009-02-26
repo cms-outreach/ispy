@@ -1,3 +1,45 @@
+2009-02-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewDetectorTwig.cc: Add DT geometry representation in 3D
+	Quarter window.
+	* IViewQueuedTwig.cc: Check visibility.
+	* IggiApplication.h, IggiApplication.cc: Add an extra tree
+	view. Move Quarter widget in dock area. Fix selection from
+	multiple data storages.
+
+	* IggiApplication.h, IggiApplication.cc: Clean up the
+	resources. Use a separate data storage from a reader service to get
+	the geometry.
+	* IViewDetectorTwig.cc: Add drawing.
+	* IViewEventTwig.cc: Use Arial font.
+	* IViewReadService.h, IViewReadService.cc: Add a separate storage
+	for geometry.
+	* IViewRecoContent.cc, xtypeinfo.h, xtypeinfo.cc: Add
+	IViewDetectorTwig. 
+
+2009-02-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Do not do anything if the open file dialog
+	is canceled. 
+
+	* IggiApplication.cc: Add second storage to parse the
+	geometry. Read it only once. 
+
+	* IggiApplication.h, IggiApplication.cc: Add reading in
+	geometry. Move to the new models for Tree and Table views.
+
+2009-02-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Clean up commented out code.
+
+	* IggiApplication.h, IggiApplication.cc: Introducing QSettings to
+	store default information. 
+
+	* IggiApplication.h, IggiApplication.cc: Allow passing a file
+	name on a command line.
+
+	* IggiApplication.cc: Add a shortcut to afs area.
+
 2009-02-17  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* Remove SoQt dependency.

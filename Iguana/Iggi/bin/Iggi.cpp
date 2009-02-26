@@ -1,6 +1,8 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "Iguana/View/interface/IggiApplication.h"
+#include <iostream>
+
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -32,6 +34,8 @@ template class __default_alloc_template<1, 0>;
 int
 main (int argc, char *argv[])
 {
+    std :: cout << "**** Starting ispy application (Iguana/Iggi/bin/Iggi.cpp) ****\n ";
+ 
     IggiApplication app;
     return app.run (argc, argv);
 }

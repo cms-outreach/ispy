@@ -4,6 +4,7 @@
 #include "Iguana/View/interface/debug.h"
 #include "Iguana/Framework/interface/IgRepSet.h"
 #include <QRegExp>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -38,15 +39,16 @@ IViewQueuedTwig::IViewQueuedTwig (IgState *state, IgTwig *parent,
       m_state (state)
 {
     ASSERT (m_state); 
-//     const edm::ParameterSet *pset = VisConfigurationService::pSet ();
-//     if (pset)
-//     {
-//         std::vector<std::string> twigs;
-//         twigs = pset->getUntrackedParameter<std::vector<std::string> > ("EnabledTwigs", twigs);
-	
-// 	if (std::find_if (twigs.begin (), twigs.end (), ExactMatch (fullName ())) != twigs.end ())
-// 	    selfVisible (true);
-//     }
+
+    QString str ("twigs/visibility/");
+    str.append (fullName ().c_str ());
+    
+    QSettings settings;
+    if (settings.contains (str))
+    {
+	bool flag = settings.value (str).value<bool> ();
+	selfVisible (flag);	
+    }
 }
 
 void

@@ -10,7 +10,7 @@
    </rect>
   </property>
   <property name="windowTitle" >
-   <string>IGUANA Iggi</string>
+   <string>IGUANA iSpy</string>
   </property>
   <property name="windowIcon" >
    <iconset resource="../interface/iggi.qrc" >
@@ -23,14 +23,6 @@
    <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks|QMainWindow::VerticalTabs</set>
   </property>
   <widget class="QWidget" name="centralwidget" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>64</y>
-     <width>1025</width>
-     <height>693</height>
-    </rect>
-   </property>
    <layout class="QGridLayout" name="gridLayout" >
     <item row="0" column="0" >
      <widget class="QSplitter" name="splitter_2" >
@@ -49,8 +41,8 @@
        </property>
        <property name="minimumSize" >
         <size>
-         <width>60</width>
-         <height>100</height>
+         <width>112</width>
+         <height>132</height>
         </size>
        </property>
        <property name="floating" >
@@ -63,14 +55,6 @@
         <string>Tree Explorer</string>
        </property>
        <widget class="QWidget" name="dockTreeWidgetContents" >
-        <property name="geometry" >
-         <rect>
-          <x>0</x>
-          <y>20</y>
-          <width>517</width>
-          <height>655</height>
-         </rect>
-        </property>
         <layout class="QGridLayout" name="gridLayout_3" >
          <item row="0" column="0" >
           <widget class="QTreeView" name="treeView" >
@@ -98,14 +82,6 @@
          <string>Object Inspector</string>
         </property>
         <widget class="QWidget" name="dockTableWidgetContents" >
-         <property name="geometry" >
-          <rect>
-           <x>0</x>
-           <y>20</y>
-           <width>484</width>
-           <height>253</height>
-          </rect>
-         </property>
          <layout class="QGridLayout" name="gridLayout_2" >
           <item row="0" column="0" >
            <widget class="QTableView" name="tableView" >
@@ -158,6 +134,12 @@
     <addaction name="actionPrint" />
     <addaction name="actionSave_Image" />
     <addaction name="separator" />
+    <addaction name="actionOpen_Application_Settings" />
+    <addaction name="actionOpen_INI_File" />
+    <addaction name="actionOpen_Mac_Property_List" />
+    <addaction name="actionOpen_Windows_Registry_Path" />
+    <addaction name="actionRefresh" />
+    <addaction name="separator" />
     <addaction name="actionClose" />
     <addaction name="separator" />
     <addaction name="actionQuit" />
@@ -169,7 +151,8 @@
     <property name="title" >
      <string>&amp;Help</string>
     </property>
-    <addaction name="actionAbout_Iggi" />
+    <addaction name="actionAbout" />
+    <addaction name="actionAbout_Qt" />
    </widget>
    <widget class="QMenu" name="menuEvent" >
     <property name="tearOffEnabled" >
@@ -228,32 +211,32 @@
     <addaction name="actionRPhi_Grid" />
     <addaction name="actionRZ_Grid" />
    </widget>
+   <widget class="QMenu" name="menuOptions" >
+    <property name="tearOffEnabled" >
+     <bool>true</bool>
+    </property>
+    <property name="title" >
+     <string>&amp;Options</string>
+    </property>
+    <property name="separatorsCollapsible" >
+     <bool>true</bool>
+    </property>
+    <addaction name="actionAuto_Refresh" />
+    <addaction name="actionFallbacks" />
+    <addaction name="actionSaveSettings" />
+    <addaction name="separator" />
+    <addaction name="actionEditSettings" />
+   </widget>
    <addaction name="menuFile" />
    <addaction name="menuView" />
    <addaction name="menuEvent" />
+   <addaction name="menuOptions" />
    <addaction name="menuTools" />
    <addaction name="menu_Display" />
    <addaction name="menuHelp" />
   </widget>
-  <widget class="QStatusBar" name="statusbar" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>757</y>
-     <width>1025</width>
-     <height>18</height>
-    </rect>
-   </property>
-  </widget>
+  <widget class="QStatusBar" name="statusbar" />
   <widget class="QToolBar" name="toolBarFile" >
-   <property name="geometry" >
-    <rect>
-     <x>0</x>
-     <y>25</y>
-     <width>155</width>
-     <height>39</height>
-    </rect>
-   </property>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
@@ -269,14 +252,6 @@
    <addaction name="actionPrint" />
   </widget>
   <widget class="QToolBar" name="toolBarEvent" >
-   <property name="geometry" >
-    <rect>
-     <x>155</x>
-     <y>25</y>
-     <width>190</width>
-     <height>39</height>
-    </rect>
-   </property>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
@@ -293,14 +268,6 @@
    <addaction name="actionZoom_Out" />
   </widget>
   <widget class="QToolBar" name="toolBar" >
-   <property name="geometry" >
-    <rect>
-     <x>345</x>
-     <y>25</y>
-     <width>680</width>
-     <height>39</height>
-    </rect>
-   </property>
    <property name="windowTitle" >
     <string>toolBar</string>
    </property>
@@ -331,12 +298,12 @@
     <string>Open...</string>
    </property>
   </action>
-  <action name="actionAbout_Iggi" >
+  <action name="actionAbout" >
    <property name="enabled" >
     <bool>true</bool>
    </property>
    <property name="text" >
-    <string>About Iggi</string>
+    <string>About</string>
    </property>
   </action>
   <action name="actionNext" >
@@ -501,7 +468,7 @@
    <property name="icon" >
     <iconset resource="../interface/iggi.qrc" >
      <normaloff>:/images/crosshair.png</normaloff>
-     <normalon>crosshair.png</normalon>:/images/crosshair.png</iconset>
+     <normalon>:/images/crosshair.png</normalon>:/images/crosshair.png</iconset>
    </property>
    <property name="text" >
     <string>RPhi Grid</string>
@@ -514,7 +481,7 @@
    <property name="icon" >
     <iconset resource="../interface/iggi.qrc" >
      <normaloff>:/images/grid.png</normaloff>
-     <normalon>grid.png</normalon>:/images/grid.png</iconset>
+     <normalon>:/images/grid.png</normalon>:/images/grid.png</iconset>
    </property>
    <property name="text" >
     <string>RZ Grid</string>
@@ -545,10 +512,84 @@
    <property name="icon" >
     <iconset resource="../interface/iggi.qrc" >
      <normaloff>:/images/controlcenter.png</normaloff>
-     <normalon>controlcenter.png</normalon>:/images/controlcenter.png</iconset>
+     <normalon>:/images/controlcenter.png</normalon>:/images/controlcenter.png</iconset>
    </property>
    <property name="text" >
     <string> Control Center</string>
+   </property>
+  </action>
+  <action name="actionSaveSettings" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Save Settings</string>
+   </property>
+   <property name="whatsThis" >
+    <string>Save application settings on exit</string>
+   </property>
+  </action>
+  <action name="actionEditSettings" >
+   <property name="text" >
+    <string>Edit Settings...</string>
+   </property>
+  </action>
+  <action name="actionOpen_Application_Settings" >
+   <property name="text" >
+    <string>Open Application Settings...</string>
+   </property>
+  </action>
+  <action name="actionOpen_INI_File" >
+   <property name="text" >
+    <string>Open INI File...</string>
+   </property>
+  </action>
+  <action name="actionOpen_Mac_Property_List" >
+   <property name="text" >
+    <string>Open Mac Property List...</string>
+   </property>
+  </action>
+  <action name="actionOpen_Windows_Registry_Path" >
+   <property name="text" >
+    <string>Open Windows Registry Path...</string>
+   </property>
+  </action>
+  <action name="actionRefresh" >
+   <property name="checkable" >
+    <bool>false</bool>
+   </property>
+   <property name="checked" >
+    <bool>false</bool>
+   </property>
+   <property name="text" >
+    <string>Refresh</string>
+   </property>
+  </action>
+  <action name="actionAuto_Refresh" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Auto-Refresh</string>
+   </property>
+  </action>
+  <action name="actionFallbacks" >
+   <property name="checkable" >
+    <bool>true</bool>
+   </property>
+   <property name="checked" >
+    <bool>true</bool>
+   </property>
+   <property name="text" >
+    <string>Fallbacks</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt" >
+   <property name="text" >
+    <string>About Qt</string>
    </property>
   </action>
  </widget>
@@ -574,9 +615,9 @@
   </connection>
   <connection>
    <sender>actionObject_Inspector</sender>
-   <signal>toggled(bool)</signal>
+   <signal>triggered(bool)</signal>
    <receiver>dockTableWidget</receiver>
-   <slot>setVisible(bool)</slot>
+   <slot>setShown(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>-1</x>
@@ -590,9 +631,9 @@
   </connection>
   <connection>
    <sender>actionTwig_Explorer</sender>
-   <signal>toggled(bool)</signal>
+   <signal>triggered(bool)</signal>
    <receiver>dockTreeWidget</receiver>
-   <slot>setVisible(bool)</slot>
+   <slot>setShown(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
      <x>-1</x>
@@ -684,6 +725,214 @@
     </hint>
    </hints>
   </connection>
+  <connection>
+   <sender>actionSaveSettings</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>writeSettings(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionEditSettings</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>showSettingsEditor()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAbout</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>about()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAbout_Qt</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>aboutQt()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen_Application_Settings</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>openSettings()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen_INI_File</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>openIniFile()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen_Mac_Property_List</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>openPropertyList()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionOpen_Windows_Registry_Path</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>openRegistryPath()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionRefresh</sender>
+   <signal>triggered()</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>refreshSettingsEditor()</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionAuto_Refresh</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>setAutoRefresh(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionFallbacks</sender>
+   <signal>triggered(bool)</signal>
+   <receiver>IgMainWindow</receiver>
+   <slot>setFallbacksEnable(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>512</x>
+     <y>387</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dockTableWidget</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionObject_Inspector</receiver>
+   <slot>setOn(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>765</x>
+     <y>565</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>dockTreeWidget</sender>
+   <signal>visibilityChanged(bool)</signal>
+   <receiver>actionTwig_Explorer</receiver>
+   <slot>setOn(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>259</x>
+     <y>410</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+   </hints>
+  </connection>
  </connections>
  <slots>
   <slot>showRPhiGrid(bool)</slot>
@@ -691,5 +940,17 @@
   <slot>zoomIn()</slot>
   <slot>zoomOut()</slot>
   <slot>showControlCenter(bool)</slot>
+  <slot>writeSettings(bool)</slot>
+  <slot>editSettings()</slot>
+  <slot>showSettingsEditor()</slot>
+  <slot>openSettings()</slot>
+  <slot>openIniFile()</slot>
+  <slot>openPropertyList()</slot>
+  <slot>openRegistryPath()</slot>
+  <slot>refreshSettingsEditor()</slot>
+  <slot>setAutoRefresh(bool)</slot>
+  <slot>setFallbacksEnable(bool)</slot>
+  <slot>about()</slot>
+  <slot>aboutQt()</slot>
  </slots>
 </ui>

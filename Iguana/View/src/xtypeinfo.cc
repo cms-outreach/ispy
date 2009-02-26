@@ -2,6 +2,7 @@
 #define QT_NO_EMIT
 #include "Iguana/View/interface/IViewQueuedTwig.h"
 #include "Iguana/View/interface/IViewDTRecSegment4DTwig.h"
+#include "Iguana/View/interface/IViewDetectorTwig.h"
 #include "Iguana/View/interface/IViewEventTwig.h"
 #include "Iguana/View/interface/IViewTrackTwig.h"
 #include "Iguana/View/interface/IViewSiStripDigiTwig.h"
@@ -53,6 +54,7 @@ XTYPEINFO_DEF_1 (IgLegoRep, IgRep, false);
 XTYPEINFO_DEF_1 (IgTextRep, IgRep, false);
 XTYPEINFO_DEF_1 (IViewQueuedTwig, IgSimpleTwig, false);
 XTYPEINFO_DEF_1 (IViewDTRecSegment4DTwig, IViewQueuedTwig, false);
+XTYPEINFO_DEF_1 (IViewDetectorTwig, IViewQueuedTwig, false);
 XTYPEINFO_DEF_1 (IViewEventTwig, IViewQueuedTwig, false);
 XTYPEINFO_DEF_1 (IViewTrackTwig, IViewQueuedTwig, false);
 XTYPEINFO_DEF_1 (IViewSiStripDigiTwig, IViewQueuedTwig, false);

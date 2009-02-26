@@ -1,5 +1,6 @@
 <use name=Qt>
 
+<bin file=test_IgSettingsEditor.cpp></bin>
 <bin file=test_IggiTrajectory.cpp></bin>
 <bin file=test_IggiTrack.cpp></bin>
 <bin file=test_IgHits.cpp></bin>

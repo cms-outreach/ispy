@@ -1,3 +1,7 @@
+2009-02-17  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test/test_main.h: Migrate to use Quarter. 
+
 2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* BuildFile: Remove dependency on GL2PS.

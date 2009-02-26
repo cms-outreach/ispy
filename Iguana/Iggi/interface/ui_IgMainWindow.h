@@ -1,8 +1,8 @@
 /********************************************************************************
 ** Form generated from reading ui file 'IgMainWindow.ui'
 **
-** Created: Tue Jul 29 16:24:04 2008
-**      by: Qt User Interface Compiler version 4.4.0
+** Created: Wed Feb 18 17:23:46 2009
+**      by: Qt User Interface Compiler version 4.4.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
 ********************************************************************************/
@@ -34,7 +34,7 @@ class Ui_IgMainWindow
 public:
     QAction *actionQuit;
     QAction *actionFileOpen;
-    QAction *actionAbout_Iggi;
+    QAction *actionAbout;
     QAction *actionNext;
     QAction *actionPrevious;
     QAction *actionGo_to;
@@ -60,6 +60,16 @@ public:
     QAction *actionZoom_In;
     QAction *actionZoom_Out;
     QAction *actionShowControlCenter;
+    QAction *actionSaveSettings;
+    QAction *actionEditSettings;
+    QAction *actionOpen_Application_Settings;
+    QAction *actionOpen_INI_File;
+    QAction *actionOpen_Mac_Property_List;
+    QAction *actionOpen_Windows_Registry_Path;
+    QAction *actionRefresh;
+    QAction *actionAuto_Refresh;
+    QAction *actionFallbacks;
+    QAction *actionAbout_Qt;
     QWidget *centralwidget;
     QGridLayout *gridLayout;
     QSplitter *splitter_2;
@@ -82,6 +92,7 @@ public:
     QMenu *menuAdd;
     QMenu *menuTools;
     QMenu *menu_Display;
+    QMenu *menuOptions;
     QStatusBar *statusbar;
     QToolBar *toolBarFile;
     QToolBar *toolBarEvent;
@@ -104,9 +115,9 @@ public:
     QIcon icon1;
     icon1.addPixmap(QPixmap(QString::fromUtf8(":/images/fileopen.png")), QIcon::Normal, QIcon::Off);
     actionFileOpen->setIcon(icon1);
-    actionAbout_Iggi = new QAction(IgMainWindow);
-    actionAbout_Iggi->setObjectName(QString::fromUtf8("actionAbout_Iggi"));
-    actionAbout_Iggi->setEnabled(true);
+    actionAbout = new QAction(IgMainWindow);
+    actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
+    actionAbout->setEnabled(true);
     actionNext = new QAction(IgMainWindow);
     actionNext->setObjectName(QString::fromUtf8("actionNext"));
     QIcon icon2;
@@ -177,14 +188,14 @@ public:
     actionRPhi_Grid->setCheckable(true);
     QIcon icon8;
     icon8.addPixmap(QPixmap(QString::fromUtf8(":/images/crosshair.png")), QIcon::Normal, QIcon::Off);
-    icon8.addPixmap(QPixmap(QString::fromUtf8("crosshair.png")), QIcon::Normal, QIcon::On);
+    icon8.addPixmap(QPixmap(QString::fromUtf8("../../../../../../TEST/CMSSW_3_0_0_pre8-ge5/src/Iguana/Iggi/src/crosshair.png")), QIcon::Normal, QIcon::On);
     actionRPhi_Grid->setIcon(icon8);
     actionRZ_Grid = new QAction(IgMainWindow);
     actionRZ_Grid->setObjectName(QString::fromUtf8("actionRZ_Grid"));
     actionRZ_Grid->setCheckable(true);
     QIcon icon9;
     icon9.addPixmap(QPixmap(QString::fromUtf8(":/images/grid.png")), QIcon::Normal, QIcon::Off);
-    icon9.addPixmap(QPixmap(QString::fromUtf8("grid.png")), QIcon::Normal, QIcon::On);
+    icon9.addPixmap(QPixmap(QString::fromUtf8("../../../../../../TEST/CMSSW_3_0_0_pre8-ge5/src/Iguana/Iggi/src/grid.png")), QIcon::Normal, QIcon::On);
     actionRZ_Grid->setIcon(icon9);
     actionZoom_In = new QAction(IgMainWindow);
     actionZoom_In->setObjectName(QString::fromUtf8("actionZoom_In"));
@@ -201,11 +212,37 @@ public:
     actionShowControlCenter->setCheckable(true);
     QIcon icon12;
     icon12.addPixmap(QPixmap(QString::fromUtf8(":/images/controlcenter.png")), QIcon::Normal, QIcon::Off);
-    icon12.addPixmap(QPixmap(QString::fromUtf8("controlcenter.png")), QIcon::Normal, QIcon::On);
+    icon12.addPixmap(QPixmap(QString::fromUtf8("../../../../../../TEST/CMSSW_3_0_0_pre8-ge5/src/Iguana/Iggi/src/controlcenter.png")), QIcon::Normal, QIcon::On);
     actionShowControlCenter->setIcon(icon12);
+    actionSaveSettings = new QAction(IgMainWindow);
+    actionSaveSettings->setObjectName(QString::fromUtf8("actionSaveSettings"));
+    actionSaveSettings->setCheckable(true);
+    actionEditSettings = new QAction(IgMainWindow);
+    actionEditSettings->setObjectName(QString::fromUtf8("actionEditSettings"));
+    actionOpen_Application_Settings = new QAction(IgMainWindow);
+    actionOpen_Application_Settings->setObjectName(QString::fromUtf8("actionOpen_Application_Settings"));
+    actionOpen_INI_File = new QAction(IgMainWindow);
+    actionOpen_INI_File->setObjectName(QString::fromUtf8("actionOpen_INI_File"));
+    actionOpen_Mac_Property_List = new QAction(IgMainWindow);
+    actionOpen_Mac_Property_List->setObjectName(QString::fromUtf8("actionOpen_Mac_Property_List"));
+    actionOpen_Windows_Registry_Path = new QAction(IgMainWindow);
+    actionOpen_Windows_Registry_Path->setObjectName(QString::fromUtf8("actionOpen_Windows_Registry_Path"));
+    actionRefresh = new QAction(IgMainWindow);
+    actionRefresh->setObjectName(QString::fromUtf8("actionRefresh"));
+    actionRefresh->setCheckable(false);
+    actionRefresh->setChecked(false);
+    actionAuto_Refresh = new QAction(IgMainWindow);
+    actionAuto_Refresh->setObjectName(QString::fromUtf8("actionAuto_Refresh"));
+    actionAuto_Refresh->setCheckable(true);
+    actionAuto_Refresh->setChecked(true);
+    actionFallbacks = new QAction(IgMainWindow);
+    actionFallbacks->setObjectName(QString::fromUtf8("actionFallbacks"));
+    actionFallbacks->setCheckable(true);
+    actionFallbacks->setChecked(true);
+    actionAbout_Qt = new QAction(IgMainWindow);
+    actionAbout_Qt->setObjectName(QString::fromUtf8("actionAbout_Qt"));
     centralwidget = new QWidget(IgMainWindow);
     centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
-    centralwidget->setGeometry(QRect(0, 64, 1025, 693));
     gridLayout = new QGridLayout(centralwidget);
     gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
     splitter_2 = new QSplitter(centralwidget);
@@ -219,12 +256,11 @@ public:
     sizePolicy.setVerticalStretch(0);
     sizePolicy.setHeightForWidth(dockTreeWidget->sizePolicy().hasHeightForWidth());
     dockTreeWidget->setSizePolicy(sizePolicy);
-    dockTreeWidget->setMinimumSize(QSize(60, 100));
+    dockTreeWidget->setMinimumSize(QSize(112, 132));
     dockTreeWidget->setFloating(false);
     dockTreeWidget->setFeatures(QDockWidget::AllDockWidgetFeatures);
     dockTreeWidgetContents = new QWidget();
     dockTreeWidgetContents->setObjectName(QString::fromUtf8("dockTreeWidgetContents"));
-    dockTreeWidgetContents->setGeometry(QRect(0, 20, 517, 655));
     gridLayout_3 = new QGridLayout(dockTreeWidgetContents);
     gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
     treeView = new QTreeView(dockTreeWidgetContents);
@@ -247,7 +283,6 @@ public:
     dockTableWidget->setFloating(false);
     dockTableWidgetContents = new QWidget();
     dockTableWidgetContents->setObjectName(QString::fromUtf8("dockTableWidgetContents"));
-    dockTableWidgetContents->setGeometry(QRect(0, 20, 484, 253));
     gridLayout_2 = new QGridLayout(dockTableWidgetContents);
     gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
     tableView = new QTableView(dockTableWidgetContents);
@@ -288,27 +323,28 @@ public:
     menuTools->setTearOffEnabled(true);
     menu_Display = new QMenu(menubar);
     menu_Display->setObjectName(QString::fromUtf8("menu_Display"));
+    menuOptions = new QMenu(menubar);
+    menuOptions->setObjectName(QString::fromUtf8("menuOptions"));
+    menuOptions->setTearOffEnabled(true);
+    menuOptions->setSeparatorsCollapsible(true);
     IgMainWindow->setMenuBar(menubar);
     statusbar = new QStatusBar(IgMainWindow);
     statusbar->setObjectName(QString::fromUtf8("statusbar"));
-    statusbar->setGeometry(QRect(0, 757, 1025, 18));
     IgMainWindow->setStatusBar(statusbar);
     toolBarFile = new QToolBar(IgMainWindow);
     toolBarFile->setObjectName(QString::fromUtf8("toolBarFile"));
-    toolBarFile->setGeometry(QRect(0, 25, 155, 39));
     IgMainWindow->addToolBar(Qt::TopToolBarArea, toolBarFile);
     toolBarEvent = new QToolBar(IgMainWindow);
     toolBarEvent->setObjectName(QString::fromUtf8("toolBarEvent"));
-    toolBarEvent->setGeometry(QRect(155, 25, 190, 39));
     IgMainWindow->addToolBar(Qt::TopToolBarArea, toolBarEvent);
     toolBar = new QToolBar(IgMainWindow);
     toolBar->setObjectName(QString::fromUtf8("toolBar"));
-    toolBar->setGeometry(QRect(345, 25, 680, 39));
     IgMainWindow->addToolBar(Qt::TopToolBarArea, toolBar);
 
     menubar->addAction(menuFile->menuAction());
     menubar->addAction(menuView->menuAction());
     menubar->addAction(menuEvent->menuAction());
+    menubar->addAction(menuOptions->menuAction());
     menubar->addAction(menuTools->menuAction());
     menubar->addAction(menu_Display->menuAction());
     menubar->addAction(menuHelp->menuAction());
@@ -322,12 +358,19 @@ public:
     menuFile->addAction(actionPrint);
     menuFile->addAction(actionSave_Image);
     menuFile->addSeparator();
+    menuFile->addAction(actionOpen_Application_Settings);
+    menuFile->addAction(actionOpen_INI_File);
+    menuFile->addAction(actionOpen_Mac_Property_List);
+    menuFile->addAction(actionOpen_Windows_Registry_Path);
+    menuFile->addAction(actionRefresh);
+    menuFile->addSeparator();
     menuFile->addAction(actionClose);
     menuFile->addSeparator();
     menuFile->addAction(actionQuit);
     menuRecentOpenedFiles->addSeparator();
     menuRecentOpenedFiles->addAction(actionClearMenu);
-    menuHelp->addAction(actionAbout_Iggi);
+    menuHelp->addAction(actionAbout);
+    menuHelp->addAction(actionAbout_Qt);
     menuEvent->addAction(actionNext);
     menuEvent->addAction(actionPrevious);
     menuEvent->addAction(actionGo_to);
@@ -351,6 +394,11 @@ public:
     menu_Display->addSeparator();
     menu_Display->addAction(actionRPhi_Grid);
     menu_Display->addAction(actionRZ_Grid);
+    menuOptions->addAction(actionAuto_Refresh);
+    menuOptions->addAction(actionFallbacks);
+    menuOptions->addAction(actionSaveSettings);
+    menuOptions->addSeparator();
+    menuOptions->addAction(actionEditSettings);
     toolBarFile->addAction(actionFileNew);
     toolBarFile->addAction(actionFileOpen);
     toolBarFile->addAction(actionSave);
@@ -366,24 +414,37 @@ public:
 
     retranslateUi(IgMainWindow);
     QObject::connect(actionQuit, SIGNAL(triggered()), IgMainWindow, SLOT(close()));
-    QObject::connect(actionObject_Inspector, SIGNAL(toggled(bool)), dockTableWidget, SLOT(setVisible(bool)));
-    QObject::connect(actionTwig_Explorer, SIGNAL(toggled(bool)), dockTreeWidget, SLOT(setVisible(bool)));
+    QObject::connect(actionObject_Inspector, SIGNAL(triggered(bool)), dockTableWidget, SLOT(setShown(bool)));
+    QObject::connect(actionTwig_Explorer, SIGNAL(triggered(bool)), dockTreeWidget, SLOT(setShown(bool)));
     QObject::connect(actionRPhi_Grid, SIGNAL(triggered(bool)), IgMainWindow, SLOT(showRPhiGrid(bool)));
     QObject::connect(actionRZ_Grid, SIGNAL(triggered(bool)), IgMainWindow, SLOT(showRZGrid(bool)));
     QObject::connect(actionZoom_In, SIGNAL(triggered()), IgMainWindow, SLOT(zoomIn()));
     QObject::connect(actionZoom_Out, SIGNAL(triggered()), IgMainWindow, SLOT(zoomOut()));
     QObject::connect(actionShowControlCenter, SIGNAL(triggered(bool)), IgMainWindow, SLOT(showControlCenter(bool)));
+    QObject::connect(actionSaveSettings, SIGNAL(triggered(bool)), IgMainWindow, SLOT(writeSettings(bool)));
+    QObject::connect(actionEditSettings, SIGNAL(triggered()), IgMainWindow, SLOT(showSettingsEditor()));
+    QObject::connect(actionAbout, SIGNAL(triggered()), IgMainWindow, SLOT(about()));
+    QObject::connect(actionAbout_Qt, SIGNAL(triggered()), IgMainWindow, SLOT(aboutQt()));
+    QObject::connect(actionOpen_Application_Settings, SIGNAL(triggered()), IgMainWindow, SLOT(openSettings()));
+    QObject::connect(actionOpen_INI_File, SIGNAL(triggered()), IgMainWindow, SLOT(openIniFile()));
+    QObject::connect(actionOpen_Mac_Property_List, SIGNAL(triggered()), IgMainWindow, SLOT(openPropertyList()));
+    QObject::connect(actionOpen_Windows_Registry_Path, SIGNAL(triggered()), IgMainWindow, SLOT(openRegistryPath()));
+    QObject::connect(actionRefresh, SIGNAL(triggered()), IgMainWindow, SLOT(refreshSettingsEditor()));
+    QObject::connect(actionAuto_Refresh, SIGNAL(triggered(bool)), IgMainWindow, SLOT(setAutoRefresh(bool)));
+    QObject::connect(actionFallbacks, SIGNAL(triggered(bool)), IgMainWindow, SLOT(setFallbacksEnable(bool)));
+    QObject::connect(dockTableWidget, SIGNAL(visibilityChanged(bool)), actionObject_Inspector, SLOT(setOn(bool)));
+    QObject::connect(dockTreeWidget, SIGNAL(visibilityChanged(bool)), actionTwig_Explorer, SLOT(setOn(bool)));
 
     QMetaObject::connectSlotsByName(IgMainWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *IgMainWindow)
     {
-    IgMainWindow->setWindowTitle(QApplication::translate("IgMainWindow", "IGUANA Iggi", 0, QApplication::UnicodeUTF8));
+    IgMainWindow->setWindowTitle(QApplication::translate("IgMainWindow", "IGUANA iSpy", 0, QApplication::UnicodeUTF8));
     actionQuit->setText(QApplication::translate("IgMainWindow", "&Quit", 0, QApplication::UnicodeUTF8));
     actionQuit->setShortcut(QApplication::translate("IgMainWindow", "Ctrl+Q", 0, QApplication::UnicodeUTF8));
     actionFileOpen->setText(QApplication::translate("IgMainWindow", "Open...", 0, QApplication::UnicodeUTF8));
-    actionAbout_Iggi->setText(QApplication::translate("IgMainWindow", "About Iggi", 0, QApplication::UnicodeUTF8));
+    actionAbout->setText(QApplication::translate("IgMainWindow", "About", 0, QApplication::UnicodeUTF8));
     actionNext->setText(QApplication::translate("IgMainWindow", "&Next", 0, QApplication::UnicodeUTF8));
     actionNext->setShortcut(QApplication::translate("IgMainWindow", "Ctrl+N", "Show next event in the ig file", QApplication::UnicodeUTF8));
     actionPrevious->setText(QApplication::translate("IgMainWindow", "&Previous", 0, QApplication::UnicodeUTF8));
@@ -413,6 +474,21 @@ public:
     actionZoom_In->setText(QApplication::translate("IgMainWindow", "Zoom In", 0, QApplication::UnicodeUTF8));
     actionZoom_Out->setText(QApplication::translate("IgMainWindow", "Zoom Out", 0, QApplication::UnicodeUTF8));
     actionShowControlCenter->setText(QApplication::translate("IgMainWindow", " Control Center", 0, QApplication::UnicodeUTF8));
+    actionSaveSettings->setText(QApplication::translate("IgMainWindow", "Save Settings", 0, QApplication::UnicodeUTF8));
+
+#ifndef QT_NO_WHATSTHIS
+    actionSaveSettings->setWhatsThis(QApplication::translate("IgMainWindow", "Save application settings on exit", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_WHATSTHIS
+
+    actionEditSettings->setText(QApplication::translate("IgMainWindow", "Edit Settings...", 0, QApplication::UnicodeUTF8));
+    actionOpen_Application_Settings->setText(QApplication::translate("IgMainWindow", "Open Application Settings...", 0, QApplication::UnicodeUTF8));
+    actionOpen_INI_File->setText(QApplication::translate("IgMainWindow", "Open INI File...", 0, QApplication::UnicodeUTF8));
+    actionOpen_Mac_Property_List->setText(QApplication::translate("IgMainWindow", "Open Mac Property List...", 0, QApplication::UnicodeUTF8));
+    actionOpen_Windows_Registry_Path->setText(QApplication::translate("IgMainWindow", "Open Windows Registry Path...", 0, QApplication::UnicodeUTF8));
+    actionRefresh->setText(QApplication::translate("IgMainWindow", "Refresh", 0, QApplication::UnicodeUTF8));
+    actionAuto_Refresh->setText(QApplication::translate("IgMainWindow", "Auto-Refresh", 0, QApplication::UnicodeUTF8));
+    actionFallbacks->setText(QApplication::translate("IgMainWindow", "Fallbacks", 0, QApplication::UnicodeUTF8));
+    actionAbout_Qt->setText(QApplication::translate("IgMainWindow", "About Qt", 0, QApplication::UnicodeUTF8));
     dockTreeWidget->setWindowTitle(QApplication::translate("IgMainWindow", "Tree Explorer", 0, QApplication::UnicodeUTF8));
     dockTableWidget->setWindowTitle(QApplication::translate("IgMainWindow", "Object Inspector", 0, QApplication::UnicodeUTF8));
     menuFile->setTitle(QApplication::translate("IgMainWindow", "&File", 0, QApplication::UnicodeUTF8));
@@ -423,6 +499,7 @@ public:
     menuAdd->setTitle(QApplication::translate("IgMainWindow", "Add...", 0, QApplication::UnicodeUTF8));
     menuTools->setTitle(QApplication::translate("IgMainWindow", "&Tools", 0, QApplication::UnicodeUTF8));
     menu_Display->setTitle(QApplication::translate("IgMainWindow", "&Display", 0, QApplication::UnicodeUTF8));
+    menuOptions->setTitle(QApplication::translate("IgMainWindow", "&Options", 0, QApplication::UnicodeUTF8));
     toolBarFile->setWindowTitle(QApplication::translate("IgMainWindow", "toolBar", 0, QApplication::UnicodeUTF8));
     toolBarEvent->setWindowTitle(QApplication::translate("IgMainWindow", "toolBar", 0, QApplication::UnicodeUTF8));
     toolBar->setWindowTitle(QApplication::translate("IgMainWindow", "toolBar", 0, QApplication::UnicodeUTF8));

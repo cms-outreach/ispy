@@ -1,23 +1,16 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
-#include "Iguana/Inventor/interface/config.h"
-#include <QWidget>
 #include <Inventor/SoOutput.h> 
-#include <Inventor/SoPickedPoint.h> 
 #include <Inventor/actions/SoWriteAction.h>
-#include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
-#include <Inventor/Qt/SoQt.h>
-#include <classlib/utils/DebugAids.h>
-#include <classlib/utils/Signal.h>
+#include <Quarter/Quarter.h>
+#include <Quarter/QuarterWidget.h>
 #include <QApplication>
 #include <QTimer>
-#include <QWidget>
-#include <cstdlib>
-#include <cmath>
+#include <QMainWindow>
+#include <classlib/utils/Signal.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 
@@ -37,13 +30,15 @@ QString makeTest (SoSeparator *root);
 
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
+using namespace SIM::Coin3D::Quarter;
+
 int main (int argc, char **argv)
 {
     lat::Signal::handleFatal (argv [0]);
 
     QApplication app (argc, argv);
+    Quarter::init(true);
 
-    QWidget		*mainWindow = SoQt::init (argc, argv, "IGUANA Shape Test");
     SoSelection		*top = new SoSelection;
     SoSeparator		*root = new SoSeparator;
 
@@ -66,23 +61,35 @@ int main (int argc, char **argv)
 	wa.apply (root);
     }
 
-    mainWindow->setGeometry (0, 0, 800, 600); // (0, 0, 400, 300);
-    SoQtExaminerViewer *viewer = new SoQtExaminerViewer (mainWindow);
-    // viewer->setGeometry (0, 0, 800, 600);
-    viewer->setTitle (title.toLatin1());
-    viewer->setGLRenderAction (new SoLineHighlightRenderAction);
-    viewer->redrawOnSelectionChange (top);
+    QMainWindow * mainwin = new QMainWindow();
+
+    // Create a QuarterWidget for displaying a Coin scene graph
+    QuarterWidget *viewer = new QuarterWidget (mainwin);
     viewer->setSceneGraph (top);
+    viewer->setNavigationModeFile ();
     viewer->viewAll ();
-    viewer->show ();
-    SoQt::show (mainWindow);
-    mainWindow->show ();
+
+    mainwin->setWindowTitle (title);
+    mainwin->setCentralWidget(viewer);
+    mainwin->setGeometry (0, 0, 800, 600);
+
+    // Pop up the QuarterWidget
+    mainwin->show();
 
     QTimer::singleShot (10 * 60 * 1000, qApp, SLOT(quit()));
-    app.exec ();
-    SoQt::mainLoop ();
-    top->unref ();
-    delete viewer;
+
+    // Loop until exit.
+    app.exec();
+
+    // Clean up resources.
+    top->unref();
+    
+    // FIXME: Deleting the QuarterWidget crashes X11
+    // and not deleting it leaves some resources uncleaned?
+    // 
+    // delete viewer;
+
+    Quarter::clean();
 
     return 0;
 }
