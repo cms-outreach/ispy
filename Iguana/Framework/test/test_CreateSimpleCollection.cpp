@@ -97,6 +97,20 @@ main()
   IgProperty C_Y = clusters->addProperty("y", 0.0);
   IgProperty C_Z = clusters->addProperty("z", 0.0);
   IgProperty C_E = clusters->addProperty("e", 0.0);
+ 
+  // Checks getProperty / hasProperty API. 
+  assert(clusters->hasProperty ("e"));
+  assert(!clusters->hasProperty ("foo"));
+  assert(clusters->getProperty ("e").handle().data() == C_E.handle().data());
+  bool didThrow = false;
+  try {
+    clusters->getProperty("foo");
+  } 
+  catch (IgSchemaError &e)
+  {
+    didThrow = true;
+  }
+  assert (didThrow);
 
   IgCollectionItem c1 = clusters->create();
   c1["e"] = 5.4;

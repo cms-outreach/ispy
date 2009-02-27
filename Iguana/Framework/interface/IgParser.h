@@ -214,8 +214,9 @@ public:
     stringBuffer.reserve(1024);
     
     parseString(collectionName);
+    
     m_currentCollection = m_storage->getCollectionPtr(collectionName.c_str());
-    m_currentCollection->reserve(1000000);
+    m_currentCollection->reserve(100000);
     skipChar(':');
     skipChar('[');
     if (checkChar(']')) return;

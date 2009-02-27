@@ -3,6 +3,7 @@
 <bin file=test_CollectionIOPerformance.cpp></bin>
 <bin file=test_CreateSimpleAssociations.cpp></bin>
 <bin file=test_CreateWriteReadWriteReadPrintNoAssociations.cpp></bin>
+<bin file=test_ContainersOverride.cpp></bin>
 <bin file=test_CreateSimpleCollection.cpp></bin>
 <bin file=test_LinearAlgebra.cpp></bin>
 <bin file=test_CreateWriteReadWriteReadPrint.cpp></bin>

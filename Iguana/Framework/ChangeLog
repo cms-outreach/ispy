@@ -1,3 +1,9 @@
+2009-02-26  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollection.h: Add checking and getting a property by label.
+	* IgParser.h: Reduce the size of reserved vector.
+	* test/test_ContainersOverride.cpp: New test.
+
 2009-02-23  Lassi A. Tuura  <lat@iki.fi>
 
 	* IgState.cc (put): Add braces for clarity.
