@@ -58,7 +58,7 @@ public:
   
   void skipSpaces(void)
   {
-    while(*m_buffer && (*m_buffer == '\n' || *m_buffer == '\t' || *m_buffer == ' '))
+    while((*m_buffer == ' ' || *m_buffer == '\n' || *m_buffer == '\t' ) && *m_buffer)
     {
       m_buffer++;
     }
@@ -71,15 +71,19 @@ public:
     {
       return false;
     }
-    skipSpaces();
     ++m_buffer;
     return true;
+  }
+  
+  void throwParseError(const int position)
+  {
+    throw ParseError(position);
   }
   
   void skipChar(const char c)
   {
     if(!checkChar(c))
-    { throw ParseError(m_buffer-m_initialBuffer); }
+    { throwParseError(m_buffer-m_initialBuffer); }
   }
 
   void parseInt (int &result)
@@ -88,9 +92,8 @@ public:
     char *endbuf;
     result = strtol(m_buffer, &endbuf, 10);
     if (!endbuf) 
-    { throw ParseError(m_buffer-m_initialBuffer); }
+    { throwParseError(m_buffer-m_initialBuffer); }
     m_buffer = endbuf;
-    skipSpaces();
   }
 
   void parseDouble (double &result)
@@ -99,38 +102,30 @@ public:
     char *endbuf;
     result = strtod(m_buffer, &endbuf);
     if (!endbuf) 
-    { throw ParseError(m_buffer-m_initialBuffer); }
+    { throwParseError(m_buffer-m_initialBuffer); }
     m_buffer = endbuf;
-    skipSpaces();
   }
 
   void parseString(std::string &result)
   {
     skipSpaces();
-    char delimeter = 0;
+    char *delimeter = "\'";
     if(*m_buffer == '\"')
-      delimeter = '\"';
-    else
-      delimeter = '\'';
-    skipChar(delimeter);
-    const char *endbuf = m_buffer;
+      delimeter = "\"";
+    m_buffer++;
+    int stringSize = 0;
     while(true)
     { 
-      if (*endbuf == 0)
+      stringSize += strcspn(m_buffer + stringSize, delimeter);
+      if (m_buffer[stringSize-1] != '\\')
       { break; }
-      if ((*endbuf == delimeter) && (*(endbuf - 1) != '\\'))  
-      { break; }
-      endbuf++; 
     }
-    result = std::string(m_buffer, endbuf-m_buffer);
-    m_buffer = endbuf;
-    skipChar(delimeter);
-    skipSpaces();
+    result.assign(m_buffer, stringSize);
+    m_buffer += stringSize+1;
   }
   
   void parseDoubleTuple(double *result)
   {
-    skipSpaces();
     skipChar('(');
     int i = 0;
     do
@@ -139,16 +134,14 @@ public:
       i++;
     } while(checkChar(','));
     skipChar(')');
-    skipSpaces();
   }
   
-  void parseAssociation(void)
+  void parseAssociation(IgAssociation &result)
   {
     int collectionIdA, objectIdA;
     int collectionIdB, objectIdB;
 
     skipChar('[');  
-    skipSpaces();
     skipChar('[');
     parseInt(collectionIdA);
     skipChar(',');
@@ -160,11 +153,8 @@ public:
     skipChar(',');
     parseInt(objectIdB);
     skipChar(']');
-    skipSpaces();
     skipChar(']');
-    
-    m_currentAssociationSet->associate(IgRef (collectionIdA, objectIdA),
-                                       IgRef (collectionIdB, objectIdB));
+    result.set(collectionIdA, objectIdA, collectionIdB, objectIdB);
   }
   
   void parseAssociationSet(void)
@@ -172,14 +162,23 @@ public:
     std::string name;
     parseString(name);
     m_currentAssociationSet = m_storage->getAssociationSetPtr(name.c_str());
+    m_currentAssociationSet->reserve(1000000);
     skipChar(':');
     skipChar('[');
     if (checkChar(']')) return;
+    int currentRow = 0;
+    int maxSize = 0;
     do
     {
-      parseAssociation();
+      if (currentRow >= maxSize)
+      {
+        maxSize += 100;
+        m_currentAssociationSet->resize(maxSize);
+      }
+      parseAssociation((*m_currentAssociationSet)[currentRow++]);
     } while(checkChar(','));
-
+    m_currentAssociationSet->resize(currentRow);
+    m_currentAssociationSet->compress();
     skipChar(']');
   }
   
@@ -207,24 +206,24 @@ public:
   
   void parseCollection(void)
   {
-    std::string collectionName;
-    double doubleBuffer[4];
-    std::string stringBuffer;
-    
-    stringBuffer.reserve(1024);
-    
-    parseString(collectionName);
-    
-    m_currentCollection = m_storage->getCollectionPtr(collectionName.c_str());
-    m_currentCollection->reserve(100000);
+    parseString(m_currentCollectionName);
+    m_currentCollection = m_storage->getCollectionPtr(m_currentCollectionName.c_str());
+    m_currentCollection->reserve(200000);
     skipChar(':');
     skipChar('[');
     if (checkChar(']')) return;
-    
+    int maxSize = 0;
+    int currentRow = 0;
     do {
+      if (currentRow >= maxSize)
+      {
+        maxSize += 10;
+        m_currentCollection->resize(maxSize);
+      }
+      
       skipChar('[');
       assert(m_currentCollection->properties().size());
-      IgCollectionItem item = m_currentCollection->create();
+      IgCollectionItem item (m_currentCollection, currentRow);
       for (IgCollection::Properties::iterator i = m_currentCollection->properties().begin();
            i != m_currentCollection->properties().end();
            i++)
@@ -232,55 +231,39 @@ public:
         switch ((*i).handle().type())
         {
           case INT_COLUMN:
-            {
-              int result;
-              parseInt(result);
-              item[*i] = result;
-            }
+              parseInt(item.current<int>());
             break;
           case STRING_COLUMN:
-            { 
-              stringBuffer.clear();
-              parseString(stringBuffer);
-              item[*i] = stringBuffer;
-            }
+              parseString(item.current<std::string>());
             break;
           case DOUBLE_COLUMN:
-            {
-              double result;
-              parseDouble(result);
-              item[*i] = result;
-            }
+              parseDouble(item.current<double>());
             break;
           case VECTOR_2D:
-            {
-              parseDoubleTuple(doubleBuffer);
-              item[*i] = IgV2d(doubleBuffer[0], doubleBuffer[1]);
-            }
+            parseDoubleTuple(item.current<IgV2d>().data());
             break;
           case VECTOR_3D:
-            {
-              parseDoubleTuple(doubleBuffer);
-              item[*i] = IgV3d(doubleBuffer[0], doubleBuffer[1], doubleBuffer[2]);
-            }
+            parseDoubleTuple(item.current<IgV3d>().data());
             break;
           case VECTOR_4D:
-            {
-              parseDoubleTuple(doubleBuffer);
-              item[*i] = IgV4d(doubleBuffer[0], doubleBuffer[1], 
-                               doubleBuffer[2], doubleBuffer[3]);
-            }
+            parseDoubleTuple(item.current<IgV4d>().data());
             break;          
           default:
             std::cerr << "Unknown type" << std::endl;
             assert(false);
             break;
         }
+       
         if (i+1 != m_currentCollection->properties().end())
+        {
           skipChar(',');
+          item.nextColumn();
+        }
       }
+      currentRow++;
       skipChar(']');
     } while(checkChar(','));
+    m_currentCollection->resize(currentRow);
     skipChar(']');
     m_currentCollection->compress();
   }
@@ -368,7 +351,7 @@ public:
       std::cerr << "Error at char n. " << position << std::endl;
       std::cerr << parsedSentence << std::endl;
       std::cerr << "^" << std::endl;
-      throw ParseError(position);
+      throwParseError(position);
     }
   }
 private:
@@ -377,6 +360,7 @@ private:
   IgAssociationSet *m_currentAssociationSet;
   const char *m_buffer;
   const char *m_initialBuffer;
+  std::string m_currentCollectionName;
 };
 
 #endif // IGUANA_IG_FILE_IG_PARSER_H

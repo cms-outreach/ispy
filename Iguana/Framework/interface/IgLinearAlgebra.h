@@ -14,6 +14,7 @@ public:
     // TODO: implement using var args
     assert(false);
   }
+  TYPE *data(void) {return m_array; }
 protected:
     T m_array[ELEMENTS];
 };
@@ -31,6 +32,7 @@ public:
         m_array[0] = x;
         m_array[1] = y;
     }
+  TYPE *data(void) {return m_array; }
 protected:
     TYPE m_array[2];
 };
@@ -49,6 +51,7 @@ public:
         m_array[1] = y;
         m_array[2] = z;
     }
+  TYPE *data(void) {return m_array; }
 protected:
     TYPE m_array[3];
 };
@@ -68,6 +71,7 @@ public:
         m_array[2] = z;
         m_array[3] = w;
     }
+  TYPE *data(void) {return m_array; }
 protected:
     TYPE m_array[ELEMENTS];
 };

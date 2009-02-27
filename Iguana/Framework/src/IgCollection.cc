@@ -13,13 +13,14 @@
 
 IgCollectionItem IgCollection::create(void)
 {
-    for (std::vector<IgProperty>::iterator i = m_properties.begin();
-	 i != m_properties.end();
-	 i++)
-    {
-	m_rowCount = i->handle().extend(); 
-    }
-    return IgCollectionItem(this, m_rowCount-1);
+  assert (!m_properties.empty());
+  for (std::vector<IgProperty>::iterator i = m_properties.begin();
+	   i != m_properties.end();
+	   i++)
+  {
+	i->handle().extend(); 
+  }
+  return IgCollectionItem(this, m_rowCount++);
 }
 
 IgCollectionItem IgCollectionIterator::operator*()

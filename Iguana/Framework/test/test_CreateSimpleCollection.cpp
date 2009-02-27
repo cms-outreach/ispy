@@ -31,9 +31,9 @@ main()
   IgCollectionItem t1 = tracks.create();
   assert(t1.currentColumn() == 0);
   t1["someInt"] = 1;
-  assert(t1.currentColumn() == 1);
+  assert(t1.currentColumn() == 0);
   t1["someString"] = std::string("foo");
-  assert(t1.currentColumn() == 2);
+  assert(t1.currentColumn() == 1);
   t1["x"] = 2.0;
   t1["y"] = 2.0;
   t1["z"] = 2.0;
