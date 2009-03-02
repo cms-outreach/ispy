@@ -1,0 +1,8 @@
+2009-02-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* Actual code commit.
+
+	* AppController.h, AppController.cc: A collection browser.
+	* bin/igbrowser.cpp: A standalone executable.
+	* bin/BuildFile: Build rules for binary.
+

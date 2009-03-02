@@ -1,0 +1,4 @@
+<Bin name=igbrowser file=igbrowser.cpp>
+  <use name="Iguana/Iggi">
+  <use name="Iguana/IgFileBrowser">
+</bin>

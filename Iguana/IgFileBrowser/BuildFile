@@ -1,0 +1,7 @@
+<Use name=Qt>
+<use name=classlib>
+
+<export>
+ <Use name=Qt>
+ <Lib name=IgFileBrowser>
+</export>
