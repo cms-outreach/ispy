@@ -1,3 +1,7 @@
+2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* AppController.h: Update of an API.
+
 2009-02-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* Actual code commit.

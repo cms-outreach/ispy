@@ -152,7 +152,10 @@ IggiMainWindow::writeSettings (bool value)
 void 
 IggiMainWindow::showSettingsEditor (void)
 {
-    settingsTree_->show ();
+    if (! settingsTree_->isVisible ())
+	settingsTree_->show ();
+    settingsTree_->activateWindow ();
+    settingsTree_->raise ();
 }
 
 void 
@@ -184,6 +187,7 @@ IggiMainWindow::openSettings (void)
 					    locationDialog_->application ());
 	setSettingsObject (settings);
 	actionFallbacks->setEnabled (true);
+	showSettingsEditor ();	
     }
 }
 

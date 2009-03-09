@@ -41,12 +41,15 @@ IgCollectionTableModel::data (const QModelIndex &index, int role) const
 	return QVariant ();
     if (role != Qt::DisplayRole)
 	return QVariant ();
+    if (!m_collection)
+        return QVariant ();
+
     IgProperty p = m_collection->properties ()[index.column ()];
   
     IgV2d p2;
     IgV3d p3;  
     IgV4d p4;
-    QList<QVariant> l;
+    QStringList l;
 
     switch (p.handle().type())
     {
@@ -61,24 +64,24 @@ IgCollectionTableModel::data (const QModelIndex &index, int role) const
 	break;
     case VECTOR_2D:
 	p2 = p.handle ().get<IgV2d> (index.row ());
-	l.append (p2.x ());
-	l.append (p2.y ());
-	return l;
+	l.append (QString::number (p2.x ()));
+	l.append (QString::number (p2.y ()));
+	return l.join(", ");
 	break;
     case VECTOR_3D:
 	p3 = p.handle ().get<IgV3d> (index.row ());
-	l.append (p3.x ());
-	l.append (p3.y ());
-	l.append (p3.z ());
-	return l;
+	l.append (QString::number (p3.x ()));
+	l.append (QString::number (p3.y ()));
+	l.append (QString::number (p3.z ()));
+	return l.join(", ");
 	break;
     case VECTOR_4D:
 	p4 = p.handle ().get<IgV4d> (index.row ());
-	l.append (p4.x ());
-	l.append (p4.y ());
-	l.append (p4.z ());
-	l.append (p4.w ());
-	return l;
+	l.append (QString::number (p4.x ()));
+	l.append (QString::number (p4.y ()));
+	l.append (QString::number (p4.z ()));
+	l.append (QString::number (p4.w ()));
+	return l.join(", ");
 	break;
     default:
 	assert (false);
@@ -89,8 +92,14 @@ QVariant
 IgCollectionTableModel::headerData (int section, Qt::Orientation orientation,
 		      	            int role) const
 {
-    if (orientation != Qt::Horizontal || role != Qt::DisplayRole)
-	return QVariant ();
+    if (!m_collection)
+        return QVariant ();
+
+    if (role != Qt::DisplayRole)
+        return QVariant ();
+
+    if (orientation == Qt::Vertical)
+	return QVariant (section);
 
     if (section >= m_collection->columnLabels ().size ())
     {
@@ -102,11 +111,16 @@ IgCollectionTableModel::headerData (int section, Qt::Orientation orientation,
 int 
 IgCollectionTableModel::rowCount (const QModelIndex &parent) const
 {
+    if (! m_collection)
+        return 0;
     return m_collection->size ();
 }
 
 int
 IgCollectionTableModel::columnCount (const QModelIndex &parent) const
 {
+    if (! m_collection)
+        return 0;
+
     return m_collection->properties ().size ();
 }

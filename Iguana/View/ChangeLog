@@ -1,3 +1,10 @@
+2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.h, IggiApplication.cc: Updated to a new API to
+	clean collections.
+	* IViewDTRecSegment4DTwig.cc, IViewDetectorTwig.cc,
+	IViewSiStripDigiTwig.cc, IViewTrackTwig.cc: Sync with analyzers.
+
 2009-02-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IViewDetectorTwig.cc: Add DT geometry representation in 3D

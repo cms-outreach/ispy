@@ -16,14 +16,21 @@
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 IgSettingsEditor::IgSettingsEditor (QWidget *parent)
-    : QMainWindow (parent)
+    : QMainWindow (parent),
+      settingsTree_ (new IgSettingsTree)
 {
-    settingsTree_ = new IgSettingsTree;
     setCentralWidget (settingsTree_);
 
     locationDialog_ = 0;
 
     setupUi (this);
+
+    QObject::connect(actionOpen_Settings, SIGNAL(triggered()), this, SLOT(openSettings()));
+    QObject::connect(actionOpen_INI_File, SIGNAL(triggered()), this, SLOT(openIniFile()));
+    QObject::connect(actionOpen_Mac_Property_List, SIGNAL(triggered()), this, SLOT(openPropertyList()));
+    QObject::connect(actionOpen_Windows_Registry_Path, SIGNAL(triggered()), this, SLOT(openRegistryPath()));
+    QObject::connect(actionClose, SIGNAL(triggered()), this, SLOT(hide()));
+    QObject::connect(actionAbout, SIGNAL(triggered()), this, SLOT(about()));
 
     QObject::connect(actionRefresh, SIGNAL(triggered()), settingsTree_, SLOT(refresh()));
     QObject::connect(actionAuto_Refresh, SIGNAL(triggered(bool)), settingsTree_, SLOT(setAutoRefresh(bool)));
@@ -100,7 +107,7 @@ void
 IgSettingsEditor::about (void)
 {
     QMessageBox::about(this, tr("About Settings Editor"),
-		       tr("The <b>Settings Editor</b> example shows how to access "
+		       tr("This <b>Settings Editor</b> example shows how to access "
 			  "application settings using Qt."));
 }
 

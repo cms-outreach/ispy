@@ -25,34 +25,36 @@ IgSettingsTree::IgSettingsTree (QWidget *parent)
     header()->setResizeMode(0, QHeaderView::Stretch);
     header()->setResizeMode(2, QHeaderView::Stretch);
 
-    settings = 0;
-    refreshTimer.setInterval(2000);
-    autoRefresh = false;
+    settings_ = 0;
+    refreshTimer_.setInterval(2000);
+    autoRefresh_ = false;
 
-    groupIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirClosedIcon),
-			QIcon::Normal, QIcon::Off);
-    groupIcon.addPixmap(style()->standardPixmap(QStyle::SP_DirOpenIcon),
-			QIcon::Normal, QIcon::On);
-    keyIcon.addPixmap(style()->standardPixmap(QStyle::SP_FileIcon));
+    groupIcon_.addPixmap(style()->standardPixmap(QStyle::SP_DirClosedIcon),
+			 QIcon::Normal, QIcon::Off);
+    groupIcon_.addPixmap(style()->standardPixmap(QStyle::SP_DirOpenIcon),
+			 QIcon::Normal, QIcon::On);
+    keyIcon_.addPixmap(style()->standardPixmap(QStyle::SP_FileIcon));
 
-    connect(&refreshTimer, SIGNAL(timeout()), this, SLOT(maybeRefresh()));
+    connect(&refreshTimer_, SIGNAL(timeout()), this, SLOT(maybeRefresh()));
 }
 
 void 
 IgSettingsTree::setSettingsObject(QSettings *settings)
 {
-    if (! this->settings)
-	delete this->settings;
-    this->settings = settings;
+    delete this->settings_;
+    this->settings_ = settings;
     clear();
 
-    if (settings) {
-	settings->setParent(this);
+    if (settings) 
+    {
+	settings_->setParent(this);
 	refresh();
-	if (autoRefresh)
-	    refreshTimer.start();
-    } else {
-	refreshTimer.stop();
+	if (autoRefresh_)
+	    refreshTimer_.start();
+    } 
+    else 
+    {
+	refreshTimer_.stop();
     }
 }
 
@@ -65,13 +67,17 @@ IgSettingsTree::sizeHint() const
 void 
 IgSettingsTree::setAutoRefresh(bool autoRefresh)
 {
-    this->autoRefresh = autoRefresh;
-    if (settings) {
-	if (autoRefresh) {
+    this->autoRefresh_ = autoRefresh;
+    if (settings_) 
+    {
+	if (autoRefresh_) 
+	{
 	    maybeRefresh();
-	    refreshTimer.start();
-	} else {
-	    refreshTimer.stop();
+	    refreshTimer_.start();
+	} 
+	else 
+	{
+	    refreshTimer_.stop();
 	}
     }
 }
@@ -79,8 +85,9 @@ IgSettingsTree::setAutoRefresh(bool autoRefresh)
 void 
 IgSettingsTree::setFallbacksEnabled(bool enabled)
 {
-    if (settings) {
-	settings->setFallbacksEnabled(enabled);
+    if (settings_) 
+    {
+	settings_->setFallbacksEnabled(enabled);
 	refresh();
     }
 }
@@ -95,13 +102,13 @@ IgSettingsTree::maybeRefresh()
 void 
 IgSettingsTree::refresh()
 {
-    if (!settings)
+    if (!settings_)
 	return;
 
     disconnect(this, SIGNAL(itemChanged(QTreeWidgetItem *, int)),
 	       this, SLOT(updateSetting(QTreeWidgetItem *)));
 
-    settings->sync();
+    settings_->sync();
     updateChildItems(0);
 
     connect(this, SIGNAL(itemChanged(QTreeWidgetItem *, int)),
@@ -111,8 +118,9 @@ IgSettingsTree::refresh()
 bool 
 IgSettingsTree::event(QEvent *event)
 {
-    if (event->type() == QEvent::WindowActivate) {
-	if (isActiveWindow() && autoRefresh)
+    if (event->type() == QEvent::WindowActivate) 
+    {
+	if (isActiveWindow() && autoRefresh_)
 	    maybeRefresh();
     }
     return QTreeWidget::event(event);
@@ -123,13 +131,14 @@ IgSettingsTree::updateSetting(QTreeWidgetItem *item)
 {
     QString key = item->text(0);
     QTreeWidgetItem *ancestor = item->parent();
-    while (ancestor) {
+    while (ancestor) 
+    {
 	key.prepend(ancestor->text(0) + "/");
 	ancestor = ancestor->parent();
     }
 
-    settings->setValue(key, item->data(2, Qt::UserRole));
-    if (autoRefresh)
+    settings_->setValue(key, item->data(2, Qt::UserRole));
+    if (autoRefresh_)
 	refresh();
 }
 
@@ -138,49 +147,61 @@ IgSettingsTree::updateChildItems(QTreeWidgetItem *parent)
 {
     int dividerIndex = 0;
 
-    foreach (QString group, settings->childGroups()) {
+    foreach (QString group, settings_->childGroups()) {
 	QTreeWidgetItem *child;
 	int childIndex = findChild(parent, group, dividerIndex);
-	if (childIndex != -1) {
+	if (childIndex != -1) 
+	{
 	    child = childAt(parent, childIndex);
 	    child->setText(1, "");
 	    child->setText(2, "");
 	    child->setData(2, Qt::UserRole, QVariant());
 	    moveItemForward(parent, childIndex, dividerIndex);
-	} else {
+	} 
+	else 
+	{
 	    child = createItem(group, parent, dividerIndex);
 	}
-	child->setIcon(0, groupIcon);
+	child->setIcon(0, groupIcon_);
 	++dividerIndex;
 
-	settings->beginGroup(group);
+	settings_->beginGroup(group);
 	updateChildItems(child);
-	settings->endGroup();
+	settings_->endGroup();
     }
 
-    foreach (QString key, settings->childKeys()) {
+    foreach (QString key, settings_->childKeys()) {
 	QTreeWidgetItem *child;
 	int childIndex = findChild(parent, key, 0);
 
-	if (childIndex == -1 || childIndex >= dividerIndex) {
-	    if (childIndex != -1) {
+	if (childIndex == -1 || childIndex >= dividerIndex) 
+	{
+	    if (childIndex != -1) 
+	    {
 		child = childAt(parent, childIndex);
 		for (int i = 0; i < child->childCount(); ++i)
 		    delete childAt(child, i);
 		moveItemForward(parent, childIndex, dividerIndex);
-	    } else {
+	    } 
+	    else 
+	    {
 		child = createItem(key, parent, dividerIndex);
 	    }
-	    child->setIcon(0, keyIcon);
+	    child->setIcon(0, keyIcon_);
 	    ++dividerIndex;
-	} else {
+	} 
+	else 
+	{
 	    child = childAt(parent, childIndex);
 	}
 
-	QVariant value = settings->value(key);
-	if (value.type() == QVariant::Invalid) {
+	QVariant value = settings_->value(key);
+	if (value.type() == QVariant::Invalid) 
+	{
 	    child->setText(1, "Invalid");
-	} else {
+	} 
+	else 
+	{
 	    child->setText(1, value.typeName());
 	}
 	child->setText(2, IgVariantDelegate::displayText(value));

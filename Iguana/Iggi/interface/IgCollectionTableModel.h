@@ -21,7 +21,7 @@ class IgCollectionTableModel : public QAbstractTableModel
 {    
     Q_OBJECT
 public:
-    IgCollectionTableModel(IgCollection *collection, QObject *parent = 0);
+    IgCollectionTableModel(IgCollection *collection = 0, QObject *parent = 0);
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor

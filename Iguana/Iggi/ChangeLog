@@ -1,3 +1,18 @@
+2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollectionTableModel.h, IgCollectionTableModel.cc,
+	IgMultiStorageTreeModel.h, IgMultiStorageTreeModel.cc:
+	`IgMultiDataStorage::clear()` method added. To be used on new
+	event, for example. Now the IgCollectionTable model returs a
+	vertical header, containing the objectId for the given row. It is
+	now possible to build an empty (i.e. without IgCollection)
+	IgCollectionTableModel.
+	* IgSettingsTree.h, IgSettingsEditor.cc, IgSettingsTree.cc: Minor
+	fixes.
+	* ui_IgSettingsEditorMainWindow.h, IgSettingsEditorMainWindow.ui:
+	Updated.
+	* IggiMainWindow.cc: Updated settings editor.
+
 2009-02-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IgCollectionTableModel.h, IgCollectionTableModel.cc: Detailed

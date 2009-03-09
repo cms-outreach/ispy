@@ -113,70 +113,6 @@
  <resources/>
  <connections>
   <connection>
-   <sender>actionOpen_Settings</sender>
-   <signal>triggered()</signal>
-   <receiver>IgSettingsEditorMainWindow</receiver>
-   <slot>openSettings()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>253</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionOpen_INI_File</sender>
-   <signal>triggered()</signal>
-   <receiver>IgSettingsEditorMainWindow</receiver>
-   <slot>openIniFile()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>253</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionOpen_Mac_Property_List</sender>
-   <signal>triggered()</signal>
-   <receiver>IgSettingsEditorMainWindow</receiver>
-   <slot>openPropertyList()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>253</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionOpen_Windows_Registry_Path</sender>
-   <signal>triggered()</signal>
-   <receiver>IgSettingsEditorMainWindow</receiver>
-   <slot>openRegistryPath()</slot>
-   <hints>
-    <hint type="sourcelabel" >
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel" >
-     <x>253</x>
-     <y>299</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>actionClose</sender>
    <signal>triggered()</signal>
    <receiver>IgSettingsEditorMainWindow</receiver>
@@ -210,11 +146,6 @@
   </connection>
  </connections>
  <slots>
-  <slot>openSettings()</slot>
-  <slot>openIniFile()</slot>
-  <slot>openPropertyList()</slot>
-  <slot>openRegistryPath()</slot>
-  <slot>refresh()</slot>
   <slot>setAutoRefresh(bool)</slot>
   <slot>setFallbacksEnable(bool)</slot>
   <slot>about()</slot>

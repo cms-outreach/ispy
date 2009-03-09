@@ -72,7 +72,7 @@ IViewDetectorTwig::onNewEvent (IViewEventMessage& message)
 		if (geometry.size () > 0)
 		{
 		    IgColumnHandle detid = geometry.getHandleByLabel ("detid");
-		    IgColumnHandle name = geometry.getHandleByLabel ("name");
+		    IgColumnHandle name = geometry.getHandleByLabel ("shape");
 		    IgColumnHandle f1 = geometry.getHandleByLabel ("front_1");
 		    IgColumnHandle f2 = geometry.getHandleByLabel ("front_2");
 		    IgColumnHandle f3 = geometry.getHandleByLabel ("front_3");

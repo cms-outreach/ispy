@@ -10,7 +10,9 @@ class AppController : public QObject
     Q_OBJECT
 public:
     AppController (int argc, char **argv)
-	{
+	: storageModel (new IgMultiStorageTreeModel),
+          collectionModel (new IgCollectionTableModel)
+        {
 	    if (argc < 2)
 	    {
 		std::cerr << "igbrowser <file>" << std::endl;
@@ -19,58 +21,92 @@ public:
 
 	    storage = new IgDataStorage;
 	    IgParser parser(storage);
-
-	    FILE *f = fopen(argv[1], "r");
-	    fseek(f, 0, SEEK_END);
-	    int size = ftell(f);
-	    char *buffer = new char[size];
-	    fseek(f, 0, SEEK_SET);
-	    fread (buffer, size, 1, f);
-	    fclose(f);
-	    parser.parse(buffer);
-  
-	    if (storage->collectionNames().size() == 0)
-	    {
-		std::cerr << "Error: no collections found." << std::endl;
-		exit (1);
-	    }
-
-	    collectionModel = new IgCollectionTableModel (&(storage->getCollectionByIndex (2)));
-	    storageModel = new IgMultiStorageTreeModel;
+            
+            setCurrentFile (argv[1]);
 
 	    widget = new QWidget;
+            mainWindow = new QMainWindow;
+            mainWindow->setCentralWidget (widget);
+            QMenu *fileMenu = mainWindow->menuBar ()->addMenu (tr("&File"));
+            fileMenu->addAction ("&Open", this, SLOT(openFileDialog()));
+
 	    QHBoxLayout *layout = new QHBoxLayout (widget);
 
 	    storageView = new QTreeView;
 	    storageView->setModel (storageModel);
 	    layout->addWidget (storageView);
-	    storageModel->addStorage(storage, argv[1]);
 
 	    collectionView = new QTableView;
 	    collectionView->setModel (collectionModel);
 	    layout->addWidget (collectionView);
 
 	    connect (storageView,SIGNAL(activated(const QModelIndex)),this,SLOT(collectionChanged(const QModelIndex)));
-	    widget->show ();
+	    mainWindow->show ();
 	}
 private slots:
 void 
 collectionChanged(const QModelIndex &index)
 	{
 	    QString collectionName = storageModel->data(index, Qt::DisplayRole).toString();
-	    qDebug() << collectionName << " selected";
 	    if (!index.parent().isValid())
 	    {
 		return;
 	    }
 	    collectionModel->setCollection (storage->getCollectionPtr(collectionName.toAscii()));
 	}
-  
+
+    void
+    openFileDialog (void)
+    {
+        storageModel->clear();
+        QString newFile = QFileDialog::getOpenFileName (widget,  tr("Pick up an Event / Geometry file"));
+        QFileInfo info (newFile);
+        if (!info.exists())
+        {
+           QMessageBox::warning (widget, "File not found", "File '" + newFile + "' could not be opened.");
+           return;
+        }
+        setCurrentFile (newFile.toAscii());
+    }
+ 
 private:
+    void setCurrentFile (const char *filename)
+    {   
+        if (storage)
+            delete storage;
+
+        storage = new IgDataStorage;
+        IgParser parser(storage);
+
+        FILE *f = fopen(filename, "r");
+        if (!f)
+        {
+            std::cerr << "File '" << filename << "' does not exists"<< std::endl;
+            exit (1);
+        }
+        
+        fseek (f, 0, SEEK_END);
+        int size = ftell (f);
+        char *buffer = new char[size];
+        fseek (f, 0, SEEK_SET);
+        fread (buffer, size, 1, f);
+        fclose (f);
+        parser.parse (buffer);
+        if (storage->collectionNames ().size () == 0)
+        {
+            std::cerr << "Error: no collections found." << std::endl;
+            exit (1);
+        }
+
+        storageModel->addStorage (storage, filename);
+        collectionModel->setCollection (&(storage->getCollectionByIndex(0)));
+    }
+
     IgDataStorage 		*storage;
+    IgMultiStorageTreeModel     *storageModel;
     IgCollectionTableModel 	*collectionModel;
-    IgMultiStorageTreeModel 	*storageModel; 
     QTreeView 			*storageView;
     QTableView 			*collectionView;
     QWidget 			*widget;
+    QMainWindow                 *mainWindow;
 };

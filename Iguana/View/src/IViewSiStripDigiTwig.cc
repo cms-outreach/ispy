@@ -35,8 +35,7 @@ using namespace SIM::Coin3D::Quarter;
 IViewSiStripDigiTwig::IViewSiStripDigiTwig (IgState *state, IgTwig *parent,
 					    const std::string &name /* = "" */)
     : IViewQueuedTwig (state, parent, name)
-{
-}
+{}
 
 void
 IViewSiStripDigiTwig::onNewEvent (IViewEventMessage& message)
@@ -54,9 +53,7 @@ IViewSiStripDigiTwig::onNewEvent (IViewEventMessage& message)
 	IgCollection &digis = storage->getCollection ("SiStripDigis_V1");
 	if (digis.size () > 0)
 	{
-	    IgColumnHandle xHandle = digis.getHandleByLabel ("x");
-	    IgColumnHandle yHandle = digis.getHandleByLabel ("y");
-	    IgColumnHandle zHandle = digis.getHandleByLabel ("z");
+	    IgProperty POS = digis.getProperty ("pos");
 
 	    std::vector<QPointF> points;
 	    int n = 0;
@@ -66,9 +63,13 @@ IViewSiStripDigiTwig::onNewEvent (IViewEventMessage& message)
 	    IgCollectionIterator cend = digis.end ();
 	    for (; cit != cend ; cit++, n++) 
 	    {
-		double x = xHandle.get<double> (n);
-		double y = yHandle.get<double> (n);
-		double z = zHandle.get<double> (n);
+		IgCollectionItem m = *cit;
+
+		IgV3d p1 = m.get<IgV3d> (POS);
+		
+		double x = p1.x ();
+		double y = p1.y ();
+		double z = p1.z ();
 		// points.push_back (QPointF (x * 40., y * 40.));
 		vertices->vertex.set1Value (n, SbVec3f (x, y, z));
 		points.push_back (QPointF (x, y));

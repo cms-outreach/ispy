@@ -60,6 +60,9 @@ protected:
 
 private slots:
     void 		collectionChanged (const QModelIndex &index);
+    void		displayCollection (const QModelIndex &index);
+    void		displayItem (const QModelIndex &index);
+    
     void		exit (void);
 
 private:
@@ -73,7 +76,7 @@ private:
     void		defaultSettings (void);
     SoSeparator * 	createBackground (void);
     SoSeparator * 	createSuperimposition (std::string label);
-    
+
     IgState	       *m_state;
     int			m_argc;
     char	      **m_argv;

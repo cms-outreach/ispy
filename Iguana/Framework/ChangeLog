@@ -1,3 +1,7 @@
+2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgParser.h: Update delimiter.
+
 2009-02-27  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IgCollection.h, IgLinearAlgebra.h, IgParser.h, IgCollection.cc:

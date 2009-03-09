@@ -47,43 +47,38 @@ IViewTrackTwig::onNewEvent (IViewEventMessage& message)
 	IgCollection &tracks = storage->getCollection ("Tracks_V1");
 	if (tracks.size () > 0)
 	{    
-	    IgColumnHandle ptHandle = tracks.getHandleByLabel ("pt");
-	    IgColumnHandle xHandle = tracks.getHandleByLabel ("x");
-	    IgColumnHandle yHandle = tracks.getHandleByLabel ("y");
-	    IgColumnHandle zHandle = tracks.getHandleByLabel ("z");
-	    IgColumnHandle pxHandle = tracks.getHandleByLabel ("px");
-	    IgColumnHandle pyHandle = tracks.getHandleByLabel ("py");
-	    IgColumnHandle pzHandle = tracks.getHandleByLabel ("pz");
-	    IgColumnHandle phiHandle = tracks.getHandleByLabel ("phi");
-	    IgColumnHandle etaHandle = tracks.getHandleByLabel ("eta");
-	    IgColumnHandle chargeHandle = tracks.getHandleByLabel ("charge");
+	    IgProperty PT  = tracks.getProperty ("pt");
+	    IgProperty POS = tracks.getProperty ("pos");
+	    IgProperty DIR = tracks.getProperty ("dir");
 
 	    IgAssociationSet &trackExtras = storage->getAssociationSet ("TrackExtras_V1");
 	    IgCollection &extras = storage->getCollection ("Extras_V1");
-	    IgAssociationSet &trackHits = storage->getAssociationSet ("TrackHits_V1");
-	    IgCollection &hits = storage->getCollection ("Hits_V1");
+// 	    IgAssociationSet &trackHits = storage->getAssociationSet ("TrackHits_V1");
+// 	    IgCollection &hits = storage->getCollection ("Hits_V1");
 
-	    int n = 0;
 	    IgCollectionIterator cit = tracks.begin ();
 	    IgCollectionIterator cend = tracks.end ();
-	    for (; cit != cend ; cit++, ++n) 
+	    for (; cit != cend ; cit++) 
 	    {
 		IgCollectionItem itrack = *cit;
+		IgV3d p1  = itrack.get<IgV3d> (POS);
+		double x = p1.x();
+		double y = p1.y();
+		double z = p1.z();
+
 		QString trackName = QString ("Track %1 GeV (%2, %3, %4)")
-				    .arg (ptHandle.get<double> (n))
-				    .arg (xHandle.get<double> (n))
-				    .arg (yHandle.get<double> (n))
-				    .arg (zHandle.get<double> (n));
+				    .arg (itrack.get<double>(PT))
+				    .arg (x)
+				    .arg (y)
+				    .arg (z);
 
 		std::vector<QPointF> points;
 		std::vector<QPointF> tangents;
 
-		double x = xHandle.get<double> (n);
-		double y = yHandle.get<double> (n);
-		double z = zHandle.get<double> (n);
-		double dx = pxHandle.get<double> (n);
-		double dy = pyHandle.get<double> (n);
-		double dz = pzHandle.get<double> (n);
+		IgV3d d1  = itrack.get<IgV3d> (DIR);
+		double dx = d1.x();
+		double dy = d1.y();
+		double dz = d1.z();
 // 		points.push_back (QPointF (x * 10., y * 10.));
 // 		tangents.push_back (QPointF (dx, dy));
 		
@@ -94,22 +89,26 @@ IViewTrackTwig::onNewEvent (IViewEventMessage& message)
 		    if (a->first ().objectId () == itrack.currentRow ())
 		    {
 			IgCollectionItem m (&extras, a->second ().objectId ());
-			x = m.get<double>("ix");
-			y = m.get<double>("iy");
-			z = m.get<double>("iz");
-			dx = m.get<double>("ipx");
-			dy = m.get<double>("ipy");
-			dz = m.get<double>("ipz");
+			p1 = m.get<IgV3d> ("pos_1");
+			x = p1.x();
+			y = p1.y();
+			z = p1.z();
+			d1 = m.get<IgV3d> ("dir_1");
+			dx = d1.x();
+			dy = d1.y();
+			dz = d1.z();
 			// points.push_back (QPointF (x * 40., y * 40.));
 			points.push_back (QPointF (x, y));
 			tangents.push_back (QPointF (dx, dy));
 
-			x = m.get<double>("ox");
-			y = m.get<double>("oy");
-			z = m.get<double>("oz");
-			dx = m.get<double>("opx");
-			dy = m.get<double>("opy");
-			dz = m.get<double>("opz");
+			p1 = m.get<IgV3d> ("pos_2");
+			x = p1.x();
+			y = p1.y();
+			z = p1.z();
+			d1 = m.get<IgV3d> ("dir_2");
+			dx = d1.x();
+			dy = d1.y();
+			dz = d1.z();
 			// points.push_back (QPointF (x * 40., y * 40.));
 			points.push_back (QPointF (x, y));
 			tangents.push_back (QPointF (dx, dy));
@@ -117,7 +116,7 @@ IViewTrackTwig::onNewEvent (IViewEventMessage& message)
 		}
 
 		IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-		QGraphicsView *graphicsView = mainWindow->graphicsView;
+		// QGraphicsView *graphicsView = mainWindow->graphicsView;
 
 		IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
 		IgTrack* track = new IgTrack (points, tangents, IgTrack::SPLINE);

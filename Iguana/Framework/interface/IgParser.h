@@ -109,9 +109,9 @@ public:
   void parseString(std::string &result)
   {
     skipSpaces();
-    char *delimeter = "\'";
+    char delimeter[] = "\'";
     if(*m_buffer == '\"')
-      delimeter = "\"";
+      delimeter[0] = '\"';
     m_buffer++;
     int stringSize = 0;
     while(true)

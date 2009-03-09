@@ -1,5 +1,5 @@
-#ifndef IGGI_IG_MULTI_STORAGE_TABLE_MODEL_H
-# define IGGI_IG_MULTI_STORAGE_TABLE_MODEL_H
+#ifndef IGGI_IG_MULTI_STORAGE_TREE_MODEL_H
+# define IGGI_IG_MULTI_STORAGE_TREE_MODEL_H
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
@@ -30,6 +30,8 @@ public:
     ~IgMultiStorageTreeModel(void);
 
     void 		addStorage (IgDataStorage *storage, const char *label);
+    void                clear(void);
+
     QVariant 		data (const QModelIndex &index, int role) const;
     QVariant 		headerData (int section, Qt::Orientation orientation,
 				    int role = Qt::DisplayRole) const;
@@ -45,4 +47,4 @@ private:
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
 //<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 
-#endif // IGGI_IG_MULTI_STORAGE_TABLE_MODEL_H
+#endif // IGGI_IG_MULTI_STORAGE_TREE_MODEL_H

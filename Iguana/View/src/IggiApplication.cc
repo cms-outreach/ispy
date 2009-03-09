@@ -190,8 +190,7 @@ IggiApplication::IggiApplication (void)
 }
 
 IggiApplication::~IggiApplication (void)
-{
-}
+{}
 
 void
 IggiApplication::exit (void)
@@ -212,7 +211,7 @@ IggiApplication::exit (void)
     {
 	dynamic_cast<SoSeparator *>(view->viewer ()->getSceneGraph ())->removeAllChildren ();
     }
-    
+
     Quarter::clean ();
 }
 
@@ -368,6 +367,9 @@ IggiApplication::doRun (void)
 	open ();
 
     QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
+    QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+    QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(exit()));
+    QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 
     return app.exec ();
 }
@@ -391,9 +393,9 @@ IggiApplication::setupMainWindow (void)
     m_mainWindow->actionAuto->setEnabled (false);
     m_mainWindow->treeView->setModel (m_storageModel);
 
-    m_myTreeView = new QTreeView(m_mainWindow->dockTreeWidgetContents);
-    m_myTreeView->setModel (m_model);
-    m_mainWindow->gridLayout_3->addWidget(m_myTreeView);
+//     m_myTreeView = new QTreeView(m_mainWindow->dockTreeWidgetContents);
+//     m_myTreeView->setModel (m_model);
+//     m_mainWindow->gridLayout_3->addWidget(m_myTreeView);
 
     //    m_mainWindow->treeView->setModel (m_model);
     m_mainWindow->treeView->setSortingEnabled (true);
@@ -404,7 +406,9 @@ IggiApplication::setupMainWindow (void)
     m_mainWindow->graphicsView->scale (50.0, 50.0);
     m_mainWindow->show ();
 
-    connect (m_mainWindow->treeView,SIGNAL(clicked(const QModelIndex)),this,SLOT(collectionChanged(const QModelIndex)));
+    connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(collectionChanged(const QModelIndex)));
+    connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayCollection(const QModelIndex)));
+    connect (m_mainWindow->tableView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayItem(const QModelIndex)));
 
     SoSeparator *root = new SoSeparator;
     root->ref();
@@ -425,7 +429,7 @@ IggiApplication::setupMainWindow (void)
     viewer->setMouseTracking (true);
     viewer->show();
 
-    QScrollArea *scroll = new QScrollArea (m_mainWindow->graphicsView);
+    QScrollArea *scroll = new QScrollArea (m_mainWindow->dockTableWidget);
     scroll->setWidget(viewer);
     scroll->setWidgetResizable(true);
     scroll->setMinimumSize(300, 200);
@@ -460,6 +464,168 @@ IggiApplication::collectionChanged(const QModelIndex &index)
     {
 	m_collectionModel->setCollection (m_geomStorage->getCollectionPtr(collectionName.toAscii()));
     }
+}
+
+void 
+IggiApplication::displayCollection(const QModelIndex &index)
+{
+    IViewQWindowService *windowService = IViewQWindowService::get (state ());
+    ASSERT (windowService);
+    
+    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
+    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
+    node->removeAllChildren ();
+
+    QString collectionName = m_storageModel->data(index, Qt::DisplayRole).toString();
+    qDebug() << collectionName << " displayed";
+    
+    IgCollection *collection = 0;
+    
+    if (!index.parent().isValid())
+    {
+	return;
+    }
+    if (m_storage->hasCollection (collectionName.toAscii()))
+    {	
+	collection = m_storage->getCollectionPtr(collectionName.toAscii());
+    }
+    else if (m_geomStorage->hasCollection (collectionName.toAscii()))
+    {
+	collection = m_geomStorage->getCollectionPtr(collectionName.toAscii());
+    }
+    
+    if (collection != NULL && collection->size () > 0)
+    {
+	SoVertexProperty *vertices = new SoVertexProperty;
+	    
+	int i = 0;
+	std::vector<int> lineIndices;
+	std::vector<SbVec3f> corners;		
+	    
+	std::string shape;
+
+	if (collection->hasProperty ("front_1") &&  
+	    collection->hasProperty ("front_2") &&
+	    collection->hasProperty ("front_3") &&
+	    collection->hasProperty ("front_4"))
+	{		
+	    shape = "hexahedron";
+	} 
+	else if (collection->hasProperty ("pos_1") && collection->hasProperty ("pos_2"))
+	{
+	    shape = "line";	    
+	}
+	else if (collection->hasProperty ("pos"))
+	{
+	    shape = "point";	    
+	}
+	
+	IgCollectionIterator cit = collection->begin ();
+	IgCollectionIterator cend = collection->end ();
+	for (; cit != cend ; cit++) 
+	{
+	    IgCollectionItem vtxShape = *cit;
+		
+	    if (shape == "hexahedron")
+	    {		
+		IgV3d p1  = vtxShape.get<IgV3d> ("front_1");
+		corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+					    static_cast<double>(p1.y ()),
+					    static_cast<double>(p1.z ())));		    
+		IgV3d p2  = vtxShape.get<IgV3d> ("front_2");
+		corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
+					    static_cast<double>(p2.y ()),
+					    static_cast<double>(p2.z ())));
+		IgV3d p3  = vtxShape.get<IgV3d> ("front_3");
+		corners.push_back (SbVec3f (static_cast<double>(p3.x ()), 
+					    static_cast<double>(p3.y ()),
+					    static_cast<double>(p3.z ())));
+		IgV3d p4  = vtxShape.get<IgV3d> ("front_4");
+		corners.push_back (SbVec3f (static_cast<double>(p4.x ()), 
+					    static_cast<double>(p4.y ()),
+					    static_cast<double>(p4.z ())));
+		IgV3d p5  = vtxShape.get<IgV3d> ("back_1");
+		corners.push_back (SbVec3f (static_cast<double>(p5.x ()), 
+					    static_cast<double>(p5.y ()),
+					    static_cast<double>(p5.z ())));
+		IgV3d p6  = vtxShape.get<IgV3d> ("back_2");
+		corners.push_back (SbVec3f (static_cast<double>(p6.x ()), 
+					    static_cast<double>(p6.y ()),
+					    static_cast<double>(p6.z ())));
+		IgV3d p7  = vtxShape.get<IgV3d> ("back_3");
+		corners.push_back (SbVec3f (static_cast<double>(p7.x ()), 
+					    static_cast<double>(p7.y ()),
+					    static_cast<double>(p7.z ())));
+		IgV3d p8  = vtxShape.get<IgV3d> ("back_4");
+		corners.push_back (SbVec3f (static_cast<double>(p8.x ()), 
+					    static_cast<double>(p8.y ()),
+					    static_cast<double>(p8.z ())));	    
+		lineIndices.push_back (i);
+		lineIndices.push_back (i + 1);
+		lineIndices.push_back (i + 2);
+		lineIndices.push_back (i + 3);
+		lineIndices.push_back (i);
+		lineIndices.push_back (SO_END_LINE_INDEX);
+		    
+		lineIndices.push_back (i + 4);
+		lineIndices.push_back (i + 5);
+		lineIndices.push_back (i + 6);
+		lineIndices.push_back (i + 7);
+		lineIndices.push_back (i + 4);
+		lineIndices.push_back (SO_END_LINE_INDEX);
+		i += 8;
+	    }
+	    else if (shape == "point")
+	    {
+		IgV3d p1  = vtxShape.get<IgV3d> ("pos");
+		corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+					    static_cast<double>(p1.y ()),
+					    static_cast<double>(p1.z ())));
+	    }
+	    else if (shape == "line")
+	    {
+		IgV3d p1  = vtxShape.get<IgV3d> ("pos_1");
+		corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+					    static_cast<double>(p1.y ()),
+					    static_cast<double>(p1.z ())));
+		IgV3d p2  = vtxShape.get<IgV3d> ("pos_2");
+		corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
+					    static_cast<double>(p2.y ()),
+					    static_cast<double>(p2.z ())));
+		lineIndices.push_back (i);
+		lineIndices.push_back (i + 1);
+		lineIndices.push_back (SO_END_LINE_INDEX);
+		i += 2;
+	    }		
+	}
+	vertices->vertex.setValues (0, corners.size (), &corners [0]);
+	vertices->vertex.setNum (corners.size ());	    
+
+	if (shape == "hexahedron" 
+	    || shape == "line")
+	{			
+	    SoIndexedLineSet *lineSet = new SoIndexedLineSet;
+	    lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
+	    lineSet->vertexProperty = vertices;
+
+	    node->addChild (lineSet);
+	}
+	else if (shape == "point")
+	{
+	    SoPointSet *pointSet = new SoPointSet;
+	    pointSet->vertexProperty.setValue (vertices);
+	    pointSet->numPoints.setValue (corners.size ());
+
+	    node->addChild (pointSet);
+	}		
+    }
+}	
+
+
+void 
+IggiApplication::displayItem(const QModelIndex &index)
+{
+    
 }
 
 void
@@ -584,9 +750,11 @@ IggiApplication::print (void)
     dialog.setWindowTitle (tr("Print To File"));
     if (dialog.exec () == QDialog::Accepted)
     {
-	QPainter painter;
-	m_mainWindow->graphicsView->scene ()->render (&painter);
-	painter.end ();
+	QPrinter printer(QPrinter::HighResolution);
+	printer.setPaperSize(QPrinter::A4);
+
+	QPainter painter(&printer);
+	m_mainWindow->graphicsView->render (&painter);
     }
 #endif
 }
@@ -709,19 +877,25 @@ IggiApplication::readZipMember (lat::ZipArchive::Iterator i)
     try
     {
 	parser.parse (&buffer[0]);
+	m_storageModel->clear ();
+	if (m_geomArchive != 0)
+	{
+	    m_storageModel->addStorage (m_geomStorage, (*m_geomIt)->name ().name ());
+	}
+	
 	m_storageModel->addStorage (m_storage, (*i)->name ().name ());
     }
     catch (ParseError &e)
     {
-	std::cout << "**** IguanaApplication ****\n ParseError at char n. " << std::endl;
+	std::cout << "**** IguanaApplication::readZipMember ****\n ParseError at char n. " << std::endl;
     }
     catch (lat::Error &e) 
     {
-	std::cout << "**** IguanaApplication ****\n lat::Error " << e.explainSelf () << std::endl;
+	std::cout << "**** IguanaApplication::readZipMember ****\n lat::Error " << e.explainSelf () << std::endl;
     }
     catch (std::exception &e) 
     {
-	std::cout << "**** IguanaApplication ****\n Standard library exception caught: " << e.what () << std::endl;
+	std::cout << "**** IguanaApplication::readZipMember ****\n Standard library exception caught: " << e.what () << std::endl;
     }
     catch (...) 
     {	
@@ -784,19 +958,19 @@ IggiApplication::readGeomZipMember (lat::ZipArchive::Iterator i)
     }
     catch (ParseError &e)
     {
-	std::cout << "**** IguanaApplication ****\n ParseError at char n. " << std::endl;
+	std::cout << "**** IguanaApplication::readGeomZipMember ****\n ParseError at char n. " << std::endl;
     }
     catch (lat::Error &e) 
     {
-	std::cout << "**** IguanaApplication ****\n lat::Error " << e.explainSelf () << std::endl;
+	std::cout << "**** IguanaApplication::readGeomZipMember ****\n lat::Error " << e.explainSelf () << std::endl;
     }
     catch (std::exception &e) 
     {
-	std::cout << "**** IguanaApplication ****\n Standard library exception caught: " << e.what () << std::endl;
+	std::cout << "**** IguanaApplication::readGeomZipMember ****\n Standard library exception caught: " << e.what () << std::endl;
     }
     catch (...) 
     {	
-	std::cout << "**** IguanaApplication ****\n Unknown Exception" << std::endl;
+	std::cout << "**** IguanaApplication::readGeomZipMember ****\n Unknown Exception" << std::endl;
     }
     QByteArray ba (&buffer[0], length);
     QStringList stringList;

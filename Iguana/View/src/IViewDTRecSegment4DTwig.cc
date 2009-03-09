@@ -46,12 +46,8 @@ IViewDTRecSegment4DTwig::onNewEvent (IViewEventMessage& message)
 	IgCollection &segments = storage->getCollection ("DTRecSegment4D_V1");
 	if (segments.size () > 0)
 	{    
-	    IgColumnHandle x1Handle = segments.getHandleByLabel ("x1");
-	    IgColumnHandle y1Handle = segments.getHandleByLabel ("y1");
-	    IgColumnHandle z1Handle = segments.getHandleByLabel ("z1");
-	    IgColumnHandle x2Handle = segments.getHandleByLabel ("x2");
-	    IgColumnHandle y2Handle = segments.getHandleByLabel ("y2");
-	    IgColumnHandle z2Handle = segments.getHandleByLabel ("z2");
+	    IgProperty POS_1 = segments.getProperty ("pos_1");
+	    IgProperty POS_2 = segments.getProperty ("pos_2");
 
 	    IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
 	    QGraphicsView *graphicsView = mainWindow->graphicsView;
@@ -79,18 +75,22 @@ IViewDTRecSegment4DTwig::onNewEvent (IViewEventMessage& message)
 	    IgCollectionIterator cend = segments.end ();
 	    for (; cit != cend ; cit++, n++) 
 	    {
+		IgCollectionItem vtxShape = *cit;
 		SoVertexProperty *vtx = new SoVertexProperty;
 		
 		SoLineSet *soline = new SoLineSet;
 		soline->numVertices = 2;
-
-		double x1 = x1Handle.get<double> (n);
-		double y1 = y1Handle.get<double> (n);
-		double z1 = z1Handle.get<double> (n);    
 		
-		double x2 =  x2Handle.get<double> (n);
-		double y2 =  y2Handle.get<double> (n);
-		double z2 =  z2Handle.get<double> (n);
+		IgV3d p1  = vtxShape.get<IgV3d> (POS_1);
+		IgV3d p2  = vtxShape.get<IgV3d> (POS_2);
+
+		double x1 = static_cast<double>(p1.x ());
+		double y1 = static_cast<double>(p1.y ());
+		double z1 = static_cast<double>(p1.z ());    
+		
+		double x2 =  static_cast<double>(p2.x ());
+		double y2 =  static_cast<double>(p2.y ());
+		double z2 =  static_cast<double>(p2.z ());
 		// IgLine *line = new IgLine (QPointF (x1 * 40., y1 * 40.), QPointF (x2 * 40., y2 * 40.));
 		IgLine *line = new IgLine (QPointF (x1, y1), QPointF (x2, y2));
 		line->setColor (Qt::red);

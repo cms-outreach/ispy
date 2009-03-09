@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'IgSettingsEditorMainWindow.ui'
 **
-** Created: Fri Feb 20 10:58:15 2009
+** Created: Tue Mar 3 15:55:05 2009
 **      by: Qt User Interface Compiler version 4.4.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -100,10 +100,6 @@ public:
     menuHelp->addAction(actionAbout);
 
     retranslateUi(IgSettingsEditorMainWindow);
-    QObject::connect(actionOpen_Settings, SIGNAL(triggered()), IgSettingsEditorMainWindow, SLOT(openSettings()));
-    QObject::connect(actionOpen_INI_File, SIGNAL(triggered()), IgSettingsEditorMainWindow, SLOT(openIniFile()));
-    QObject::connect(actionOpen_Mac_Property_List, SIGNAL(triggered()), IgSettingsEditorMainWindow, SLOT(openPropertyList()));
-    QObject::connect(actionOpen_Windows_Registry_Path, SIGNAL(triggered()), IgSettingsEditorMainWindow, SLOT(openRegistryPath()));
     QObject::connect(actionClose, SIGNAL(triggered()), IgSettingsEditorMainWindow, SLOT(hide()));
     QObject::connect(actionAbout, SIGNAL(triggered()), IgSettingsEditorMainWindow, SLOT(about()));
 

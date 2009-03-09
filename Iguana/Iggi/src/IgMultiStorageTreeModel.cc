@@ -147,6 +147,7 @@ IgMultiStorageTreeModel::headerData (int section, Qt::Orientation orientation,
 	return QString ("Visibility");
 	break;
     }
+    return QVariant();
 }
 
 int 
@@ -197,6 +198,15 @@ IgMultiStorageTreeModel::addStorage (IgDataStorage *storage, const char * label)
 {
     IgDataStorageTableModel *model = new IgDataStorageTableModel (storage, label);
     m_storages.push_back (model);
+    emit reset ();
+}
+
+void
+IgMultiStorageTreeModel::clear(void)
+{
+    beginRemoveRows (QModelIndex (), 0, m_storages.size ());
+    m_storages.clear ();
+    endRemoveRows();
     emit reset ();
 }
 
