@@ -2,8 +2,8 @@
 # include <iostream>
 # include "Iguana/Framework/interface/IgCollection.h"
 # include "Iguana/Framework/interface/IgParser.h"
-# include "Iguana/Iggi/interface/IgCollectionTableModel.h"
-# include "Iguana/Iggi/interface/IgMultiStorageTreeModel.h"
+# include "Iguana/QtGUI/interface/IgCollectionTableModel.h"
+# include "Iguana/QtGUI/interface/IgMultiStorageTreeModel.h"
 
 class AppController : public QObject
 {

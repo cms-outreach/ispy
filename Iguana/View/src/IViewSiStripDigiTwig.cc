@@ -6,13 +6,11 @@
 #include "Iguana/View/interface/IViewReadService.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
 #include "Iguana/View/interface/IViewSceneGraphService.h"
-#include "Iguana/Iggi/interface/IggiMainWindow.h"
-#include "Iguana/Iggi/interface/IggiScene.h"
-#include "Iguana/Iggi/interface/IgHits.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/View/interface/debug.h"
 #include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoMarkerSet.h>
 #include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
@@ -50,70 +48,61 @@ IViewSiStripDigiTwig::onNewEvent (IViewEventMessage& message)
 	ASSERT (sceneGraphService);
 	
 	IgDataStorage *storage = readService->dataStorage ();
-	IgCollection &digis = storage->getCollection ("SiStripDigis_V1");
-	if (digis.size () > 0)
-	{
-	    IgProperty POS = digis.getProperty ("pos");
-
-	    std::vector<QPointF> points;
-	    int n = 0;
-	    SoVertexProperty *vertices = new SoVertexProperty;
-
-	    IgCollectionIterator cit = digis.begin ();
-	    IgCollectionIterator cend = digis.end ();
-	    for (; cit != cend ; cit++, n++) 
+	if (storage->hasCollection ("SiStripDigis_V1"))
+	{	    
+	    IgCollection &digis = storage->getCollection ("SiStripDigis_V1");
+	    if (digis.size () > 0 && digis.hasProperty ("pos"))
 	    {
-		IgCollectionItem m = *cit;
+		IgProperty POS = digis.getProperty ("pos");
 
-		IgV3d p1 = m.get<IgV3d> (POS);
+		int n = 0;
+		SoVertexProperty *vertices = new SoVertexProperty;
+
+		IgCollectionIterator cit = digis.begin ();
+		IgCollectionIterator cend = digis.end ();
+		for (; cit != cend ; cit++, n++) 
+		{
+		    IgCollectionItem m = *cit;
+
+		    IgV3d p1 = m.get<IgV3d> (POS);
 		
-		double x = p1.x ();
-		double y = p1.y ();
-		double z = p1.z ();
-		// points.push_back (QPointF (x * 40., y * 40.));
-		vertices->vertex.set1Value (n, SbVec3f (x, y, z));
-		points.push_back (QPointF (x, y));
-	    }
-	    vertices->vertex.setNum (n);
+		    double x = p1.x ();
+		    double y = p1.y ();
+		    double z = p1.z ();
+		    vertices->vertex.set1Value (n, SbVec3f (x, y, z));
+		}
+		vertices->vertex.setNum (n);
 
-	    IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-	    QGraphicsView *graphicsView = mainWindow->graphicsView;
+		QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
+		SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
 
-	    IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
-	    IgHits* hits = new IgHits (points);
-	    hits->setColor (Qt::green);	    
-	    scene->addItem (hits);
-	    scene->update ();
+		SoSeparator *sep = new SoSeparator;
+		sep->setName (SbName ("SiStripDigis_V1"));
 
-	    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
-	    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
+		SoMaterial *mat = new SoMaterial;
+		float rgbcomponents [4];
+		IgSbColorMap::unpack (0xB0E57C00, rgbcomponents);
+		mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		sep->addChild (mat);
 
-	    SoSeparator *sep = new SoSeparator;
-	    SoMaterial *mat = new SoMaterial;
-	    float rgbcomponents [4];
-	    IgSbColorMap::unpack (0x03C03C00, rgbcomponents); // Dark pastel green
-	    mat->diffuseColor.setValue (SbColor (rgbcomponents));
-	    sep->addChild (mat);
-
-	    SoDrawStyle *sty = new SoDrawStyle;
-	    sty->pointSize = 4.0;
-	    sep->addChild (sty);
-
-	    SoPointSet *sopoints = new SoPointSet;
-	    sopoints->vertexProperty.setValue (vertices);
-	    sopoints->numPoints.setValue (n);
+		SoMFInt32 tmarkerIndex;
+		tmarkerIndex.setValue (SoMarkerSet::PLUS_5_5);
+		
+		SoMarkerSet *sopoints = new SoMarkerSet;
+		sopoints->markerIndex = tmarkerIndex;
+		sopoints->vertexProperty.setValue (vertices);
+		sopoints->numPoints.setValue (n);
 	  
-	    sep->addChild (sopoints);
-	    node->addChild (sep);
+		sep->addChild (sopoints);
+		node->addChild (sep);
 
-	    viewer->viewAll ();
+		// Now SoQt viewer
+		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
+		mainScene->addChild (sep);	
 
-	    // Now SoQt viewer
-	    SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-	    mainScene->addChild (sep);	
-
-// 	    SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
-// 	    overlayScene->addChild (annot);	
+		// 	    SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
+		// 	    overlayScene->addChild (annot);	
+	    }
 	}
     }
 }

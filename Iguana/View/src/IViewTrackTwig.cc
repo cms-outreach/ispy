@@ -5,17 +5,18 @@
 #include "Iguana/View/interface/IViewTrackTwig.h"
 #include "Iguana/View/interface/IViewReadService.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
-#include "Iguana/View/interface/Ig3DRep.h"
-#include "Iguana/View/interface/IgRPhiRep.h"
-#include "Iguana/View/interface/IgRZRep.h"
-#include "Iguana/View/interface/IgLegoRep.h"
-#include "Iguana/View/interface/IgTextRep.h"
-#include "Iguana/Iggi/interface/IggiMainWindow.h"
-#include "Iguana/Iggi/interface/IggiScene.h"
-#include "Iguana/Iggi/interface/IgTrack.h"
+#include "Iguana/View/interface/IViewSceneGraphService.h"
+#include "Iguana/Inventor/interface/IgSbColorMap.h"
+#include "Iguana/Inventor/interface/IgSoSplineTrack.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/View/interface/debug.h"
+#include <Inventor/nodes/SoMarkerSet.h>
+#include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoDrawStyle.h>
 #include <QString>
+#include <Quarter/Quarter.h>
+#include <Quarter/QuarterWidget.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -27,12 +28,12 @@
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
+using namespace SIM::Coin3D::Quarter;
+
 IViewTrackTwig::IViewTrackTwig (IgState *state, IgTwig *parent,
 				const std::string &name /* = "" */)
-    : IViewQueuedTwig (state, parent, name),
-      m_text ("no info")
-{
-}
+    : IViewQueuedTwig (state, parent, name)
+{}
 
 void
 IViewTrackTwig::onNewEvent (IViewEventMessage& message)
@@ -43,135 +44,149 @@ IViewTrackTwig::onNewEvent (IViewEventMessage& message)
 	IViewQWindowService *windowService = IViewQWindowService::get (state ());
 	ASSERT (windowService);
 	
+	IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
+	ASSERT (sceneGraphService);
+	
 	IgDataStorage *storage = readService->dataStorage ();
-	IgCollection &tracks = storage->getCollection ("Tracks_V1");
-	if (tracks.size () > 0)
-	{    
-	    IgProperty PT  = tracks.getProperty ("pt");
-	    IgProperty POS = tracks.getProperty ("pos");
-	    IgProperty DIR = tracks.getProperty ("dir");
+	if (storage->hasCollection ("Tracks_V1") && storage->hasCollection ("Extras_V1"))
+	{	    
+	    IgCollection &tracks = storage->getCollection ("Tracks_V1");
+	    if (tracks.size () > 0 && tracks.hasProperty ("pt") && tracks.hasProperty ("pos") && tracks.hasProperty ("dir"))
+	    {    
+		IgProperty PT  = tracks.getProperty ("pt");
+		IgProperty POS = tracks.getProperty ("pos");
+		IgProperty DIR = tracks.getProperty ("dir");
 
-	    IgAssociationSet &trackExtras = storage->getAssociationSet ("TrackExtras_V1");
-	    IgCollection &extras = storage->getCollection ("Extras_V1");
-// 	    IgAssociationSet &trackHits = storage->getAssociationSet ("TrackHits_V1");
-// 	    IgCollection &hits = storage->getCollection ("Hits_V1");
+		IgAssociationSet &trackExtras = storage->getAssociationSet ("TrackExtras_V1");
+		IgCollection &extras = storage->getCollection ("Extras_V1");
 
-	    IgCollectionIterator cit = tracks.begin ();
-	    IgCollectionIterator cend = tracks.end ();
-	    for (; cit != cend ; cit++) 
-	    {
-		IgCollectionItem itrack = *cit;
-		IgV3d p1  = itrack.get<IgV3d> (POS);
-		double x = p1.x();
-		double y = p1.y();
-		double z = p1.z();
+		QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
+		SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
 
-		QString trackName = QString ("Track %1 GeV (%2, %3, %4)")
-				    .arg (itrack.get<double>(PT))
-				    .arg (x)
-				    .arg (y)
-				    .arg (z);
+		SoSeparator *sep = new SoSeparator;
+		sep->setName (SbName ("Tracks_V1"));
+	    
+		SoMaterial *mat = new SoMaterial;
+		float rgbcomponents [4];
+		IgSbColorMap::unpack (0x99ccff, rgbcomponents);
+		mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		sep->addChild (mat);
 
-		std::vector<QPointF> points;
-		std::vector<QPointF> tangents;
+		//set line width
+		SoDrawStyle *sty = new SoDrawStyle;
+		sty->style = SoDrawStyle::LINES;
+		sty->lineWidth.setValue (3);
+		sep->addChild (sty);
 
-		IgV3d d1  = itrack.get<IgV3d> (DIR);
-		double dx = d1.x();
-		double dy = d1.y();
-		double dz = d1.z();
-// 		points.push_back (QPointF (x * 10., y * 10.));
-// 		tangents.push_back (QPointF (dx, dy));
-		
-		for (IgAssociationSet::Iterator a = trackExtras.begin ();
-		     a != trackExtras.end ();
-		     ++a)
+		SoSeparator *vsep = new SoSeparator;
+		sep->addChild (vsep);
+	    
+		SoMaterial *vmat = new SoMaterial;
+		IgSbColorMap::unpack (0x003366, rgbcomponents);
+		vmat->diffuseColor.setValue (SbColor (rgbcomponents));
+		vsep->addChild (mat);
+
+		int nv = 0;
+		IgCollectionIterator cit = tracks.begin ();
+		IgCollectionIterator cend = tracks.end ();
+		for (; cit != cend ; cit++) 
 		{
-		    if (a->first ().objectId () == itrack.currentRow ())
+		    IgSoSplineTrack* trackRep = new IgSoSplineTrack;
+		    SoVertexProperty *vertices = new SoVertexProperty;
+		    SoVertexProperty *tvertices = new SoVertexProperty;
+
+		    SoMFVec3f tangents;
+		    SoMFVec3f points;
+		    int nVtx = 0;
+
+		    IgCollectionItem itrack = *cit;
+		    IgV3d p1  = itrack.get<IgV3d> (POS);
+		    double x = p1.x();
+		    double y = p1.y();
+		    double z = p1.z();
+		    vertices->vertex.set1Value (nv, SbVec3f (x, y, z));
+		    ++nv;
+
+		    QString trackName = QString ("Track %1 GeV (%2, %3, %4)")
+					.arg (itrack.get<double>(PT))
+					.arg (x)
+					.arg (y)
+					.arg (z);
+
+		    IgV3d d1  = itrack.get<IgV3d> (DIR);
+		    double dx = d1.x();
+		    double dy = d1.y();
+		    double dz = d1.z();
+		
+		    for (IgAssociationSet::Iterator a = trackExtras.begin ();
+			 a != trackExtras.end ();
+			 ++a)
 		    {
-			IgCollectionItem m (&extras, a->second ().objectId ());
-			p1 = m.get<IgV3d> ("pos_1");
-			x = p1.x();
-			y = p1.y();
-			z = p1.z();
-			d1 = m.get<IgV3d> ("dir_1");
-			dx = d1.x();
-			dy = d1.y();
-			dz = d1.z();
-			// points.push_back (QPointF (x * 40., y * 40.));
-			points.push_back (QPointF (x, y));
-			tangents.push_back (QPointF (dx, dy));
+			if (a->first ().objectId () == itrack.currentRow ())
+			{
+			    IgCollectionItem m (&extras, a->second ().objectId ());
+			    p1 = m.get<IgV3d> ("pos_1");
+			    x = p1.x();
+			    y = p1.y();
+			    z = p1.z();
+			    d1 = m.get<IgV3d> ("dir_1");
+			    dx = d1.x();
+			    dy = d1.y();
+			    dz = d1.z();
+			    SbVec3f diri (dx, dy, dz);
+			    diri.normalize ();
+			
+			    points.set1Value (nVtx, SbVec3f (x, y, z));
+			    tangents.set1Value (nVtx, diri);
+			    tvertices->vertex.set1Value (nVtx, SbVec3f (x, y, z));
+			    ++nVtx;
 
-			p1 = m.get<IgV3d> ("pos_2");
-			x = p1.x();
-			y = p1.y();
-			z = p1.z();
-			d1 = m.get<IgV3d> ("dir_2");
-			dx = d1.x();
-			dy = d1.y();
-			dz = d1.z();
-			// points.push_back (QPointF (x * 40., y * 40.));
-			points.push_back (QPointF (x, y));
-			tangents.push_back (QPointF (dx, dy));
+			    p1 = m.get<IgV3d> ("pos_2");
+			    x = p1.x();
+			    y = p1.y();
+			    z = p1.z();
+			    d1 = m.get<IgV3d> ("dir_2");
+			    dx = d1.x();
+			    dy = d1.y();
+			    dz = d1.z();
+			    SbVec3f diro (dx, dy, dz);
+			    diro.normalize ();
+			
+			    points.set1Value (nVtx, SbVec3f (x, y, z));
+			    tangents.set1Value (nVtx, diro);
+			    tvertices->vertex.set1Value (nVtx, SbVec3f (x, y, z));
+			    ++nVtx;
+			
+			    trackRep->points = points;
+			    trackRep->tangents = tangents;
+			    sep->addChild (trackRep);
+			}
 		    }
+		    vertices->vertex.setNum (nv);
+		    tvertices->vertex.setNum (nVtx);
+		
+		    SoMFInt32 markerIndex;
+		    markerIndex.setValue (SoMarkerSet::CROSS_9_9);
+		
+		    SoMarkerSet *mpoints = new SoMarkerSet;
+		    mpoints->markerIndex = markerIndex;
+		    mpoints->vertexProperty.setValue (vertices);
+		    mpoints->numPoints.setValue (nv);
+		
+		    vsep->addChild (mpoints);
+		
+		    SoMFInt32 tmarkerIndex;
+		    tmarkerIndex.setValue (SoMarkerSet::CIRCLE_LINE_7_7);
+		
+		    SoMarkerSet *tpoints = new SoMarkerSet;
+		    tpoints->markerIndex = tmarkerIndex;
+		    tpoints->vertexProperty.setValue (tvertices);
+		    tpoints->numPoints.setValue (nVtx);
+		
+		    sep->addChild (tpoints);
 		}
-
-		IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-		// QGraphicsView *graphicsView = mainWindow->graphicsView;
-
-		IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
-		IgTrack* track = new IgTrack (points, tangents, IgTrack::SPLINE);
-		QPen pen;
-		pen.setBrush (Qt::blue);	
-		track->setPen (pen);
-		track->setToolTip (trackName);
-		scene->addItem (track);
-		scene->update ();
+		node->addChild (sep);
 	    }
 	}
     }
-}
-
-void
-IViewTrackTwig::update (IgTextRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    rep->setText (m_text);
-}
-
-void
-IViewTrackTwig::update (Ig3DRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
-}
-
-void
-IViewTrackTwig::update (IgRPhiRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
-}
-
-void
-IViewTrackTwig::update (IgRZRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
-}
-
-void
-IViewTrackTwig::update (IgLegoRep *rep)
-{
-    // Get debugging dump.
-    IViewQueuedTwig::update (rep);
-
-    //    rep->clear ();
 }

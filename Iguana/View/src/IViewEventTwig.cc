@@ -78,15 +78,15 @@ IViewEventTwig::onNewEvent (IViewEventMessage& message)
     if (IViewQWindowService *windowService = IViewQWindowService::get (state ())) 
     {
 	IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-	QGraphicsView *graphicsView = mainWindow->graphicsView;
+// 	QGraphicsView *graphicsView = mainWindow->graphicsView;
 
-	IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
-	IgAnnotation *ann = new IgAnnotation (QString (m_text.c_str ()), QPoint (-10, -10), QFont ("Arial", 12, QFont::Bold));
-	QPen pen;
-	pen.setBrush (Qt::lightGray);	
-	ann->setPen (pen);
-	scene->addItem (ann);
-	scene->update ();
+// 	IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
+// 	IgAnnotation *ann = new IgAnnotation (QString (m_text.c_str ()), QPoint (-10, -10), QFont ("Arial", 12, QFont::Bold));
+// 	QPen pen;
+// 	pen.setBrush (Qt::lightGray);	
+// 	ann->setPen (pen);
+// 	scene->addItem (ann);
+// 	scene->update ();
     }
     if (IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ()))
     {	

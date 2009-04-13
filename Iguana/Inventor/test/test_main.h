@@ -5,8 +5,8 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoMaterial.h>
-#include <Quarter/Quarter.h>
-#include <Quarter/QuarterWidget.h>
+#include <Inventor/Qt/SoQt.h>
+#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <QApplication>
 #include <QTimer>
 #include <QMainWindow>
@@ -30,14 +30,12 @@ QString makeTest (SoSeparator *root);
 
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
-using namespace SIM::Coin3D::Quarter;
-
 int main (int argc, char **argv)
 {
     lat::Signal::handleFatal (argv [0]);
 
     QApplication app (argc, argv);
-    Quarter::init(true);
+    QWidget * mainwin = SoQt::init (argc, argv, argv[0]);
 
     SoSelection		*top = new SoSelection;
     SoSeparator		*root = new SoSeparator;
@@ -61,16 +59,12 @@ int main (int argc, char **argv)
 	wa.apply (root);
     }
 
-    QMainWindow * mainwin = new QMainWindow();
-
-    // Create a QuarterWidget for displaying a Coin scene graph
-    QuarterWidget *viewer = new QuarterWidget (mainwin);
+    SoQtExaminerViewer *viewer = new SoQtExaminerViewer (mainwin);
     viewer->setSceneGraph (top);
-    viewer->setNavigationModeFile ();
-    viewer->viewAll ();
+    viewer->setFeedbackVisibility (true);
+    viewer->show();
 
     mainwin->setWindowTitle (title);
-    mainwin->setCentralWidget(viewer);
     mainwin->setGeometry (0, 0, 800, 600);
 
     // Pop up the QuarterWidget
@@ -78,18 +72,13 @@ int main (int argc, char **argv)
 
     QTimer::singleShot (10 * 60 * 1000, qApp, SLOT(quit()));
 
-    // Loop until exit.
-    app.exec();
+    SoQt::show(mainwin);
+    SoQt::mainLoop();
+  
+    delete viewer;
 
     // Clean up resources.
     top->unref();
     
-    // FIXME: Deleting the QuarterWidget crashes X11
-    // and not deleting it leaves some resources uncleaned?
-    // 
-    // delete viewer;
-
-    Quarter::clean();
-
     return 0;
 }

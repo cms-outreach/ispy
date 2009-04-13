@@ -103,14 +103,14 @@ IViewMuonTwig::onNewEvent (IViewEventMessage& message)
 		sep->addChild (reconstructedTrack);
 	    }
 
-	    IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-	    QGraphicsView *graphicsView = mainWindow->graphicsView;
+// 	    IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
+// 	    QGraphicsView *graphicsView = mainWindow->graphicsView;
 
-	    IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
-	    IgHits* hits = new IgHits (qpoints);
-	    hits->setColor (QColor (0x5F021F));	    
-	    scene->addItem (hits);
-	    scene->update ();
+// 	    IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
+// 	    IgHits* hits = new IgHits (qpoints);
+// 	    hits->setColor (QColor (0x5F021F));	    
+// 	    scene->addItem (hits);
+// 	    scene->update ();
 	    soscene->addChild (sep);
 	}
     }

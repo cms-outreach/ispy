@@ -5,17 +5,19 @@
 #include "Iguana/View/interface/IViewTrackingRecHitTwig.h"
 #include "Iguana/View/interface/IViewReadService.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
-#include "Iguana/View/interface/Ig3DRep.h"
-#include "Iguana/View/interface/IgRPhiRep.h"
-#include "Iguana/View/interface/IgRZRep.h"
-#include "Iguana/View/interface/IgLegoRep.h"
-#include "Iguana/View/interface/IgTextRep.h"
-#include "Iguana/Iggi/interface/IggiMainWindow.h"
-#include "Iguana/Iggi/interface/IggiScene.h"
-#include "Iguana/Iggi/interface/IgHits.h"
+#include "Iguana/View/interface/IViewSceneGraphService.h"
+#include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/View/interface/debug.h"
+#include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoMarkerSet.h>
+#include <Inventor/nodes/SoPointSet.h>
+#include <Inventor/nodes/SoVertexProperty.h>
+#include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoDrawStyle.h>
 #include <QString>
+#include <Quarter/Quarter.h>
+#include <Quarter/QuarterWidget.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -27,11 +29,12 @@
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
+using namespace SIM::Coin3D::Quarter;
+
 IViewTrackingRecHitTwig::IViewTrackingRecHitTwig (IgState *state, IgTwig *parent,
 						  const std::string &name /* = "" */)
     : IViewQueuedTwig (state, parent, name)
-{
-}
+{}
 
 void
 IViewTrackingRecHitTwig::onNewEvent (IViewEventMessage& message)
@@ -42,34 +45,53 @@ IViewTrackingRecHitTwig::onNewEvent (IViewEventMessage& message)
 	IViewQWindowService *windowService = IViewQWindowService::get (state ());
 	ASSERT (windowService);
 	
-	IgDataStorage *storage = readService->dataStorage ();
-	IgCollection &digis = storage->getCollection ("TrackingRecHits_V1");
-	if (digis.size () > 0)
-	{
-	    IgColumnHandle pos = digis.getHandleByLabel ("pos");
+	IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());
+	ASSERT (sceneGraphService);
 
-	    std::vector<QPointF> points;
+	IgDataStorage *storage = readService->dataStorage ();
+	IgCollection &hits = storage->getCollection ("TrackingRecHits_V1");
+	if (hits.size () > 0)
+	{
+	    IgProperty POS = hits.getProperty ("pos");
+
+	    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
+	    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
+
+	    SoSeparator *sep = new SoSeparator;
+	    sep->setName (SbName ("TrackingRecHits_V1"));
+
+	    SoMaterial *mat = new SoMaterial;
+	    float rgbcomponents [4];
+	    IgSbColorMap::unpack (0xFFEC9400, rgbcomponents);
+	    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+	    sep->addChild (mat);
+
 	    int n = 0;
-	    IgCollectionIterator cit = digis.begin ();
-	    IgCollectionIterator cend = digis.end ();
+	    SoVertexProperty *vertices = new SoVertexProperty;
+
+	    IgCollectionIterator cit = hits.begin ();
+	    IgCollectionIterator cend = hits.end ();
 	    for (; cit != cend ; cit++, n++) 
 	    {
-		IgCollectionItem ipos = *cit;
-		double x = ipos.get<IgV3d> ("pos").x ();		
-		double y = ipos.get<IgV3d> ("pos").y ();
-		double z = ipos.get<IgV3d> ("pos").z ();
-		// points.push_back (QPointF (x * 40., y * 40.));
-		points.push_back (QPointF (x, y));
+		IgCollectionItem m = *cit;
+		IgV3d p1 = m.get<IgV3d> (POS);
+		double x = p1.x ();
+		double y = p1.y ();
+		double z = p1.z ();
+		vertices->vertex.set1Value (n, SbVec3f (x, y, z));
 	    }
+	    vertices->vertex.setNum (n);
 
-	    IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-	    QGraphicsView *graphicsView = mainWindow->graphicsView;
-
-	    IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
-	    IgHits* hits = new IgHits (points);
-	    hits->setColor (Qt::red);	    
-	    scene->addItem (hits);
-	    scene->update ();
+	    SoMFInt32 tmarkerIndex;
+	    tmarkerIndex.setValue (SoMarkerSet::CIRCLE_LINE_5_5);
+		
+	    SoMarkerSet *sopoints = new SoMarkerSet;
+	    sopoints->markerIndex = tmarkerIndex;
+	    sopoints->vertexProperty.setValue (vertices);
+	    sopoints->numPoints.setValue (n);
+	  
+	    sep->addChild (sopoints);
+	    node->addChild (sep);
 	}
     }
 }

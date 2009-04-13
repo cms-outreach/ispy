@@ -35,9 +35,9 @@ IggiMainWindow::IggiMainWindow (QWidget *parent)
     // 	QRectF geo = graphicsView->geometry();
     // 	m_scene = new IggiScene (geo.x (), geo.y (), geo.width (), geo.height ());
     // TODO dynamically adapt size? how do we fit the scene to the view dynamically?
-    m_scene = new IggiScene (-200, -200, 400, 400); 
-    graphicsView->setScene (m_scene);
-    graphicsView->show();
+//     m_scene = new IggiScene (-200, -200, 400, 400); 
+//     graphicsView->setScene (m_scene);
+//     graphicsView->show();
 	
     // used in order to uncheck the controlcenter button if it is closed by pressing "x"
     connect( m_controlCenter, SIGNAL( isShown(bool) ), actionShowControlCenter, SLOT( setChecked(bool) ) );
@@ -75,7 +75,7 @@ IggiMainWindow::zoomIn ()
     if (m_focus != 0)
 	m_focus->zoomIn ();
 
-    graphicsView->scale (m_xScale, m_yScale);
+//     graphicsView->scale (m_xScale, m_yScale);
 }
 
 void
@@ -84,7 +84,7 @@ IggiMainWindow::zoomOut ()
     if (m_focus != 0)
 	m_focus->zoomOut ();
 
-    graphicsView->scale (1. / m_xScale, 1. / m_yScale);
+//     graphicsView->scale (1. / m_xScale, 1. / m_yScale);
 }
 
 void 
@@ -162,7 +162,7 @@ void
 IggiMainWindow::about (void)
 {
     QMessageBox::about(this, tr("About iSpy"),
-		       tr("The <b>IGUANA iSpy</b> is a new interactive graphics program "
+		       tr("<b>IGUANA iSpy</b> is an interactive graphics program "
 			  "that can be downloaded from the Web and used to display physics "
 			  "events without the need of any CMS software."));
 }

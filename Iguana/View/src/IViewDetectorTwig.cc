@@ -6,9 +6,6 @@
 #include "Iguana/View/interface/IViewReadService.h"
 #include "Iguana/View/interface/IViewQWindowService.h"
 #include "Iguana/View/interface/IViewSceneGraphService.h"
-#include "Iguana/Iggi/interface/IggiMainWindow.h"
-#include "Iguana/Iggi/interface/IggiScene.h"
-#include "Iguana/Iggi/interface/IgHits.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/View/interface/debug.h"
 #include <Inventor/nodes/SoIndexedLineSet.h>
@@ -46,16 +43,7 @@ IViewDetectorTwig::onNewEvent (IViewEventMessage& message)
 	IViewQWindowService *windowService = IViewQWindowService::get (state ());
 	ASSERT (windowService);
 	
-	IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-	QGraphicsView *graphicsView = mainWindow->graphicsView;
-
 	std::vector<QPointF> points;
-
-	IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
-	IgHits* hits = new IgHits (points);
-	hits->setColor (Qt::green);	    
-	scene->addItem (hits);
-	scene->update ();
 
 	if (IViewReadService *readService = IViewReadService::get (state ()))
 	{
@@ -81,10 +69,6 @@ IViewDetectorTwig::onNewEvent (IViewEventMessage& message)
 		    IgColumnHandle b2 = geometry.getHandleByLabel ("back_2");
 		    IgColumnHandle b3 = geometry.getHandleByLabel ("back_3");
 		    IgColumnHandle b4 = geometry.getHandleByLabel ("back_4");
-
-		    IggiMainWindow *mainWindow = dynamic_cast<IggiMainWindow *>(windowService->mainWindow ());
-		    QGraphicsView *graphicsView = mainWindow->graphicsView;
-		    IggiScene *scene = dynamic_cast<IggiScene*>(mainWindow->graphicsView->scene ());
 
 		    IViewSceneGraphService *sceneGraphService = IViewSceneGraphService::get (state ());	    
 		    ASSERT (sceneGraphService);

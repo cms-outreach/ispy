@@ -1,4 +1,4 @@
-<use name=quarter>
+<use name=soqt>
 <use name=qt>
 
 <bin file=test_iv.cpp></bin>

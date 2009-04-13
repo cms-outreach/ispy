@@ -1,6 +1,8 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 #define QT_NO_EMIT
 #include "Iguana/View/interface/IggiApplication.h"
+#include "Iguana/View/interface/IgDrawFunctions.h"
+#include "Iguana/View/interface/IgDrawFactroyService.h"
 #include "Iguana/Iggi/interface/IggiMainWindow.h"
 #include "Iguana/Iggi/interface/IggiScene.h"
 #include "Iguana/Iggi/interface/IGUANA_SPLASH.xpm"
@@ -27,13 +29,14 @@
 #include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoCone.h>
 #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/nodes/SoDrawStyle.h>
 #include <QtGui>
 #include <QApplication>
 #include <QByteArray>
 #include <QFileDialog>
 #include <QGLWidget>
-#include <QGraphicsScene>
-#include <QGraphicsView>
+// #include <QGraphicsScene>
+// #include <QGraphicsView>
 #include <QMessageBox>
 #include <QPixmap>
 #include <QPointF>
@@ -53,6 +56,7 @@
 #include "classlib/zip/ZipMember.h"
 #include <iostream>
 #include <vector>
+#include "Iguana/Inventor/interface/IgSbColorMap.h"
 
 #include "Iguana/Inventor/interface/IgParticleChar.h"
 #include "Iguana/Inventor/interface/IgSoShapeKit.h"
@@ -178,7 +182,11 @@ IggiApplication::IggiApplication (void)
       m_appname (0),
       m_collectionModel (0),
       m_storageModel (new IgMultiStorageTreeModel),
-      m_init (false)
+      m_storage (0),
+      m_geomStorage (0),
+      m_init (false),
+      m_auto (false),
+      m_sep (0)
 {
     QCoreApplication::setOrganizationName ("Iguana");
     QCoreApplication::setOrganizationDomain ("iguana.cern.ch");
@@ -193,7 +201,7 @@ IggiApplication::~IggiApplication (void)
 {}
 
 void
-IggiApplication::exit (void)
+IggiApplication::onExit (void)
 {
     if (IViewReadService* readService = IViewReadService::get (m_state))
     {
@@ -212,7 +220,18 @@ IggiApplication::exit (void)
 	dynamic_cast<SoSeparator *>(view->viewer ()->getSceneGraph ())->removeAllChildren ();
     }
 
+    if (m_mainWindow->actionSaveSettings->isChecked ())
+    {
+	saveSettings ();
+    }
+    exit ();    
+}
+
+void
+IggiApplication::exit (void)
+{
     Quarter::clean ();
+    qApp->closeAllWindows ();
 }
 
 IgState *
@@ -297,7 +316,8 @@ IggiApplication::initState (void)
     new IgPluginLoader (m_state);
     new IViewReadService (m_state);
     new IViewRecoContent (m_state);
-    
+    new IgDrawFunctions (m_state);
+
     return EXIT_SUCCESS;
 }
 
@@ -305,25 +325,103 @@ void
 IggiApplication::defaultSettings (void) 
 {
     QSettings settings;
+
+    //
+    // Open file dialog settings
+    //
     if (! settings.contains ("igfiles/home"))
     {	
 	QUrl url ("file:/afs/cern.ch/user/i/iguana/www/iglite/igfiles/");
 	settings.setValue ("igfiles/home", url);
     }
+
+    // 
+    // Default geometry file
+    // 
     if (! settings.contains ("igfiles/geometry"))
     {	
 	QString fileName ("default-geometry.ig");
 	settings.setValue ("igfiles/geometry", fileName);
     }
+
+    //
+    // Network connection configuration
+    //
+    if (! settings.contains ("igsource/host"))
+    {
+	QString hostName ("localhost");
+	settings.setValue ("igsource/host", hostName);
+    }
+    if (! settings.contains ("igsource/port"))
+    {
+	int port = 9000;
+	settings.setValue ("igsource/port", port);
+    }
+    if (! settings.contains ("igsource/debug"))
+    {
+	bool flag = false;
+	settings.setValue ("igsource/debug", flag);
+    }
+    if (! settings.contains ("igevents/auto"))
+    {
+	bool flag = false;
+	settings.setValue ("igevents/auto", flag);
+    }
+
+    //
+    // Main window configuration
+    //
+    if (! settings.contains ("mainwindow/configuration/save"))
+    {
+	settings.setValue ("mainwindow/configuration/save", false);
+    }
+    if (! settings.contains ("mainwindow/treeview/shown"))
+    {
+	settings.setValue ("mainwindow/treeview/shown", true);
+    }
+    if (! settings.contains ("mainwindow/treeview/floating"))
+    {
+	settings.setValue ("mainwindow/treeview/floating", false);
+    }
+    if (! settings.contains ("mainwindow/tableview/shown"))
+    {
+	settings.setValue ("mainwindow/tableview/shown", true);
+    }
+    if (! settings.contains ("mainwindow/tableview/floating"))
+    {
+	settings.setValue ("mainwindow/tableview/floating", false);
+    }
+}
+
+void
+IggiApplication::restoreSettings (void) 
+{
+    QSettings settings;
+    if (settings.contains ("igevents/auto"))
+	m_auto = settings.value ("igevents/auto").value<bool> ();
 }
 
 int
 IggiApplication::doRun (void)
 {
     QApplication app (m_argc, m_argv);
+    restoreSettings ();
     setupMainWindow ();
 
     initShapes ();
+
+    m_sep = new SoSeparator;
+    m_sep->setName (SbName ("CollectionSelection"));
+    SoDrawStyle *sty = new SoDrawStyle;
+    sty->style = SoDrawStyle::LINES;
+    sty->lineWidth.setValue (3);
+    m_sep->addChild (sty);
+
+    SoMaterial *mat = new SoMaterial;
+    float rgbcomponents [4];
+    IgSbColorMap::unpack (0xC0000000, rgbcomponents); // Free Speech Red
+    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+    m_sep->addChild (mat);
 
     SoSeparator * root = new SoSeparator;
     root->addChild(new SoPerspectiveCamera);
@@ -351,6 +449,9 @@ IggiApplication::doRun (void)
     QSettings settings;
     QString fileName = settings.value ("igfiles/geometry").value<QString> ();
     loadGeomFile (fileName);
+
+    ASSERT (m_splash);
+    delete m_splash;
     
     if (m_argc == 2)
     {
@@ -366,10 +467,9 @@ IggiApplication::doRun (void)
     else
 	open ();
 
-    QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(exit()));
-    QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-    QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(exit()));
-    QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+    QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
+    QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(onExit()));
+    QObject::connect(m_mainWindow->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
 
     return app.exec ();
 }
@@ -377,11 +477,12 @@ IggiApplication::doRun (void)
 void
 IggiApplication::setupMainWindow (void) 
 {
-    QSplashScreen *splash = new QSplashScreen(QPixmap (IGUANA_SPLASH));
-    splash->show ();
+    m_splash = new QSplashScreen(QPixmap (IGUANA_SPLASH));
+    m_splash->show ();
 
     m_mainWindow = new IggiMainWindow;
     QObject::connect (m_mainWindow->actionFileOpen, SIGNAL(triggered()), this, SLOT(open()));
+    QObject::connect (m_mainWindow->actionAuto, SIGNAL(triggered()), this, SLOT(autoEvents()));
     QObject::connect (m_mainWindow->actionNext, SIGNAL(triggered()), this, SLOT(nextEvent()));
     QObject::connect (m_mainWindow->actionPrevious, SIGNAL(triggered()), this, SLOT(previousEvent()));
     QObject::connect (m_mainWindow->actionRewind, SIGNAL(triggered()), this, SLOT(rewind()));
@@ -390,25 +491,16 @@ IggiApplication::setupMainWindow (void)
     
     m_mainWindow->actionNext->setEnabled (false);
     m_mainWindow->actionPrevious->setEnabled (false);
-    m_mainWindow->actionAuto->setEnabled (false);
+    m_mainWindow->actionAuto->setEnabled (m_auto);
     m_mainWindow->treeView->setModel (m_storageModel);
+    restoreMainWindowSettings ();
 
-//     m_myTreeView = new QTreeView(m_mainWindow->dockTreeWidgetContents);
-//     m_myTreeView->setModel (m_model);
-//     m_mainWindow->gridLayout_3->addWidget(m_myTreeView);
-
-    //    m_mainWindow->treeView->setModel (m_model);
     m_mainWindow->treeView->setSortingEnabled (true);
-    //    m_mainWindow->tableView->setModel (m_collectionModel);
-    //    m_mainWindow->tableView->setModel (m_model);
-    // m_mainWindow->tableView->setSelectionModel (m_mainWindow->treeView->selectionModel ());
-    m_mainWindow->graphicsView->setInteractive (true);
-    m_mainWindow->graphicsView->scale (50.0, 50.0);
     m_mainWindow->show ();
 
-    connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(collectionChanged(const QModelIndex)));
-    connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayCollection(const QModelIndex)));
-    connect (m_mainWindow->tableView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayItem(const QModelIndex)));
+    QObject::connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(collectionChanged(const QModelIndex)));
+    QObject::connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayCollection(const QModelIndex)));
+    QObject::connect (m_mainWindow->tableView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayItem(const QModelIndex)));
 
     SoSeparator *root = new SoSeparator;
     root->ref();
@@ -429,17 +521,41 @@ IggiApplication::setupMainWindow (void)
     viewer->setMouseTracking (true);
     viewer->show();
 
-    QScrollArea *scroll = new QScrollArea (m_mainWindow->dockTableWidget);
+    QScrollArea *scroll = new QScrollArea (m_mainWindow->view3D);
     scroll->setWidget(viewer);
     scroll->setWidgetResizable(true);
     scroll->setMinimumSize(300, 200);
-    m_mainWindow->gridLayout_2->addWidget (scroll, 0, 1);
+    m_mainWindow->gridLayout_4->addWidget (scroll, 0, 0);
+    m_mainWindow->mdiArea->currentSubWindow ()->showMaximized();
     
-    //scroll->show ();
-
     new IViewQWindowService (state (), m_mainWindow, viewer, super);
+}
 
-    delete splash;
+void 
+IggiApplication::restoreMainWindowSettings (void) 
+{
+    QSettings settings;
+    m_mainWindow->dockTreeWidget->setShown (settings.value ("mainwindow/treeview/shown").value<bool> ());
+    m_mainWindow->dockTreeWidget->setFloating(settings.value ("mainwindow/treeview/floating").value<bool> ());
+    m_mainWindow->dockTableWidget->setShown (settings.value ("mainwindow/tableview/shown").value<bool> ());
+    m_mainWindow->dockTableWidget->setFloating(settings.value ("mainwindow/tableview/floating").value<bool> ());
+    m_mainWindow->actionSaveSettings->setChecked (settings.value ("mainwindow/configuration/save").value<bool> ());
+}
+
+void
+IggiApplication::saveSettings (void)
+{
+    bool treeFlag = m_mainWindow->actionTwig_Explorer->isChecked ();
+    bool tableFlag = m_mainWindow->actionObject_Inspector->isChecked ();
+
+    QSettings settings;
+    settings.setValue ("mainwindow/configuration/save", m_mainWindow->actionSaveSettings->isChecked ());
+    settings.setValue ("mainwindow/treeview/shown", treeFlag);
+    settings.setValue ("mainwindow/treeview/floating", m_mainWindow->dockTreeWidget->isFloating ());
+    settings.setValue ("mainwindow/tableview/shown", tableFlag);
+    settings.setValue ("mainwindow/tableview/floating", m_mainWindow->dockTableWidget->isFloating ());
+
+    settings.setValue ("igevents/auto", m_auto);
 }
 
 void 
@@ -456,11 +572,11 @@ IggiApplication::collectionChanged(const QModelIndex &index)
 	m_collectionModel = new IgCollectionTableModel (&(m_storage->getCollectionByIndex (1)));
         m_mainWindow->tableView->setModel (m_collectionModel);
     }
-    if (m_storage->hasCollection (collectionName.toAscii()))
+    if (m_storage != 0 && m_storage->hasCollection (collectionName.toAscii()))
     {	
 	m_collectionModel->setCollection (m_storage->getCollectionPtr(collectionName.toAscii()));
     }
-    else if (m_geomStorage->hasCollection (collectionName.toAscii()))
+    else if (m_geomStorage != 0 && m_geomStorage->hasCollection (collectionName.toAscii()))
     {
 	m_collectionModel->setCollection (m_geomStorage->getCollectionPtr(collectionName.toAscii()));
     }
@@ -469,13 +585,6 @@ IggiApplication::collectionChanged(const QModelIndex &index)
 void 
 IggiApplication::displayCollection(const QModelIndex &index)
 {
-    IViewQWindowService *windowService = IViewQWindowService::get (state ());
-    ASSERT (windowService);
-    
-    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
-    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
-    node->removeAllChildren ();
-
     QString collectionName = m_storageModel->data(index, Qt::DisplayRole).toString();
     qDebug() << collectionName << " displayed";
     
@@ -496,6 +605,232 @@ IggiApplication::displayCollection(const QModelIndex &index)
     
     if (collection != NULL && collection->size () > 0)
     {
+	drawCollection (collection);
+    }
+}	
+
+void 
+IggiApplication::displayItem(const QModelIndex &index)
+{
+    IViewQWindowService *windowService = IViewQWindowService::get (state ());
+    ASSERT (windowService);
+    
+    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
+    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
+    node->removeAllChildren ();
+    m_sep = 0;
+    
+    QModelIndex selected = m_mainWindow->treeView->selectionModel ()->currentIndex ();
+    qDebug() << selected << " parent selection";
+    
+    QString collectionName = m_storageModel->data(selected, Qt::DisplayRole).toString();
+    qDebug() << collectionName << " collection";
+
+    IgCollection *collection = 0;
+    if (m_storage->hasCollection (collectionName.toAscii()))
+    {	
+	collection = m_storage->getCollectionPtr(collectionName.toAscii());
+    }
+    else if (m_geomStorage->hasCollection (collectionName.toAscii()))
+    {
+	collection = m_geomStorage->getCollectionPtr(collectionName.toAscii());
+    }
+    if (collection != NULL && collection->size () > 0)
+    {
+	SoVertexProperty *vertices = new SoVertexProperty;
+	    
+	int i = 0;
+	std::vector<int> lineIndices;
+	std::vector<SbVec3f> corners;		
+	    
+	std::string shape;
+
+	if (collection->hasProperty ("front_1") &&  
+	    collection->hasProperty ("front_2") &&
+	    collection->hasProperty ("front_3") &&
+	    collection->hasProperty ("front_4"))
+	{		
+	    shape = "hexahedron";
+	} 
+	else if (collection->hasProperty ("pos_1") && collection->hasProperty ("pos_2"))
+	{
+	    shape = "line";	    
+	}
+	else if (collection->hasProperty ("pos"))
+	{
+	    shape = "point";	    
+	}
+	IgCollectionIterator cit = collection->begin ();
+	qDebug() << index.row () << " selected";
+	cit += index.row ();
+	IgCollectionItem vtxShape = *cit;
+	if (collection->hasProperty ("detid"))
+	{
+	    int detid = vtxShape.get<int> ("detid");	    
+	    qDebug() << detid << " detid";
+	}
+	
+	if (shape == "hexahedron")
+	{		
+	    IgV3d p1  = vtxShape.get<IgV3d> ("front_1");
+	    corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+					static_cast<double>(p1.y ()),
+					static_cast<double>(p1.z ())));		    
+	    IgV3d p2  = vtxShape.get<IgV3d> ("front_2");
+	    corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
+					static_cast<double>(p2.y ()),
+					static_cast<double>(p2.z ())));
+	    IgV3d p3  = vtxShape.get<IgV3d> ("front_3");
+	    corners.push_back (SbVec3f (static_cast<double>(p3.x ()), 
+					static_cast<double>(p3.y ()),
+					static_cast<double>(p3.z ())));
+	    IgV3d p4  = vtxShape.get<IgV3d> ("front_4");
+	    corners.push_back (SbVec3f (static_cast<double>(p4.x ()), 
+					static_cast<double>(p4.y ()),
+					static_cast<double>(p4.z ())));
+	    IgV3d p5  = vtxShape.get<IgV3d> ("back_1");
+	    corners.push_back (SbVec3f (static_cast<double>(p5.x ()), 
+					static_cast<double>(p5.y ()),
+					static_cast<double>(p5.z ())));
+	    IgV3d p6  = vtxShape.get<IgV3d> ("back_2");
+	    corners.push_back (SbVec3f (static_cast<double>(p6.x ()), 
+					static_cast<double>(p6.y ()),
+					static_cast<double>(p6.z ())));
+	    IgV3d p7  = vtxShape.get<IgV3d> ("back_3");
+	    corners.push_back (SbVec3f (static_cast<double>(p7.x ()), 
+					static_cast<double>(p7.y ()),
+					static_cast<double>(p7.z ())));
+	    IgV3d p8  = vtxShape.get<IgV3d> ("back_4");
+	    corners.push_back (SbVec3f (static_cast<double>(p8.x ()), 
+					static_cast<double>(p8.y ()),
+					static_cast<double>(p8.z ())));	    
+	    lineIndices.push_back (i);
+	    lineIndices.push_back (i + 1);
+	    lineIndices.push_back (i + 2);
+	    lineIndices.push_back (i + 3);
+	    lineIndices.push_back (i);
+	    lineIndices.push_back (SO_END_LINE_INDEX);
+		    
+	    lineIndices.push_back (i + 4);
+	    lineIndices.push_back (i + 5);
+	    lineIndices.push_back (i + 6);
+	    lineIndices.push_back (i + 7);
+	    lineIndices.push_back (i + 4);
+	    lineIndices.push_back (SO_END_LINE_INDEX);
+
+	    lineIndices.push_back (i);
+	    lineIndices.push_back (i + 4);
+	    lineIndices.push_back (SO_END_LINE_INDEX);
+	    lineIndices.push_back (i + 1);
+	    lineIndices.push_back (i + 5);
+	    lineIndices.push_back (SO_END_LINE_INDEX);
+	    lineIndices.push_back (i + 2);
+	    lineIndices.push_back (i + 6);
+	    lineIndices.push_back (SO_END_LINE_INDEX);
+	    lineIndices.push_back (i + 3);
+	    lineIndices.push_back (i + 7);
+	    lineIndices.push_back (SO_END_LINE_INDEX);		
+	    i += 8;
+	}
+	else if (shape == "point")
+	{
+	    IgV3d p1  = vtxShape.get<IgV3d> ("pos");
+	    corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+					static_cast<double>(p1.y ()),
+					static_cast<double>(p1.z ())));
+	}
+	else if (shape == "line")
+	{
+	    IgV3d p1  = vtxShape.get<IgV3d> ("pos_1");
+	    corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+					static_cast<double>(p1.y ()),
+					static_cast<double>(p1.z ())));
+	    IgV3d p2  = vtxShape.get<IgV3d> ("pos_2");
+	    corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
+					static_cast<double>(p2.y ()),
+					static_cast<double>(p2.z ())));
+	    lineIndices.push_back (i);
+	    lineIndices.push_back (i + 1);
+	    lineIndices.push_back (SO_END_LINE_INDEX);
+	    i += 2;
+	}		
+	vertices->vertex.setValues (0, corners.size (), &corners [0]);
+	vertices->vertex.setNum (corners.size ());	    
+
+	if (shape == "hexahedron" 
+	    || shape == "line")
+	{			
+	    SoIndexedLineSet *lineSet = new SoIndexedLineSet;
+	    lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
+	    lineSet->vertexProperty = vertices;
+
+	    node->addChild (lineSet);
+	}
+	else if (shape == "point")
+	{
+	    SoPointSet *pointSet = new SoPointSet;
+	    pointSet->vertexProperty.setValue (vertices);
+	    pointSet->numPoints.setValue (corners.size ());
+
+	    node->addChild (pointSet);
+	}
+    }
+}
+
+void
+IggiApplication::drawCollection (IgCollection *collection) 
+{
+    IViewQWindowService *windowService = IViewQWindowService::get (state ());
+    ASSERT (windowService);
+    
+    QuarterWidget *viewer = dynamic_cast<QuarterWidget *>(windowService->viewer ());
+    SoSeparator *node = dynamic_cast<SoSeparator *>(viewer->getSceneGraph ());
+
+    if (m_sep == 0)
+	m_sep = new SoSeparator;
+    
+    m_sep->removeAllChildren ();
+
+    SoDrawStyle *sty = new SoDrawStyle;
+    sty->style = SoDrawStyle::LINES;
+    sty->lineWidth.setValue (3);
+    m_sep->addChild (sty);
+
+    SoMaterial *mat = new SoMaterial;
+    float rgbcomponents [4];
+    IgSbColorMap::unpack (0xC0000000, rgbcomponents); // Free Speech Red
+    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+    m_sep->addChild (mat);
+
+    std::string collName = collection->name ();
+    
+    qDebug() << "Draw " << collName.c_str ();
+
+    if (collName == "EcalRecHits_V1") 
+    {	
+	IgDrawFactroyService *drawService = IgDrawFactroyService::get (m_state);
+	std::string what = "CrystalHits";
+	std::string repName = "3D";
+    
+	SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw (what, m_state, collection->name (), repName));
+ 	m_sep->addChild (rep);
+	node->addChild (m_sep);
+    }
+    else if (collName == "HBRecHits_V1" || 
+	     collName == "HERecHits_V1" ||
+	     collName == "HFRecHits_V1" ||
+	     collName == "HORecHits_V1")
+    {
+	IgDrawFactroyService *drawService = IgDrawFactroyService::get (m_state);
+	std::string what = "CrystalHits";
+	std::string repName = "3D";
+    
+	SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw (what, m_state, collection->name (), repName));
+ 	m_sep->addChild (rep);
+	node->addChild (m_sep);
+    }    
+    else
+    {	
 	SoVertexProperty *vertices = new SoVertexProperty;
 	    
 	int i = 0;
@@ -573,6 +908,19 @@ IggiApplication::displayCollection(const QModelIndex &index)
 		lineIndices.push_back (i + 7);
 		lineIndices.push_back (i + 4);
 		lineIndices.push_back (SO_END_LINE_INDEX);
+
+		lineIndices.push_back (i);
+		lineIndices.push_back (i + 4);
+		lineIndices.push_back (SO_END_LINE_INDEX);
+		lineIndices.push_back (i + 1);
+		lineIndices.push_back (i + 5);
+		lineIndices.push_back (SO_END_LINE_INDEX);
+		lineIndices.push_back (i + 2);
+		lineIndices.push_back (i + 6);
+		lineIndices.push_back (SO_END_LINE_INDEX);
+		lineIndices.push_back (i + 3);
+		lineIndices.push_back (i + 7);
+		lineIndices.push_back (SO_END_LINE_INDEX);		
 		i += 8;
 	    }
 	    else if (shape == "point")
@@ -617,15 +965,8 @@ IggiApplication::displayCollection(const QModelIndex &index)
 	    pointSet->numPoints.setValue (corners.size ());
 
 	    node->addChild (pointSet);
-	}		
+	}
     }
-}	
-
-
-void 
-IggiApplication::displayItem(const QModelIndex &index)
-{
-    
 }
 
 void
@@ -648,6 +989,7 @@ IggiApplication::open (void)
 
 	if (! fileName.isEmpty ())
 	{
+	    m_mainWindow->statusbar->showMessage(QString("Opening ") + fileName + tr("..."));
 	    if (m_archive != 0)
 		closeFile ();
 
@@ -665,6 +1007,19 @@ IggiApplication::open (void)
 }
 
 void
+IggiApplication::connect (void)
+{
+    m_consumer.nextEvent ();
+}
+
+void
+IggiApplication::autoEvents (void)
+{
+    m_auto ? m_auto = false : m_auto = true;
+
+}
+
+void
 IggiApplication::nextEvent (void)
 {
     if (! m_init)
@@ -674,19 +1029,26 @@ IggiApplication::nextEvent (void)
     }    
     if (m_it != m_archive->end ())
     {
+	if ((*m_it)->name () == "Header")
+	{
+	    m_it++;	    
+	    nextEvent ();
+	}
+	
 	IViewEventMessage event;
 	event.message = (*m_it)->name ();
 	
 	m_mainWindow->statusBar ()->showMessage (QString ((*m_it)->name ()));
-	IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
-	ASSERT (scene);
-	scene->clear ();
+// 	IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
+// 	ASSERT (scene);
+// 	scene->clear ();
 
 	IViewQWindowService *windowService = IViewQWindowService::get (state ());
 	ASSERT (windowService);
 	SoSeparator *sep = dynamic_cast<SoSeparator *>(windowService->viewer ()->getSceneGraph ());
 	sep->removeAllChildren ();
-
+	m_sep = 0;
+	
 	readZipMember (m_it);
 	m_mainWindow->actionPrevious->setEnabled (true);
 	
@@ -711,15 +1073,16 @@ IggiApplication::previousEvent (void)
 	event.message = (*m_it)->name ();
 
 	m_mainWindow->statusBar ()->showMessage (QString ((*m_it)->name ()));
-	IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
-	ASSERT (scene);
-	scene->clear ();
+// 	IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
+// 	ASSERT (scene);
+// 	scene->clear ();
 
 	IViewQWindowService *windowService = IViewQWindowService::get (state ());
 	ASSERT (windowService);
 	SoSeparator *sep = dynamic_cast<SoSeparator *>(windowService->viewer ()->getSceneGraph ());
 	sep->removeAllChildren ();
-    
+	m_sep = 0;
+	
 	readZipMember (m_it);
 	m_mainWindow->actionNext->setEnabled (true);
 	
@@ -754,7 +1117,7 @@ IggiApplication::print (void)
 	printer.setPaperSize(QPrinter::A4);
 
 	QPainter painter(&printer);
-	m_mainWindow->graphicsView->render (&painter);
+// 	m_mainWindow->graphicsView->render (&painter);
     }
 #endif
 }
@@ -792,14 +1155,23 @@ IggiApplication::closeFile (void)
     ASSERT (m_model);
     m_model->clear ();
     
-    IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
-    ASSERT (scene);
-    scene->clear ();
+    if (m_collectionModel != 0)
+    {
+	delete m_collectionModel;
+	m_collectionModel = 0;	
+    }
+    ASSERT (m_storageModel);    
+    m_storageModel->clear ();
+    
+//     IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
+//     ASSERT (scene);
+//     scene->clear ();
     
     IViewQWindowService *windowService = IViewQWindowService::get (state ());
     ASSERT (windowService);
     SoSeparator *sep = dynamic_cast<SoSeparator *>(windowService->viewer ()->getSceneGraph ());
     sep->removeAllChildren ();
+    m_sep = 0;    
 
     if (m_archive)
     {
@@ -815,9 +1187,9 @@ IggiApplication::closeGeomFile (void)
     ASSERT (m_model);
     m_model->clear ();
     
-    IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
-    ASSERT (scene);
-    scene->clear ();
+//     IggiScene *scene = dynamic_cast<IggiScene*>(m_mainWindow->graphicsView->scene ());
+//     ASSERT (scene);
+//     scene->clear ();
 
     if (m_geomArchive)
     {
@@ -833,6 +1205,7 @@ IggiApplication::loadFile (const QString &filename)
     Filename inputFilename (Filename (filename.toStdString ()).substitute (ShellEnvironment ()));
     if (inputFilename.exists())
     {
+	m_mainWindow->statusbar->showMessage(QString("Loading ") + filename + tr("..."));
 	m_archive = new ZipArchive (inputFilename, IOFlags::OpenRead);
 	m_it = m_archive->begin ();
     }
@@ -846,8 +1219,10 @@ IggiApplication::loadGeomFile (const QString &filename)
     Filename inputFilename (Filename (filename.toStdString ()).substitute (ShellEnvironment ()));
     if (inputFilename.exists())
     {
+	m_mainWindow->statusbar->showMessage(QString("Loading ") + filename + tr("..."));
 	m_geomArchive = new ZipArchive (inputFilename, IOFlags::OpenRead);
 	m_geomIt = m_geomArchive->begin ();
+	m_mainWindow->statusbar->clearMessage ();
     }
     else
     {
@@ -859,6 +1234,8 @@ IggiApplication::loadGeomFile (const QString &filename)
 void
 IggiApplication::readZipMember (lat::ZipArchive::Iterator i)
 {
+    m_mainWindow->statusbar->showMessage(QString("Reading ") + (*i)->name () + tr("..."));
+
     IViewReadService* readService = IViewReadService::get (m_state);
     ASSERT (readService);
     readService->preEventProcessing ();
@@ -878,6 +1255,11 @@ IggiApplication::readZipMember (lat::ZipArchive::Iterator i)
     {
 	parser.parse (&buffer[0]);
 	m_storageModel->clear ();
+	if (m_collectionModel != 0)
+	{
+	    delete m_collectionModel;
+	    m_collectionModel = 0;	
+	}
 	if (m_geomArchive != 0)
 	{
 	    m_storageModel->addStorage (m_geomStorage, (*m_geomIt)->name ().name ());
@@ -901,41 +1283,39 @@ IggiApplication::readZipMember (lat::ZipArchive::Iterator i)
     {	
 	std::cout << "**** IguanaApplication ****\n Unknown Exception" << std::endl;
     }
-    QByteArray ba (&buffer[0], length);
-    QStringList stringList;
-    stringList << ba.data ();
+    m_mainWindow->statusbar->showMessage(tr((*i)->name ()));
+//     QByteArray ba (&buffer[0], length);
+//     QStringList stringList;
+//     stringList << ba.data ();
     
-    // m_model->setupModelData (stringList, m_model->rootItem ());
-//     if (m_model != 0)
-//     {
-// 	m_model->clear ();
-//     }
-    m_model->setData (m_model->index (0, 0),  QVariant ("CMS Event"), Qt::EditRole);
+//     m_model->setData (m_model->index (0, 0),  QVariant ("CMS Event"), Qt::EditRole);
 
-    int row = 0;
+//     int row = 0;
     
-    for (IgDataStorage::CollectionNames::iterator it = m_storage->collectionNames ().begin (), end = m_storage->collectionNames ().end (); 
-	 it < end; ++it, ++row)
-    {
-	IgCollection coll = m_storage->getCollection ((*it).c_str ());
-	QString fullCollName ((*it).c_str ());
-	QStringList nameList;	
-	nameList = fullCollName.split (QString ("/"));
+//     for (IgDataStorage::CollectionNames::iterator it = m_storage->collectionNames ().begin (), end = m_storage->collectionNames ().end (); 
+// 	 it < end; ++it, ++row)
+//     {
+// 	IgCollection coll = m_storage->getCollection ((*it).c_str ());
+// 	QString fullCollName ((*it).c_str ());
+// 	QStringList nameList;	
+// 	nameList = fullCollName.split (QString ("/"));
 	
-	// Count the items in the collection 
-	int size = 0;
-	IgCollectionIterator cit = coll.begin ();
-	IgCollectionIterator cend = coll.end ();	
-	for (; cit != cend ; cit++, ++size) 
- 	{}
-	QString collName = nameList [0] + QString (" [%1]").arg (size);
-	m_model->setData (m_model->index (row, 1),  QVariant (collName), Qt::EditRole);
-    }
+// 	// Count the items in the collection 
+// 	int size = 0;
+// 	IgCollectionIterator cit = coll.begin ();
+// 	IgCollectionIterator cend = coll.end ();	
+// 	for (; cit != cend ; cit++, ++size) 
+//  	{}
+// 	QString collName = nameList [0] + QString (" [%1]").arg (size);
+// 	m_model->setData (m_model->index (row, 1),  QVariant (collName), Qt::EditRole);
+//     }
 }
 
 void
 IggiApplication::readGeomZipMember (lat::ZipArchive::Iterator i)
 {
+    m_mainWindow->statusbar->showMessage(QString("Reading ") + (*i)->name () + tr("..."));
+
     IViewReadService* readService = IViewReadService::get (m_state);
     ASSERT (readService);
     readService->preESProcessing ();
@@ -972,36 +1352,37 @@ IggiApplication::readGeomZipMember (lat::ZipArchive::Iterator i)
     {	
 	std::cout << "**** IguanaApplication::readGeomZipMember ****\n Unknown Exception" << std::endl;
     }
-    QByteArray ba (&buffer[0], length);
-    QStringList stringList;
-    stringList << ba.data ();
+    m_mainWindow->statusbar->showMessage(tr((*i)->name ()));
+//     QByteArray ba (&buffer[0], length);
+//     QStringList stringList;
+//     stringList << ba.data ();
     
-    // m_model->setupModelData (stringList, m_model->rootItem ());
-    if (m_model != 0)
-    {
-	m_model->clear ();
-    }
-    m_model->setData (m_model->index (0, 0),  QVariant ("CMS Geometry"), Qt::EditRole);
+//     // m_model->setupModelData (stringList, m_model->rootItem ());
+//     if (m_model != 0)
+//     {
+// 	m_model->clear ();
+//     }
+//     m_model->setData (m_model->index (0, 0),  QVariant ("CMS Geometry"), Qt::EditRole);
 
-    int row = 0;
+//     int row = 0;
     
-    for (IgDataStorage::CollectionNames::iterator it = m_geomStorage->collectionNames ().begin (), end = m_geomStorage->collectionNames ().end (); 
-	 it < end; ++it, ++row)
-    {
-	IgCollection coll = m_geomStorage->getCollection ((*it).c_str ());
-	QString fullCollName ((*it).c_str ());
-	QStringList nameList;	
-	nameList = fullCollName.split (QString ("/"));
+//     for (IgDataStorage::CollectionNames::iterator it = m_geomStorage->collectionNames ().begin (), end = m_geomStorage->collectionNames ().end (); 
+// 	 it < end; ++it, ++row)
+//     {
+// 	IgCollection coll = m_geomStorage->getCollection ((*it).c_str ());
+// 	QString fullCollName ((*it).c_str ());
+// 	QStringList nameList;	
+// 	nameList = fullCollName.split (QString ("/"));
 	
-	// Count the items in the collection 
-	int size = 0;
-	IgCollectionIterator cit = coll.begin ();
-	IgCollectionIterator cend = coll.end ();	
-	for (; cit != cend ; cit++, ++size) 
- 	{}
-	QString collName = nameList [0] + QString (" [%1]").arg (size);
-	m_model->setData (m_model->index (row, 1),  QVariant (collName), Qt::EditRole);
-    }
+// 	// Count the items in the collection 
+// 	int size = 0;
+// 	IgCollectionIterator cit = coll.begin ();
+// 	IgCollectionIterator cend = coll.end ();	
+// 	for (; cit != cend ; cit++, ++size) 
+//  	{}
+// 	QString collName = nameList [0] + QString (" [%1]").arg (size);
+// 	m_model->setData (m_model->index (row, 1),  QVariant (collName), Qt::EditRole);
+//     }
 }
 
 SoSeparator * 
@@ -1012,8 +1393,8 @@ IggiApplication::createBackground (void)
     SoBaseColor * color = new SoBaseColor;
     SoOrthographicCamera * orthocam = new SoOrthographicCamera;
 
-    color->rgb.set1Value(0, SbColor(0.0, 0.0, 1.0));
-    color->rgb.set1Value(1, SbColor(0.0, 0.0, 0.0));
+    color->rgb.set1Value(0, SbColor(0.0, 0.0, 0.0));
+    color->rgb.set1Value(1, SbColor(0.0, 0.0, 1.0));
 
     orthocam->height.setValue(1.0);
     orthocam->viewportMapping = SoCamera::LEAVE_ALONE;
@@ -1071,7 +1452,7 @@ IggiApplication::createSuperimposition (std::string label)
     labelFont->name.setValue ("Arial");
 
     text->string.setValue(label.c_str ());
-    color->rgb.setValue(SbColor(1.0, 0.0, 0.0));
+    color->rgb.setValue(SbColor(0.4, 0.4, 0.4));
 
     orthocam->height.setValue(1.0);
     orthocam->nearDistance.setValue(0.0);

@@ -4,6 +4,8 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 # include <QObject>
+# include <QTimer>
+# include "Iguana/View/interface/IgSpyConsumerThread.h"
 # include "classlib/zip/ZipArchive.h"
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -11,9 +13,12 @@
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
 class IgState;
+class IgCollection;
+class IgSpyConsumerThread;
 class IggiMainWindow;
 class IggiTreeModel;
 class QModelIndex;
+class QSplashScreen;
 class IgDataStorage;
 class IgCollectionTableModel;
 class IgMultiStorageTreeModel;
@@ -43,6 +48,8 @@ public:
 
 public slots:
     void 		open (void);
+    void 		connect (void);
+    void 		autoEvents (void);
     void		nextEvent (void);
     void		previousEvent (void);
     void		rewind (void);
@@ -63,6 +70,7 @@ private slots:
     void		displayCollection (const QModelIndex &index);
     void		displayItem (const QModelIndex &index);
     
+    void		onExit (void);
     void		exit (void);
 
 private:
@@ -74,8 +82,12 @@ private:
     void		loadGeomFile (const QString &fileName);
     void 		readGeomZipMember (lat::ZipArchive::Iterator it);
     void		defaultSettings (void);
+    void		restoreSettings (void);
+    void		restoreMainWindowSettings (void);
+    void		saveSettings (void);    
     SoSeparator * 	createBackground (void);
     SoSeparator * 	createSuperimposition (std::string label);
+    void		drawCollection (IgCollection *collection);
 
     IgState	       *m_state;
     int			m_argc;
@@ -93,8 +105,13 @@ private:
     IgDataStorage 		*m_storage;
     IgDataStorage 		*m_geomStorage;
     QTreeView			*m_myTreeView;
-
+    QSplashScreen 		*m_splash;
+    IgSpyConsumerThread 	m_consumer;
+    
     bool	    	m_init;
+    QTimer		m_timer;
+    bool		m_auto;
+    SoSeparator 	*m_sep;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

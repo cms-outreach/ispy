@@ -1,0 +1,10 @@
+<Use name=Qt>
+<use name=classlib>
+<use name=Iguana/Framework>
+<use name=coin>
+<use name=soqt>
+
+<export>
+ <Use name=Qt>
+ <Lib name=IguanaQtGUI>
+</export>

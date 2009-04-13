@@ -1,3 +1,25 @@
+2009-03-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgMainWindow-mdi-noQGraphicsView.ui: Update main GUI.
+	* ui_IgMainWindow.h: Auto-generated.
+
+2009-03-10  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ui_IgMainWindow.h: Auto generated.
+	* IgMainWindow-mdi-noQGraphicsView.ui: Designer form for main
+	window without QGraphicsView.
+	* IgMainWindow-mdi.ui: Disable buttons.
+	* IggiMainWindow.cc: Remove QGraphicsView.
+
+2009-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* iggi.qrc: Add network icon to resources.
+	* network*.png: Network icons.
+	* ui_IgMainWindow.h: Auto generated.
+	* qrc_iggi.cc: Auto generated.
+	* IgMainWindow-mdi.ui: An MDI version of a main window.
+	* IgMainWindow.ui: Replace action new with action connect.
+
 2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IgCollectionTableModel.h, IgCollectionTableModel.cc,

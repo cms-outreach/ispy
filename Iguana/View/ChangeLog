@@ -1,3 +1,89 @@
+2009-03-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewMETTwig.cc, IViewCSCSegmentTwig.cc, IViewCaloTowerTwig.cc,
+	IViewDTRecSegment4DTwig.cc, IViewJetTwig.cc: Added drawing in 3D.
+	* IggiApplication.h, IggiApplication.cc: Separate selection.
+	* IgDrawFunctions.cc: Added more draw functions.
+
+	* IggiApplication.h, IggiApplication.cc: Correct saving of
+	settings. 
+	* IgDrawFunctions.cc: Add draw function for line segments.
+
+2009-03-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewEcalRecHitTwig.cc, IViewHBRecHitTwig.cc,
+	IViewHERecHitTwig.cc, IViewHFRecHitTwig.cc, IViewHORecHitTwig.cc:
+	Use draw functions service.
+	* IgDrawFunctions.cc: Do not use slow Iguana/Inventor shape, just
+	the face set.
+	* IggiApplication.cc: Selection highlights.
+
+	* IgDrawFunctions.cc: Check the properties.
+	* IViewBasicClusterTwig.cc, IViewCSCSegmentTwig.cc,
+	IViewCaloTowerTwig.cc, IViewEcalRecHitTwig.cc,
+	IViewHBRecHitTwig.cc, IViewHERecHitTwig.cc, IViewHFRecHitTwig.cc,
+	IViewHORecHitTwig.cc, IViewJetTwig.cc, IViewMETTwig.cc,
+	IViewPFClusterTwig.cc, IViewPFRecHitTwig.cc,
+	IViewPFRecTrackTwig.cc, IViewPixelDigiTwig.cc,
+	IViewRPCRecHitTwig.cc, IViewSiPixelClusterTwig.cc,
+	IViewSiPixelRecHitTwig.cc, IViewSiStripClusterTwig.cc:
+	Implementations for the new classes to draw corresponding
+	collections.
+	* xtypeinfo.h, xtypeinfo.cc: Declare and define new classes.
+	* IViewHFRecHitTwig.h: Correct a typo.
+
+2009-03-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewBasicClusterTwig.h, IViewCSCSegmentTwig.h,
+	IViewCaloTowerTwig.h, IViewEcalRecHitTwig.h, IViewHBRecHitTwig.h,
+	IViewHERecHitTwig.h, IViewHFRecHitTwig.h, IViewHORecHitTwig.h,
+	IViewJetTwig.h, IViewMETTwig.h, IViewPFClusterTwig.h,
+	IViewPFRecHitTwig.h, IViewPFRecTrackTwig.h, IViewPixelDigiTwig.h,
+	IViewRPCRecHitTwig.h, IViewSiPixelClusterTwig.h,
+	IViewSiPixelRecHitTwig.h, IViewSiStripClusterTwig.h: New classes
+	to draw corresponding collections.
+
+2009-03-11  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewDTRecSegment4DTwig.cc, IViewSiStripDigiTwig.cc,
+	IViewTrackTwig.cc: Protect from schema changes.
+	* IgDrawFunctions.cc: Use collection name.
+	* IggiApplication.cc: Fix typo. Add Hcal rechits display.
+
+2009-03-10  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewSiStripDigiTwig.cc: Do not adjust the camera.
+
+	* IggiApplication.cc: Swap the gradient colors. Add saving tree
+	and table views visibility.
+
+	* IViewTrackTwig.h, IViewDTRecSegment4DTwig.cc,
+	IViewDetectorTwig.cc, IViewSiStripDigiTwig.cc, IViewTrackTwig.cc,
+	IViewTrackingRecHitTwig.cc: Add 3D drawing implementation.
+
+	* IggiApplication.cc: Remove 2D QGraphicsView. Put 3D window in
+	MDI area.
+	* IViewDTRecSegment4DTwig.cc, IViewDetectorTwig.cc,
+	IViewEventTwig.cc, IViewMuonTwig.cc, IViewSiStripDigiTwig.cc,
+	IViewTrackTwig.cc, IViewTrackingRecHitTwig.cc: Remove 2D
+	QGraphicsView. 
+
+2009-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.h, IggiApplication.cc: Add a consumer thread to
+	get events online. Use draw factory with registered draw
+	functions. Display full collection on mouse click in Tree
+	view. Display a collection item on mouse click in Table view.
+	* IgDrawFactroyService.h, IgDrawFactroyService.cc: Keep a map of
+	registered draw functions.
+	* IgDrawFunctions.h, IgDrawFunctions.cc: Implementetion and
+	registration of actual draw functions.
+	* IgSpyConsumer.h: Online event consumer.
+	* IgSpyConsumerThread.h, IgSpyConsumerThread.cc: A QThread to deal
+	with online events.
+	* IgTreeItemDelegate.h: Not implemented yet.
+	
+	
 2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IggiApplication.h, IggiApplication.cc: Updated to a new API to

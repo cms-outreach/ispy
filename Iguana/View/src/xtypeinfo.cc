@@ -1,13 +1,31 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 #define QT_NO_EMIT
 #include "Iguana/View/interface/IViewQueuedTwig.h"
+#include "Iguana/View/interface/IViewBasicClusterTwig.h"
+#include "Iguana/View/interface/IViewCaloTowerTwig.h"
+#include "Iguana/View/interface/IViewCSCSegmentTwig.h"
 #include "Iguana/View/interface/IViewDTRecSegment4DTwig.h"
 #include "Iguana/View/interface/IViewDetectorTwig.h"
 #include "Iguana/View/interface/IViewEventTwig.h"
-#include "Iguana/View/interface/IViewTrackTwig.h"
+#include "Iguana/View/interface/IViewEcalRecHitTwig.h"
+#include "Iguana/View/interface/IViewHBRecHitTwig.h"
+#include "Iguana/View/interface/IViewHERecHitTwig.h"
+#include "Iguana/View/interface/IViewHFRecHitTwig.h"
+#include "Iguana/View/interface/IViewHORecHitTwig.h"
+#include "Iguana/View/interface/IViewJetTwig.h"
+#include "Iguana/View/interface/IViewMETTwig.h"
+#include "Iguana/View/interface/IViewMuonTwig.h"
+#include "Iguana/View/interface/IViewPFClusterTwig.h"
+#include "Iguana/View/interface/IViewPFRecHitTwig.h"
+#include "Iguana/View/interface/IViewPFRecTrackTwig.h"
+#include "Iguana/View/interface/IViewPixelDigiTwig.h"
+#include "Iguana/View/interface/IViewRPCRecHitTwig.h"
+#include "Iguana/View/interface/IViewSiPixelClusterTwig.h"
+#include "Iguana/View/interface/IViewSiPixelRecHitTwig.h"
+#include "Iguana/View/interface/IViewSiStripClusterTwig.h"
 #include "Iguana/View/interface/IViewSiStripDigiTwig.h"
 #include "Iguana/View/interface/IViewTrackingRecHitTwig.h"
-#include "Iguana/View/interface/IViewMuonTwig.h"
+#include "Iguana/View/interface/IViewTrackTwig.h"
 #include "Iguana/View/interface/Ig3DModel.h"
 #include "Iguana/View/interface/IgRPhiModel.h"
 #include "Iguana/View/interface/IgRZModel.h"
@@ -53,13 +71,31 @@ XTYPEINFO_DEF_1 (IgRZRep,   IgRep, false);
 XTYPEINFO_DEF_1 (IgLegoRep, IgRep, false);
 XTYPEINFO_DEF_1 (IgTextRep, IgRep, false);
 XTYPEINFO_DEF_1 (IViewQueuedTwig, IgSimpleTwig, false);
-XTYPEINFO_DEF_1 (IViewDTRecSegment4DTwig, IViewQueuedTwig, false);
-XTYPEINFO_DEF_1 (IViewDetectorTwig, IViewQueuedTwig, false);
-XTYPEINFO_DEF_1 (IViewEventTwig, IViewQueuedTwig, false);
-XTYPEINFO_DEF_1 (IViewTrackTwig, IViewQueuedTwig, false);
-XTYPEINFO_DEF_1 (IViewSiStripDigiTwig, IViewQueuedTwig, false);
-XTYPEINFO_DEF_1 (IViewTrackingRecHitTwig, IViewQueuedTwig, false);
-XTYPEINFO_DEF_1 (IViewMuonTwig, IViewQueuedTwig, false);
+XTYPEINFO_DEF_1 (IViewBasicClusterTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewCaloTowerTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewCSCSegmentTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewDetectorTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewDTRecSegment4DTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewEcalRecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewEventTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewHBRecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewHERecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewHFRecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewHORecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewJetTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewMETTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewMuonTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewPFClusterTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewPFRecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewPFRecTrackTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewPixelDigiTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewRPCRecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewSiPixelClusterTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewSiPixelRecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewSiStripClusterTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewSiStripDigiTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewTrackingRecHitTwig, IgSimpleTwig, false);
+XTYPEINFO_DEF_1 (IViewTrackTwig, IgSimpleTwig, false);
 
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
@@ -179,6 +215,7 @@ MMM_DEFUN_FUNC(IgRepContext *, IgBrowserMethods::,doRepresent,
 // //     qApp->unlock (false);
     LOG (0, trace, LFfwvis, lat::undent);
     //    return context;
+    return 0;    
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -194,8 +231,8 @@ MMM_DEFUN_FUNC(IgRepContext *, IgBrowserMethods::,doRepresent,
     //    qApp->lock ();
 
     // Make sure hierarchy above is created correctly
-    Ig3DRep *prep = 0;
-    Ig3DRep	*prev = 0;
+//     Ig3DRep *prep = 0;
+//     Ig3DRep	*prev = 0;
 //     if (IgRepContext *existing = preMake3DRep (twig, model, &prep, &prev))
 //     {
 // 	//qApp->unlock (false);
@@ -224,6 +261,7 @@ MMM_DEFUN_FUNC(IgRepContext *, IgBrowserMethods::,doRepresent,
 //     qApp->unlock (false);
     LOG (0, trace, LFfwvis, lat::undent);
     //    return context;
+    return 0;    
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -239,8 +277,8 @@ MMM_DEFUN_FUNC(IgRepContext *, IgBrowserMethods::,doRepresent,
     //    qApp->lock ();
 
     // Make sure hierarchy above is created correctly
-    Ig3DRep *prep = 0;
-    Ig3DRep	*prev = 0;
+//     Ig3DRep *prep = 0;
+//     Ig3DRep	*prev = 0;
 //     if (IgRepContext *existing = preMake3DRep (twig, model, &prep, &prev))
 //     {
 // 	qApp->unlock (false);
@@ -269,6 +307,7 @@ MMM_DEFUN_FUNC(IgRepContext *, IgBrowserMethods::,doRepresent,
 //     qApp->unlock (false);
     LOG (0, trace, LFfwvis, lat::undent);
     //    return context;
+    return 0;    
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -284,8 +323,8 @@ MMM_DEFUN_FUNC(IgRepContext *, IgBrowserMethods::,doRepresent,
 //     qApp->lock ();
 
     // Make sure hierarchy above is created correctly
-    Ig3DRep *prep = 0;
-    Ig3DRep	*prev = 0;
+//     Ig3DRep *prep = 0;
+//     Ig3DRep	*prev = 0;
 //     if (IgRepContext *existing = preMake3DRep (twig, model, &prep, &prev))
 //     {
 // 	qApp->unlock (false);
@@ -314,5 +353,6 @@ MMM_DEFUN_FUNC(IgRepContext *, IgBrowserMethods::,doRepresent,
 //     qApp->unlock (false);
     LOG (0, trace, LFfwvis, lat::undent);
     //    return context;
+    return 0;
 }
 
