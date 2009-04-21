@@ -990,7 +990,7 @@ public:
   
   // Data storage is responsible for destroying all its collections
   // and their contents.
-  ~IgDataStorage (void)
+  virtual ~IgDataStorage (void)
   {
     for (AssociationSets::iterator i = m_associationSets.begin();
         i != m_associationSets.end();
