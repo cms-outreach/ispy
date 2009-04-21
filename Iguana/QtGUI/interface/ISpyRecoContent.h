@@ -1,32 +1,18 @@
 #ifndef VIEW_IVIEW_RECO_CONTENT_H
 # define VIEW_IVIEW_RECO_CONTENT_H
 
-//<<<<<< INCLUDES                                                       >>>>>>
+class IgState;
 
-# include "Iguana/QtGUI/interface/ISpyContent.h"
-# include "Iguana/Framework/interface/config.h"
-
-//<<<<<< PUBLIC DEFINES                                                 >>>>>>
-//<<<<<< PUBLIC CONSTANTS                                               >>>>>>
-//<<<<<< PUBLIC TYPES                                                   >>>>>>
-//<<<<<< PUBLIC VARIABLES                                               >>>>>>
-//<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
-//<<<<<< CLASS DECLARATIONS                                             >>>>>>
-
-class IGUANA_FRAMEWORK_API ISpyRecoContent : public ISpyContent
+class ISpyRecoContent 
 {
-    IG_DECLARE_STATE_ELEMENT (ISpyRecoContent);
 public:
     ISpyRecoContent (IgState *state);
-    // implicit copy constructor
-    // implicit assignment operator
-    // implicit destructor
 
 private:
     void                init (void);
-};
+    IgState *		state (void) const;
 
-//<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
-//<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
+    IgState * 		m_state;
+};
 
 #endif // VIEW_IVIEW_RECO_CONTENT_H

@@ -3,6 +3,8 @@
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
+# include <QObject>
+# include "Iguana/Framework/interface/IgModel.h"
 # include <string>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -19,14 +21,13 @@ class Ig3DBaseRep;
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-class Ig3DBaseModel
+class Ig3DBaseModel : public QObject, public IgModel
 {
+    Q_OBJECT
 public:
     Ig3DBaseModel (IgState *state);
     ~Ig3DBaseModel (void);
     
-    virtual void        changed (void);
-
     virtual void        add (Ig3DBaseRep *rep);
     virtual void        remove (Ig3DBaseRep *rep, bool search = false);
     virtual void        change (Ig3DBaseRep *rep);
@@ -41,7 +42,12 @@ public:
     static std::string  decode (const std::string &name);
     static std::string  decode (const SbName &name);
 
+signals:
+    void        	changed (void);
+
 private:
+    void 		initScene (SoGroup *root);
+    
     IgState            *m_state;
     SoGroup            *m_sceneGraph;
     Ig3DBaseRep        *m_attachPoint;

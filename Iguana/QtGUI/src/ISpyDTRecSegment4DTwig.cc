@@ -4,7 +4,6 @@
 
 #include "Iguana/QtGUI/interface/ISpyDTRecSegment4DTwig.h"
 #include "Iguana/QtGUI/interface/IgDrawFactoryService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include <Inventor/nodes/SoMaterial.h>
@@ -31,14 +30,11 @@ ISpyDTRecSegment4DTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
 
-    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-    ASSERT (sceneGraphService);
-
     if (IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ()))
     {	
 	SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw ("Segments", state (), "DTRecSegment4D_V1", "3D"));
 
-	SoSeparator *sep = new SoSeparator;
+	SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 	sep->setName (SbName ("ISpyDTRecSegment4DTwig"));
 
 	SoMaterial *mat = new SoMaterial;
@@ -53,9 +49,5 @@ ISpyDTRecSegment4DTwig::onNewEvent (ISpyEventMessage& message)
 	sep->addChild (sty);
 	
 	sep->addChild (rep);
-
-	SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-	ASSERT (mainScene);	
-	mainScene->addChild (sep);	
     }
 }

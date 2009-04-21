@@ -4,17 +4,14 @@
 
 #include "Iguana/QtGUI/interface/ISpyTrackingRecHitTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
-#include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMarkerSet.h>
 #include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
-#include <QString>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -38,9 +35,6 @@ ISpyTrackingRecHitTwig::onNewEvent (ISpyEventMessage& message)
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
-	ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-	ASSERT (sceneGraphService);
-
 	IgDataStorage *storage = readService->dataStorage ();
 	if (storage->hasCollection ("TrackingRecHits_V1"))
 	{	    
@@ -49,7 +43,7 @@ ISpyTrackingRecHitTwig::onNewEvent (ISpyEventMessage& message)
 	    {
 		IgProperty POS = hits.getProperty ("pos");
 
-		SoSeparator *sep = new SoSeparator;
+		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 		sep->setName (SbName ("TrackingRecHits_V1"));
 
 		SoMaterial *mat = new SoMaterial;
@@ -83,10 +77,6 @@ ISpyTrackingRecHitTwig::onNewEvent (ISpyEventMessage& message)
 		sopoints->numPoints.setValue (n);
 	  
 		sep->addChild (sopoints);
-
-		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-		ASSERT (mainScene);	
-		mainScene->addChild (sep);	
 	    }
 	}	
     }

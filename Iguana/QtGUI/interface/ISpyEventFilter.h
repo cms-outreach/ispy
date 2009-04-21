@@ -1,9 +1,9 @@
-#ifndef VIEW_IVIEW_DETECTOR_TWIG_H
-# define VIEW_IVIEW_DETECTOR_TWIG_H
+#ifndef QT_GUI_ISPY_EVENT_FILTER_H
+# define QT_GUI_ISPY_EVENT_FILTER_H
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
-# include "Iguana/QtGUI/interface/ISpyQueuedTwig.h"
+# include <QObject>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -12,18 +12,17 @@
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-class ISpyDetectorTwig : public ISpyQueuedTwig
+class ISpyEventFilter : public QObject
 {
+    Q_OBJECT
 public:
-    ISpyDetectorTwig (IgState *state, IgTwig *parent, 
-		      const std::string &name = "");
-    // implicit copy constructor
-    // implicit assignment operator
-    // implicit destructor
-    virtual void  onNewEvent (ISpyEventMessage& message);
+    bool eventFilter (QObject *obj, QEvent *event);
+
+signals:
+    void 		open (const QString &fileName);
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
 //<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 
-#endif // VIEW_IVIEW_DETECTOR_TWIG_H
+#endif // QT_GUI_ISPY_EVENT_FILTER_H

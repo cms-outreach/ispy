@@ -2,7 +2,14 @@
 
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseRep.h"
+#include "Iguana/QtGUI/interface/ISpySelectionService.h"
+#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
+#include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include <Inventor/actions/SoSearchAction.h>
+#include <Inventor/nodes/SoAnnotation.h>
+#include <Inventor/nodes/SoDrawStyle.h>
+#include <Inventor/nodes/SoMaterial.h>
+#include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <classlib/utils/DebugAids.h>
@@ -15,22 +22,57 @@ Ig3DBaseModel::Ig3DBaseModel (IgState *state)
     // ASSERT ("attachPoint is the scene graph or within it");
     m_sceneGraph->ref ();
     m_sceneGraph->setName ("IGUANA_SCENE_GRAPH_V2");
-//     Ig3DBaseRep *rep = new Ig3DBaseRep (this, 0, 0, new SoSeparator);
-//     ASSERT (m_attachPoint == rep);
+    Ig3DBaseRep *rep = new Ig3DBaseRep (this, 0, 0, new SoSeparator);
+    ASSERT (m_attachPoint == rep);
+    initScene (m_sceneGraph);
+}
+
+void
+Ig3DBaseModel::initScene (SoGroup *top)
+{
+    SoSeparator *root = dynamic_cast <SoSeparator *>(top);
+    // FIXME: root->addChild(new SoPerspectiveCamera);
+
+    SoSeparator *sel = new SoSeparator;
+    sel->setName (SbName ("CollectionSelection"));
+    SoDrawStyle *sty = new SoDrawStyle;
+    sty->style = SoDrawStyle::LINES;
+    sty->lineWidth.setValue (3);
+    sel->addChild (sty);
+
+    SoMaterial *mat = new SoMaterial;
+    float rgbcomponents [4];
+    IgSbColorMap::unpack (0xC0000000, rgbcomponents); // Free Speech Red
+    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+    sel->addChild (mat);
+    SoSeparator *selSep = new SoSeparator;
+    sel->addChild (selSep);
+    root->addChild (sel);
+    
+    SoSeparator *mainScene = new SoSeparator;
+    root->addChild (mainScene);
+    SoSeparator *mainSep = new SoSeparator;
+    mainScene->addChild (mainSep);
+
+    new ISpySceneGraphService (state (), mainSep);
+    new ISpySelectionService (state (), selSep);
 }
 
 Ig3DBaseModel::~Ig3DBaseModel (void)
 { m_sceneGraph->unref (); }
 
-void
-Ig3DBaseModel::changed (void)
-{
-    // FIXME: emit change ();
-//     Ig3DBaseModelEvent event (this);
-//     for (Listeners::iterator pos = m_listeners.begin ();
-//          pos != m_listeners.end (); ++pos)
-// 	(*pos) (event);
-}
+// void
+// Ig3DBaseModel::changed (void)
+// {
+//     if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
+//     {
+// 	dynamic_cast<SoSeparator *>(sel->selection ())->removeAllChildren ();	
+//     }
+//     if (ISpySceneGraphService* sceen = ISpySceneGraphService::get (state ()))
+//     {
+// 	dynamic_cast<SoSeparator *>(sceen->sceneGraph ())->removeAllChildren ();
+//     }    
+// }
 
 Ig3DBaseRep *
 Ig3DBaseModel::lookup (SoGroup *node) const

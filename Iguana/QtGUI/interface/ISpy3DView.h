@@ -19,8 +19,8 @@ class SoFieldSensor;
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-class ISpy3DView: public QObject,
-		  public SoQtExaminerViewer
+class ISpy3DView : public QObject,
+		   public SoQtExaminerViewer
 {
     Q_OBJECT
 public:
@@ -39,7 +39,15 @@ public:
 				float dpi, QString format);
     virtual void   printVector (QString file, QString format, int level);
 
+    static bool    saveNode (SoNode *node, const QString& title,
+			     QWidget *parent = 0, const char* file = 0);
+    static bool    writeNode (SoNode *node, const QString& file, bool binary,
+			      QWidget *parent = 0);
+
 public slots:
+    void 	 save (void);
+    void 	 print (void);
+
     void         zoomIn (void);
     void         zoomOut (void);
     void         zoom (const float diffvalue);
@@ -63,10 +71,10 @@ public slots:
     virtual void invertCamera (void);
 
 signals:
-    void cameraToggled (void);
+    void 	cameraToggled (void);
     
 protected:
-    virtual void     	initWidget (void);
+    virtual void    initWidget (void);
 
     static SbBool   eventCallback (void *closure, QEvent *event);
     

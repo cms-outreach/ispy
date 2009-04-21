@@ -16,7 +16,7 @@ class ISpyCaloTowerTwig : public ISpyQueuedTwig
 {
 public:
     ISpyCaloTowerTwig (IgState *state, IgTwig *parent, 
-			const std::string &name = "");
+		       const std::string &name = "");
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor

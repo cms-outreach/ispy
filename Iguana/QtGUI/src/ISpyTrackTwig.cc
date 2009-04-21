@@ -4,11 +4,9 @@
 
 #include "Iguana/QtGUI/interface/ISpyTrackTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Inventor/interface/IgSoSplineTrack.h"
 #include "Iguana/Framework/interface/IgCollection.h"
-#include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoMarkerSet.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>
@@ -37,9 +35,6 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
-	ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-	ASSERT (sceneGraphService);
-	
 	IgDataStorage *storage = readService->dataStorage ();
 	if (storage->hasCollection ("Tracks_V1") && storage->hasCollection ("Extras_V1"))
 	{	    
@@ -53,7 +48,7 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 		IgAssociationSet &trackExtras = storage->getAssociationSet ("TrackExtras_V1");
 		IgCollection &extras = storage->getCollection ("Extras_V1");
 
-		SoSeparator *sep = new SoSeparator;
+		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 		sep->setName (SbName ("Tracks_V1"));
 	    
 		SoMaterial *mat = new SoMaterial;
@@ -174,10 +169,6 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 		
 		    sep->addChild (tpoints);
 		}
-
-		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-		ASSERT (mainScene);	
-		mainScene->addChild (sep);	
 	    }
 	}
     }

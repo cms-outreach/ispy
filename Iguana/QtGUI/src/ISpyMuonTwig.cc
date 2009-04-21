@@ -4,11 +4,9 @@
 
 #include "Iguana/QtGUI/interface/ISpyMuonTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Inventor/interface/IgSoSimpleTrajectory.h"
-#include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>
@@ -24,7 +22,7 @@
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 ISpyMuonTwig::ISpyMuonTwig (IgState *state, IgTwig *parent,
-			      const std::string &name /* = "" */)
+			    const std::string &name /* = "" */)
     : ISpyQueuedTwig (state, parent, name)
 {}
 
@@ -32,9 +30,6 @@ void
 ISpyMuonTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
-
-    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-    ASSERT (sceneGraphService);
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
@@ -57,7 +52,7 @@ ISpyMuonTwig::onNewEvent (ISpyEventMessage& message)
 		// IgAssociationSet &muonGlobalPoints = storage->getAssociationSet ("MuonGlobalPoints_V1");
 		IgCollection &points = storage->getCollection ("Points_V1");
 
-		SoSeparator *sep = new SoSeparator;
+		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 		SoMaterial *mat = new SoMaterial;
 		float rgbcomponents [4];
 		IgSbColorMap::unpack (0xffff0000, rgbcomponents);
@@ -92,10 +87,6 @@ ISpyMuonTwig::onNewEvent (ISpyEventMessage& message)
 		    }
 		    sep->addChild (reconstructedTrack);
 		}
-
-		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-		ASSERT (mainScene);	
-		mainScene->addChild (sep);	
 	    }
 	}	
     }

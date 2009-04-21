@@ -16,6 +16,7 @@ class IgLegoRep;
 class IgTextRep;
 class IgRPhiRep;
 class IgRZRep;
+class SoNode;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
@@ -28,6 +29,8 @@ public:
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor
+    virtual ~ISpyQueuedTwig (void);
+    
     virtual void	onNewEvent (ISpyEventMessage& message);
 
     virtual void	update (Ig3DRep *rep);
@@ -40,13 +43,16 @@ public:
 
 protected:
     void                onBaseInvalidate (void);
+    void 		clear (void);
+    SoNode*		rep (void);
 
 private:
 
     class ExactMatch;
     friend class ExactMatch;
 
-    IgState		       *m_state;		//< State context.
+    SoNode	       *m_rep;
+    IgState	       *m_state;		//< State context.
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

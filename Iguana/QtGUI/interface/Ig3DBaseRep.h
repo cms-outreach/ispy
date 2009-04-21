@@ -3,6 +3,7 @@
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
+# include "Iguana/Framework/interface/IgRep.h"
 # include <Inventor/nodes/SoSeparator.h>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -16,7 +17,7 @@ class SoGroup;
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-class Ig3DBaseRep : public SoSeparator
+class Ig3DBaseRep : public SoSeparator, public IgRep
 {
 public:
     Ig3DBaseRep (Ig3DBaseModel *model, Ig3DBaseRep *parent, Ig3DBaseRep *prev, SoGroup *node);
@@ -25,7 +26,8 @@ public:
     // implicit destructor
     ~Ig3DBaseRep (void);
 
-    virtual Ig3DBaseModel *     model (void) const;
+    virtual IgRepContext *      context (void) const;
+    virtual IgModel *	     	model (void) const;
     
     virtual SoGroup *           magic (void) const;
     virtual SoGroup *           magic (SoGroup *node);
@@ -46,10 +48,12 @@ public:
     static Ig3DBaseRep *        asRep (SoNode *node);
     
 protected:
+    virtual void                context (IgRepContext *context);
 
     virtual void                zap (bool search = false, bool kill = true);
     
 private:
+    IgRepContext                *m_context;
     Ig3DBaseModel               *m_model;
     
     // undefined semantics

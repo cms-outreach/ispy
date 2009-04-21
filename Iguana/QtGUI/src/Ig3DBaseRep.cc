@@ -2,6 +2,7 @@
 
 #include "Iguana/QtGUI/interface/Ig3DBaseRep.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
+#include "Iguana/Framework/interface/IgRepContext.h"
 #include <Inventor/nodes/SoSeparator.h>
 #include <classlib/utils/DebugAids.h>
 #include <algorithm>
@@ -57,6 +58,8 @@ Ig3DBaseRep::Ig3DBaseRep (Ig3DBaseModel *model,
 			  Ig3DBaseRep *parent,
 			  Ig3DBaseRep *prev,
 			  SoGroup *node)
+    : m_context (0),
+      m_model (model)
 {
     ASSERT (m_model);
     ASSERT (node);
@@ -130,14 +133,14 @@ Ig3DBaseRep::~Ig3DBaseRep (void)
     // parent class takes care of deleting the remaining children.
     ASSERT (getNumChildren () == 2);
     
-//     // Make the context go away if we are not being deleted by it.
-//     ASSERT (m_context);
-//     if (m_context->rep ())
-//     {
-//         ASSERT (m_context->rep () == this);
-// 	m_context->erase (false);
-// 	delete m_context;
-//     }
+    // Make the context go away if we are not being deleted by it.
+    ASSERT (m_context);
+    if (m_context->rep ())
+    {
+        ASSERT (m_context->rep () == this);
+	m_context->erase (false);
+	delete m_context;
+    }
 }
 
 void
@@ -173,7 +176,19 @@ Ig3DBaseRep::zap (bool search /* = false */, bool kill /* = true */)
 	unrefNoDelete ();
 }
 
-Ig3DBaseModel *
+void
+Ig3DBaseRep::context (IgRepContext *context)
+{
+    ASSERT (! m_context);
+    ASSERT (context);
+    m_context = context;
+}
+
+IgRepContext *
+Ig3DBaseRep::context (void) const
+{ return m_context; }
+
+IgModel *
 Ig3DBaseRep::model (void) const
 { return m_model; }
 

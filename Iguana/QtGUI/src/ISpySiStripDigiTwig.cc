@@ -4,10 +4,8 @@
 
 #include "Iguana/QtGUI/interface/ISpySiStripDigiTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
-#include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMarkerSet.h>
 #include <Inventor/nodes/SoPointSet.h>
@@ -26,7 +24,7 @@
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 ISpySiStripDigiTwig::ISpySiStripDigiTwig (IgState *state, IgTwig *parent,
-					    const std::string &name /* = "" */)
+					  const std::string &name /* = "" */)
     : ISpyQueuedTwig (state, parent, name)
 {}
 
@@ -34,11 +32,9 @@ void
 ISpySiStripDigiTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
+
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
-	ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-	ASSERT (sceneGraphService);
-	
 	IgDataStorage *storage = readService->dataStorage ();
 	if (storage->hasCollection ("SiStripDigis_V1"))
 	{	    
@@ -65,7 +61,7 @@ ISpySiStripDigiTwig::onNewEvent (ISpyEventMessage& message)
 		}
 		vertices->vertex.setNum (n);
 
-		SoSeparator *sep = new SoSeparator;
+		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 		sep->setName (SbName ("SiStripDigis_V1"));
 
 		SoMaterial *mat = new SoMaterial;
@@ -83,10 +79,6 @@ ISpySiStripDigiTwig::onNewEvent (ISpyEventMessage& message)
 		sopoints->numPoints.setValue (n);
 	  
 		sep->addChild (sopoints);
-
-		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-		ASSERT (mainScene);	
-		mainScene->addChild (sep);	
 	    }
 	}
     }

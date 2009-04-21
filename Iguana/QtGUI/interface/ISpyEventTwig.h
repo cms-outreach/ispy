@@ -22,7 +22,7 @@ public:
     // implicit destructor
     virtual void  onNewEvent (ISpyEventMessage& message);
 
-private:    
+private:
     std::string	      	m_text;
 };
 

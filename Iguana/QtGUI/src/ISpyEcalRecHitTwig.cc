@@ -3,7 +3,6 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "Iguana/QtGUI/interface/ISpyEcalRecHitTwig.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/QtGUI/interface/IgDrawFactoryService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
@@ -30,14 +29,11 @@ ISpyEcalRecHitTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
 
-    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-    ASSERT (sceneGraphService);
-
     if (IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ()))
     {	
 	SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw ("CrystalHits", state (), "EcalRecHits_V1", "3D"));
     
-	SoSeparator *sep = new SoSeparator;	
+	SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());	
 	sep->setName (SbName ("ISpyEcalRecHitTwig"));
 
 	SoMaterial *mat = new SoMaterial;
@@ -46,10 +42,6 @@ ISpyEcalRecHitTwig::onNewEvent (ISpyEventMessage& message)
 	mat->diffuseColor.setValue (SbColor (rgbcomponents));
 	sep->addChild (mat);
 	sep->addChild (rep);
-	
-	SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-	ASSERT (mainScene);	
-	mainScene->addChild (sep);	
     }
 }
 

@@ -1,6 +1,7 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "Iguana/QtGUI/interface/ISpyRecoContent.h"
+#include "Iguana/Framework/interface/IgState.h"
 #include "Iguana/QtGUI/interface/ISpyBasicClusterTwig.h"
 #include "Iguana/QtGUI/interface/ISpyCaloTowerTwig.h"
 #include "Iguana/QtGUI/interface/ISpyCSCSegmentTwig.h"
@@ -26,26 +27,16 @@
 #include "Iguana/QtGUI/interface/ISpySiStripDigiTwig.h"
 #include "Iguana/QtGUI/interface/ISpyTrackingRecHitTwig.h"
 #include "Iguana/QtGUI/interface/ISpyTrackTwig.h"
-#include <classlib/utils/Callback.h>
-
-//<<<<<< PRIVATE DEFINES                                                >>>>>>
-//<<<<<< PRIVATE CONSTANTS                                              >>>>>>
-//<<<<<< PRIVATE TYPES                                                  >>>>>>
-//<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
-//<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
-
-IG_DEFINE_STATE_ELEMENT (ISpyRecoContent, "Data/iView Reco");
-
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
-//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 ISpyRecoContent::ISpyRecoContent (IgState *state)
-    : ISpyContent (state, s_key, MAIN_THREAD,
-		    lat::CreateCallback (this, &ISpyRecoContent::init))
+    : m_state (state)
 {
+    init ();
 }
+
+IgState *
+ISpyRecoContent::state (void) const
+{ return m_state; }
 
 void
 ISpyRecoContent::init (void)

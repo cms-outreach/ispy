@@ -9,9 +9,13 @@
 #include "Iguana/Framework/interface/IgState.h"
 #include "Iguana/Inventor/interface/IgSoGridPlane.h"
 #include <Inventor/SoOffscreenRenderer.h>
+#include <Inventor/nodes/SoDirectionalLight.h>
+#include <Inventor/nodes/SoPointLight.h>
+#include <Inventor/nodes/SoSpotLight.h>
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/Qt/SoQtCursor.h>
 #include <QtGui>
 #include "classlib/utils/DebugAids.h"
@@ -56,6 +60,7 @@ ISpy3DView::initWidget (void)
     setEventCallback (eventCallback, this);
     setSceneGraph (model ()->sceneGraph ());
     initCamera ();
+    setDecoration (false);
     
     show ();
 }
@@ -66,15 +71,44 @@ ISpy3DView::initCamera (void)
     //FIXME: remove when SoQt fixes the continious rendering problem
     //create sersors to sence the near and for clip plane distance and
     //force them to be 0.1 and SHRT_MAX
-    SoCamera * const camera = SoQtExaminerViewer::getCamera ();
-    
+    SoCamera * const camera = SoQtExaminerViewer::getCamera ();    
     ASSERT (camera);
-    camera->farDistance  = SHRT_MAX;
-    camera->nearDistance  = 0.1;
+    SbVec3f org (0.0, 0.0, 0.0);
+    
     m_farDistanceSensor = new SoFieldSensor (&farDistanceSensorCB, this);
     m_farDistanceSensor->attach (&camera->farDistance);
     m_nearDistanceSensor = new SoFieldSensor (&nearDistanceSensorCB, this);
     m_nearDistanceSensor->attach (&camera->nearDistance);
+    camera->position.setValue (-18.1, 8.6, 14.0);
+    camera->orientation.setValue (-0.3, -0.93, -0.2, 1.1);
+    camera->nearDistance  = 0.1;
+    camera->farDistance  = 32767;
+    camera->focalDistance = 19.6;
+    camera->pointAt (org);
+    
+//     SoLight *headLight = getHeadlight ();
+//     SoSeparator *root = dynamic_cast<SoSeparator *>(getSceneManager ()->getSceneGraph ());
+
+//     SoPointLight *light_2 = new SoPointLight;
+//     light_2->on = true;
+//     light_2->intensity = 0.6;
+//     light_2->color.setValue (1, 1, 1);
+//     light_2->location.setValue (6.7, 41.67, 9.64);
+//     root->addChild (light_2);
+
+//     SoPointLight *light_3 = new SoPointLight;
+//     light_3->on = true;
+//     light_3->intensity = 0.5;
+//     light_3->color.setValue (1, 1, 1);
+//     light_3->location.setValue (-21.83, -8.81, 13.0);
+//     root->addChild (light_3);
+
+//     SoDirectionalLight *light_1 = new SoDirectionalLight;
+//     light_1->on = true;
+//     light_1->intensity = 0.85;
+//     light_1->color.setValue (1, 1, 1);
+//     light_1->direction.setValue (0.49, -0.41, -0.77);
+//     root->addChild (light_1);
     
 //     SoNode *node = model->attachPoint ()->findMagic (
 //         Ig3DBaseModel::encode ("Default Grid Group"));
@@ -202,6 +236,204 @@ ISpy3DView::printVector (QString file, QString format, int level)
 			      "Failed to open file \""+file+"\" for writing.",
 			      "Ok");	
     }
+}
+
+void
+ISpy3DView::save (void)
+{ 
+    saveNode (getSceneManager ()->getSceneGraph(), "Save Scene As...", parent ()); 
+    // saveNode (model ()->sceneGraph (), "Save Scene As...", getShellWidget ()); 
+}
+
+bool
+ISpy3DView::saveNode (SoNode *node, const QString& title,
+		      QWidget* parent /* = 0 */, const char* file /*= 0*/)
+{
+    QString f;
+    bool binaryfile = false;
+    
+    if (file == 0)
+    {
+	QFileDialog dialog (parent, title);
+	QString binary ("Binary OIV Files (*.iv)");
+	QString ascii ("ASCII OIV Files (*.iv)");
+	QStringList filters (ascii);
+	filters.append (binary);
+	dialog.setFilters (filters);
+	dialog.setFileMode (QFileDialog::AnyFile);
+	dialog.setLabelText (QFileDialog::Accept, "&Save");
+	
+        bool tryagain = true;
+        while (tryagain)
+	{
+	    if (dialog.exec () != QDialog::Accepted)
+		return false;
+	    
+	    f = dialog.selectedFiles ().front ();
+            if (f.isEmpty ())
+		return false;
+	    else
+	    {
+		QFile sealf (f);
+		if (sealf.exists ())
+		{
+		    int button = QMessageBox::warning (parent, "File Already Exists",
+						       "File \""+f+"\" already exists.\n"
+						       "Do you want to overwrite it?",
+						       "Yes", "No");
+		    if (button == 0)
+		    {
+			tryagain = false;
+		    }
+		}	
+		else
+		    tryagain = false;
+	    }
+
+	}
+	if (dialog.selectedFilter () == binary)
+	    binaryfile = true;
+    }
+    else
+	f = file;
+    
+    QString fileName (f);
+	
+    if (! fileName.endsWith (".iv"))
+	fileName.append (".iv");
+
+    QDir::setCurrent (QFileInfo (fileName).dir ().absolutePath ());
+    return writeNode (node, fileName, binaryfile);
+}
+
+bool
+ISpy3DView::writeNode (SoNode *node, const QString& file, bool binary,
+		       QWidget* parent /* = 0 */)
+{
+    SoOutput out;
+    QApplication::setOverrideCursor (Qt::WaitCursor);
+    bool ret = false;
+    if (out.openFile (file.toStdString ().c_str ()))
+    {
+	out.setBinary (binary);
+	SoWriteAction writer (&out);
+	writer.apply (node);
+	out.closeFile ();
+	
+	ret = true;
+    }
+    else
+    {
+	QMessageBox::warning (parent, "System Error",
+			      "Failed to open file \""+file+"\" for writing."
+			      "Ok");
+    }
+    QApplication::restoreOverrideCursor ();
+    return ret;
+}
+
+void
+ISpy3DView::print (void)
+{
+    QString     vector2EPS ("Vector EPS [Level 2] (*.eps)");
+    QString     vector3EPS ("Vector EPS [Level 3] (*.eps)");
+    QString     vectorPDF  ("Portable Document Format (*.pdf)");
+    QStringList filters (vector2EPS);
+    filters.append (vector3EPS);
+    filters.append (vectorPDF);
+    
+    SoOffscreenRenderer *renderer =
+        new SoOffscreenRenderer (this->getViewportRegion ());
+    
+    int num = renderer->getNumWriteFiletypes();
+
+    if (num == 0)
+    {
+        filters.append ("Encapsulated postscript (*.eps)");
+	filters.append ("Encapsulated postscript (*.ps)");
+	filters.append ("The SGI RGB file format (*.rgb)");
+	filters.append ("The SGI RGB file format (*.rgba)");
+	filters.append ("The SGI RGB file format (*.bw)");
+	filters.append ("The SGI RGB file format (*.inta)");
+	filters.append ("The SGI RGB file format (*.int)");
+    }
+    else
+    {
+        for (int i = 0; i < num; i++)
+	{
+	    SbPList extlist;
+	    SbString fullname;
+	    SbString description;
+	    renderer->getWriteFiletypeInfo (i, extlist, fullname, description);
+	    QString filter (fullname.getString ());
+            filter += " (*.";
+	    for (int j = 0; j < extlist.getLength (); j++)
+		filters.append (filter + (const char *)extlist [j] + ")");
+	}
+    }
+    delete renderer;
+    
+    // Pop up file dialog to as for the name.
+    QFileDialog dialog (parent (), "Print To File");
+    dialog.setFilters (filters);
+    dialog.setFileMode (QFileDialog::AnyFile);
+    dialog.setLabelText (QFileDialog::Accept, "&Save");
+    bool tryagain = true;
+    QString     f;
+    while (tryagain)
+    {
+        if (dialog.exec () != QDialog::Accepted)
+	    return;
+	
+	f = dialog.selectedFiles ().front ();
+	if (f.isEmpty ())
+	    return;
+	else
+	{
+	    QFile sealf (f);
+	    if (sealf.exists ())
+	    {
+		int button = QMessageBox::warning (parent (), "File Already Exists",
+						   "File \""+f+"\" already exists.\n"
+						   "Do you want to overwrite it?",
+						   "Yes", "No");
+		if (button == 0)
+		{
+		    tryagain = false;
+		}
+	    }
+	    else
+		tryagain = false;
+	}
+    }
+    // Pick format settings.
+    float       ppi = SoOffscreenRenderer::getScreenPixelsPerInch ();
+    //float     dpi = 300.;
+    float       dpi = ppi;
+    QString     format ("jpg");
+    
+    QString sfilter = dialog.selectedFilter ();
+    format = sfilter.section ('.', -1);
+    format.remove (QChar (')'));    
+    
+    // Add suffix.
+    QString suffix ("." + format);
+    if (! f.endsWith (suffix))
+        f += suffix;
+    
+    // FIXME: Use a state element to remeber all file operations(save, open)
+    QDir::setCurrent (QFileInfo (f).absoluteFilePath ());
+    
+    QApplication::setOverrideCursor (Qt::WaitCursor);
+    if (sfilter == vector2EPS)
+        printVector (f, format, 2);
+    else if (sfilter == vector3EPS)
+        printVector (f, format, 3);
+    else if (sfilter == vectorPDF)
+        printVector (f, format, 0);
+    else
+        printBitmap (f, ppi, dpi, format);
+    QApplication::restoreOverrideCursor ();
 }
 
 void

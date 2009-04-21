@@ -4,7 +4,6 @@
 
 #include "Iguana/QtGUI/interface/ISpyCaloTowerTwig.h"
 #include "Iguana/QtGUI/interface/IgDrawFactoryService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include <Inventor/nodes/SoMaterial.h>
@@ -31,15 +30,12 @@ ISpyCaloTowerTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
 
-    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-    ASSERT (sceneGraphService);
-
     if (IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ()))
     {	
 	SoSeparator *emrep = dynamic_cast<SoSeparator *>(drawService->draw ("EmTowers", state (), "CaloTowers_V1", "3D"));
 	SoSeparator *hadrep = dynamic_cast<SoSeparator *>(drawService->draw ("HadTowers", state (), "CaloTowers_V1", "3D"));
 
-	SoSeparator *sep = new SoSeparator;
+	SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 	sep->setName (SbName ("ISpyCaloTowerTwig"));
 
 	SoMaterial *emat = new SoMaterial;
@@ -54,10 +50,6 @@ ISpyCaloTowerTwig::onNewEvent (ISpyEventMessage& message)
 	hmat->diffuseColor.setValue (SbColor (rgbcomponents));
 	sep->addChild (hmat);
 	sep->addChild (hadrep);
-	
-	SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-	ASSERT (mainScene);
-	mainScene->addChild (sep);
     }
 }
 

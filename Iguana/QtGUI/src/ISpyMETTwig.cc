@@ -4,10 +4,8 @@
 
 #include "Iguana/QtGUI/interface/ISpyMETTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
-#include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoIndexedLineSet.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoVertexProperty.h>
@@ -34,12 +32,9 @@ ISpyMETTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
 
-    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-    ASSERT (sceneGraphService);
-
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
-	SoSeparator *sep = new SoSeparator;
+	SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 	sep->setName (SbName ("ISpyMETTwig"));
 
 	SoMaterial *mat = new SoMaterial;
@@ -88,10 +83,6 @@ ISpyMETTwig::onNewEvent (ISpyEventMessage& message)
 		lineSet->vertexProperty = vertices;
 
 		sep->addChild (lineSet);
-
-		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-		ASSERT (mainScene);	
-		mainScene->addChild (sep);	
 	    }
 	}
     }

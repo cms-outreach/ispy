@@ -20,18 +20,16 @@ class ISpySceneGraphService : public IgStateElement
 {
     IG_DECLARE_STATE_ELEMENT (ISpySceneGraphService);
 public:
-    ISpySceneGraphService (IgState *state, SoNode *sceneGraph, SoNode *overlaySceneGraph);
+    ISpySceneGraphService (IgState *state, SoNode *sceneGraph);
     ~ISpySceneGraphService (void);
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor
     virtual SoNode *		sceneGraph (void);
-    virtual SoNode *		overlaySceneGraph (void);
 
 private:
     IgState			*m_state;
     SoNode			*m_sceneGraph;
-    SoNode			*m_overlaySceneGraph;
 
     // undefined semantics
     ISpySceneGraphService (const ISpySceneGraphService &);

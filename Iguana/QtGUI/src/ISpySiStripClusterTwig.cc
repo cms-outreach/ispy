@@ -4,10 +4,8 @@
 
 #include "Iguana/QtGUI/interface/ISpySiStripClusterTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
-#include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoMarkerSet.h>
 #include <Inventor/nodes/SoPointSet.h>
@@ -36,9 +34,6 @@ ISpySiStripClusterTwig::onNewEvent (ISpyEventMessage& message)
     ISpyQueuedTwig::onNewEvent (message);
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
-	ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-	ASSERT (sceneGraphService);
-	
 	IgDataStorage *storage = readService->dataStorage ();
 	if (storage->hasCollection ("SiStripClusters_V1"))
 	{	    
@@ -65,7 +60,7 @@ ISpySiStripClusterTwig::onNewEvent (ISpyEventMessage& message)
 		}
 		vertices->vertex.setNum (n);
 
-		SoSeparator *sep = new SoSeparator;
+		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 		sep->setName (SbName ("SiStripClusters_V1"));
 
 		SoMaterial *mat = new SoMaterial;
@@ -83,10 +78,6 @@ ISpySiStripClusterTwig::onNewEvent (ISpyEventMessage& message)
 		sopoints->numPoints.setValue (n);
 	  
 		sep->addChild (sopoints);
-
-		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-		ASSERT (mainScene);	
-		mainScene->addChild (sep);	
 	    }
 	}
     }

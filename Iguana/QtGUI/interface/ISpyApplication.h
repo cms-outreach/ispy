@@ -22,6 +22,7 @@ class QSplashScreen;
 class IgDataStorage;
 class IgCollectionTableModel;
 class IgMultiStorageTreeModel;
+class Ig3DBaseModel;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
@@ -46,17 +47,22 @@ public:
 
 public slots:
     void 		open (void);
+    void 		open (const QString &fileName);
     void 		connect (void);
     void 		autoEvents (void);
     void		nextEvent (void);
     void		previousEvent (void);
     void		rewind (void);
-    void 		print (void);
-    void 		save (void);
     void		processEvent (unsigned int runNum, unsigned int eventNum);
     void		processEventDialog (void);
     void		skipEvent (long num);
     void		skipEventDialog (void);
+
+signals:
+    void 		modelChanged (void);
+    void 		showMessage (const QString &fileName);
+    void 		print (void);
+    void 		save (void);
 
 protected:
     virtual int         usage (void);
@@ -65,6 +71,7 @@ protected:
     virtual int         initState (void);
 
 private slots:
+    void		cleanSelection (void);
     void 		collectionChanged (const QModelIndex &index);
     void		displayCollection (const QModelIndex &index);
     void		displayItem (const QModelIndex &index);
@@ -76,6 +83,7 @@ private:
     int 		doRun (void);
     void		closeFile (void);
     void		loadFile (const QString &fileName);
+    void 		parseZipMember (lat::ZipArchive::Iterator it);
     void 		readZipMember (lat::ZipArchive::Iterator it);
     void		closeGeomFile (void);
     void		loadGeomFile (const QString &fileName);
@@ -85,9 +93,6 @@ private:
     void		restoreMainWindowSettings (void);
     void		saveSettings (void);    
     void		drawCollection (IgCollection *collection);
-    void		cleanScene (void);
-    void   		printVector (QString file, QString format, int level);
-    int			getGL2PSOptions (void);
     
     IgState	       *m_state;
     int			m_argc;
@@ -100,7 +105,8 @@ private:
     lat::ZipArchive::Iterator 	m_geomIt; 
 
     IgCollectionTableModel     *m_collectionModel;
-    IgMultiStorageTreeModel    *m_storageModel; 
+    IgMultiStorageTreeModel    *m_storageModel;
+    Ig3DBaseModel	       *m_3DModel;
     IgDataStorage 	       *m_storage;
     IgDataStorage 	       *m_geomStorage;
     QSplashScreen 	       *m_splash;
@@ -109,8 +115,6 @@ private:
     bool	    	m_init;
     QTimer	       *m_timer;
     bool		m_auto;
-    int 		m_gl2psOptions;
-    int                 m_gl2psFBBufferSize;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

@@ -1,14 +1,18 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "Iguana/QtGUI/interface/ISpyQueuedTwig.h"
+#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/QtGUI/interface/debug.h"
 #include "Iguana/Framework/interface/IgRepSet.h"
+#include <Inventor/nodes/SoSeparator.h>
 #include <QRegExp>
-#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
 //<<<<<< PRIVATE TYPES                                                  >>>>>>
+
+/// #logstream flag for this package.
+lat::logflag LFfwvis = { 0, "fwvis", true, -1 };
 
 class ISpyQueuedTwig::ExactMatch
 {
@@ -33,28 +37,49 @@ public:
 
 
 ISpyQueuedTwig::ISpyQueuedTwig (IgState *state, IgTwig *parent,
-				  const std::string &name /* = "" */)
+				const std::string &name /* = "" */)
     : IgSimpleTwig (parent, name, true, false, true),
       ISpyObserver (state),
+      m_rep (new SoSeparator),
       m_state (state)
 {
     ASSERT (m_state); 
-
-    QString str ("twigs/visibility/");
-    str.append (fullName ().c_str ());
+    m_rep->ref ();
     
-    QSettings settings;
-    if (settings.contains (str))
-    {
-	bool flag = settings.value (str).value<bool> ();
-	selfVisible (flag);	
-    }
+    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state);
+    ASSERT (sceneGraphService);
+    SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
+    ASSERT (mainScene);	
+    mainScene->addChild (m_rep);	
+}
+
+ISpyQueuedTwig::~ISpyQueuedTwig (void)
+{
+    ASSERT (m_rep);
+    m_rep->unref ();
+}
+
+void
+ISpyQueuedTwig::clear (void)
+{
+    ASSERT (m_rep);
+    dynamic_cast<SoSeparator *>(m_rep)->removeAllChildren ();
+}
+
+SoNode*
+ISpyQueuedTwig::rep (void)
+{
+    ASSERT (m_rep);
+    return m_rep;
 }
 
 void
 ISpyQueuedTwig::onNewEvent (ISpyEventMessage& message) 
-{ LOG (0, trace, LFfwvis, "ISpyQueuedTwig[" << name ()
-       << "]::onNewEvent(" << message.message << ")\n");}
+{
+    LOG (0, trace, LFfwvis, "ISpyQueuedTwig[" << name ()
+	 << "]::onNewEvent(" << message.message << ")\n");
+    clear ();
+}
 
 void
 ISpyQueuedTwig::onBaseInvalidate (void)

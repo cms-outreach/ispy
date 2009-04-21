@@ -4,24 +4,16 @@
 
 #include "Iguana/QtGUI/interface/ISpyEventTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
-#include "Iguana/QtGUI/interface/IgAnnotation.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
-#include "Iguana/QtGUI/interface/debug.h"
-#include <Inventor/nodes/SoBaseColor.h>
+#include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoFont.h>
 #include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoOrthographicCamera.h>
+#include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <QString>
-#include <QGraphicsProxyWidget>
-#include <QGraphicsTextItem>
-#include <QTableWidget>
-#include <QTransform>
-#include <QWidget>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -74,36 +66,40 @@ ISpyEventTwig::onNewEvent (ISpyEventMessage& message)
 	}	
     }
 
-    if (ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ()))
-    {	
-	ASSERT (sceneGraphService);
+    SoSeparator *top = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
+    SoAnnotation *overlayScene = new SoAnnotation;
+    top->addChild (overlayScene);
+    
+    SoPerspectiveCamera *pcam = new SoPerspectiveCamera;
+    pcam->position = SbVec3f (0, 0, 5);
+    pcam->nearDistance = 0.1;
+    pcam->farDistance = 10;
+    overlayScene->addChild (pcam);
 
-	SoSeparator *overlayScene = dynamic_cast<SoSeparator *>(sceneGraphService->overlaySceneGraph ());
-	SoSeparator *sep = new SoSeparator;
-	SoMaterial *mat = new SoMaterial;
-	float rgbcomponents [4];
-	IgSbColorMap::unpack (0x8b898900, rgbcomponents); // snow4
-	mat->diffuseColor.setValue (SbColor (rgbcomponents));
-	sep->addChild (mat);
+    SoSeparator *sep = new SoSeparator;
+    SoMaterial *mat = new SoMaterial;
+    float rgbcomponents [4];
+    IgSbColorMap::unpack (0x8b898900, rgbcomponents); // snow4
+    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+    sep->addChild (mat);
     
-	SoText2 *eventLabel = new SoText2;
-	eventLabel->string = m_text.c_str ();
+    SoText2 *eventLabel = new SoText2;
+    eventLabel->string = m_text.c_str ();
+    
+    SoFont* labelFont = new SoFont;
+    labelFont->size.setValue (14.0);
+    labelFont->name.setValue ("Arial");
+    sep->addChild (labelFont);
+    
+    SoTranslation *eventLabelTranslation = new SoTranslation;
+    
+    SbVec3f pos = SbVec3f (-2.5,
+			   1.65,
+			   0.0);
 
-	SoFont* labelFont = new SoFont;
-	labelFont->size.setValue (18.0);
-	labelFont->name.setValue ("Arial");
-	sep->addChild (labelFont);
+    eventLabelTranslation->translation = pos;
+    sep->addChild (eventLabelTranslation);
+    sep->addChild (eventLabel);
     
-	SoTranslation *eventLabelTranslation = new SoTranslation;
-    
-	SbVec3f pos = SbVec3f (-2.5,
-			       1.65,
-			       0.0);
-
-	eventLabelTranslation->translation = pos;
-	sep->addChild (eventLabelTranslation);
-	sep->addChild (eventLabel);
-    
-	overlayScene->addChild (sep);
-    }
+    overlayScene->addChild (sep);
 }

@@ -1,6 +1,7 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 #define QT_NO_EMIT
 #include "Iguana/QtGUI/interface/ISpyApplication.h"
+#include "Iguana/QtGUI/interface/ISpyEventFilter.h"
 #include "Iguana/QtGUI/interface/IgDrawFunctions.h"
 #include "Iguana/QtGUI/interface/IgDrawFactoryService.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
@@ -171,11 +172,13 @@ ISpyApplication::ISpyApplication (void)
     : m_state (0),
       m_argc (-1),
       m_argv (0),
+      m_mainWindow (0),
       m_archive (0),
       m_geomArchive (0),
       m_appname (0),
       m_collectionModel (0),
       m_storageModel (new IgMultiStorageTreeModel),
+      m_3DModel (0),
       m_storage (0),
       m_geomStorage (0),
       m_init (false),
@@ -186,7 +189,10 @@ ISpyApplication::ISpyApplication (void)
     QCoreApplication::setOrganizationDomain ("iguana.cern.ch");
     QCoreApplication::setApplicationName ("iSpy");
     
-    defaultSettings ();
+    if (QDir::home ().isReadable ())
+	defaultSettings ();
+
+    QObject::connect (this, SIGNAL(modelChanged ()), this, SLOT(cleanSelection ()));
 }
 
 ISpyApplication::~ISpyApplication (void)
@@ -205,7 +211,6 @@ ISpyApplication::onExit (void)
     if (ISpySceneGraphService* sceen = ISpySceneGraphService::get (state ()))
     {
 	dynamic_cast<SoSeparator *>(sceen->sceneGraph ())->removeAllChildren ();
-	dynamic_cast<SoSeparator *>(sceen->overlaySceneGraph ())->removeAllChildren ();
     }
 
     if (m_mainWindow->actionSaveSettings->isChecked ())
@@ -312,7 +317,6 @@ ISpyApplication::initState (void)
     new IgEnvsElement (m_state);
     new IgPluginLoader (m_state);
     new ISpyReadService (m_state);
-    new ISpyRecoContent (m_state);
     new IgDrawFunctions (m_state);
 
     return EXIT_SUCCESS;
@@ -323,105 +327,108 @@ ISpyApplication::defaultSettings (void)
 {
     QSettings settings;
 
-    //
-    // Open file dialog settings
-    //
-    if (! settings.contains ("igfiles/home"))
+    if (settings.isWritable ())
     {	
-	QUrl url ("file:/afs/cern.ch/user/i/iguana/www/ispy/igfiles/");
-	settings.setValue ("igfiles/home", url);
-    }
+	//
+	// Open file dialog settings
+	//
+	if (! settings.contains ("igfiles/home"))
+	{	
+	    QUrl url ("file:/afs/cern.ch/user/i/iguana/www/ispy/igfiles/");
+	    settings.setValue ("igfiles/home", url);
+	}
 
-    // 
-    // Default geometry file
-    // 
-    if (! settings.contains ("igfiles/geometry"))
-    {	
-	QString fileName ("default-geometry.ig");
-	settings.setValue ("igfiles/geometry", fileName);
-    }
+	// 
+	// Default geometry file
+	// 
+	if (! settings.contains ("igfiles/geometry"))
+	{	
+	    QString fileName ("default-geometry.ig");
+	    settings.setValue ("igfiles/geometry", fileName);
+	}
 
-    //
-    // Network connection configuration
-    //
-    if (! settings.contains ("igsource/host"))
-    {
-	QString hostName ("localhost");
-	settings.setValue ("igsource/host", hostName);
-    }
-    if (! settings.contains ("igsource/port"))
-    {
-	int port = 9000;
-	settings.setValue ("igsource/port", port);
-    }
-    if (! settings.contains ("igsource/debug"))
-    {
-	settings.setValue ("igsource/debug", false);
-    }
-    if (! settings.contains ("igevents/auto"))
-    {
-	settings.setValue ("igevents/auto", false);
-    }
-    if (! settings.contains ("igevents/timeout"))
-    {
-	int timeout = 15000;
-	settings.setValue ("igevents/timeout", timeout);
-    }
-    if (! settings.contains ("igevents/cuts/jets/energy"))
-    {
-	settings.setValue ("igevents/cuts/jets/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/calotowers/energy"))
-    {
-	settings.setValue ("igevents/cuts/calotowers/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/ecal/barrel/rechits/energy"))
-    {
-	settings.setValue ("igevents/cuts/ecal/barrel/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/ecal/endcap/rechits/energy"))
-    {
-	settings.setValue ("igevents/cuts/ecal/endcap/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/barrel/rechits/energy"))
-    {
-	settings.setValue ("igevents/cuts/hcal/barrel/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/endcap/rechits/energy"))
-    {
-	settings.setValue ("igevents/cuts/hcal/endcap/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/forward/rechits/energy"))
-    {
-	settings.setValue ("igevents/cuts/hcal/forward/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/outer/rechits/energy"))
-    {
-	settings.setValue ("igevents/cuts/hcal/outer/rechits/energy", 0.1);
-    }
+	//
+	// Network connection configuration
+	//
+	if (! settings.contains ("igsource/host"))
+	{
+	    QString hostName ("localhost");
+	    settings.setValue ("igsource/host", hostName);
+	}
+	if (! settings.contains ("igsource/port"))
+	{
+	    int port = 9000;
+	    settings.setValue ("igsource/port", port);
+	}
+	if (! settings.contains ("igsource/debug"))
+	{
+	    settings.setValue ("igsource/debug", false);
+	}
+	if (! settings.contains ("igevents/auto"))
+	{
+	    settings.setValue ("igevents/auto", false);
+	}
+	if (! settings.contains ("igevents/timeout"))
+	{
+	    int timeout = 15000;
+	    settings.setValue ("igevents/timeout", timeout);
+	}
+	if (! settings.contains ("igevents/cuts/jets/energy"))
+	{
+	    settings.setValue ("igevents/cuts/jets/energy", 0.1);
+	}
+	if (! settings.contains ("igevents/cuts/calotowers/energy"))
+	{
+	    settings.setValue ("igevents/cuts/calotowers/energy", 0.1);
+	}
+	if (! settings.contains ("igevents/cuts/ecal/barrel/rechits/energy"))
+	{
+	    settings.setValue ("igevents/cuts/ecal/barrel/rechits/energy", 0.1);
+	}
+	if (! settings.contains ("igevents/cuts/ecal/endcap/rechits/energy"))
+	{
+	    settings.setValue ("igevents/cuts/ecal/endcap/rechits/energy", 0.1);
+	}
+	if (! settings.contains ("igevents/cuts/hcal/barrel/rechits/energy"))
+	{
+	    settings.setValue ("igevents/cuts/hcal/barrel/rechits/energy", 0.1);
+	}
+	if (! settings.contains ("igevents/cuts/hcal/endcap/rechits/energy"))
+	{
+	    settings.setValue ("igevents/cuts/hcal/endcap/rechits/energy", 0.1);
+	}
+	if (! settings.contains ("igevents/cuts/hcal/forward/rechits/energy"))
+	{
+	    settings.setValue ("igevents/cuts/hcal/forward/rechits/energy", 0.1);
+	}
+	if (! settings.contains ("igevents/cuts/hcal/outer/rechits/energy"))
+	{
+	    settings.setValue ("igevents/cuts/hcal/outer/rechits/energy", 0.1);
+	}
 
-    //
-    // Main window configuration
-    //
-    if (! settings.contains ("mainwindow/configuration/save"))
-    {
-	settings.setValue ("mainwindow/configuration/save", false);
-    }
-    if (! settings.contains ("mainwindow/treeview/shown"))
-    {
-	settings.setValue ("mainwindow/treeview/shown", true);
-    }
-    if (! settings.contains ("mainwindow/treeview/floating"))
-    {
-	settings.setValue ("mainwindow/treeview/floating", false);
-    }
-    if (! settings.contains ("mainwindow/tableview/shown"))
-    {
-	settings.setValue ("mainwindow/tableview/shown", true);
-    }
-    if (! settings.contains ("mainwindow/tableview/floating"))
-    {
-	settings.setValue ("mainwindow/tableview/floating", false);
+	//
+	// Main window configuration
+	//
+	if (! settings.contains ("mainwindow/configuration/save"))
+	{
+	    settings.setValue ("mainwindow/configuration/save", false);
+	}
+	if (! settings.contains ("mainwindow/treeview/shown"))
+	{
+	    settings.setValue ("mainwindow/treeview/shown", true);
+	}
+	if (! settings.contains ("mainwindow/treeview/floating"))
+	{
+	    settings.setValue ("mainwindow/treeview/floating", false);
+	}
+	if (! settings.contains ("mainwindow/tableview/shown"))
+	{
+	    settings.setValue ("mainwindow/tableview/shown", true);
+	}
+	if (! settings.contains ("mainwindow/tableview/floating"))
+	{
+	    settings.setValue ("mainwindow/tableview/floating", false);
+	}
     }
 }
 
@@ -442,63 +449,37 @@ ISpyApplication::restoreSettings (void)
 int
 ISpyApplication::doRun (void)
 {
-    QApplication app (m_argc, m_argv);
-    QWidget * mainwin = SoQt::init (m_argc, m_argv, m_argv[0]);
+    IgArgsElement *args = IgArgsElement::get (m_state);
+    QApplication app (args->args (), args->argv ());
+    ISpyEventFilter filter;
+    app.installEventFilter (&filter);
+    QObject::connect (&filter, SIGNAL(open (const QString &)), this, SLOT(open (const QString &)));
+
+    QWidget * mainwin = SoQt::init (args->args (), args->argv (), args->argv ()[0]);
     
     setupMainWindow ();
     m_mainWindow->mdiArea->addSubWindow (mainwin);
     mainwin->setWindowTitle ("iSpy 3D");
-
+    
     restoreSettings ();
 
     initShapes ();
-    
-    // FIXME: The scene graph will be moved out
-    SoSeparator *root = new SoSeparator;
-    root->addChild(new SoPerspectiveCamera);
 
-    SoSeparator *sel = new SoSeparator;
-    sel->setName (SbName ("CollectionSelection"));
-    SoDrawStyle *sty = new SoDrawStyle;
-    sty->style = SoDrawStyle::LINES;
-    sty->lineWidth.setValue (3);
-    sel->addChild (sty);
+    m_3DModel = new Ig3DBaseModel (state ());
+    QObject::connect (this, SIGNAL(modelChanged ()), m_3DModel, SIGNAL(changed ()));
 
-    SoMaterial *mat = new SoMaterial;
-    float rgbcomponents [4];
-    IgSbColorMap::unpack (0xC0000000, rgbcomponents); // Free Speech Red
-    mat->diffuseColor.setValue (SbColor (rgbcomponents));
-    sel->addChild (mat);
-    SoSeparator *selSep = new SoSeparator;
-    sel->addChild (selSep);
-    root->addChild (sel);
-    
-    SoSeparator *mainScene = new SoSeparator;
-    root->addChild (mainScene);
-    SoSeparator *mainSep = new SoSeparator;
-    mainScene->addChild (mainSep);
-
-    SoSeparator *overlayScene = new SoSeparator;
-    root->addChild (overlayScene);
-    
-    SoPerspectiveCamera *pcam = new SoPerspectiveCamera;
-    pcam->position = SbVec3f (0, 0, 5);
-    pcam->nearDistance = 0.1;
-    pcam->farDistance = 10;
-    overlayScene->addChild (pcam);
-
-    SoAnnotation *overlaySep = new SoAnnotation;
-    overlayScene->addChild (overlaySep);
-  
-    new ISpySceneGraphService (state (), mainSep, overlaySep);
-    new ISpySelectionService (state (), selSep);
-
-    Ig3DBaseModel *model = new Ig3DBaseModel (state ());
-    model->sceneGraph ()->addChild (root);
-    
-    ISpy3DView *view = new ISpy3DView (state (), model, mainwin);
+    ISpy3DView *view = new ISpy3DView (state (), m_3DModel, mainwin);
     view->setFeedbackVisibility (true);
     view->setTitle ("iSpy 3D");
+    QObject::connect (this, SIGNAL(save ()), view, SLOT(save ()));
+    m_mainWindow->actionSave->setEnabled (true);
+    QObject::connect (this, SIGNAL(print ()), view, SLOT(print ()));
+    m_mainWindow->actionPrint->setEnabled (true);
+    m_mainWindow->actionZoom_In->setEnabled (true);
+    m_mainWindow->actionZoom_Out->setEnabled (true);
+    QObject::connect (m_mainWindow->actionZoom_In, SIGNAL(triggered ()), view, SLOT(zoomIn ()));
+    QObject::connect (m_mainWindow->actionZoom_Out, SIGNAL(triggered ()), view, SLOT(zoomOut ()));
+    new ISpyRecoContent (state ());
 
     QSettings settings;
     QString fileName = settings.value ("igfiles/geometry").value<QString> ();
@@ -507,25 +488,28 @@ ISpyApplication::doRun (void)
     ASSERT (m_splash);
     delete m_splash;
     
-    if (m_argc == 2)
+    if (m_archive == 0)
     {
-	std::string fileName (m_argv [1]);
-	if (fileName.size () > 2 && fileName.substr (fileName.size () - 3) == ".ig")
+	if (args->args () == 2)
 	{
-	    loadFile (fileName.c_str ());
-	    m_mainWindow->actionNext->setEnabled (true);
-	    m_mainWindow->actionAuto->setEnabled (true);
-	    nextEvent ();	    
+	    std::string fileName (args->argv ()[1]);
+	    if (fileName.size () > 2 && fileName.substr (fileName.size () - 3) == ".ig")
+	    {
+		loadFile (fileName.c_str ());
+		m_mainWindow->actionNext->setEnabled (true);
+		m_mainWindow->actionAuto->setEnabled (true);
+	    }
 	}
+	else
+	    open ();
     }
-    else
-	open ();
-
+    
     QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
     QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(onExit()));
     QObject::connect(m_mainWindow->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
+    QObject::connect(this, SIGNAL(showMessage (const QString &)), m_mainWindow->statusBar (), SLOT(showMessage (const QString &)));
 
-    SoQt::show(mainwin);
+    // SoQt::show(mainwin);
     SoQt::mainLoop();
   
     delete view;
@@ -545,13 +529,14 @@ ISpyApplication::setupMainWindow (void)
     QObject::connect (m_mainWindow->actionNext, SIGNAL(triggered()), this, SLOT(nextEvent()));
     QObject::connect (m_mainWindow->actionPrevious, SIGNAL(triggered()), this, SLOT(previousEvent()));
     QObject::connect (m_mainWindow->actionRewind, SIGNAL(triggered()), this, SLOT(rewind()));
-    QObject::connect (m_mainWindow->actionPrint, SIGNAL(triggered()), this, SLOT(print ()));
-    QObject::connect (m_mainWindow->actionSave, SIGNAL(triggered()), this, SLOT(save ()));
+    QObject::connect (m_mainWindow->actionPrint, SIGNAL(triggered()), this, SIGNAL(print ()));
+    QObject::connect (m_mainWindow->actionSave, SIGNAL(triggered()), this, SIGNAL(save ()));
     
     m_mainWindow->actionNext->setEnabled (false);
     m_mainWindow->actionPrevious->setEnabled (false);
     m_mainWindow->treeView->setModel (m_storageModel);
     m_mainWindow->tableView->setModel (m_storageModel);
+    
     restoreMainWindowSettings ();
 
     m_mainWindow->treeView->setSortingEnabled (true);
@@ -805,6 +790,17 @@ ISpyApplication::displayItem(const QModelIndex &index)
 }
 
 void
+ISpyApplication::cleanSelection (void) 
+{
+    if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
+    {
+	SoSeparator *selSep = dynamic_cast<SoSeparator *>(sel->selection ());	
+	ASSERT (selSep);
+	selSep->removeAllChildren ();
+    }    
+}
+
+void
 ISpyApplication::drawCollection (IgCollection *collection) 
 {
     if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
@@ -978,19 +974,6 @@ ISpyApplication::drawCollection (IgCollection *collection)
 	}
     }
 }
-void
-ISpyApplication::cleanScene (void) 
-{    
-    if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
-    {
-	dynamic_cast<SoSeparator *>(sel->selection ())->removeAllChildren ();	
-    }
-    if (ISpySceneGraphService* sceen = ISpySceneGraphService::get (state ()))
-    {
-	dynamic_cast<SoSeparator *>(sceen->sceneGraph ())->removeAllChildren ();
-	dynamic_cast<SoSeparator *>(sceen->overlaySceneGraph ())->removeAllChildren ();
-    }    
-}
 
 void
 ISpyApplication::open (void) 
@@ -1008,25 +991,37 @@ ISpyApplication::open (void)
 
     if (f.exec ())
     {
-	fileName = f.selectedFiles ().front();
+	fileName = f.selectedFiles ().front ();
+	open (fileName);
+    }
+}
 
-	if (! fileName.isEmpty ())
+void
+ISpyApplication::open (const QString &fileName) 
+{
+    modelChanged ();
+    
+    if (! fileName.isEmpty ())
+    {
+	showMessage(QString("Opening ") + fileName + tr("..."));
+	closeFile ();
+	loadFile (fileName);
+	if (m_mainWindow != 0)
 	{
-	    m_mainWindow->statusBar ()->showMessage(QString("Opening ") + fileName + tr("..."));
-	    if (m_archive != 0)
-		closeFile ();
-
-	    loadFile (fileName);
 	    m_mainWindow->actionNext->setEnabled (true);
 	    m_mainWindow->actionAuto->setEnabled (true);
-	    nextEvent ();	
-	}
-	else 
-	{	
+	    m_mainWindow->actionPrevious->setEnabled (false);
+	}	
+    }
+    else 
+    {	
+	if (m_mainWindow != 0)
+	{
 	    m_mainWindow->actionNext->setEnabled (false);
 	    m_mainWindow->actionAuto->setEnabled (false);
-	}
-    }
+	    m_mainWindow->actionPrevious->setEnabled (false);
+	}	
+    }   
 }
 
 void
@@ -1060,37 +1055,28 @@ ISpyApplication::autoEvents (void)
 
 void
 ISpyApplication::nextEvent (void)
-{    
-    cleanScene ();
+{
+    modelChanged ();
     
     if (! m_init)
     {
 	m_init = true;	
 	readGeomZipMember (m_geomIt);
     }    
-    if (m_it != m_archive->end ())
+    if (++m_it != m_archive->end ())
     {
-	if ((*m_it)->name () == "Header")
-	{
-	    m_it++;	    
-	    nextEvent ();
-	}
-	else 
-	{	    
-	    ISpyEventMessage event;
-	    event.message = (*m_it)->name ();
+	ISpyEventMessage event;
+	event.message = (*m_it)->name ();
 	
-	    m_mainWindow->statusBar ()->showMessage (QString ((*m_it)->name ()));
+	showMessage (QString ((*m_it)->name ()));
 	
-	    readZipMember (m_it);
-	    m_mainWindow->actionPrevious->setEnabled (true);
+	readZipMember (m_it);
+	m_mainWindow->actionPrevious->setEnabled (true);
 	
-	    ISpyReadService* readService = ISpyReadService::get (state ());
-	    ASSERT (readService);
+	ISpyReadService* readService = ISpyReadService::get (state ());
+	ASSERT (readService);
     
-	    readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
-	    ++m_it;
-	}	
+	readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
     }
     else 
 	m_mainWindow->actionNext->setEnabled (false);
@@ -1099,20 +1085,22 @@ ISpyApplication::nextEvent (void)
 void
 ISpyApplication::previousEvent (void)
 {    
-    cleanScene ();
+    modelChanged ();
 
-    if (m_it != m_archive->begin ())
+    if (--m_it != m_archive->begin ()
+	|| (m_it == m_archive->begin () 
+	    && (*m_it)->name () != "Header"))
     {
-	--m_it;
-    
 	ISpyEventMessage event;
 	event.message = (*m_it)->name ();
 
-	m_mainWindow->statusBar ()->showMessage (QString ((*m_it)->name ()));
+	showMessage (QString ((*m_it)->name ()));
 
 	readZipMember (m_it);
 	m_mainWindow->actionNext->setEnabled (true);
-	
+	if (m_it == m_archive->begin ())
+	    m_mainWindow->actionPrevious->setEnabled (false);
+
 	ISpyReadService* readService = ISpyReadService::get (state ());
 	ASSERT (readService);
 	
@@ -1127,95 +1115,8 @@ ISpyApplication::rewind (void)
 {    
     m_it = m_archive->begin ();
     
-    m_mainWindow->statusBar ()->showMessage (QString ((*m_it)->name ()));
+    showMessage (QString ((*m_it)->name ()));
     nextEvent ();
-}
-
-void
-ISpyApplication::print (void) 
-{
-#ifndef QT_NO_PRINTER
-    QPrinter printer; 
-    QPrintDialog dialog (&printer, m_mainWindow->centralwidget);
-    dialog.setWindowTitle (tr("Print To File"));
-    if (dialog.exec () == QDialog::Accepted)
-    {
-	QPrinter printer(QPrinter::HighResolution);
-	printer.setPaperSize(QPrinter::A4);
-
-	QPainter painter(&printer);
-// 	m_mainWindow->graphicsView->render (&painter);
-    }
-#endif
-}
-
-void
-ISpyApplication::printVector (QString file, QString format, int level)
-{
-    // Use gl2ps to print vector graphics output.  To be extended to
-    // handle other vector graphics formats (SVG, WMF).
-    static IgSoGL2PSAction  *gl2psAction = 0;
-    if (FILE *output = fopen (file.toStdString ().c_str (), "wb+"))
-    {
-        int type = GL2PS_EPS;
-	if (format == "pdf")
-	    type = GL2PS_PDF;
-	else if (format == "eps")
-	    type = GL2PS_EPS;
-	else
-	    ASSERT (0);
-
-	if (m_mainWindow->mdiArea->currentSubWindow () != 0)
-	{	    
-	    if (! gl2psAction )
-		gl2psAction = new IgSoGL2PSAction (dynamic_cast<SoQtExaminerViewer *>(m_mainWindow->mdiArea->currentSubWindow ())->getViewportRegion ());
-	
-	    gl2psAction->setViewportRegion (dynamic_cast<SoQtExaminerViewer *>(m_mainWindow->mdiArea->currentSubWindow ())->getViewportRegion ());
-	    SoGLRenderAction* prevAction = dynamic_cast<SoQtExaminerViewer *>(m_mainWindow->mdiArea->currentSubWindow ())->getGLRenderAction ();
-	    dynamic_cast<SoQtExaminerViewer *>(m_mainWindow->mdiArea->currentSubWindow ())->setGLRenderAction (gl2psAction);
-	
-	    int state = GL2PS_OVERFLOW;
-	    while (state == GL2PS_OVERFLOW)
-	    { 
-		int gl2psOptions = GL2PS_SILENT | GL2PS_USE_CURRENT_VIEWPORT
-				   | (level < 3 ? GL2PS_NO_PS3_SHADING : 0)
-				   | getGL2PSOptions ();
-		gl2psBeginPage ("IGUANA Scene Graph", "IGUANA", NULL,
-				type, GL2PS_BSP_SORT,
-				gl2psOptions,
-				GL_RGBA, 0, NULL,0, 0, 0,
-				m_gl2psFBBufferSize, output, NULL);
-		// FIXME: dynamic_cast<SoQtExaminerViewer *>(m_mainWindow->mdiArea->currentSubWindow ())->actualRedraw ();
-		state = gl2psEndPage();
-		if (state == GL2PS_OVERFLOW)
-		    m_gl2psFBBufferSize += 1024*1024;
-	    }
-	    fclose (output);
-	    dynamic_cast<SoQtExaminerViewer *>(m_mainWindow->mdiArea->currentSubWindow ())->setGLRenderAction (prevAction);
-	}
-    }
-    else
-    {
-        LOG(0, trace, LFiggi, QString(file +": Failed to open file for writing.\n").toStdString ());
-	QMessageBox::warning (m_mainWindow, "System Error",
-			      "Failed to open file \""+file+"\" for writing.",
-			      "Ok");	
-    }
-}
-
-int
-ISpyApplication::getGL2PSOptions (void)
-{ return m_gl2psOptions; }
-
-void
-ISpyApplication::save (void) 
-{
-    QPixmap pixmap;
-    QPainter painter (&pixmap);
-    painter.setRenderHint (QPainter::Antialiasing);
-    painter.end ();
-
-    pixmap.save ("scene.png");
 }
 
 void
@@ -1270,12 +1171,38 @@ ISpyApplication::loadFile (const QString &filename)
     Filename inputFilename (Filename (filename.toStdString ()).substitute (ShellEnvironment ()));
     if (inputFilename.exists())
     {
-	m_mainWindow->statusBar ()->showMessage(QString("Loading ") + filename + tr("..."));
+	showMessage(QString("Loading ") + filename + tr("..."));
 	m_archive = new ZipArchive (inputFilename, IOFlags::OpenRead);
 	m_it = m_archive->begin ();
+	parseZipMember (m_it);
     }
     else
 	std::cout << "Event file " << inputFilename << " does not exist." << std::endl;
+}
+
+void
+ISpyApplication::parseZipMember (lat::ZipArchive::Iterator it)
+{
+    if ((*it)->name () == "Header") 
+    {
+	showMessage (QString ((*it)->name ()));
+	nextEvent ();
+    }
+    else // Assume if ((*it)->name () == "Event")
+    {	    
+	ISpyEventMessage event;
+	event.message = (*it)->name ();
+	
+	showMessage (QString ((*it)->name ()));
+	
+	readZipMember (it);
+	m_mainWindow->actionPrevious->setEnabled (true);
+	
+	ISpyReadService* readService = ISpyReadService::get (state ());
+	ASSERT (readService);
+    
+	readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
+    } 
 }
 
 void
@@ -1284,10 +1211,9 @@ ISpyApplication::loadGeomFile (const QString &filename)
     Filename inputFilename (Filename (filename.toStdString ()).substitute (ShellEnvironment ()));
     if (inputFilename.exists())
     {
-	m_mainWindow->statusBar ()->showMessage(QString("Loading ") + filename + tr("..."));
+	showMessage(QString("Loading ") + filename + tr("..."));
 	m_geomArchive = new ZipArchive (inputFilename, IOFlags::OpenRead);
 	m_geomIt = m_geomArchive->begin ();
-	m_mainWindow->statusBar ()->clearMessage ();
     }
     else
     {
@@ -1299,7 +1225,7 @@ ISpyApplication::loadGeomFile (const QString &filename)
 void
 ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
 {
-    m_mainWindow->statusBar ()->showMessage(QString("Reading ") + (*i)->name () + tr("..."));
+    showMessage(QString("Reading ") + (*i)->name () + tr("..."));
 
     ISpyReadService* readService = ISpyReadService::get (state ());
     ASSERT (readService);
@@ -1331,7 +1257,8 @@ ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
 	}
 	
 	m_storageModel->addStorage (m_storage, (*i)->name ().name ());
-	m_mainWindow->treeView->expandAll ();
+	m_mainWindow->treeView->expandAll ();// treeItem->setCheckState(1, Qt::Checked);
+
     }
     catch (ParseError &e)
     {
@@ -1349,13 +1276,13 @@ ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
     {	
 	std::cout << "**** IguanaApplication ****\n Unknown Exception" << std::endl;
     }
-    m_mainWindow->statusBar ()->showMessage (tr((*i)->name ()));
+    showMessage (tr((*i)->name ()));
 }
 
 void
 ISpyApplication::readGeomZipMember (lat::ZipArchive::Iterator i)
 {
-    m_mainWindow->statusBar ()->showMessage(QString("Reading ") + (*i)->name () + tr("..."));
+    showMessage(QString("Reading ") + (*i)->name () + tr("..."));
 
     ISpyReadService* readService = ISpyReadService::get (state ());
     ASSERT (readService);
@@ -1393,5 +1320,5 @@ ISpyApplication::readGeomZipMember (lat::ZipArchive::Iterator i)
     {	
 	std::cout << "**** IguanaApplication::readGeomZipMember ****\n Unknown Exception" << std::endl;
     }
-    m_mainWindow->statusBar ()->showMessage (tr((*i)->name ()));
+    showMessage (tr((*i)->name ()));
 }

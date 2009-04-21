@@ -16,7 +16,7 @@ class ISpyBasicClusterTwig : public ISpyQueuedTwig
 {
 public:
     ISpyBasicClusterTwig (IgState *state, IgTwig *parent, 
-			   const std::string &name = "");
+			  const std::string &name = "");
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor

@@ -4,7 +4,6 @@
 
 #include "Iguana/QtGUI/interface/ISpyDetectorTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoIndexedLineSet.h>
@@ -32,14 +31,11 @@ void
 ISpyDetectorTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
-    
-    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
-    ASSERT (sceneGraphService);
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {
 	IgDataStorage *storage = readService->esStorage ();
-	if (!storage->empty () && storage->hasCollection("Geometry_V1"))
+	if (!storage->empty () && storage->hasCollection ("Geometry_V1"))
 	{	    
 	    IgCollection &geometry = storage->getCollection ("Geometry_V1");
 	    if (geometry.size () > 0)
@@ -55,7 +51,7 @@ ISpyDetectorTwig::onNewEvent (ISpyEventMessage& message)
 		IgColumnHandle b3 = geometry.getHandleByLabel ("back_3");
 		IgColumnHandle b4 = geometry.getHandleByLabel ("back_4");
 
-		SoSeparator *sep = new SoSeparator;
+		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 
 		IgCollection &driftTubes = storage->getCollection ("DTs_V1");
 		IgAssociationSet &dtGeometry = storage->getAssociationSet ("DTGeometry_V1");
@@ -151,10 +147,6 @@ ISpyDetectorTwig::onNewEvent (ISpyEventMessage& message)
 		lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
 		lineSet->vertexProperty = vertices;
 		sep->addChild (lineSet);
-
-		SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
-		ASSERT (mainScene);	
-		mainScene->addChild (sep);	
 	    }
 	}
     }
