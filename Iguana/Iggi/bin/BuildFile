@@ -1,3 +1,0 @@
-<Bin name=ispy file=Iggi.cpp>
- <Use name=Iguana/View>
-</Bin>
