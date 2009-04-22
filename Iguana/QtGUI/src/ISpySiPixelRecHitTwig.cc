@@ -12,6 +12,7 @@
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -32,6 +33,14 @@ void
 ISpySiPixelRecHitTwig::onNewEvent (ISpyEventMessage& message) 
 {    
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("SiPixelRecHits_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
@@ -65,9 +74,10 @@ ISpySiPixelRecHitTwig::onNewEvent (ISpyEventMessage& message)
 		sep->setName (SbName ("SiPixelRecHits_V1"));
 
 		SoMaterial *mat = new SoMaterial;
-		float rgbcomponents [4];
-		IgSbColorMap::unpack (0xB0E57C00, rgbcomponents);
-		mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		//float rgbcomponents [4];
+		//IgSbColorMap::unpack (0xB0E57C00, rgbcomponents);
+		//mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		 mat->diffuseColor.setValue (1.0, 0.0, 0.0);
 		sep->addChild (mat);
 
 		SoMFInt32 tmarkerIndex;

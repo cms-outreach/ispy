@@ -10,6 +10,7 @@
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -30,6 +31,14 @@ void
 ISpyMuonTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("Muons_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
@@ -55,8 +64,10 @@ ISpyMuonTwig::onNewEvent (ISpyEventMessage& message)
 		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 		SoMaterial *mat = new SoMaterial;
 		float rgbcomponents [4];
-		IgSbColorMap::unpack (0xffff0000, rgbcomponents);
+		//IgSbColorMap::unpack (0xffff0000, rgbcomponents);
+		IgSbColorMap::unpack (0x8b898900, rgbcomponents);
 		mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		
 		sep->addChild (mat);
 
 		IgCollectionIterator cit = muons.begin ();

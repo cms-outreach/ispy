@@ -1,3 +1,20 @@
+2009-04-22  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpy*Twig.cc: Check if a visibility setting already exists.
+
+2009-04-21  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Lots of temporary changes
+	to accommodate reading in a worker thread, new tree widget with
+	visibility selection handling. 
+	* IgMainWindow-mdi-noQGraphicsView.ui: GUI menu clean up.
+	* ui_IgMainWindow.h: Auto-generated from above.
+	* ISpy*Twig.cc: Check its visibility settings.
+	* ISpyReadThread.h, ISpyReadThread.cc: A worker thread to read in
+	geometry.
+	* IgDataStorageTableModel.cc: Add assert to make sure we do not
+	get surprised by a crash. 
+
 2009-04-17  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyApplication.cc: Clean up

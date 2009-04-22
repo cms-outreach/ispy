@@ -13,6 +13,7 @@
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -33,6 +34,14 @@ void
 ISpyBasicClusterTwig::onNewEvent (ISpyEventMessage& message) 
 {
     ISpyQueuedTwig::onNewEvent (message);
+    
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("BasicClusters_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
     
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	

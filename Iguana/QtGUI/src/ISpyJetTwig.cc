@@ -8,6 +8,7 @@
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -28,6 +29,15 @@ void
 ISpyJetTwig::onNewEvent (ISpyEventMessage& message) 
 {
     ISpyQueuedTwig::onNewEvent (message);
+
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("Jets_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ()))
     {	

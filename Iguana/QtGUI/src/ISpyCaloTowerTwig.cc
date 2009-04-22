@@ -9,6 +9,7 @@
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -29,6 +30,14 @@ void
 ISpyCaloTowerTwig::onNewEvent (ISpyEventMessage& message) 
 {
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("CaloTowers_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ()))
     {	
@@ -51,5 +60,6 @@ ISpyCaloTowerTwig::onNewEvent (ISpyEventMessage& message)
 	sep->addChild (hmat);
 	sep->addChild (hadrep);
     }
+   
 }
 

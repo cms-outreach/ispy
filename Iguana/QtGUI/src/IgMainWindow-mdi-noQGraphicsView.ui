@@ -142,12 +142,6 @@
     <addaction name="actionPrint"/>
     <addaction name="actionSave_Image"/>
     <addaction name="separator"/>
-    <addaction name="actionOpen_Application_Settings"/>
-    <addaction name="actionOpen_INI_File"/>
-    <addaction name="actionOpen_Mac_Property_List"/>
-    <addaction name="actionOpen_Windows_Registry_Path"/>
-    <addaction name="actionRefresh"/>
-    <addaction name="separator"/>
     <addaction name="actionClose"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -198,32 +192,10 @@
     </widget>
     <addaction name="menuAdd"/>
     <addaction name="separator"/>
-    <addaction name="actionZoom_In"/>
-    <addaction name="actionZoom_Out"/>
-   </widget>
-   <widget class="QMenu" name="menuTools">
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Tools</string>
-    </property>
     <addaction name="actionObject_Inspector"/>
     <addaction name="actionTwig_Explorer"/>
     <addaction name="separator"/>
     <addaction name="actionToolbars"/>
-   </widget>
-   <widget class="QMenu" name="menu_Display">
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Display</string>
-    </property>
-    <addaction name="actionShowControlCenter"/>
-    <addaction name="separator"/>
-    <addaction name="actionRPhi_Grid"/>
-    <addaction name="actionRZ_Grid"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="tearOffEnabled">
@@ -235,11 +207,19 @@
     <property name="separatorsCollapsible">
      <bool>true</bool>
     </property>
-    <addaction name="actionAuto_Refresh"/>
-    <addaction name="actionFallbacks"/>
-    <addaction name="actionSaveSettings"/>
+    <addaction name="actionOpen_Application_Settings"/>
+    <addaction name="actionOpen_INI_File"/>
+    <addaction name="actionOpen_Mac_Property_List"/>
+    <addaction name="actionOpen_Windows_Registry_Path"/>
     <addaction name="separator"/>
     <addaction name="actionEditSettings"/>
+    <addaction name="separator"/>
+    <addaction name="actionRefresh"/>
+    <addaction name="separator"/>
+    <addaction name="actionAuto_Refresh"/>
+    <addaction name="actionFallbacks"/>
+    <addaction name="separator"/>
+    <addaction name="actionSaveSettings"/>
    </widget>
    <widget class="QMenu" name="menuWindow">
     <property name="tearOffEnabled">
@@ -251,6 +231,9 @@
     <addaction name="actionMaximize"/>
     <addaction name="actionFull_screen"/>
     <addaction name="separator"/>
+    <addaction name="actionZoom_In"/>
+    <addaction name="actionZoom_Out"/>
+    <addaction name="separator"/>
     <addaction name="actionTile"/>
     <addaction name="actionCascade"/>
    </widget>
@@ -258,8 +241,6 @@
    <addaction name="menuView"/>
    <addaction name="menuEvent"/>
    <addaction name="menuOptions"/>
-   <addaction name="menuTools"/>
-   <addaction name="menu_Display"/>
    <addaction name="menuWindow"/>
    <addaction name="menuHelp"/>
   </widget>
@@ -387,7 +368,10 @@
      <normalon>:/images/pause.png</normalon>:/images/play.png</iconset>
    </property>
    <property name="text">
-    <string>Auto</string>
+    <string>Play</string>
+   </property>
+   <property name="toolTip">
+    <string>Play Events</string>
    </property>
   </action>
   <action name="action3D">
@@ -423,6 +407,9 @@
    </property>
   </action>
   <action name="actionClose">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Close</string>
    </property>
@@ -470,6 +457,9 @@
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="../interface/iggi.qrc">
      <normaloff>:/images/network4.png</normaloff>
@@ -486,6 +476,9 @@
    </property>
   </action>
   <action name="actionToolbars">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Toolbars</string>
    </property>
@@ -506,7 +499,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Twig Explorer</string>
+    <string>Tree Explorer</string>
    </property>
   </action>
   <action name="actionObject_Inspector">
@@ -563,6 +556,9 @@
    <property name="text">
     <string>Zoom In</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl++</string>
+   </property>
   </action>
   <action name="actionZoom_Out">
    <property name="enabled">
@@ -574,6 +570,9 @@
    </property>
    <property name="text">
     <string>Zoom Out</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+-</string>
    </property>
   </action>
   <action name="actionShowControlCenter">
@@ -1050,8 +1049,8 @@
    <slot>showMaximized()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>45</x>
-     <y>60</y>
+     <x>-1</x>
+     <y>-1</y>
     </hint>
     <hint type="destinationlabel">
      <x>524</x>

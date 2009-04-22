@@ -64,6 +64,15 @@ ISpyQueuedTwig::clear (void)
 {
     ASSERT (m_rep);
     dynamic_cast<SoSeparator *>(m_rep)->removeAllChildren ();
+    m_rep->unref ();
+    m_rep = new SoSeparator;
+    m_rep->ref ();
+
+    ISpySceneGraphService *sceneGraphService = ISpySceneGraphService::get (state ());
+    ASSERT (sceneGraphService);
+    SoSeparator *mainScene = dynamic_cast<SoSeparator *>(sceneGraphService->sceneGraph ());
+    ASSERT (mainScene);	
+    mainScene->addChild (m_rep);
 }
 
 SoNode*

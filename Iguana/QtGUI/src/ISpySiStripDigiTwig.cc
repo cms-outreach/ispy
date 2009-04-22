@@ -12,6 +12,7 @@
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -32,6 +33,14 @@ void
 ISpySiStripDigiTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("SiStripDigis_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
@@ -66,12 +75,13 @@ ISpySiStripDigiTwig::onNewEvent (ISpyEventMessage& message)
 
 		SoMaterial *mat = new SoMaterial;
 		float rgbcomponents [4];
-		IgSbColorMap::unpack (0xB0E57C00, rgbcomponents);
+		//IgSbColorMap::unpack (0xB0E57C00, rgbcomponents);
+		IgSbColorMap::unpack (0x03C03C00, rgbcomponents); 
 		mat->diffuseColor.setValue (SbColor (rgbcomponents));
 		sep->addChild (mat);
 
 		SoMFInt32 tmarkerIndex;
-		tmarkerIndex.setValue (SoMarkerSet::PLUS_5_5);
+		tmarkerIndex.setValue (SoMarkerSet::SQUARE_FILLED_5_5);
 		
 		SoMarkerSet *sopoints = new SoMarkerSet;
 		sopoints->markerIndex = tmarkerIndex;

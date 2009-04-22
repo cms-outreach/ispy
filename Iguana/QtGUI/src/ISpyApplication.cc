@@ -5,6 +5,7 @@
 #include "Iguana/QtGUI/interface/IgDrawFunctions.h"
 #include "Iguana/QtGUI/interface/IgDrawFactoryService.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
+#include "Iguana/QtGUI/interface/ISpyTreeModel.h"
 #include "Iguana/QtGUI/interface/ISpy3DView.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
 #include "Iguana/QtGUI/interface/IGUANA_SPLASH.xpm"
@@ -44,6 +45,7 @@
 #include <QSplashScreen>
 #include <QString>
 #include <QTemporaryFile>
+#include <QTreeWidget>
 #include "classlib/iobase/File.h"
 #include "classlib/iobase/Filename.h"
 #include "classlib/iotools/InputStream.h"
@@ -179,6 +181,7 @@ ISpyApplication::ISpyApplication (void)
       m_collectionModel (0),
       m_storageModel (new IgMultiStorageTreeModel),
       m_3DModel (0),
+      //m_model (new ISpyTreeModel ("CMS Event")),
       m_storage (0),
       m_geomStorage (0),
       m_init (false),
@@ -193,6 +196,7 @@ ISpyApplication::ISpyApplication (void)
 	defaultSettings ();
 
     QObject::connect (this, SIGNAL(modelChanged ()), this, SLOT(cleanSelection ()));
+    QObject::connect (&m_readThread, SIGNAL(readMember (const QString&)), this, SLOT (newMember (const QString&)));
 }
 
 ISpyApplication::~ISpyApplication (void)
@@ -201,6 +205,8 @@ ISpyApplication::~ISpyApplication (void)
 void
 ISpyApplication::onExit (void)
 {
+    m_readThread.quit ();
+    
     if (ISpyReadService* readService = ISpyReadService::get (state ()))
     {
 	readService->postEventProcessing ();
@@ -509,7 +515,6 @@ ISpyApplication::doRun (void)
     QObject::connect(m_mainWindow->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
     QObject::connect(this, SIGNAL(showMessage (const QString &)), m_mainWindow->statusBar (), SLOT(showMessage (const QString &)));
 
-    // SoQt::show(mainwin);
     SoQt::mainLoop();
   
     delete view;
@@ -535,8 +540,18 @@ ISpyApplication::setupMainWindow (void)
     m_mainWindow->actionNext->setEnabled (false);
     m_mainWindow->actionPrevious->setEnabled (false);
     m_mainWindow->treeView->setModel (m_storageModel);
-    m_mainWindow->tableView->setModel (m_storageModel);
+    m_mainWindow->treeView->hide ();
     
+	m_treeWidget = new QTreeWidget(m_mainWindow->dockTreeWidgetContents);
+	QStringList headers;
+	headers << "Collection" << "Size" << "Visibility";
+	
+	m_treeWidget->setHeaderLabels (headers);
+	m_treeWidget->setColumnWidth (1, 30);
+	m_treeWidget->setColumnWidth (2, 30);
+	m_treeWidget->setAlternatingRowColors (true);
+	m_mainWindow->gridLayout_2->addWidget(m_treeWidget);
+
     restoreMainWindowSettings ();
 
     m_mainWindow->treeView->setSortingEnabled (true);
@@ -545,6 +560,9 @@ ISpyApplication::setupMainWindow (void)
     QObject::connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(collectionChanged(const QModelIndex)));
     QObject::connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayCollection(const QModelIndex)));
     QObject::connect (m_mainWindow->tableView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayItem(const QModelIndex)));
+
+    QObject::connect (m_treeWidget, SIGNAL(clicked(const QModelIndex)),this,SLOT(twigChanged(const QModelIndex)));
+    QObject::connect (m_treeWidget, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayTwigCollection(const QModelIndex)));
 }
 
 void 
@@ -577,8 +595,10 @@ ISpyApplication::saveSettings (void)
 void 
 ISpyApplication::collectionChanged(const QModelIndex &index)
 {
+//     qDebug() << index << " selected";
+
     QString collectionName = m_storageModel->data(index, Qt::DisplayRole).toString();
-    qDebug() << collectionName << " selected";
+//     qDebug() << collectionName << " selected";
     if (!index.parent().isValid())
     {
 	return;
@@ -599,10 +619,81 @@ ISpyApplication::collectionChanged(const QModelIndex &index)
 }
 
 void 
+ISpyApplication::twigChanged (const QModelIndex &index)
+{
+    QSettings settings;
+
+    QString collectionName = m_treeWidget->currentItem ()->text (0);
+//     qDebug () << collectionName << " twig";
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append (collectionName);
+
+    if (settings.contains (visSettings))
+    {
+	if (settings.value (visSettings).value<int> () != m_treeWidget->currentItem ()->checkState (2))
+	{
+	    settings.setValue (visSettings, m_treeWidget->currentItem ()->checkState (2));
+	
+	    ISpyEventMessage event;
+	    event.message = (*m_it)->name ();
+	    ISpyReadService* readService = ISpyReadService::get (state ());
+	    ASSERT (readService);	
+	    readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
+	}
+    }
+    else
+    {
+	settings.setValue (visSettings, m_treeWidget->currentItem ()->checkState (2));
+    }
+    
+//     if (m_treeWidget->currentItem ()->checkState (2) == Qt::Unchecked)
+// 	qDebug () << "Hidden";
+//     else if (m_treeWidget->currentItem ()->checkState (2) == Qt::Checked)
+// 	qDebug () << "Visible";
+//     else
+// 	qDebug () << "Unknown";
+	    
+    if (m_collectionModel == 0)
+    {	
+	m_collectionModel = new IgCollectionTableModel (&(m_storage->getCollectionByIndex (1)));
+        m_mainWindow->tableView->setModel (m_collectionModel);
+    }
+    if (m_storage != 0 && m_storage->hasCollection (collectionName.toAscii()))
+    {	
+	m_collectionModel->setCollection (m_storage->getCollectionPtr(collectionName.toAscii()));
+    }
+    else if (m_geomStorage != 0 && m_geomStorage->hasCollection (collectionName.toAscii()))
+    {
+	m_collectionModel->setCollection (m_geomStorage->getCollectionPtr(collectionName.toAscii()));
+    }
+}
+
+void 
+ISpyApplication::displayTwigCollection(const QModelIndex &index)
+{
+    QString collectionName = m_treeWidget->currentItem ()->text (0);
+    
+    IgCollection *collection = 0;
+    
+    if (m_storage->hasCollection (collectionName.toAscii()))
+    {	
+	collection = m_storage->getCollectionPtr(collectionName.toAscii());
+    }
+    else if (m_geomStorage->hasCollection (collectionName.toAscii()))
+    {
+	collection = m_geomStorage->getCollectionPtr(collectionName.toAscii());
+    }
+    
+    if (collection != NULL && collection->size () > 0)
+    {
+	drawCollection (collection);
+    }
+}
+	
+void 
 ISpyApplication::displayCollection(const QModelIndex &index)
 {
     QString collectionName = m_storageModel->data(index, Qt::DisplayRole).toString();
-    qDebug() << collectionName << " displayed";
     
     IgCollection *collection = 0;
     
@@ -633,10 +724,10 @@ ISpyApplication::displayItem(const QModelIndex &index)
     node->removeAllChildren ();	
 
     QModelIndex selected = m_mainWindow->treeView->selectionModel ()->currentIndex ();
-    qDebug() << selected << " parent selection";
+//     qDebug() << selected << " parent selection";
     
     QString collectionName = m_storageModel->data(selected, Qt::DisplayRole).toString();
-    qDebug() << collectionName << " collection";
+//     qDebug() << collectionName << " collection";
 
     IgCollection *collection = 0;
     if (m_storage->hasCollection (collectionName.toAscii()))
@@ -673,13 +764,13 @@ ISpyApplication::displayItem(const QModelIndex &index)
 	    shape = "point";	    
 	}
 	IgCollectionIterator cit = collection->begin ();
-	qDebug() << index.row () << " selected";
+// 	qDebug() << index.row () << " selected";
 	cit += index.row ();
 	IgCollectionItem vtxShape = *cit;
 	if (collection->hasProperty ("detid"))
 	{
-	    int detid = vtxShape.get<int> ("detid");	    
-	    qDebug() << detid << " detid";
+// 	    int detid = vtxShape.get<int> ("detid");	    
+// 	    qDebug() << detid << " detid";
 	}
 	
 	if (shape == "hexahedron")
@@ -811,7 +902,7 @@ ISpyApplication::drawCollection (IgCollection *collection)
 
 	std::string collName = collection->name ();
     
-	qDebug() << "Draw " << collName.c_str ();
+// 	qDebug() << "Draw " << collName.c_str ();
 
 	if (collName == "EcalRecHits_V1") 
 	{	
@@ -1058,11 +1149,6 @@ ISpyApplication::nextEvent (void)
 {
     modelChanged ();
     
-    if (! m_init)
-    {
-	m_init = true;	
-	readGeomZipMember (m_geomIt);
-    }    
     if (++m_it != m_archive->end ())
     {
 	ISpyEventMessage event;
@@ -1072,14 +1158,18 @@ ISpyApplication::nextEvent (void)
 	
 	readZipMember (m_it);
 	m_mainWindow->actionPrevious->setEnabled (true);
-	
+	//	m_model->setData (m_model->index (0, 0),  QVariant ("CMS Event"), Qt::EditRole);
+
 	ISpyReadService* readService = ISpyReadService::get (state ());
 	ASSERT (readService);
     
 	readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
     }
-    else 
+    else
+    {
+	m_mainWindow->actionAuto->setChecked (false);	
 	m_mainWindow->actionNext->setEnabled (false);
+    }
 }
 
 void
@@ -1136,8 +1226,18 @@ ISpyApplication::skipEventDialog (void)
 {}
 
 void
+ISpyApplication::newMember (const QString &name)
+{
+//     qDebug () << QString("Read in ") << name << tr(".");
+    initTreeItems (m_geomStorage);
+}
+
+void
 ISpyApplication::closeFile (void)
 {
+    m_treeWidget->clear ();
+    m_items.clear ();
+    
     if (m_collectionModel != 0)
     {
 	delete m_collectionModel;
@@ -1196,6 +1296,7 @@ ISpyApplication::parseZipMember (lat::ZipArchive::Iterator it)
 	showMessage (QString ((*it)->name ()));
 	
 	readZipMember (it);
+	
 	m_mainWindow->actionPrevious->setEnabled (true);
 	
 	ISpyReadService* readService = ISpyReadService::get (state ());
@@ -1203,6 +1304,73 @@ ISpyApplication::parseZipMember (lat::ZipArchive::Iterator it)
     
 	readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
     } 
+}
+
+void
+ISpyApplication::initTreeItems (IgDataStorage *storage)
+{
+    QSettings settings;
+
+    for (IgDataStorage::CollectionNames::iterator it = storage->collectionNames ().begin (), 
+						 end = storage->collectionNames ().end (); 
+	 it < end; ++it)
+    {
+	IgCollection coll = storage->getCollection ((*it).c_str ());
+	QString fullCollName ((*it).c_str ());
+	
+// 	qDebug () << QString("Initializing ") << fullCollName << tr("...");
+
+	QStringList nameList;	
+	nameList = fullCollName.split (QString ("/"));
+	
+	// Count the items in the collection 
+	int size = 0;
+	IgCollectionIterator cit = coll.begin ();
+	IgCollectionIterator cend = coll.end ();	
+	for (; cit != cend ; cit++, ++size) 
+	{}
+	QStringList collName;
+	collName << nameList [0] << QString ("%1").arg (size);
+	QTreeWidgetItem *treeItem = new QTreeWidgetItem((QTreeWidget*)0, collName);
+	QString visSettings ("igtwigs/visibility/");
+	visSettings.append (nameList [0]);
+	if (settings.contains (visSettings))
+	    treeItem->setCheckState (2, Qt::CheckState (settings.value (visSettings).value<int> ()));
+	else
+	    treeItem->setCheckState (2, Qt::Checked);
+	
+	m_items.append (treeItem);
+    }
+    m_treeWidget->insertTopLevelItems (0, m_items);
+}
+
+void
+ISpyApplication::updateTreeItems (IgDataStorage *storage)
+{
+    for (IgDataStorage::CollectionNames::iterator it = storage->collectionNames ().begin (), 
+						 end = storage->collectionNames ().end (); 
+	 it < end; ++it)
+    {
+	IgCollection coll = storage->getCollection ((*it).c_str ());
+	QString fullCollName ((*it).c_str ());
+	QStringList nameList;	
+	nameList = fullCollName.split (QString ("/"));
+	
+	// Count the items in the collection 
+	int size = 0;
+	IgCollectionIterator cit = coll.begin ();
+	IgCollectionIterator cend = coll.end ();	
+	for (; cit != cend ; cit++, ++size) 
+	{}
+	QStringList collName;
+	QTreeWidgetItemIterator twig (m_treeWidget);
+	while (*twig) 
+	{
+	    if ((*twig)->text (0) == nameList [0])
+		(*twig)->setText (1, QString ("%1").arg (size));
+	    ++twig;
+	}
+    }
 }
 
 void
@@ -1214,10 +1382,18 @@ ISpyApplication::loadGeomFile (const QString &filename)
 	showMessage(QString("Loading ") + filename + tr("..."));
 	m_geomArchive = new ZipArchive (inputFilename, IOFlags::OpenRead);
 	m_geomIt = m_geomArchive->begin ();
+	// readGeomZipMember (m_geomIt);
+
+	ISpyReadService* readService = ISpyReadService::get (state ());
+	ASSERT (readService);
+	readService->preESProcessing ();
+	m_geomStorage = readService->esStorage ();
+
+	m_readThread.read (m_geomArchive, m_geomIt, m_geomStorage);
     }
     else
     {
-	m_init = true;	
+	m_init = true;
 	std::cout << "Geometry file " << inputFilename << " does not exist." << std::endl;
     }
 }
@@ -1225,6 +1401,7 @@ ISpyApplication::loadGeomFile (const QString &filename)
 void
 ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
 {
+//     qDebug () << QString("Reading ") << (*i)->name () << tr("...");
     showMessage(QString("Reading ") + (*i)->name () + tr("..."));
 
     ISpyReadService* readService = ISpyReadService::get (state ());
@@ -1253,11 +1430,18 @@ ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
 	}
 	if (m_geomArchive != 0)
 	{
+	    ASSERT (m_geomStorage);	   
 	    m_storageModel->addStorage (m_geomStorage, (*m_geomIt)->name ().name ());
 	}
-	
+	ASSERT (m_storage);
+	    
+	if (m_items.empty ())
+	    initTreeItems (m_storage);
+	else
+	    updateTreeItems (m_storage);
+
 	m_storageModel->addStorage (m_storage, (*i)->name ().name ());
-	m_mainWindow->treeView->expandAll ();// treeItem->setCheckState(1, Qt::Checked);
+	m_mainWindow->treeView->expandAll ();
 
     }
     catch (ParseError &e)
@@ -1282,7 +1466,7 @@ ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
 void
 ISpyApplication::readGeomZipMember (lat::ZipArchive::Iterator i)
 {
-    showMessage(QString("Reading ") + (*i)->name () + tr("..."));
+    showMessage(QString("Reading GeomZipMember") + (*i)->name () + tr("..."));
 
     ISpyReadService* readService = ISpyReadService::get (state ());
     ASSERT (readService);
@@ -1292,8 +1476,8 @@ ISpyApplication::readGeomZipMember (lat::ZipArchive::Iterator i)
     InputStream *is = m_geomArchive->input (*i);
     
     IOSize length = (*i)->size (ZipMember::UNCOMPRESSED);
-    std::vector<char> buffer(length+1, 0);
-    is->xread(&buffer[0], length);
+    std::vector<char> buffer (length + 1, 0);
+    is->xread (&buffer[0], length);
     is->close ();
     delete is;
 

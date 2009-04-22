@@ -12,6 +12,7 @@
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -32,6 +33,15 @@ void
 ISpySiStripClusterTwig::onNewEvent (ISpyEventMessage& message) 
 {    
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("SiStripClusters_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
+
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
 	IgDataStorage *storage = readService->dataStorage ();
@@ -65,12 +75,15 @@ ISpySiStripClusterTwig::onNewEvent (ISpyEventMessage& message)
 
 		SoMaterial *mat = new SoMaterial;
 		float rgbcomponents [4];
-		IgSbColorMap::unpack (0xFF000000, rgbcomponents);
+		//IgSbColorMap::unpack (0xFF000000, rgbcomponents);
+		IgSbColorMap::unpack (0x6600FF00, rgbcomponents);
 		mat->diffuseColor.setValue (SbColor (rgbcomponents));
 		sep->addChild (mat);
 
 		SoMFInt32 tmarkerIndex;
-		tmarkerIndex.setValue (SoMarkerSet::CIRCLE_LINE_7_7);
+		//tmarkerIndex.setValue (SoMarkerSet::CIRCLE_LINE_7_7);
+		tmarkerIndex.setValue (SoMarkerSet::CIRCLE_FILLED_5_5);
+
 		
 		SoMarkerSet *sopoints = new SoMarkerSet;
 		sopoints->markerIndex = tmarkerIndex;

@@ -12,6 +12,7 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <QString>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -33,6 +34,14 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
 
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("Tracks_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
+
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
 	IgDataStorage *storage = readService->dataStorage ();
@@ -48,7 +57,7 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 		IgAssociationSet &trackExtras = storage->getAssociationSet ("TrackExtras_V1");
 		IgCollection &extras = storage->getCollection ("Extras_V1");
 
-		SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
+		SoSeparator *sep = new SoSeparator;
 		sep->setName (SbName ("Tracks_V1"));
 	    
 		SoMaterial *mat = new SoMaterial;
@@ -168,6 +177,8 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 		    tpoints->numPoints.setValue (nVtx);
 		
 		    sep->addChild (tpoints);
+
+		    dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ())->addChild (sep);
 		}
 	    }
 	}

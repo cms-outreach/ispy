@@ -9,6 +9,7 @@
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -29,6 +30,14 @@ void
 ISpyDTRecSegment4DTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("DTRecSegment4D_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ()))
     {	

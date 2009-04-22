@@ -6,6 +6,7 @@
 # include <QObject>
 # include <QTimer>
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
+# include "Iguana/QtGUI/interface/ISpyReadThread.h"
 # include "classlib/zip/ZipArchive.h"
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -14,7 +15,6 @@
 
 class IgState;
 class IgCollection;
-class ISpyConsumerThread;
 class ISpyMainWindow;
 class ISpyTreeModel;
 class QModelIndex;
@@ -23,6 +23,8 @@ class IgDataStorage;
 class IgCollectionTableModel;
 class IgMultiStorageTreeModel;
 class Ig3DBaseModel;
+class QTreeWidget;
+class QTreeWidgetItem;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
@@ -75,6 +77,11 @@ private slots:
     void 		collectionChanged (const QModelIndex &index);
     void		displayCollection (const QModelIndex &index);
     void		displayItem (const QModelIndex &index);
+    void		newMember (const QString& name);
+    void		initTreeItems (IgDataStorage *storage);
+    void		updateTreeItems (IgDataStorage *storage);
+    void 		twigChanged (const QModelIndex &index);
+    void		displayTwigCollection (const QModelIndex &index);
     
     void		onExit (void);
     void		exit (void);
@@ -107,10 +114,14 @@ private:
     IgCollectionTableModel     *m_collectionModel;
     IgMultiStorageTreeModel    *m_storageModel;
     Ig3DBaseModel	       *m_3DModel;
+    ISpyTreeModel	       *m_model;
+    QTreeWidget 	       *m_treeWidget;    
     IgDataStorage 	       *m_storage;
     IgDataStorage 	       *m_geomStorage;
     QSplashScreen 	       *m_splash;
     ISpyConsumerThread 		m_consumer;
+    ISpyReadThread		m_readThread;
+    QList<QTreeWidgetItem *> 	m_items;
     
     bool	    	m_init;
     QTimer	       *m_timer;

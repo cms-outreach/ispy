@@ -61,12 +61,13 @@ IgDataStorageTableModel::headerData (int section, Qt::Orientation orientation,
     case 1:
 	return QString ("Size");
 	break;
-    }  
+    }
 }
 
 int 
 IgDataStorageTableModel::rowCount (const QModelIndex &parent) const
 {
+    ASSERT (m_storage);    
     return m_storage->collectionNames ().size ();
 }
 

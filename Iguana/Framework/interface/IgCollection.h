@@ -565,8 +565,8 @@ public:
   typedef std::pair<ColumnType, IgColumnHandle> TypeColumn;
   typedef std::vector<IgProperty> Properties;
   
-  IgCollection (const char *name)
-  : m_name (name), m_id(getNewId()), m_rowCount(0)
+  IgCollection (const char *name, int id)
+  : m_name (name), m_id(id), m_rowCount(0)
   { }
   
   ~IgCollection ()
@@ -690,13 +690,6 @@ public:
     return m_name.c_str();
   }
   
-  static int getNewId(void)
-  {
-    static int s_idCounter = -1;
-    s_idCounter++;
-    return s_idCounter;
-  }
-
   int id(void) const
   {
     return m_id;
@@ -1045,7 +1038,7 @@ public:
     
     if (n == m_collectionNames.end())
     {
-      IgCollection *collection = new IgCollection(label);
+      IgCollection *collection = new IgCollection(label, m_collections.size ());
       m_collectionNames.push_back(label);
       m_collections.push_back(collection);
       return collection;

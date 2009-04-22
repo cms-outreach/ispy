@@ -12,6 +12,7 @@
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -32,6 +33,14 @@ void
 ISpyRPCRecHitTwig::onNewEvent (ISpyEventMessage& message) 
 {
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("RPCRecHits_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	

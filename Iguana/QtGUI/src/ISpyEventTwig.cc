@@ -14,6 +14,7 @@
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <QString>
+#include <QSettings>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -35,6 +36,14 @@ void
 ISpyEventTwig::onNewEvent (ISpyEventMessage& message)
 {
     ISpyQueuedTwig::onNewEvent (message);
+
+    QSettings settings;    
+    QString visSettings ("igtwigs/visibility/");
+    visSettings.append ("Event_V1");
+
+    if (settings.contains (visSettings) && 
+	Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
+	return;
 
     if (ISpyReadService *readService = ISpyReadService::get (state ()))
     {	
