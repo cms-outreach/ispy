@@ -7,5 +7,8 @@ Removes the ability to create standalone collections.
   later be attached at some IgDataStorage. This is now prohibeted
   by design since it would complicate things too much in the case
   of associations and multiple datastorages. 
+* The above highlighted a bug in ISpyApplication which was duplicating
+  collections.
+* test_CreateSimpleCollection adapted to work with the new design.
 
 Signed-off-by: Giulio Eulisse <giulio.eulisse@cern.ch>
