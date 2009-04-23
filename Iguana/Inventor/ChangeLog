@@ -1,3 +1,15 @@
+2009-04-07  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test_main.h, BuildFile: Replace Quarter with SoQt.
+
+2009-03-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSoRectHist.h: Correct include path for classlib.
+
+2009-02-17  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* test/test_main.h: Migrate to use Quarter. 
+
 2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* BuildFile: Remove dependency on GL2PS.

@@ -1,3 +1,29 @@
+2009-04-21  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollection.h: Bug fix for associated collections.  
+
+2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgParser.h: Update delimiter.
+
+2009-02-27  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollection.h, IgLinearAlgebra.h, IgParser.h, IgCollection.cc:
+	Parsing is now 10% / 20% faster, depending on the structure of the
+	file. IgV.. vector classes now have a `data()` method which allows
+	to get a `T *` to where the coordinates are stored. Both
+	`IgAssociation` and `IgRef` have a set() method which allows you
+	to set the object and collection id directly. IgAssociationSet now
+	has reserve(), resize() and compress() methods. 
+	* test/test_CreateSimpleCollection.cpp,
+	test/test_CreateWriteReadWriteReadPrint.cpp: Updated accordingly.
+
+2009-02-26  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollection.h: Add checking and getting a property by label.
+	* IgParser.h: Reduce the size of reserved vector.
+	* test/test_ContainersOverride.cpp: New test.
+
 2009-02-23  Lassi A. Tuura  <lat@iki.fi>
 
 	* IgState.cc (put): Add braces for clarity.

@@ -63,7 +63,8 @@ main(int argc, char **argv)
     t[P_Y] = static_cast<double>(i);
     t[P_Z] = static_cast<double>(i);
   }
-
+  assert(tracks.size() == 10);
+  
   // Add a few clusters.
   for (int i = 0; i < 10 ; i++)
   {
@@ -74,6 +75,8 @@ main(int argc, char **argv)
     c[C_E] = static_cast<double>(i);
   }
   
+  assert(clusters.size() == 10);
+  
   // Add a few points
   for (int i = 0; i < 10 ; i++)
   {
@@ -82,6 +85,8 @@ main(int argc, char **argv)
     p[POINT_3D] = IgV3d(1*i, 2*i, 3*i);
     p[POINT_4D] = IgV4d(1*i, 2*i, 3*i, 4*i);
   }
+  
+  assert(points.size() == 10);
   
   // One to one associations
   {  

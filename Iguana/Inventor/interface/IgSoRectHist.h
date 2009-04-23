@@ -10,7 +10,7 @@
 # include <Inventor/fields/SoMFFloat.h>
 # include <Inventor/SbVec3f.h>
 
-# include "Iguana/Utilities/classlib/utils/DebugAids.h"
+# include "classlib/utils/DebugAids.h"
 
 //TODO: REMOVE THIS!!
 # include <iostream>

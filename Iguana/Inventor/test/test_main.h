@@ -1,23 +1,16 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
-#include "Iguana/Inventor/interface/config.h"
-#include <QWidget>
 #include <Inventor/SoOutput.h> 
-#include <Inventor/SoPickedPoint.h> 
 #include <Inventor/actions/SoWriteAction.h>
-#include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <Inventor/Qt/SoQt.h>
-#include <classlib/utils/DebugAids.h>
-#include <classlib/utils/Signal.h>
+#include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <QApplication>
 #include <QTimer>
-#include <QWidget>
-#include <cstdlib>
-#include <cmath>
+#include <QMainWindow>
+#include <classlib/utils/Signal.h>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 
@@ -42,8 +35,8 @@ int main (int argc, char **argv)
     lat::Signal::handleFatal (argv [0]);
 
     QApplication app (argc, argv);
+    QWidget * mainwin = SoQt::init (argc, argv, argv[0]);
 
-    QWidget		*mainWindow = SoQt::init (argc, argv, "IGUANA Shape Test");
     SoSelection		*top = new SoSelection;
     SoSeparator		*root = new SoSeparator;
 
@@ -66,23 +59,26 @@ int main (int argc, char **argv)
 	wa.apply (root);
     }
 
-    mainWindow->setGeometry (0, 0, 800, 600); // (0, 0, 400, 300);
-    SoQtExaminerViewer *viewer = new SoQtExaminerViewer (mainWindow);
-    // viewer->setGeometry (0, 0, 800, 600);
-    viewer->setTitle (title.toLatin1());
-    viewer->setGLRenderAction (new SoLineHighlightRenderAction);
-    viewer->redrawOnSelectionChange (top);
+    SoQtExaminerViewer *viewer = new SoQtExaminerViewer (mainwin);
     viewer->setSceneGraph (top);
-    viewer->viewAll ();
-    viewer->show ();
-    SoQt::show (mainWindow);
-    mainWindow->show ();
+    viewer->setFeedbackVisibility (true);
+    viewer->show();
+
+    mainwin->setWindowTitle (title);
+    mainwin->setGeometry (0, 0, 800, 600);
+
+    // Pop up the QuarterWidget
+    mainwin->show();
 
     QTimer::singleShot (10 * 60 * 1000, qApp, SLOT(quit()));
-    app.exec ();
-    SoQt::mainLoop ();
-    top->unref ();
+
+    SoQt::show(mainwin);
+    SoQt::mainLoop();
+  
     delete viewer;
 
+    // Clean up resources.
+    top->unref();
+    
     return 0;
 }

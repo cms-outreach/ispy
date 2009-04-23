@@ -1,11 +1,7 @@
-<use name=Iguana/Utilities>
-<use name=Iguana/Inventor>
-<use name=qt>
 <use name=soqt>
+<use name=qt>
 
 <bin file=test_iv.cpp></bin>
-<bin file=test_Camera.cpp></bin>
-<bin file=test_SoCube.cpp></bin>
 <bin file=test_IgSbColorMap.cpp></bin>
 <bin file=test_IgSo3DErrorBar.cpp></bin>
 <bin file=test_IgSo2DArrow.cpp></bin>

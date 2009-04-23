@@ -24,11 +24,14 @@ enum AssociatedType
 class IgRef
 {
 public:
+  IgRef()
+  {}
+  
   IgRef(int collectionId, int objectId)
   : m_collectionId(collectionId), m_objectId(objectId)
   {}
   
-  IgRef(const IgRef &ref )
+  IgRef(const IgRef &ref)
   : m_collectionId(ref.collectionId()),
     m_objectId(ref.objectId())
   {}
@@ -39,6 +42,11 @@ public:
   int objectId(void) const
   {return m_objectId;}
   
+  void set (int collectionId, int objectId)
+  {
+    m_collectionId = collectionId;
+    m_objectId = objectId;
+  }
 private:
   int m_collectionId;
   int m_objectId;
@@ -48,7 +56,10 @@ class IgAssociation
 {
 public:
   IgAssociation(const IgRef &a, const IgRef &b)
-  : m_refA(a), m_refB(b)
+  :m_refA(a), m_refB(b)
+  {}
+  
+  IgAssociation()
   {}
   
   const IgRef &first(void) const
@@ -56,6 +67,12 @@ public:
   
   const IgRef &second(void) const
   {return m_refB; };
+  
+  void set (int cA, int oA, int cB, int oB)
+  {
+    m_refA.set(cA, oA);
+    m_refB.set(cB, oB);
+  }
 private:
   IgRef m_refA;
   IgRef m_refB;
@@ -240,7 +257,7 @@ public:
     }
   }
   
-  int extend ()
+  void extend ()
   {
     switch (m_type)
     {
@@ -261,6 +278,34 @@ public:
         break;                
       case VECTOR_4D:         
         return doExtend<IgV4d>();
+        break;
+      default:
+        assert(false);
+        break;
+    }
+  }
+
+  void resize (unsigned int newSize)
+  {
+    switch (m_type)
+    {
+      case INT_COLUMN:
+        return doResize<int>(newSize);
+        break;
+      case DOUBLE_COLUMN:
+        return doResize<double>(newSize);
+        break;
+      case STRING_COLUMN:
+        return doResize<std::string>(newSize);
+        break;
+      case VECTOR_2D:
+        return doResize<IgV2d>(newSize);
+        break;                
+      case VECTOR_3D:         
+        return doResize<IgV3d>(newSize);
+        break;                
+      case VECTOR_4D:         
+        return doResize<IgV4d>(newSize);
         break;
       default:
         assert(false);
@@ -352,13 +397,11 @@ public:
     }
   }
 
-
   template <class T>
-  int doExtend()
+  void doExtend()
   {
     std::vector<T> &data = *(static_cast<std::vector<T> *>(m_data));
     data.resize(data.size()+1);
-    return data.size();
   }
   
   template <class T>
@@ -382,6 +425,13 @@ public:
     data.clear();
   }
 
+  template <class T>
+  void doResize(int newSize)
+  {
+    std::vector<T> &data = *(static_cast<std::vector<T> *>(m_data));
+	data.resize(newSize);
+  }
+  
   void destroy()
   {
     switch (m_type)
@@ -496,6 +546,13 @@ private:
   int m_rowPosition;
 };
 
+/** Throw this error whenever the schema differs from what you
+ *  were expecting.
+ */
+struct IgSchemaError
+{
+};
+
 // TODO: for the time being the collection ID is defined by the creation order.
 //       This is actually bad in the case we are merging files and should be 
 //       somehow replaced by some hash (maybe using some combination of 
@@ -508,8 +565,8 @@ public:
   typedef std::pair<ColumnType, IgColumnHandle> TypeColumn;
   typedef std::vector<IgProperty> Properties;
   
-  IgCollection (const char *name)
-  : m_name (name), m_id(getNewId()), m_rowCount(0)
+  IgCollection (const char *name, int id)
+  : m_name (name), m_id(id), m_rowCount(0)
   { }
   
   ~IgCollection ()
@@ -519,10 +576,10 @@ public:
   template <class T>
   IgProperty &addProperty(const char *label, T defaultValue)
   {
-    Labels::iterator l = std::find(m_labels.begin(), m_labels.end(), label);
-    if (l != m_labels.end())
+    Labels::iterator l;
+    if (doHasProperty(label, &l))
     {
-      return m_properties[std::distance(m_labels.begin(), l)];
+      return m_properties[std::distance(m_labels.begin(), l)]; 
     }
     
     m_labels.push_back(label);
@@ -536,7 +593,23 @@ public:
   
   IgCollectionIterator begin(void);
   IgCollectionIterator end(void);
-    
+
+  IgProperty &getProperty (const char *label)
+  {
+    Labels::iterator l;
+    if (!doHasProperty (label, &l))
+    {
+      throw IgSchemaError();
+    } 
+
+    return m_properties[std::distance(m_labels.begin(), l)]; 
+  }
+
+  bool hasProperty (const char *label)
+  {
+    return doHasProperty(label);
+  }
+
   int size(void)
   {
     // We consider the size of the first column as the size of the whole
@@ -555,12 +628,12 @@ public:
         return i->second;
       }
     }
-    std::cout << "IgColumnHandle::getHandleByLabel " << label << std::endl;
+    std::cout << "IgColumnHandle::getHandleByLabel " << label << " from " << m_name << std::endl;
     
     assert(false && "Column not found. Did you create it?");
   }
 
-  IgColumnHandle &getHandleByPosition(int position)
+  IgColumnHandle &getHandleByPosition(const unsigned int position)
   {
     return m_properties[position].handle();
   }
@@ -575,6 +648,17 @@ public:
     }
   }
 
+  void resize(unsigned int size)
+  {
+    for (Properties::iterator i = m_properties.begin();
+         i != m_properties.end();
+         i++)
+    {
+      i->handle().resize(size);
+    }
+    m_rowCount = size;
+  }
+  
   void compress(void)
   {
     for (Properties::iterator i = m_properties.begin();
@@ -606,13 +690,6 @@ public:
     return m_name.c_str();
   }
   
-  static int getNewId(void)
-  {
-    static int s_idCounter = -1;
-    s_idCounter++;
-    return s_idCounter;
-  }
-
   int id(void) const
   {
     return m_id;
@@ -621,6 +698,14 @@ public:
   std::vector<LabelColumn> &columnLabels(void)
   { return m_columnLabelsIndex; };
 private:
+  bool doHasProperty (const char *label, Labels::iterator *i = 0)
+  {
+    Labels::iterator l = std::find(m_labels.begin(), m_labels.end(), label);
+    if (i != 0)
+      *i = l;
+    return l != m_labels.end();
+  }
+
   typedef std::vector<LabelColumn> ColumnLabels;
   typedef std::vector<TypeColumn> ColumnTypes;
   typedef std::map<ColumnType, std::vector<IgColumnHandle> > ColumnTypeIndex;
@@ -665,6 +750,12 @@ public:
     return m_position;
   }
 
+  IgCollectionItem &nextColumn(void)
+  {
+	m_propertyPosition++;
+	return *this;
+  }
+  
   IgCollectionItem &moveToColumn(const IgColumnHandle &handle)
   {
     void *data = handle.data();
@@ -677,6 +768,17 @@ public:
     return *this;
   }
 
+  IgCollectionItem &operator*(void)
+  {
+	return *this;
+  }
+
+  template <class T>
+  T &current(void)
+  {
+	return currentHandle().get<T>(m_position);
+  }
+  
   IgCollectionItem &operator[](IgProperty &property)
   {
     return this->moveToColumn(property.handle());
@@ -691,69 +793,63 @@ public:
   template <class T>
   IgCollectionItem &operator=(T value)
   {
-    m_collection->getHandleByPosition(m_propertyPosition).get<typename IgStorageGetterTrait<T>::storage_type>(m_position) = value;
-    m_propertyPosition++;
+    currentHandle().get<typename IgStorageGetterTrait<T>::storage_type>(m_position) = value;
     return *this;
   }
 
   IgCollectionItem &operator=(const std::string &value)
   {
-    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
-    m_propertyPosition++;
+    currentHandle().get<std::string>(m_position) = value;
     return *this;
   }
   
   IgCollectionItem &operator=(const char *value)
   {
-    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
-    m_propertyPosition++;
+    currentHandle().get<std::string>(m_position) = value;
     return *this;
   }
   
-  template <class T, template <class U> class C>
-  IgCollectionItem &operator=(C<T> container)
+  template <class T, class A, template <typename, typename> class C>
+  IgCollectionItem &operator=(C<T,A> container)
   {
-    ContainerTraits<C,T>::put(m_collection, 
-                               m_propertyPosition, 
-                               m_position, 
-                               container);
-    return *this;        
+    ContainerTraits<C,T,A>::put(m_collection, 
+                                m_propertyPosition, 
+                                m_position, 
+                                container);
+    return *this;
   }
     
   template <class T>
   IgCollectionItem &operator,(T value)
   {
-    assert(m_propertyPosition < m_collection->properties().size());
-    m_collection->getHandleByPosition(m_propertyPosition).get<T>(m_position) = value;
     m_propertyPosition++;
+    currentHandle().get<T>(m_position) = value;
     return *this;
   }
 
   IgCollectionItem &operator,(const char *value)
   {
-    assert(m_propertyPosition < m_collection->properties().size());
-    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
     m_propertyPosition++;
+    currentHandle().get<std::string>(m_position) = value;
     return *this;
   }
 
   IgCollectionItem &operator,(const std::string &value)
   {
-    assert(m_propertyPosition < m_collection->properties().size());
-    m_collection->getHandleByPosition(m_propertyPosition).get<std::string>(m_position) = value;
     m_propertyPosition++;
+    currentHandle().get<std::string>(m_position) = value;
     return *this;
   }
   
   
-  template <class T, template <class U> class C>
-  IgCollectionItem &operator,(C<T> container)
+  template <class T, class A, template <typename, typename> class C>
+  IgCollectionItem &operator,(C<T, A> container)
   {
-    ContainerTraits<C,T>::put(m_collection, 
-                               m_propertyPosition, 
-                               m_position, 
-                               container);
-    return *this;     
+    m_propertyPosition=ContainerTraits<C,T,A>::put(m_collection, 
+                                m_propertyPosition, 
+                                m_position, 
+                                container);
+    return *this;
   }
   
   template <class T>
@@ -799,13 +895,14 @@ public:
   { return IgRef(m_collection->id(), m_position); }
   
 private:
-  template <template <class U> class C, class T>
+  template <template <typename, typename> class C, class T, class A>
   struct ContainerTraits
   {
-    static void put (IgCollection *collection, unsigned int &propertyPosition,
-             unsigned int position, C<T> container)
+    static unsigned int put (IgCollection *collection, 
+                             unsigned int propertyPosition,
+                             unsigned int position, C<T,A> container)
     {
-      for (typename C<T>::iterator i = container.begin();
+      for (typename C<T,A>::iterator i = container.begin();
            i != container.end();
            i++)
       {
@@ -813,8 +910,14 @@ private:
                     .get<T>(position) = *i;
         propertyPosition++;
       }
+      return propertyPosition;
     }
   };
+
+  IgColumnHandle &currentHandle()
+  {
+    return m_collection->getHandleByPosition(m_propertyPosition); 
+  }
 
   IgCollection *m_collection;
   unsigned int m_position;
@@ -848,6 +951,20 @@ public:
   
   void clear(void)
   { m_associations.clear(); }
+  
+  void reserve(unsigned int capacity)
+  { m_associations.reserve(capacity);}
+
+  void resize(unsigned int newSize)
+  { m_associations.resize(newSize);}
+  
+  void compress(void)
+  { m_associations.reserve(m_associations.size());}
+  
+  IgAssociation &operator[](unsigned int pos)
+  {
+    return m_associations[pos];
+  }
 private:
   std::string m_name;
   Associations m_associations;
@@ -921,7 +1038,7 @@ public:
     
     if (n == m_collectionNames.end())
     {
-      IgCollection *collection = new IgCollection(label);
+      IgCollection *collection = new IgCollection(label, m_collections.size ());
       m_collectionNames.push_back(label);
       m_collections.push_back(collection);
       return collection;

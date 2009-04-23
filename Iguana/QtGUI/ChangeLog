@@ -1,0 +1,497 @@
+2009-04-22  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpy*Twig.cc: Check if a visibility setting already exists.
+
+2009-04-21  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Lots of temporary changes
+	to accommodate reading in a worker thread, new tree widget with
+	visibility selection handling. 
+	* IgMainWindow-mdi-noQGraphicsView.ui: GUI menu clean up.
+	* ui_IgMainWindow.h: Auto-generated from above.
+	* ISpy*Twig.cc: Check its visibility settings.
+	* ISpyReadThread.h, ISpyReadThread.cc: A worker thread to read in
+	geometry.
+	* IgDataStorageTableModel.cc: Add assert to make sure we do not
+	get surprised by a crash. 
+
+2009-04-17  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Clean up
+	selection when model changed. Enable new functions: printing,
+	zoom, and saving iv files.
+	* ISpy*Twig.cc: Let the base class handle all the heavy work.
+	* ISpy3DView.h, ISpy3DView.cc: Add printing and saving iv files.
+
+2009-04-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyContent.h, ISpyContent.cc, Ig3DModel.h, Ig3DModel.cc,
+	Ig3DRep.h, Ig3DRep.cc, xtypeinfo.h, xtypeinfo.cc, iglet.cc:
+	Removed.
+	* ISpyQueuedTwig.h, ISpyQueuedTwig.cc: Keep its own SoSeparator
+	and clean its children on new event.
+	* ISpy*Twig.cc: Attach its representation to its own SoSeparator.
+
+2009-04-15  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.cc: Fetch the first after Header event by
+	default.
+
+	* ISpyApplication.h, ISpyApplication.cc: Add a filter and a slot
+	for opening a file on Mac. 
+	* ISpyQueuedTwig.cc: Remove QSettings.
+	* ISpyEventFilter.h, ISpyEventFilter.cc: Add a signal to open
+	file.
+
+2009-04-14  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyEventFilter.h, ISpyEventFilter.cc: Event filter.
+
+2009-04-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Use new class for
+	viewing.
+	* gl2ps.c, TODO, gl2ps.pdf, COPYING.GL2PS, COPYING.LGPL, gl2ps.h:
+	Migrate GL2PS here.
+	* ISpy3DView.h, ISpy3DView.cc: New class to display scene graph
+	plus all usual bells and whistles.
+	* IgSoGL2PSAction.h, IgSoGL2PSAction.cc: Vector postscript
+	printing.
+	* Ig3DBaseModel.h, Ig3DBaseModel.cc:  Currently needed for the
+	view.
+	* Ig3DBaseRep.h, Ig3DBaseRep.cc: Currently needed for the view.
+
+2009-04-07  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* *: Final cleanup for Quarter.
+	* ISpyQWindowService.h, ISpyQWindowService.cc: Removed.
+	* BuildFile: Remove quarter.
+
+	* ISpy*Twig.cc: Finished migration to SoQt.
+	* IgMainWindow-mdi-noQGraphicsView.ui: Empty MDI area.
+	* ui_IgMainWindow.h: Auto-generated from above.
+	* ISpySelectionService.h, ISpySelectionService.cc: Keep selection
+	tree here.
+	* ISpySceneGraphService.h, ISpySceneGraphService.cc: Ref
+	separators.
+	* ISpyApplication.h, ISpyApplication.cc: Finished migration to
+	SoQt.
+	
+2009-04-06  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* src/*.cc: Starting migration from Quarter to SoQt. 
+
+2009-03-31  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSettingsEditorDialog.ui: New dialog for settings editor.
+	* ui_IgSettingsEditorDialog.h: Auto-generated.
+	* ISpyMainWindow.h, ISpyMainWindow.cc: Use dialog rather then the
+	settings widget.
+	* IgSettingsEditor.h, IgSettingsEditor.cc: Implementation of the
+	settings editor dialog. 
+	* ISpyApplication.cc: Add multi-storage model to the table view.
+
+2009-03-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* Rename Iggi to IgSpy.
+
+	* IgMainWindow-mdi-noQGraphicsView.ui: Add MDI windows
+	control. Add maximized and full screen mode.
+	* ui_IgMainWindow.h: Auto-generated.
+
+	* IggiApplication.h, IggiApplication.cc: Added auto events
+	fetching including save and restore the state. 
+
+	* qrc_iggi.cc: Regenerated.
+
+	* *.cc, *.h, *.cpp: The packages migrated to the new location.
+
+	* IViewQueuedTwig.h: The header migrated to the new location. 
+
+2009-03-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgMainWindow-mdi-noQGraphicsView.ui: Update main GUI.
+	* ui_IgMainWindow.h: Auto-generated.
+
+2009-03-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewMETTwig.cc, IViewCSCSegmentTwig.cc, IViewCaloTowerTwig.cc,
+	IViewDTRecSegment4DTwig.cc, IViewJetTwig.cc: Added drawing in 3D.
+	* IggiApplication.h, IggiApplication.cc: Separate selection.
+	* IgDrawFunctions.cc: Added more draw functions.
+
+	* IggiApplication.h, IggiApplication.cc: Correct saving of
+	settings. 
+	* IgDrawFunctions.cc: Add draw function for line segments.
+
+2009-03-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewEcalRecHitTwig.cc, IViewHBRecHitTwig.cc,
+	IViewHERecHitTwig.cc, IViewHFRecHitTwig.cc, IViewHORecHitTwig.cc:
+	Use draw functions service.
+	* IgDrawFunctions.cc: Do not use slow Iguana/Inventor shape, just
+	the face set.
+	* IggiApplication.cc: Selection highlights.
+
+	* IgDrawFunctions.cc: Check the properties.
+	* IViewBasicClusterTwig.cc, IViewCSCSegmentTwig.cc,
+	IViewCaloTowerTwig.cc, IViewEcalRecHitTwig.cc,
+	IViewHBRecHitTwig.cc, IViewHERecHitTwig.cc, IViewHFRecHitTwig.cc,
+	IViewHORecHitTwig.cc, IViewJetTwig.cc, IViewMETTwig.cc,
+	IViewPFClusterTwig.cc, IViewPFRecHitTwig.cc,
+	IViewPFRecTrackTwig.cc, IViewPixelDigiTwig.cc,
+	IViewRPCRecHitTwig.cc, IViewSiPixelClusterTwig.cc,
+	IViewSiPixelRecHitTwig.cc, IViewSiStripClusterTwig.cc:
+	Implementations for the new classes to draw corresponding
+	collections.
+	* xtypeinfo.h, xtypeinfo.cc: Declare and define new classes.
+	* IViewHFRecHitTwig.h: Correct a typo.
+
+2009-03-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewBasicClusterTwig.h, IViewCSCSegmentTwig.h,
+	IViewCaloTowerTwig.h, IViewEcalRecHitTwig.h, IViewHBRecHitTwig.h,
+	IViewHERecHitTwig.h, IViewHFRecHitTwig.h, IViewHORecHitTwig.h,
+	IViewJetTwig.h, IViewMETTwig.h, IViewPFClusterTwig.h,
+	IViewPFRecHitTwig.h, IViewPFRecTrackTwig.h, IViewPixelDigiTwig.h,
+	IViewRPCRecHitTwig.h, IViewSiPixelClusterTwig.h,
+	IViewSiPixelRecHitTwig.h, IViewSiStripClusterTwig.h: New classes
+	to draw corresponding collections.
+
+2009-03-11  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewDTRecSegment4DTwig.cc, IViewSiStripDigiTwig.cc,
+	IViewTrackTwig.cc: Protect from schema changes.
+	* IgDrawFunctions.cc: Use collection name.
+	* IggiApplication.cc: Fix typo. Add Hcal rechits display.
+
+2009-03-10  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ui_IgMainWindow.h: Auto generated.
+	* IgMainWindow-mdi-noQGraphicsView.ui: Designer form for main
+	window without QGraphicsView.
+	* IgMainWindow-mdi.ui: Disable buttons.
+	* IggiMainWindow.cc: Remove QGraphicsView.
+
+2009-03-10  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewSiStripDigiTwig.cc: Do not adjust the camera.
+
+	* IggiApplication.cc: Swap the gradient colors. Add saving tree
+	and table views visibility.
+
+	* IViewTrackTwig.h, IViewDTRecSegment4DTwig.cc,
+	IViewDetectorTwig.cc, IViewSiStripDigiTwig.cc, IViewTrackTwig.cc,
+	IViewTrackingRecHitTwig.cc: Add 3D drawing implementation.
+
+	* IggiApplication.cc: Remove 2D QGraphicsView. Put 3D window in
+	MDI area.
+	* IViewDTRecSegment4DTwig.cc, IViewDetectorTwig.cc,
+	IViewEventTwig.cc, IViewMuonTwig.cc, IViewSiStripDigiTwig.cc,
+	IViewTrackTwig.cc, IViewTrackingRecHitTwig.cc: Remove 2D
+	QGraphicsView. 
+
+2009-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.h, IggiApplication.cc: Add a consumer thread to
+	get events online. Use draw factory with registered draw
+	functions. Display full collection on mouse click in Tree
+	view. Display a collection item on mouse click in Table view.
+	* IgDrawFactroyService.h, IgDrawFactroyService.cc: Keep a map of
+	registered draw functions.
+	* IgDrawFunctions.h, IgDrawFunctions.cc: Implementetion and
+	registration of actual draw functions.
+	* IgSpyConsumer.h: Online event consumer.
+	* IgSpyConsumerThread.h, IgSpyConsumerThread.cc: A QThread to deal
+	with online events.
+	* IgTreeItemDelegate.h: Not implemented yet.
+
+2009-03-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* iggi.qrc: Add network icon to resources.
+	* network*.png: Network icons.
+	* ui_IgMainWindow.h: Auto generated.
+	* qrc_iggi.cc: Auto generated.
+	* IgMainWindow-mdi.ui: An MDI version of a main window.
+	* IgMainWindow.ui: Replace action new with action connect.
+
+2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.h, IggiApplication.cc: Updated to a new API to
+	clean collections.
+	* IViewDTRecSegment4DTwig.cc, IViewDetectorTwig.cc,
+	IViewSiStripDigiTwig.cc, IViewTrackTwig.cc: Sync with analyzers.
+
+
+2009-03-03  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollectionTableModel.h, IgCollectionTableModel.cc,
+	IgMultiStorageTreeModel.h, IgMultiStorageTreeModel.cc:
+	`IgMultiDataStorage::clear()` method added. To be used on new
+	event, for example. Now the IgCollectionTable model returs a
+	vertical header, containing the objectId for the given row. It is
+	now possible to build an empty (i.e. without IgCollection)
+	IgCollectionTableModel.
+	* IgSettingsTree.h, IgSettingsEditor.cc, IgSettingsTree.cc: Minor
+	fixes.
+	* ui_IgSettingsEditorMainWindow.h, IgSettingsEditorMainWindow.ui:
+	Updated.
+	* IggiMainWindow.cc: Updated settings editor.
+
+2009-02-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewDetectorTwig.cc: Add DT geometry representation in 3D
+	Quarter window.
+	* IViewQueuedTwig.cc: Check visibility.
+	* IggiApplication.h, IggiApplication.cc: Add an extra tree
+	view. Move Quarter widget in dock area. Fix selection from
+	multiple data storages.
+
+	* IggiApplication.h, IggiApplication.cc: Clean up the
+	resources. Use a separate data storage from a reader service to get
+	the geometry.
+	* IViewDetectorTwig.cc: Add drawing.
+	* IViewEventTwig.cc: Use Arial font.
+	* IViewReadService.h, IViewReadService.cc: Add a separate storage
+	for geometry.
+	* IViewRecoContent.cc, xtypeinfo.h, xtypeinfo.cc: Add
+	IViewDetectorTwig. 
+
+2009-02-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Do not do anything if the open file dialog
+	is canceled. 
+
+	* IggiApplication.cc: Add second storage to parse the
+	geometry. Read it only once. 
+
+	* IggiApplication.h, IggiApplication.cc: Add reading in
+	geometry. Move to the new models for Tree and Table views.
+
+
+2009-02-20  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollectionTableModel.h, IgCollectionTableModel.cc: Detailed
+	collection model to view in a table.
+	* IgMultiStorageTreeModel.h, IgMultiStorageTreeModel.cc: A model
+	to add multiple data storages. Currently displayed in a tree
+	view.
+	* IgDataStorageTableModel.h, IgDataStorageTableModel.cc: A model
+	for data storage.
+
+2009-02-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgVariantDelegate.h, IgVariantDelegate.cc: Add support for QUrl
+	type.
+	* IgLocationDialog.cc: Correct the default choice.
+	* IggiMainWindow.cc: Disable Mac and Windows specific choices for
+	Unix application.
+
+2009-02-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Clean up commented out code.
+
+	* IggiApplication.h, IggiApplication.cc: Introducing QSettings to
+	store default information. 
+
+	* IggiApplication.h, IggiApplication.cc: Allow passing a file
+	name on a command line.
+
+	* IggiApplication.cc: Add a shortcut to afs area.
+
+2009-02-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgSettingsEditor.h, IgSettingsEditor.cc: Test program for
+	a settings editor.
+	* IgLocationDialog.h, IgLocationDialog.cc, IgSettingsTree.h,
+	IgSettingsTree.cc, IgVariantDelegate.h, IgVariantDelegate.cc: New
+	classes for the settings editor.
+	* IggiMainWindow.h, IggiMainWindow.cc: Add slots to handle the
+	settings editor.
+	* IgMainWindow.ui, ui_IgMainWindow.h: Modify to handle visibility
+	of doc windows correctly. Add menus and actions for the settings
+	editor.
+	* test/test_IgSettingsEditor.cpp: Standalone test of the settings
+	editor.
+	* test/BuildFile: Build the new test.
+
+2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* bin/BuildFile: Rename iggi to ispy.
+	* IggiApplication.h, IggiApplication.cc: Migrated to Iguana/View
+	to avoid circular dependencies.
+	* IgTrack.cc, IgHits.cc: Reduce the size of a circle.
+
+2008-12-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgAnnotation.cc: Switch off a bounding box drawing.
+	* IggiApplication.cc: Line move.
+
+2008-12-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgHits.h, IgHits.cc: Add color setting.
+	* IggiApplication.h, IggiApplication.cc: Move drawing part out.
+	* IgAnnotation.h, IgAnnotation.cc: Draw annotations.
+	* IgLine.h, IgLine.cc: Draw lines.
+
+2009-02-17  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* Remove SoQt dependency.
+
+	* IggiApplication.cc: Add a Quarter window. 
+
+2009-02-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Do initialization a bit earlier. 
+
+	* IViewDetectorTwig.h, IViewDetectorTwig.cc: New class to display
+	detector.
+	* IViewMuonTwig.h, IViewMuonTwig.cc: New class to display Muon.
+	* IViewQWindowService.h, IViewQWindowService.cc: A service to
+	access main window.
+	* IViewSceneGraphService.h, IViewSceneGraphService.cc: A service
+	to access scene graphs.
+	* IViewTrackingRecHitTwig.h, IViewTrackingRecHitTwig.cc: A new
+	class to display TrackingRecHit.
+	* IggiApplication.h, IggiApplication.cc: Migrated here from
+	Iguana/Iggi package.
+	* xtypeinfo.h, xtypeinfo.cc: New twig types declared and defined.
+	* IViewRecoContent.cc: New twigs added to the content.
+	* IViewDTRecSegment4DTwig.cc: Do not scale the values.
+	* IViewEventTwig.cc: Add the event label to an overlay scene graph.
+	* IViewSiStripDigiTwig.cc: Add a 3D representation of the digis.
+	* IViewTrackTwig.cc: Do not scale the values.
+
+2008-12-19  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IViewDTRecSegment4DTwig.cc, IViewEventTwig.cc,
+	IViewSiStripDigiTwig.cc, IViewTrackTwig.cc: Add a scale factor.
+
+2008-12-18  Ianna Osborne  <Ianna.Osborne@cern.ch>
+	
+	* BuildFile: Define dependencies.
+	* IViewContent.h, IViewContent.cc: Define iView content.
+	* IViewDTRecSegment4DTwig.h, IViewDTRecSegment4DTwig.cc: Display
+	of DTRecSegment4D.
+	* IViewEventTwig.h, IViewEventTwig.cc: Display of event id.
+	* IViewObserver.h, IViewObserver.cc: Base class for twigs
+	receiving new event message.
+	* IViewQWindowService.h, IViewQWindowService.cc: Service to get a
+	main window.
+	* IViewQueue.h, IViewQueue.cc: Actions queue.
+	* IViewQueueProcessor.h, IViewQueueProcessor.cc: Actions queue
+	processor. 
+	* IViewQueuedTwig.h, IViewQueuedTwig.cc: Queued twig.
+	* IViewReadService.h, IViewReadService.cc: Service to get the storage.
+	* IViewRecoContent.h, IViewRecoContent.cc: Plug-in content.
+	* IViewSiStripDigiTwig.h, IViewSiStripDigiTwig.cc: Display of
+	SiStripDigi.  
+	* IViewTrackTwig.h, IViewTrackTwig.cc: Display of Track.
+	* Ig3DModel.h, Ig3DModel.cc: Migrated from Iguana packages. 
+	* Ig3DModelEvent.h: Migrated from Iguana packages.
+	* Ig3DRep.h, Ig3DRep.cc: Migrated from Iguana packages.
+	* IgLegoModel.h: Migrated from Iguana packages.
+	* IgLegoRep.h: Migrated from Iguana packages.
+	* IgRPhiModel.h: Migrated from Iguana packages.
+	* IgRPhiRep.h: Migrated from Iguana packages.
+	* IgRZModel.h: Migrated from Iguana packages.
+	* IgRZRep.h: Migrated from Iguana packages.
+	* IgSimpleTextModel.h, IgSimpleTextModel.cc:  Migrated from Iguana
+	packages. 
+	* IgSimpleTextRep.h, IgSimpleTextRep.cc: Migrated from Iguana
+	packages. 
+	* IgTextModel.h, IgTextModel.cc: Migrated from Iguana packages.  
+	* IgTextModelEvent.h: Migrated from Iguana packages.
+	* IgTextRep.h, IgTextRep.cc: Migrated from Iguana packages.
+	* debug.h: Debugging stream.
+	* xtypeinfo.h, xtypeinfo.cc: Declare and define the types.
+	* iglet.cc: Does not produce plug-ins yet.
+
+
+2008-11-13  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Pick up IgCollection from Iguana/Framework.
+	* IgCollection.h, IgCollection.cc, IgLinearAlgebra.h, IgParser.h:
+	Migrated to Iguana/Framework.
+
+2008-08-01  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgHits.h, IgHits.cc: New class to represent hits.
+	* test/BuildFile, test_IgHits.cpp: A test for the above class. 
+	* ui_IgMainWindow.h: Add separators.
+	* IggiApplication.cc: Add command line options. Add an option to
+	open an ig file from the command line. Add printing and saving the
+	image. Add usage message. Correlate selections between two views
+	of the same model. Allow closing and opening a new file. Add
+	drawing of the tracks and hits in the scene.
+	* IggiItem.cc: Handle mouse hover events and mouse press
+	event. Make it selectable and let it accept hover events. 
+	* IggiMainWindow.cc: Add zoom in and zoom out.
+	* IggiScene.cc: Add an event group in the main scene.
+	* IggiTreeItem.h, IggiTreeItem.cc: Add clear and destroy member
+	functions.
+	* IggiTreeModel.h, IggiTreeModel.cc: Add a member function to
+	clear the model.
+
+2008-07-23  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgParser.h: Remove value from a return-statement in a function
+	returning 'void'.
+
+	* IggiApplication.cc: Add parsing the ig file.
+
+2008-07-22  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Modify to read a new ig format.
+	* IgCollection.h, IgParser.h: Giulio's files.
+	* IgCircleSector.h, IgCircleSector.cc: New shape to draw a
+	sector.
+	* IgRectangle.h, IgRectangle.cc: New shape to draw a rectangle.
+	* IgTrack.h, IgTrack.cc: New shape to draw a track.
+	* IgTrapezoid.h, IgTrapezoid.cc: New shape to draw a trapezoid.
+	* test_IgCircleSector.cpp, test_IgRectangle.cpp, test_IgTrack.cpp,
+	test_IgTrapezoid.cpp, test_IggiTrack.cpp: Tests for the new
+	shapes.
+	* BuildFile: Add rules to build the tests.
+	* IggiItem.h: Do not require pure virtual functions.
+
+2008-07-02  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.cc: Allow to read and stream out the content of
+	a zip member.
+	* IggiTreeItem.h, IggiTreeItem.cc: Items of an IggiTreeModel.
+	* IggiTreeModel.h, IggiTreeModel.cc: Iggi simple tree model.
+
+2008-06-27  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IggiApplication.h, IggiApplication.cc: Update to read .ig files.
+	* IgMainWindow.ui: Updated to use icons from a resource file.
+	* ui_IgMainWindow.h: Generated from the above.
+	* iggi.qrc: Generated by Designer.
+	* qrc_iggi.cc: Generated from the above.
+
+2008-06-26  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgPolarCSControl.h, IgPolarCoordSystem.h, IgRZCSControl.h,
+	IgRZCoordSystem.h, IggiControlCenter.h, IggiController.h,
+	IggiItem.h, IggiMainWindow.h, IggiScene.h, controlcenter.png,
+	controlcenter_old.png, crosshair.png, grid.png, ui_IgMainWindow.h,
+	ui_IgOpenFileDialog.h, ui_IgPolarCSControl.h, ui_IgRZCSControl.h,
+	ui_IgTreeViewForm.h, ui_IggiControlCenter.h, zoom_in.png,
+	zoom_in_old.png, zoom_out.png, zoom_out_old.png, IgMainWindow.ui,
+	IgPolarCSControl.cc, IgPolarCSControl.ui, IgPolarCoordSystem.cc,
+	IgRZCSControl.cc, IgRZCSControl.ui, IgRZCoordSystem.cc,
+	IggiControlCenter.cc, IggiControlCenter.ui, IggiMainWindow.cc,
+	IggiScene.cc: Added a prototype of a control center, RPhi and RZ
+	grids.
+
+	* Updated code which I still cannot build. I added ui_*.h files to
+	CVS temporarily. They will be removed later, when an automated
+	build procedure is in place.
+
+2008-04-16  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* *: Qt4-based application.
+
+	* New package.
+

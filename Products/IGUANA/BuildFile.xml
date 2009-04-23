@@ -1,7 +1,8 @@
+<flags CXXFLAGS="-ggdb -O0"/>
 <use name="quarter"/>
 <use name="soqt"/>
 <use name="qt"/>
 <use name="classlib"/>
 <use name="pcre"/>
 <use name="openinventor"/>
-
+<use name="stdcpphack"/>

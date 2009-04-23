@@ -1,0 +1,22 @@
+<RCC>
+  <qresource prefix="images" >
+    <file>network-green.png</file>
+    <file>network-red.png</file>
+    <file>network4.png</file>
+    <file>network2.png</file>
+    <file>iguana-small.xpm</file>
+    <file>filenew.png</file>
+    <file>fileopen.png</file>
+    <file>filesave.png</file>
+    <file>grid.png</file>
+    <file>controlcenter.png</file>
+    <file>crosshair.png</file>
+    <file>next.png</file>
+    <file>pause.png</file>
+    <file>previous.png</file>
+    <file>play.png</file>
+    <file>print.png</file>
+    <file>zoom_in.png</file>
+    <file>zoom_out.png</file>
+  </qresource>
+</RCC>
