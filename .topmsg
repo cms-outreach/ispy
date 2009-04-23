@@ -1,6 +1,11 @@
 From: Giulio Eulisse <giulio.eulisse@cern.ch>
-Subject: [PATCH] fixes/fix-associations
+Subject: [PATCH] features/collections-always-in-storage
 
-Fixes associations bug reported by Ianna.
+Removes the ability to create standalone collections.
+
+* Initially IgCollection could have been created standalone and 
+  later be attached at some IgDataStorage. This is now prohibeted
+  by design since it would complicate things too much in the case
+  of associations and multiple datastorages. 
 
 Signed-off-by: Giulio Eulisse <giulio.eulisse@cern.ch>
