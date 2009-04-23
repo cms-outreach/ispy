@@ -1315,7 +1315,7 @@ ISpyApplication::initTreeItems (IgDataStorage *storage)
 						 end = storage->collectionNames ().end (); 
 	 it < end; ++it)
     {
-	IgCollection coll = storage->getCollection ((*it).c_str ());
+	IgCollection &coll = storage->getCollection ((*it).c_str ());
 	QString fullCollName ((*it).c_str ());
 	
 // 	qDebug () << QString("Initializing ") << fullCollName << tr("...");
@@ -1351,7 +1351,7 @@ ISpyApplication::updateTreeItems (IgDataStorage *storage)
 						 end = storage->collectionNames ().end (); 
 	 it < end; ++it)
     {
-	IgCollection coll = storage->getCollection ((*it).c_str ());
+	IgCollection &coll = storage->getCollection ((*it).c_str ());
 	QString fullCollName ((*it).c_str ());
 	QStringList nameList;	
 	nameList = fullCollName.split (QString ("/"));
