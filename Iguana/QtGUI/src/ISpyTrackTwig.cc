@@ -80,12 +80,12 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 		vsep->addChild (mat);
 
 		int nv = 0;
+		SoVertexProperty *vertices = new SoVertexProperty;
 		IgCollectionIterator cit = tracks.begin ();
 		IgCollectionIterator cend = tracks.end ();
 		for (; cit != cend ; cit++) 
 		{
 		    IgSoSplineTrack* trackRep = new IgSoSplineTrack;
-		    SoVertexProperty *vertices = new SoVertexProperty;
 		    SoVertexProperty *tvertices = new SoVertexProperty;
 
 		    SoMFVec3f tangents;
@@ -94,22 +94,21 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 
 		    IgCollectionItem itrack = *cit;
 		    IgV3d p1  = itrack.get<IgV3d> (POS);
-		    double x = p1.x();
-		    double y = p1.y();
-		    double z = p1.z();
+		    double x = static_cast<double>(p1.x());
+		    double y = static_cast<double>(p1.y());
+		    double z = static_cast<double>(p1.z());
 		    vertices->vertex.set1Value (nv, SbVec3f (x, y, z));
 		    ++nv;
-
+		    
 		    QString trackName = QString ("Track %1 GeV (%2, %3, %4)")
 					.arg (itrack.get<double>(PT))
 					.arg (x)
 					.arg (y)
 					.arg (z);
-
 		    IgV3d d1  = itrack.get<IgV3d> (DIR);
-		    double dx = d1.x();
-		    double dy = d1.y();
-		    double dz = d1.z();
+		    double dx = static_cast<double>(d1.x());
+		    double dy = static_cast<double>(d1.y());
+		    double dz = static_cast<double>(d1.z());
 		
 		    for (IgAssociationSet::Iterator a = trackExtras.begin ();
 			 a != trackExtras.end ();
@@ -119,13 +118,13 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 			{
 			    IgCollectionItem m (&extras, a->second ().objectId ());
 			    p1 = m.get<IgV3d> ("pos_1");
-			    x = p1.x();
-			    y = p1.y();
-			    z = p1.z();
+			    x = static_cast<double>(p1.x());
+			    y = static_cast<double>(p1.y());
+			    z = static_cast<double>(p1.z());
 			    d1 = m.get<IgV3d> ("dir_1");
-			    dx = d1.x();
-			    dy = d1.y();
-			    dz = d1.z();
+			    dx = static_cast<double>(d1.x());
+			    dy = static_cast<double>(d1.y());
+			    dz = static_cast<double>(d1.z());
 			    SbVec3f diri (dx, dy, dz);
 			    diri.normalize ();
 			
@@ -135,13 +134,13 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 			    ++nVtx;
 
 			    p1 = m.get<IgV3d> ("pos_2");
-			    x = p1.x();
-			    y = p1.y();
-			    z = p1.z();
+			    x = static_cast<double>(p1.x());
+			    y = static_cast<double>(p1.y());
+			    z = static_cast<double>(p1.z());
 			    d1 = m.get<IgV3d> ("dir_2");
-			    dx = d1.x();
-			    dy = d1.y();
-			    dz = d1.z();
+			    dx = static_cast<double>(d1.x());
+			    dy = static_cast<double>(d1.y());
+			    dz = static_cast<double>(d1.z());
 			    SbVec3f diro (dx, dy, dz);
 			    diro.normalize ();
 			
@@ -155,19 +154,7 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 			    sep->addChild (trackRep);
 			}
 		    }
-		    vertices->vertex.setNum (nv);
 		    tvertices->vertex.setNum (nVtx);
-		
-		    SoMFInt32 markerIndex;
-		    markerIndex.setValue (SoMarkerSet::CROSS_9_9);
-		
-		    SoMarkerSet *mpoints = new SoMarkerSet;
-		    mpoints->markerIndex = markerIndex;
-		    mpoints->vertexProperty.setValue (vertices);
-		    mpoints->numPoints.setValue (nv);
-		
-		    vsep->addChild (mpoints);
-		
 		    SoMFInt32 tmarkerIndex;
 		    tmarkerIndex.setValue (SoMarkerSet::CIRCLE_LINE_7_7);
 		
@@ -177,9 +164,21 @@ ISpyTrackTwig::onNewEvent (ISpyEventMessage& message)
 		    tpoints->numPoints.setValue (nVtx);
 		
 		    sep->addChild (tpoints);
-
-		    dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ())->addChild (sep);
 		}
+		
+		vertices->vertex.setNum (nv);
+		    
+		SoMFInt32 markerIndex;
+		markerIndex.setValue (SoMarkerSet::CROSS_9_9);
+		
+		SoMarkerSet *mpoints = new SoMarkerSet;
+		mpoints->markerIndex = markerIndex;
+		mpoints->vertexProperty.setValue (vertices);
+		mpoints->numPoints.setValue (nv);
+		
+		vsep->addChild (mpoints);
+		
+		dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ())->addChild (sep);		
 	    }
 	}
     }

@@ -5,19 +5,16 @@
 #include "Iguana/QtGUI/interface/IgDrawFunctions.h"
 #include "Iguana/QtGUI/interface/IgDrawFactoryService.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
-#include "Iguana/QtGUI/interface/ISpyTreeModel.h"
 #include "Iguana/QtGUI/interface/ISpy3DView.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
-#include "Iguana/QtGUI/interface/IGUANA_SPLASH.xpm"
 #include "Iguana/QtGUI/interface/IgCollectionTableModel.h"
 #include "Iguana/QtGUI/interface/IgMultiStorageTreeModel.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/Framework/interface/IgParser.h"
 #include "Iguana/Framework/interface/IgArgsElement.h"
-#include "Iguana/Framework/interface/IgEnvsElement.h"
 #include "Iguana/Framework/interface/IgPluginLoader.h"
 #include "Iguana/Framework/interface/IgState.h"
-#include "Iguana/QtGUI/interface/ISpySelectionService.h"
+#include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
 #include "Iguana/QtGUI/interface/ISpyRecoContent.h"
@@ -30,27 +27,21 @@
 #include <Inventor/nodes/SoCone.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoDrawStyle.h>
+#include <Inventor/nodes/SoMaterialBinding.h>
+#include <Inventor/nodes/SoPolygonOffset.h>
 #include <QtGui>
 #include <QApplication>
-#include <QByteArray>
 #include <QFileDialog>
-#include <QGLWidget>
 #include <QMessageBox>
 #include <QPixmap>
-#include <QPointF>
-#include <QPrintDialog>
-#include <QPrinter>
-#include <QScrollArea>
 #include <QSettings>
-#include <QSplashScreen>
 #include <QString>
-#include <QTemporaryFile>
+#include <QStringList>
 #include <QTreeWidget>
 #include "classlib/iobase/File.h"
 #include "classlib/iobase/Filename.h"
 #include "classlib/iotools/InputStream.h"
 #include "classlib/utils/Error.h"
-#include "classlib/utils/Log.h"
 #include "classlib/utils/ShellEnvironment.h"
 #include "classlib/zip/ZipMember.h"
 #include <iostream>
@@ -103,15 +94,6 @@
 #include "Iguana/Inventor/interface/IgSoGridPlane.h"
 #include "Iguana/Inventor/interface/IgSoGridPlaneMap.h"
 
-//<<<<<< PRIVATE DEFINES                                                >>>>>>
-
-lat::logflag LFiggi = { 0, "iggi", true, -1 };
-
-//<<<<<< PRIVATE CONSTANTS                                              >>>>>>
-//<<<<<< PRIVATE TYPES                                                  >>>>>>
-//<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
-//<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
 //<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
 
 static void initShapes (void)
@@ -181,21 +163,25 @@ ISpyApplication::ISpyApplication (void)
       m_collectionModel (0),
       m_storageModel (new IgMultiStorageTreeModel),
       m_3DModel (0),
-      //m_model (new ISpyTreeModel ("CMS Event")),
       m_storage (0),
       m_geomStorage (0),
-      m_init (false),
+      m_onExit (false),
       m_timer (new QTimer (this)),
       m_auto (false)
 {
-    QCoreApplication::setOrganizationName ("Iguana");
-    QCoreApplication::setOrganizationDomain ("iguana.cern.ch");
+#ifndef Q_WS_MAC
+    QCoreApplication::setApplicationName ("ispy");
+#else
     QCoreApplication::setApplicationName ("iSpy");
+#endif
+    QCoreApplication::setApplicationVersion ("1.0 (beta)");
+    QCoreApplication::setOrganizationDomain ("iguana");
+    QCoreApplication::setOrganizationName ("iguana");
     
     if (QDir::home ().isReadable ())
 	defaultSettings ();
 
-    QObject::connect (this, SIGNAL(modelChanged ()), this, SLOT(cleanSelection ()));
+    // FIXME: We don't have selection currently. QObject::connect (this, SIGNAL(modelChanged ()), this, SLOT(cleanSelection ()));
     QObject::connect (&m_readThread, SIGNAL(readMember (const QString&)), this, SLOT (newMember (const QString&)));
 }
 
@@ -205,6 +191,7 @@ ISpyApplication::~ISpyApplication (void)
 void
 ISpyApplication::onExit (void)
 {
+    m_onExit = true;    
     m_readThread.quit ();
     
     if (ISpyReadService* readService = ISpyReadService::get (state ()))
@@ -219,10 +206,8 @@ ISpyApplication::onExit (void)
 	dynamic_cast<SoSeparator *>(sceen->sceneGraph ())->removeAllChildren ();
     }
 
-    if (m_mainWindow->actionSaveSettings->isChecked ())
-    {
-	saveSettings ();
-    }
+    m_mainWindow->saveSettings ();
+
     exit ();    
 }
 
@@ -307,9 +292,8 @@ ISpyApplication::usage (void)
 int
 ISpyApplication::version (void)
 {
-    const char *app = appname ();
-    std::cerr << app << " 1.0a\n"
-	      << "Copyright (C) 2009 CMS\n";
+    std::cerr << QCoreApplication::applicationName ().toStdString () << " " 
+	      << QCoreApplication::applicationVersion ().toStdString () << "\n";
 
     return EXIT_SUCCESS;
 }
@@ -317,11 +301,9 @@ ISpyApplication::version (void)
 int
 ISpyApplication::initState (void)
 {
-    // FIXME: install other services?
+    // FIXME: install other services? Remove some?
     m_state = new IgState;
     new IgArgsElement (m_state, m_argc, m_argv);
-    new IgEnvsElement (m_state);
-    new IgPluginLoader (m_state);
     new ISpyReadService (m_state);
     new IgDrawFunctions (m_state);
 
@@ -435,6 +417,24 @@ ISpyApplication::defaultSettings (void)
 	{
 	    settings.setValue ("mainwindow/tableview/floating", false);
 	}
+
+	// HLR
+	if (! settings.contains ("igdisplay/hadtowers/view3d/hiddenlineremoval"))
+	{
+	    settings.setValue ("igdisplay/hadtowers/view3d/hiddenlineremoval", false);	    
+	}	
+	if (! settings.contains ("igdisplay/crystalhits/view3d/hiddenlineremoval"))
+	{
+	    settings.setValue ("igdisplay/crystalhits/view3d/hiddenlineremoval", false);	    
+	}	
+	if (! settings.contains ("igdisplay/crystals/view3d/hiddenlineremoval"))
+	{
+	    settings.setValue ("igdisplay/crystals/view3d/hiddenlineremoval", false);	    
+	}	
+	if (! settings.contains ("igdisplay/detector/view3d/hiddenlineremoval"))
+	{
+	    settings.setValue ("igdisplay/detector/view3d/hiddenlineremoval", false);	    
+	}	
     }
 }
 
@@ -445,9 +445,6 @@ ISpyApplication::restoreSettings (void)
     if (settings.contains ("igevents/auto"))
     {	
 	m_auto = settings.value ("igevents/auto").value<bool> ();
-	
-	m_mainWindow->actionAuto->setEnabled (m_auto);
-	m_mainWindow->actionAuto->setChecked (m_auto);
 	autoEvents ();
     }
 }
@@ -459,14 +456,24 @@ ISpyApplication::doRun (void)
     QApplication app (args->args (), args->argv ());
     ISpyEventFilter filter;
     app.installEventFilter (&filter);
-    QObject::connect (&filter, SIGNAL(open (const QString &)), this, SLOT(open (const QString &)));
+    QObject::connect (&filter, SIGNAL(open (const QString &)), this, SLOT(openFile (const QString &)));
 
     QWidget * mainwin = SoQt::init (args->args (), args->argv (), args->argv ()[0]);
     
     setupMainWindow ();
-    m_mainWindow->mdiArea->addSubWindow (mainwin);
+    m_mainWindow->workspace ()->addSubWindow (mainwin);
     mainwin->setWindowTitle ("iSpy 3D");
     
+    //     QGraphicsView *rphiView = new QGraphicsView;
+    //     m_mainWindow->mdiArea->addSubWindow (rphiView);
+    //     rphiView->setWindowTitle ("iSpy RPhi");
+    //     rphiView->show ();
+    
+    //     QGraphicsView *rzView = new QGraphicsView;
+    //     m_mainWindow->mdiArea->addSubWindow (rzView);
+    //     rzView->setWindowTitle ("iSpy RZ");
+    //     rzView->show ();
+
     restoreSettings ();
 
     initShapes ();
@@ -476,24 +483,25 @@ ISpyApplication::doRun (void)
 
     ISpy3DView *view = new ISpy3DView (state (), m_3DModel, mainwin);
     view->setFeedbackVisibility (true);
-    view->setTitle ("iSpy 3D");
+    m_mainWindow->addToolBar (Qt::TopToolBarArea, view->toolBar ());
+    mainwin->show ();
+    	
+    QList <QMdiSubWindow *> winList = m_mainWindow->workspace ()->subWindowList ();
+    if (winList.length () > 1)
+	m_mainWindow->workspace ()->tileSubWindows ();
+    else
+	winList.first ()->showMaximized ();    
+
     QObject::connect (this, SIGNAL(save ()), view, SLOT(save ()));
     m_mainWindow->actionSave->setEnabled (true);
     QObject::connect (this, SIGNAL(print ()), view, SLOT(print ()));
     m_mainWindow->actionPrint->setEnabled (true);
-    m_mainWindow->actionZoom_In->setEnabled (true);
-    m_mainWindow->actionZoom_Out->setEnabled (true);
-    QObject::connect (m_mainWindow->actionZoom_In, SIGNAL(triggered ()), view, SLOT(zoomIn ()));
-    QObject::connect (m_mainWindow->actionZoom_Out, SIGNAL(triggered ()), view, SLOT(zoomOut ()));
     new ISpyRecoContent (state ());
 
     QSettings settings;
     QString fileName = settings.value ("igfiles/geometry").value<QString> ();
     loadGeomFile (fileName);
 
-    ASSERT (m_splash);
-    delete m_splash;
-    
     if (m_archive == 0)
     {
 	if (args->args () == 2)
@@ -506,13 +514,28 @@ ISpyApplication::doRun (void)
 		m_mainWindow->actionAuto->setEnabled (true);
 	    }
 	}
-	else
-	    open ();
+	else if (! m_fileNames.isEmpty ()) 
+	{
+	    foreach (QString str, m_fileNames) 
+		{
+		    open (str);
+		}
+	    m_fileNames.clear ();
+	    QObject::disconnect (&filter, SIGNAL(open (const QString &)), this, SLOT(openFile (const QString &)));
+	    QObject::connect (&filter, SIGNAL(open (const QString &)), this, SLOT(open (const QString &)));
+	} 
+	else 
+	{
+	    // QObject::connect (m_splash, SIGNAL(splashDone()), this, SLOT(openFileDialog ()));
+	    openFileDialog ();	    
+	}
     }
-    
+	
     QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
     QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(onExit()));
-    QObject::connect(m_mainWindow->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
+    //    QObject::connect(m_mainWindow->actionConnect, SIGNAL(triggered()), this, SLOT(connect()));
+    //    m_mainWindow->actionConnect->setEnabled (true);
+    
     QObject::connect(this, SIGNAL(showMessage (const QString &)), m_mainWindow->statusBar (), SLOT(showMessage (const QString &)));
 
     SoQt::mainLoop();
@@ -523,99 +546,48 @@ ISpyApplication::doRun (void)
 }
 
 void
+ISpyApplication::cleanSplash (void)
+{
+    ASSERT (m_splash);
+    delete m_splash;
+}
+
+void
 ISpyApplication::setupMainWindow (void) 
 {
-    m_splash = new QSplashScreen(QPixmap (IGUANA_SPLASH));
+    m_splash = new ISpySplashScreen;
     m_splash->show ();
-
+    QTimer::singleShot (6000, this, SLOT(cleanSplash()));
+    
     m_mainWindow = new ISpyMainWindow;
-    QObject::connect (m_mainWindow->actionFileOpen, SIGNAL(triggered()), this, SLOT(open()));
-    QObject::connect (m_mainWindow->actionAuto, SIGNAL(triggered()), this, SLOT(autoEvents()));
-    QObject::connect (m_mainWindow->actionNext, SIGNAL(triggered()), this, SLOT(nextEvent()));
-    QObject::connect (m_mainWindow->actionPrevious, SIGNAL(triggered()), this, SLOT(previousEvent()));
-    QObject::connect (m_mainWindow->actionRewind, SIGNAL(triggered()), this, SLOT(rewind()));
-    QObject::connect (m_mainWindow->actionPrint, SIGNAL(triggered()), this, SIGNAL(print ()));
-    QObject::connect (m_mainWindow->actionSave, SIGNAL(triggered()), this, SIGNAL(save ()));
+
+    QObject::connect (m_mainWindow, SIGNAL(open()), this, SLOT(openFileDialog()));
+    QObject::connect (m_mainWindow, SIGNAL(autoEvents()), this, SLOT(autoEvents()));
+    QObject::connect (m_mainWindow, SIGNAL(nextEvent()), this, SLOT(nextEvent()));
+    QObject::connect (m_mainWindow, SIGNAL(previousEvent()), this, SLOT(previousEvent()));
+    QObject::connect (m_mainWindow, SIGNAL(rewind()), this, SLOT(rewind()));
+    QObject::connect (m_mainWindow, SIGNAL(print()), this, SIGNAL(print ()));
+    QObject::connect (m_mainWindow, SIGNAL(save()), this, SIGNAL(save ()));
     
     m_mainWindow->actionNext->setEnabled (false);
     m_mainWindow->actionPrevious->setEnabled (false);
     m_mainWindow->treeView->setModel (m_storageModel);
     m_mainWindow->treeView->hide ();
     
-	m_treeWidget = new QTreeWidget(m_mainWindow->dockTreeWidgetContents);
-	QStringList headers;
-	headers << "Collection" << "Size" << "Visibility";
+    m_treeWidget = new QTreeWidget(m_mainWindow->dockTreeWidgetContents);
+    QStringList headers;
+    headers << "Collection" << "Size" << "Visibility";
 	
-	m_treeWidget->setHeaderLabels (headers);
-	m_treeWidget->setColumnWidth (1, 30);
-	m_treeWidget->setColumnWidth (2, 30);
-	m_treeWidget->setAlternatingRowColors (true);
-	m_mainWindow->gridLayout_2->addWidget(m_treeWidget);
+    m_treeWidget->setHeaderLabels (headers);
+    m_treeWidget->setColumnWidth (1, 50);
+    m_treeWidget->setColumnWidth (2, 30);
+    m_treeWidget->setAlternatingRowColors (true);
+    m_mainWindow->gridLayout_3->addWidget(m_treeWidget);
 
-    restoreMainWindowSettings ();
-
-    m_mainWindow->treeView->setSortingEnabled (true);
+    m_mainWindow->restoreSettings ();
     m_mainWindow->show ();
-
-    QObject::connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(collectionChanged(const QModelIndex)));
-    QObject::connect (m_mainWindow->treeView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayCollection(const QModelIndex)));
-    QObject::connect (m_mainWindow->tableView, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayItem(const QModelIndex)));
-
+    
     QObject::connect (m_treeWidget, SIGNAL(clicked(const QModelIndex)),this,SLOT(twigChanged(const QModelIndex)));
-    QObject::connect (m_treeWidget, SIGNAL(clicked(const QModelIndex)),this,SLOT(displayTwigCollection(const QModelIndex)));
-}
-
-void 
-ISpyApplication::restoreMainWindowSettings (void) 
-{
-    QSettings settings;
-    m_mainWindow->dockTreeWidget->setShown (settings.value ("mainwindow/treeview/shown").value<bool> ());
-    m_mainWindow->dockTreeWidget->setFloating(settings.value ("mainwindow/treeview/floating").value<bool> ());
-    m_mainWindow->dockTableWidget->setShown (settings.value ("mainwindow/tableview/shown").value<bool> ());
-    m_mainWindow->dockTableWidget->setFloating(settings.value ("mainwindow/tableview/floating").value<bool> ());
-    m_mainWindow->actionSaveSettings->setChecked (settings.value ("mainwindow/configuration/save").value<bool> ());
-}
-
-void
-ISpyApplication::saveSettings (void)
-{
-    bool treeFlag = m_mainWindow->actionTwig_Explorer->isChecked ();
-    bool tableFlag = m_mainWindow->actionObject_Inspector->isChecked ();
-
-    QSettings settings;
-    settings.setValue ("mainwindow/configuration/save", m_mainWindow->actionSaveSettings->isChecked ());
-    settings.setValue ("mainwindow/treeview/shown", treeFlag);
-    settings.setValue ("mainwindow/treeview/floating", m_mainWindow->dockTreeWidget->isFloating ());
-    settings.setValue ("mainwindow/tableview/shown", tableFlag);
-    settings.setValue ("mainwindow/tableview/floating", m_mainWindow->dockTableWidget->isFloating ());
-
-    settings.setValue ("igevents/auto", m_auto);
-}
-
-void 
-ISpyApplication::collectionChanged(const QModelIndex &index)
-{
-//     qDebug() << index << " selected";
-
-    QString collectionName = m_storageModel->data(index, Qt::DisplayRole).toString();
-//     qDebug() << collectionName << " selected";
-    if (!index.parent().isValid())
-    {
-	return;
-    }
-    if (m_collectionModel == 0)
-    {	
-	m_collectionModel = new IgCollectionTableModel (&(m_storage->getCollectionByIndex (1)));
-        m_mainWindow->tableView->setModel (m_collectionModel);
-    }
-    if (m_storage != 0 && m_storage->hasCollection (collectionName.toAscii()))
-    {	
-	m_collectionModel->setCollection (m_storage->getCollectionPtr(collectionName.toAscii()));
-    }
-    else if (m_geomStorage != 0 && m_geomStorage->hasCollection (collectionName.toAscii()))
-    {
-	m_collectionModel->setCollection (m_geomStorage->getCollectionPtr(collectionName.toAscii()));
-    }
 }
 
 void 
@@ -624,18 +596,18 @@ ISpyApplication::twigChanged (const QModelIndex &index)
     QSettings settings;
 
     QString collectionName = m_treeWidget->currentItem ()->text (0);
-//     qDebug () << collectionName << " twig";
+    int flag = m_treeWidget->currentItem ()->checkState (2);
+    
     QString visSettings ("igtwigs/visibility/");
     visSettings.append (collectionName);
-
     if (settings.contains (visSettings))
     {
-	if (settings.value (visSettings).value<int> () != m_treeWidget->currentItem ()->checkState (2))
+	if (settings.value (visSettings).value<int> () != flag)
 	{
-	    settings.setValue (visSettings, m_treeWidget->currentItem ()->checkState (2));
+	    settings.setValue (visSettings, flag);
 	
 	    ISpyEventMessage event;
-	    event.message = (*m_it)->name ();
+	    event.message = visSettings.toStdString ();
 	    ISpyReadService* readService = ISpyReadService::get (state ());
 	    ASSERT (readService);	
 	    readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
@@ -643,46 +615,46 @@ ISpyApplication::twigChanged (const QModelIndex &index)
     }
     else
     {
-	settings.setValue (visSettings, m_treeWidget->currentItem ()->checkState (2));
+	settings.setValue (visSettings, flag);
     }
     
-//     if (m_treeWidget->currentItem ()->checkState (2) == Qt::Unchecked)
-// 	qDebug () << "Hidden";
-//     else if (m_treeWidget->currentItem ()->checkState (2) == Qt::Checked)
-// 	qDebug () << "Visible";
-//     else
-// 	qDebug () << "Unknown";
-	    
-    if (m_collectionModel == 0)
-    {	
-	m_collectionModel = new IgCollectionTableModel (&(m_storage->getCollectionByIndex (1)));
-        m_mainWindow->tableView->setModel (m_collectionModel);
-    }
     if (m_storage != 0 && m_storage->hasCollection (collectionName.toAscii()))
-    {	
+    {
+	ASSERT (m_storage);
+	
+	if (m_collectionModel == 0)
+	    createCollectionModel (m_storage);
+	
 	m_collectionModel->setCollection (m_storage->getCollectionPtr(collectionName.toAscii()));
+	displayTwigCollection (m_storage);    
     }
     else if (m_geomStorage != 0 && m_geomStorage->hasCollection (collectionName.toAscii()))
     {
+	ASSERT (m_geomStorage);
+
+	if (m_collectionModel == 0)
+	    createCollectionModel (m_geomStorage);
+
 	m_collectionModel->setCollection (m_geomStorage->getCollectionPtr(collectionName.toAscii()));
+	displayTwigCollection (m_geomStorage);    
     }
 }
 
-void 
-ISpyApplication::displayTwigCollection(const QModelIndex &index)
+void
+ISpyApplication::createCollectionModel (IgDataStorage *storage)
 {
+    ASSERT (storage);
+    m_collectionModel = new IgCollectionTableModel (&(storage->getCollectionByIndex (1)));
+    m_mainWindow->tableView->setModel (m_collectionModel);
+}
+
+void 
+ISpyApplication::displayTwigCollection (IgDataStorage *storage)
+{
+    ASSERT (storage);
     QString collectionName = m_treeWidget->currentItem ()->text (0);
     
-    IgCollection *collection = 0;
-    
-    if (m_storage->hasCollection (collectionName.toAscii()))
-    {	
-	collection = m_storage->getCollectionPtr(collectionName.toAscii());
-    }
-    else if (m_geomStorage->hasCollection (collectionName.toAscii()))
-    {
-	collection = m_geomStorage->getCollectionPtr(collectionName.toAscii());
-    }
+    IgCollection *collection = storage->getCollectionPtr(collectionName.toAscii());
     
     if (collection != NULL && collection->size () > 0)
     {
@@ -724,10 +696,10 @@ ISpyApplication::displayItem(const QModelIndex &index)
     node->removeAllChildren ();	
 
     QModelIndex selected = m_mainWindow->treeView->selectionModel ()->currentIndex ();
-//     qDebug() << selected << " parent selection";
+    qDebug() << selected << " parent selection";
     
     QString collectionName = m_storageModel->data(selected, Qt::DisplayRole).toString();
-//     qDebug() << collectionName << " collection";
+    qDebug() << collectionName << " collection";
 
     IgCollection *collection = 0;
     if (m_storage->hasCollection (collectionName.toAscii()))
@@ -764,13 +736,13 @@ ISpyApplication::displayItem(const QModelIndex &index)
 	    shape = "point";	    
 	}
 	IgCollectionIterator cit = collection->begin ();
-// 	qDebug() << index.row () << " selected";
+	// 	qDebug() << index.row () << " selected";
 	cit += index.row ();
 	IgCollectionItem vtxShape = *cit;
 	if (collection->hasProperty ("detid"))
 	{
-// 	    int detid = vtxShape.get<int> ("detid");	    
-// 	    qDebug() << detid << " detid";
+	    // 	    int detid = vtxShape.get<int> ("detid");	    
+	    // 	    qDebug() << detid << " detid";
 	}
 	
 	if (shape == "hexahedron")
@@ -883,201 +855,361 @@ ISpyApplication::displayItem(const QModelIndex &index)
 void
 ISpyApplication::cleanSelection (void) 
 {
-    if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
-    {
-	SoSeparator *selSep = dynamic_cast<SoSeparator *>(sel->selection ());	
-	ASSERT (selSep);
-	selSep->removeAllChildren ();
-    }    
+    qDebug () << "ISpyApplication::cleanSelection is not implemented yet.\n";
+//     if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
+//     {
+// 	SoSeparator *selSep = dynamic_cast<SoSeparator *>(sel->selection ());	
+// 	ASSERT (selSep);
+// 	selSep->removeAllChildren ();
+//     }    
 }
 
 void
 ISpyApplication::drawCollection (IgCollection *collection) 
 {
-    if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
+    std::string collName = collection->name ();
+
+    // We assume these reps will not change and
+    // we exclude event data collections for now
+    // which are represented by twig classses
+    if (collName == "Tracker_V1" ||
+	collName == "EcalBarrel_V1" ||
+	collName == "EcalEndcap_V1" ||
+	collName == "EcalPreshower_V1" ||
+	collName == "HcalBarrel_V1" ||
+	collName == "HcalEndcap_V1" ||
+	collName == "HcalOuter_V1" ||
+	collName == "HcalForward_V1" ||
+	collName == "DTs_V1" ||
+	collName == "CSC_V1" ||
+	collName == "RPC_V1")
+
+// 	collName == "Event_V1" ||
+// 	collName == "BasicClusters_V1" ||
+// 	collName == "Tracks_V1" ||
+// 	collName == "Extras_V1" ||
+// 	collName == "Hits_V1" ||
+// 	collName == "TrackingRecHits_V1" ||
+// 	collName == "Errors_V1" ||
+// 	collName == "CSCSegments_V1" ||
+// 	collName == "CaloTowers_V1" ||
+// 	collName == "DTRecSegment4D_V1" ||
+// 	collName == "EcalRecHits_V1" ||
+// 	collName == "HBRecHits_V1" ||
+// 	collName == "HERecHits_V1" ||
+// 	collName == "HFRecHits_V1" ||
+// 	collName == "HORecHits_V1" ||
+// 	collName == "METs_V1" ||
+// 	collName == "Muons_V1" ||
+// 	collName == "Points_V1" ||
+// 	collName == "DetIds_V1" ||
+// 	collName == "SiPixelCluster_V1" ||
+// 	collName == "SiStripClusters_V1" ||
+// 	collName == "SiStripDigis_V1" ||
+// 	collName == "Jets_V1" ||
+// 	collName == "EBRecHits_V1" ||
+// 	collName == "EERecHits_V1" ||
+// 	collName == "CaloHits_V1" ||
+// 	collName == "DTDigis_V1" ||
+// 	collName == "DTRecHits_V1")
     {
-	SoSeparator *selSep = dynamic_cast<SoSeparator *>(sel->selection ());	
-	ASSERT (selSep);
-	selSep->removeAllChildren ();
+	CollDrawMap::const_iterator i = m_collDraw.find (collName);
 
-	std::string collName = collection->name ();
-    
-// 	qDebug() << "Draw " << collName.c_str ();
-
-	if (collName == "EcalRecHits_V1") 
-	{	
-	    IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ());
-	    std::string what = "CrystalHits";
-	    std::string repName = "3D";
-    
-	    SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw (what, state (), collection->name (), repName));
-	    selSep->addChild (rep);
-	}
-	else if (collName == "HBRecHits_V1" || 
-		 collName == "HERecHits_V1" ||
-		 collName == "HFRecHits_V1" ||
-		 collName == "HORecHits_V1")
+	QSettings settings;
+	QString visSettings ("igtwigs/visibility/");
+	visSettings.append (QString::fromStdString (collName));
+	if (settings.contains (visSettings) && 
+	    Qt::CheckState (settings.value (visSettings).value<int> ()) == Qt::Unchecked)
 	{
-	    IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ());
-	    std::string what = "CrystalHits";
-	    std::string repName = "3D";
-    
-	    SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw (what, state (), collection->name (), repName));
-	    selSep->addChild (rep);
-	}    
-	else
-	{	
-	    SoVertexProperty *vertices = new SoVertexProperty;
-	    
-	    int i = 0;
-	    std::vector<int> lineIndices;
-	    std::vector<SbVec3f> corners;		
-	    
-	    std::string shape;
-
-	    if (collection->hasProperty ("front_1") &&  
-		collection->hasProperty ("front_2") &&
-		collection->hasProperty ("front_3") &&
-		collection->hasProperty ("front_4"))
-	    {		
-		shape = "hexahedron";
-	    } 
-	    else if (collection->hasProperty ("pos_1") && collection->hasProperty ("pos_2"))
-	    {
-		shape = "line";	    
-	    }
-	    else if (collection->hasProperty ("pos"))
-	    {
-		shape = "point";	    
-	    }
+	    // Hide it
+	    if (i == m_collDraw.end ())
+		return;
 	
-	    IgCollectionIterator cit = collection->begin ();
-	    IgCollectionIterator cend = collection->end ();
-	    for (; cit != cend ; cit++) 
-	    {
-		IgCollectionItem vtxShape = *cit;
-		
-		if (shape == "hexahedron")
-		{		
-		    IgV3d p1  = vtxShape.get<IgV3d> ("front_1");
-		    corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
-						static_cast<double>(p1.y ()),
-						static_cast<double>(p1.z ())));		    
-		    IgV3d p2  = vtxShape.get<IgV3d> ("front_2");
-		    corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
-						static_cast<double>(p2.y ()),
-						static_cast<double>(p2.z ())));
-		    IgV3d p3  = vtxShape.get<IgV3d> ("front_3");
-		    corners.push_back (SbVec3f (static_cast<double>(p3.x ()), 
-						static_cast<double>(p3.y ()),
-						static_cast<double>(p3.z ())));
-		    IgV3d p4  = vtxShape.get<IgV3d> ("front_4");
-		    corners.push_back (SbVec3f (static_cast<double>(p4.x ()), 
-						static_cast<double>(p4.y ()),
-						static_cast<double>(p4.z ())));
-		    IgV3d p5  = vtxShape.get<IgV3d> ("back_1");
-		    corners.push_back (SbVec3f (static_cast<double>(p5.x ()), 
-						static_cast<double>(p5.y ()),
-						static_cast<double>(p5.z ())));
-		    IgV3d p6  = vtxShape.get<IgV3d> ("back_2");
-		    corners.push_back (SbVec3f (static_cast<double>(p6.x ()), 
-						static_cast<double>(p6.y ()),
-						static_cast<double>(p6.z ())));
-		    IgV3d p7  = vtxShape.get<IgV3d> ("back_3");
-		    corners.push_back (SbVec3f (static_cast<double>(p7.x ()), 
-						static_cast<double>(p7.y ()),
-						static_cast<double>(p7.z ())));
-		    IgV3d p8  = vtxShape.get<IgV3d> ("back_4");
-		    corners.push_back (SbVec3f (static_cast<double>(p8.x ()), 
-						static_cast<double>(p8.y ()),
-						static_cast<double>(p8.z ())));	    
-		    lineIndices.push_back (i);
-		    lineIndices.push_back (i + 1);
-		    lineIndices.push_back (i + 2);
-		    lineIndices.push_back (i + 3);
-		    lineIndices.push_back (i);
-		    lineIndices.push_back (SO_END_LINE_INDEX);
-		    
-		    lineIndices.push_back (i + 4);
-		    lineIndices.push_back (i + 5);
-		    lineIndices.push_back (i + 6);
-		    lineIndices.push_back (i + 7);
-		    lineIndices.push_back (i + 4);
-		    lineIndices.push_back (SO_END_LINE_INDEX);
+	    (i->second)->whichChild = SO_SWITCH_NONE;
 
-		    lineIndices.push_back (i);
-		    lineIndices.push_back (i + 4);
-		    lineIndices.push_back (SO_END_LINE_INDEX);
-		    lineIndices.push_back (i + 1);
-		    lineIndices.push_back (i + 5);
-		    lineIndices.push_back (SO_END_LINE_INDEX);
-		    lineIndices.push_back (i + 2);
-		    lineIndices.push_back (i + 6);
-		    lineIndices.push_back (SO_END_LINE_INDEX);
-		    lineIndices.push_back (i + 3);
-		    lineIndices.push_back (i + 7);
-		    lineIndices.push_back (SO_END_LINE_INDEX);		
-		    i += 8;
+	    qDebug() << "Hide " << collName.c_str ();
+	    return;
+	}
+
+	bool hlrMode = false;
+	if (settings.contains ("igdisplay/detector/view3d/hiddenlineremoval"))
+	{
+	    hlrMode = settings.value ("igdisplay/detector/view3d/hiddenlineremoval").value<bool> ();
+	}
+
+	SoSeparator *topSep = dynamic_cast<SoSeparator *>(ISpySceneGraphService::get (state ())->sceneGraph ());
+	ASSERT (topSep);
+
+	SoSwitch *sep;
+	
+	if (i == m_collDraw.end ())
+	{
+	    sep = new SoSwitch;
+	    topSep->addChild (sep);
+	    
+	    sep->setName (collName.c_str ());
+	    SoGroup *selSep = new SoGroup;
+	    sep->addChild (selSep);
+
+	    m_collDraw.insert (CollDrawMap::value_type(collName, sep));
+	    	
+	    qDebug() << "Draw " << collName.c_str ();
+
+	    if (collName == "EcalRecHits_V1") 
+	    {	
+		IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ());
+		std::string what = "CrystalHits";
+		std::string repName = "3D";
+    
+		SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw (what, state (), collection->name (), repName));
+		selSep->addChild (rep);
+	    }
+	    else if (collName == "HBRecHits_V1" || 
+		     collName == "HERecHits_V1" ||
+		     collName == "HFRecHits_V1" ||
+		     collName == "HORecHits_V1")
+	    {
+		IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ());
+		std::string what = "CrystalHits";
+		std::string repName = "3D";
+    
+		SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw (what, state (), collection->name (), repName));
+		selSep->addChild (rep);
+	    }    
+	    else
+	    {	
+		SoVertexProperty *vertices = new SoVertexProperty;
+	    
+		int i = 0;
+		std::vector<int> lineIndices;
+		std::vector<int> indices;
+		std::vector<SbVec3f> corners;		
+	    
+		std::string shape;
+
+		if (collection->hasProperty ("front_1") &&  
+		    collection->hasProperty ("front_2") &&
+		    collection->hasProperty ("front_3") &&
+		    collection->hasProperty ("front_4"))
+		{		
+		    shape = "hexahedron";
+		} 
+		else if (collection->hasProperty ("pos_1") && collection->hasProperty ("pos_2"))
+		{
+		    shape = "line";	    
+		}
+		else if (collection->hasProperty ("pos"))
+		{
+		    shape = "point";	    
+		}
+	
+		IgCollectionIterator cit = collection->begin ();
+		IgCollectionIterator cend = collection->end ();
+		for (; cit != cend ; cit++) 
+		{
+		    IgCollectionItem vtxShape = *cit;
+		
+		    if (shape == "hexahedron")
+		    {		
+			IgV3d p1  = vtxShape.get<IgV3d> ("front_1");
+			corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+						    static_cast<double>(p1.y ()),
+						    static_cast<double>(p1.z ())));		    
+			IgV3d p2  = vtxShape.get<IgV3d> ("front_2");
+			corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
+						    static_cast<double>(p2.y ()),
+						    static_cast<double>(p2.z ())));
+			IgV3d p3  = vtxShape.get<IgV3d> ("front_3");
+			corners.push_back (SbVec3f (static_cast<double>(p3.x ()), 
+						    static_cast<double>(p3.y ()),
+						    static_cast<double>(p3.z ())));
+			IgV3d p4  = vtxShape.get<IgV3d> ("front_4");
+			corners.push_back (SbVec3f (static_cast<double>(p4.x ()), 
+						    static_cast<double>(p4.y ()),
+						    static_cast<double>(p4.z ())));
+			IgV3d p5  = vtxShape.get<IgV3d> ("back_1");
+			corners.push_back (SbVec3f (static_cast<double>(p5.x ()), 
+						    static_cast<double>(p5.y ()),
+						    static_cast<double>(p5.z ())));
+			IgV3d p6  = vtxShape.get<IgV3d> ("back_2");
+			corners.push_back (SbVec3f (static_cast<double>(p6.x ()), 
+						    static_cast<double>(p6.y ()),
+						    static_cast<double>(p6.z ())));
+			IgV3d p7  = vtxShape.get<IgV3d> ("back_3");
+			corners.push_back (SbVec3f (static_cast<double>(p7.x ()), 
+						    static_cast<double>(p7.y ()),
+						    static_cast<double>(p7.z ())));
+			IgV3d p8  = vtxShape.get<IgV3d> ("back_4");
+			corners.push_back (SbVec3f (static_cast<double>(p8.x ()), 
+						    static_cast<double>(p8.y ()),
+						    static_cast<double>(p8.z ())));	    
+			lineIndices.push_back (i);
+			lineIndices.push_back (i + 1);
+			lineIndices.push_back (i + 2);
+			lineIndices.push_back (i + 3);
+			lineIndices.push_back (i);
+			lineIndices.push_back (SO_END_LINE_INDEX);
+		    
+			lineIndices.push_back (i + 4);
+			lineIndices.push_back (i + 5);
+			lineIndices.push_back (i + 6);
+			lineIndices.push_back (i + 7);
+			lineIndices.push_back (i + 4);
+			lineIndices.push_back (SO_END_LINE_INDEX);
+
+			lineIndices.push_back (i);
+			lineIndices.push_back (i + 4);
+			lineIndices.push_back (SO_END_LINE_INDEX);
+			lineIndices.push_back (i + 1);
+			lineIndices.push_back (i + 5);
+			lineIndices.push_back (SO_END_LINE_INDEX);
+			lineIndices.push_back (i + 2);
+			lineIndices.push_back (i + 6);
+			lineIndices.push_back (SO_END_LINE_INDEX);
+			lineIndices.push_back (i + 3);
+			lineIndices.push_back (i + 7);
+			lineIndices.push_back (SO_END_LINE_INDEX);		
+			// Face set indices
+			indices.push_back (i + 3);
+			indices.push_back (i + 2);
+			indices.push_back (i + 1);
+			indices.push_back (i + 0);
+			indices.push_back (SO_END_FACE_INDEX);
+
+			indices.push_back (i + 4);
+			indices.push_back (i + 5);
+			indices.push_back (i + 6);
+			indices.push_back (i + 7);
+			indices.push_back (SO_END_FACE_INDEX);
+		    
+			indices.push_back (i + 5); 
+			indices.push_back (i + 1);
+			indices.push_back (i + 2);
+			indices.push_back (i + 6);   
+			indices.push_back (SO_END_FACE_INDEX);
+
+			indices.push_back (i + 2);
+			indices.push_back (i + 3);
+			indices.push_back (i + 7);
+			indices.push_back (i + 6);
+			indices.push_back (SO_END_FACE_INDEX);
+		    
+			indices.push_back (i + 7);
+			indices.push_back (i + 3);
+			indices.push_back (i);
+			indices.push_back (i + 4);
+			indices.push_back (SO_END_FACE_INDEX);
+		    
+			indices.push_back (i + 1);
+			indices.push_back (i + 5);
+			indices.push_back (i + 4);
+			indices.push_back (i);
+			indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
+			i += 8;
+		    }
+		    else if (shape == "point")
+		    {
+			IgV3d p1  = vtxShape.get<IgV3d> ("pos");
+			corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+						    static_cast<double>(p1.y ()),
+						    static_cast<double>(p1.z ())));
+		    }
+		    else if (shape == "line")
+		    {
+			IgV3d p1  = vtxShape.get<IgV3d> ("pos_1");
+			corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
+						    static_cast<double>(p1.y ()),
+						    static_cast<double>(p1.z ())));
+			IgV3d p2  = vtxShape.get<IgV3d> ("pos_2");
+			corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
+						    static_cast<double>(p2.y ()),
+						    static_cast<double>(p2.z ())));
+			lineIndices.push_back (i);
+			lineIndices.push_back (i + 1);
+			lineIndices.push_back (SO_END_LINE_INDEX);
+			i += 2;
+		    }		
+		}
+		vertices->vertex.setValues (0, corners.size (), &corners [0]);
+		vertices->vertex.setNum (corners.size ());	    
+
+		if (shape == "hexahedron" 
+		    || shape == "line")
+		{
+		    if (hlrMode)
+		    {		    
+			SoSeparator *top = new SoSeparator;
+			selSep->addChild (top);
+		
+			SoSeparator *local = new SoSeparator;
+			top->addChild (local);
+			SoPolygonOffset *offset = new SoPolygonOffset;
+			local->addChild (offset);
+		
+			SoMaterial *black = new SoMaterial;
+			black->ambientColor.setValue (0.0, 0.0, 0.0);
+			black->diffuseColor.setValue (0.0, 0.0, 0.0);
+			black->specularColor.setValue (0.0, 0.0, 0.0);
+			black->emissiveColor.setValue (0.0, 0.0, 0.0);
+			local->addChild (black);
+
+			SoIndexedFaceSet *faces = new SoIndexedFaceSet;
+			faces->coordIndex.setValues (0, indices.size (), &indices [0]);
+			faces->vertexProperty = vertices;
+			local->addChild (faces);
+		
+			SoDrawStyle *style = new SoDrawStyle;
+			style->style = SoDrawStyle::LINES;
+			top->addChild (style);
+			SoMaterial *grey = new SoMaterial;
+			grey->ambientColor.setValue (0.2, 0.2, 0.2);
+			grey->diffuseColor.setValue (0.2, 0.2, 0.2);
+			grey->specularColor.setValue (0.2, 0.2, 0.2);
+			grey->emissiveColor.setValue (0.2, 0.2, 0.2);
+			top->addChild (grey);
+			SoMaterialBinding *bind = new SoMaterialBinding;
+			bind->value = SoMaterialBindingElement::OVERALL;
+			top->addChild (bind);		
+			top->addChild (faces);
+		    }
+		    else
+		    {		    
+			SoIndexedLineSet *lineSet = new SoIndexedLineSet;
+			lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
+			lineSet->vertexProperty = vertices;
+			selSep->addChild (lineSet);		    
+		    }
 		}
 		else if (shape == "point")
 		{
-		    IgV3d p1  = vtxShape.get<IgV3d> ("pos");
-		    corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
-						static_cast<double>(p1.y ()),
-						static_cast<double>(p1.z ())));
+		    SoPointSet *pointSet = new SoPointSet;
+		    pointSet->vertexProperty.setValue (vertices);
+		    pointSet->numPoints.setValue (corners.size ());
+
+		    selSep->addChild (pointSet);
 		}
-		else if (shape == "line")
-		{
-		    IgV3d p1  = vtxShape.get<IgV3d> ("pos_1");
-		    corners.push_back (SbVec3f (static_cast<double>(p1.x ()), 
-						static_cast<double>(p1.y ()),
-						static_cast<double>(p1.z ())));
-		    IgV3d p2  = vtxShape.get<IgV3d> ("pos_2");
-		    corners.push_back (SbVec3f (static_cast<double>(p2.x ()), 
-						static_cast<double>(p2.y ()),
-						static_cast<double>(p2.z ())));
-		    lineIndices.push_back (i);
-		    lineIndices.push_back (i + 1);
-		    lineIndices.push_back (SO_END_LINE_INDEX);
-		    i += 2;
-		}		
 	    }
-	    vertices->vertex.setValues (0, corners.size (), &corners [0]);
-	    vertices->vertex.setNum (corners.size ());	    
-
-	    if (shape == "hexahedron" 
-		|| shape == "line")
-	    {			
-		SoIndexedLineSet *lineSet = new SoIndexedLineSet;
-		lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-		lineSet->vertexProperty = vertices;
-
-		selSep->addChild (lineSet);
-	    }
-	    else if (shape == "point")
-	    {
-		SoPointSet *pointSet = new SoPointSet;
-		pointSet->vertexProperty.setValue (vertices);
-		pointSet->numPoints.setValue (corners.size ());
-
-		selSep->addChild (pointSet);
-	    }
+	    sep->whichChild = SO_SWITCH_ALL;
+	    return;	    
 	}
+	(i->second)->whichChild = SO_SWITCH_ALL;
     }
 }
 
 void
-ISpyApplication::open (void) 
+ISpyApplication::openFileDialog (void) 
 {
     QString fileName;
     QFileDialog f (m_mainWindow->centralwidget, tr("Open File"), ".",
-		   tr("Ig Files (*.ig *.iggi *.iguana)"));
+		   tr("Ig Files (*.ig *.iguana)"));
     f.setFileMode(QFileDialog::ExistingFiles);
     QList<QUrl> shortcuts = f.sidebarUrls ();
     
     QSettings settings;
     QUrl url = settings.value ("igfiles/home").value<QUrl> ();
     shortcuts.append (url);
+    QUrl url1 ("file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/EventDisplay");
+    shortcuts.append (url1);
     f.setSidebarUrls (shortcuts);
 
     if (f.exec ())
@@ -1090,18 +1222,44 @@ ISpyApplication::open (void)
 void
 ISpyApplication::open (const QString &fileName) 
 {
-    modelChanged ();
+    qDebug () << "Try to open " << fileName;
     
+    // We always keep geometry 
     if (! fileName.isEmpty ())
     {
 	showMessage(QString("Opening ") + fileName + tr("..."));
-	closeFile ();
-	loadFile (fileName);
-	if (m_mainWindow != 0)
+
+	QSettings settings;
+	QString geomFileName = settings.value ("igfiles/geometry").value<QString> ();
+	qDebug () << "Geometry? " << geomFileName;
+	if (fileName.contains (geomFileName, Qt::CaseInsensitive))
 	{
-	    m_mainWindow->actionNext->setEnabled (true);
-	    m_mainWindow->actionAuto->setEnabled (true);
-	    m_mainWindow->actionPrevious->setEnabled (false);
+	    qDebug () << "Yep!";
+
+	    if (m_geomArchive == 0)
+	    {
+		qDebug () << "First time!";
+	    
+		//closeGeomFile ();	    
+		loadGeomFile (fileName);
+	    }
+	    else
+		qDebug () << "Ignore for now!!!";
+	}
+	else
+	{    
+	    if (m_archive)
+	    {
+		closeFile ();
+	    }
+	
+	    loadFile (fileName);
+	    if (m_mainWindow != 0)
+	    {
+		m_mainWindow->actionNext->setEnabled (true);
+		m_mainWindow->actionAuto->setEnabled (true);
+		m_mainWindow->actionPrevious->setEnabled (false);
+	    }
 	}	
     }
     else 
@@ -1116,9 +1274,22 @@ ISpyApplication::open (const QString &fileName)
 }
 
 void
+ISpyApplication::openFile (const QString &fileName) 
+{
+    qDebug () << "Open file on double click " << fileName;
+    m_fileNames <<  fileName;
+    open (fileName);
+}
+
+void
 ISpyApplication::connect (void)
 {
-    m_consumer.nextEvent ();
+    ISpyReadService* readService = ISpyReadService::get (state ());
+    ASSERT (readService);
+    readService->preEventProcessing ();
+    m_storage = readService->dataStorage ();
+
+    m_consumer.nextEvent (m_storage);
 }
 
 void
@@ -1148,7 +1319,7 @@ void
 ISpyApplication::nextEvent (void)
 {
     modelChanged ();
-    
+
     if (++m_it != m_archive->end ())
     {
 	ISpyEventMessage event;
@@ -1167,7 +1338,13 @@ ISpyApplication::nextEvent (void)
     }
     else
     {
+	lastEvent ();
+		
 	m_mainWindow->actionAuto->setChecked (false);	
+	m_mainWindow->actionAuto->setEnabled (false);
+	m_timer->stop ();
+        m_timer->disconnect ();
+		
 	m_mainWindow->actionNext->setEnabled (false);
     }
 }
@@ -1188,6 +1365,7 @@ ISpyApplication::previousEvent (void)
 
 	readZipMember (m_it);
 	m_mainWindow->actionNext->setEnabled (true);
+	m_mainWindow->actionAuto->setEnabled (true);
 	if (m_it == m_archive->begin ())
 	    m_mainWindow->actionPrevious->setEnabled (false);
 
@@ -1197,7 +1375,9 @@ ISpyApplication::previousEvent (void)
 	readService->dispatcher (ISpyReadService::NewEvent)->broadcast (event);
     }
     else 
+    {
 	m_mainWindow->actionPrevious->setEnabled (false);
+    }
 }
 
 void
@@ -1228,24 +1408,29 @@ ISpyApplication::skipEventDialog (void)
 void
 ISpyApplication::newMember (const QString &name)
 {
-//     qDebug () << QString("Read in ") << name << tr(".");
+    qDebug () << QString("Read in ") << name << tr(".");
     initTreeItems (m_geomStorage);
 }
 
 void
 ISpyApplication::closeFile (void)
 {
-    m_treeWidget->clear ();
-    m_items.clear ();
-    
     if (m_collectionModel != 0)
     {
 	delete m_collectionModel;
 	m_collectionModel = 0;	
     }
-    ASSERT (m_storageModel);    
+    ASSERT (m_storageModel);
     m_storageModel->clear ();
+    m_treeWidget->clear ();
+    m_items.clear ();
 
+    if (m_geomArchive != 0 && (! m_onExit))
+    {
+ 	ASSERT (m_geomStorage);
+ 	updateTreeItems (m_geomStorage);
+    }
+    
     if (m_archive)
     {
 	m_archive->close ();
@@ -1257,6 +1442,20 @@ ISpyApplication::closeFile (void)
 void
 ISpyApplication::closeGeomFile (void)
 {
+    if (m_collectionModel != 0)
+    {
+	delete m_collectionModel;
+	m_collectionModel = 0;	
+    }
+    ASSERT (m_storageModel);
+    m_storageModel->clear ();
+    m_treeWidget->clear ();
+    m_items.clear ();
+    if (m_archive != 0 && (! m_onExit))
+    {
+ 	ASSERT (m_storage);
+ 	updateTreeItems (m_storage);
+    }
     if (m_geomArchive)
     {
 	m_geomArchive->close ();
@@ -1310,15 +1509,16 @@ void
 ISpyApplication::initTreeItems (IgDataStorage *storage)
 {
     QSettings settings;
+    QList<QTreeWidgetItem *> items;    
 
     for (IgDataStorage::CollectionNames::iterator it = storage->collectionNames ().begin (), 
 						 end = storage->collectionNames ().end (); 
 	 it < end; ++it)
     {
-	IgCollection coll = storage->getCollection ((*it).c_str ());
+	IgCollection &coll = storage->getCollection ((*it).c_str ());
 	QString fullCollName ((*it).c_str ());
 	
-// 	qDebug () << QString("Initializing ") << fullCollName << tr("...");
+ 	qDebug () << QString("Initializing ") << fullCollName << tr("...");
 
 	QStringList nameList;	
 	nameList = fullCollName.split (QString ("/"));
@@ -1337,21 +1537,37 @@ ISpyApplication::initTreeItems (IgDataStorage *storage)
 	if (settings.contains (visSettings))
 	    treeItem->setCheckState (2, Qt::CheckState (settings.value (visSettings).value<int> ()));
 	else
+	{
+	    settings.setValue (visSettings, 2);
 	    treeItem->setCheckState (2, Qt::Checked);
+	}
 	
-	m_items.append (treeItem);
+	items.append (treeItem);
+	if (treeItem->checkState (2) == Qt::Checked)
+	{	    
+	    qDebug () << "Draw " << nameList [0];
+	    drawCollection (&coll);
+	}	
     }
-    m_treeWidget->insertTopLevelItems (0, m_items);
+    qDebug () << "Before " << m_items;
+    qDebug () << " add " << items;
+
+    m_treeWidget->insertTopLevelItems (0, items);
+    m_items.append (items);
+
+    qDebug () << "After " << m_items;
 }
 
 void
 ISpyApplication::updateTreeItems (IgDataStorage *storage)
 {
+    QSettings settings;
+
     for (IgDataStorage::CollectionNames::iterator it = storage->collectionNames ().begin (), 
 						 end = storage->collectionNames ().end (); 
 	 it < end; ++it)
     {
-	IgCollection coll = storage->getCollection ((*it).c_str ());
+	IgCollection &coll = storage->getCollection ((*it).c_str ());
 	QString fullCollName ((*it).c_str ());
 	QStringList nameList;	
 	nameList = fullCollName.split (QString ("/"));
@@ -1364,13 +1580,38 @@ ISpyApplication::updateTreeItems (IgDataStorage *storage)
 	{}
 	QStringList collName;
 	QTreeWidgetItemIterator twig (m_treeWidget);
+	
+	bool found = false;
+	
 	while (*twig) 
 	{
 	    if ((*twig)->text (0) == nameList [0])
+	    {
+		found = true;		
 		(*twig)->setText (1, QString ("%1").arg (size));
+	    }
+	    
 	    ++twig;
 	}
+	qDebug () << nameList [0] << ": " << found;
+	if (! found)
+	{
+	    collName << nameList [0] << QString ("%1").arg (size);
+	    QTreeWidgetItem *treeItem = new QTreeWidgetItem((QTreeWidget*)0, collName);
+	    QString visSettings ("igtwigs/visibility/");
+	    visSettings.append (nameList [0]);
+	    if (settings.contains (visSettings))
+		treeItem->setCheckState (2, Qt::CheckState (settings.value (visSettings).value<int> ()));
+	    else
+	    {
+		settings.setValue (visSettings, 2);
+		treeItem->setCheckState (2, Qt::Checked);
+	    }
+	    
+	    m_items.append (treeItem);
+	}
     }
+    m_treeWidget->insertTopLevelItems (0, m_items);
 }
 
 void
@@ -1393,15 +1634,14 @@ ISpyApplication::loadGeomFile (const QString &filename)
     }
     else
     {
-	m_init = true;
-	std::cout << "Geometry file " << inputFilename << " does not exist." << std::endl;
+	qDebug () << "Geometry file " << inputFilename << " does not exist.\n";
     }
 }
 
 void
 ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
 {
-//     qDebug () << QString("Reading ") << (*i)->name () << tr("...");
+    qDebug () << QString("Reading ") << (*i)->name () << tr("...");
     showMessage(QString("Reading ") + (*i)->name () + tr("..."));
 
     ISpyReadService* readService = ISpyReadService::get (state ());
@@ -1435,7 +1675,7 @@ ISpyApplication::readZipMember (lat::ZipArchive::Iterator i)
 	}
 	ASSERT (m_storage);
 	    
-	if (m_items.empty ())
+	if (m_items.isEmpty ())
 	    initTreeItems (m_storage);
 	else
 	    updateTreeItems (m_storage);

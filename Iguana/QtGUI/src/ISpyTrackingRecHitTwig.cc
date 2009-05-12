@@ -57,7 +57,8 @@ ISpyTrackingRecHitTwig::onNewEvent (ISpyEventMessage& message)
 
 		SoMaterial *mat = new SoMaterial;
 		float rgbcomponents [4];
-		IgSbColorMap::unpack (0xFFEC9400, rgbcomponents);
+		IgSbColorMap::unpack (0xee2c2c,rgbcomponents);
+		//IgSbColorMap::unpack (0xFFEC9400, rgbcomponents);
 		mat->diffuseColor.setValue (SbColor (rgbcomponents));
 		sep->addChild (mat);
 

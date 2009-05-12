@@ -1,3 +1,218 @@
+2009-05-12  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyTrackTwig.cc: Bug fixed to display vertices correctly.
+
+	* ISpy3DView.cc: An attempt to set a default camera. There are
+	still problems with clip planes.
+
+	* IgMainWindowMDI.1.0.ui: Add save settings option on an expert
+	debug tools menu.
+	* ui_IgMainWindow.h: Auto-generated from above.
+	* ISpyMainWindow.cc: Restore visibility to default if not asked to
+	save it.
+	* ISpyApplication.cc: Revert back to popping up file dialog to
+	avoid unpredicted behavior on closing the dialog which started
+	from connection to a signal. Qt bug?
+
+2009-05-11  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.cc: Allow reading geometry, but only once. The
+	geometry file name is defined in the settings. Otherwise it is
+	treated as an event file, e.g. content will change.
+
+2009-05-11 Tom McCauley <thomas.mccauley@cern.ch>
+	* ISpyDTDigiTwig.cc, ISpyDTRecHitTwig.cc: fix 3D to correspond to "classic" view
+
+2009-05-11  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpySplashScreen.cc: Avoid delay when closing the splash screen
+	by hand.
+
+	* Update splash.
+
+	* ISpyApplication.cc, ISpyApplication.h, ISpySplashScreen.h,
+	ISpySplashScreen.cc: Make sure the splash screen is on top.
+	* ISpy3DView.cc: Icons order fixed.
+
+	* ISpyApplication.cc: Fix mouse-click file open on Mac.
+
+	* ISpyQueuedTwig.cc: Correct debug printout.
+	* ISpyConsumerThread.cc: Remove warning about an unused variable.
+
+	* debug.h: Removed as unused.
+
+	* network1.png, network2.png, network3.png, network4.png,
+	x_small.xpm, y_small.xpm, z_small.xpm, zoom_in_old.png,
+	zoom_out_old.png: Removed as unused.
+	* ispy.qrc, IgMainWindowMDI.ui: Modified accordingly.
+
+	* ui_ISpyControlCenter.h, ui_IgOpenFileDialog.h,
+	ui_IgPolarCSControl.h, ui_IgRZCSControl.h,
+	ui_IgSettingsEditorDialog.h, ui_IgTreeViewForm.h,
+	IgSettingsEditorDialog.ui, IgSpyControlCenter.ui: Removed as
+	unused. 
+
+	* ISpyDetectorTwig.cc, ISpyBasicClusterTwig.cc,
+	ISpyHERecHitTwig.cc: Removed unused include.
+	* ISpyController.h, ISpyTreeItem.h, ISpyTreeModel.h,
+	ISpyTreeItem.cc, ISpyTreeModel.cc: Removed as unused.
+	* ISpyApplication.cc: Reflect the above changes.
+
+	* test/BuildFile: Remove rules for building removed tests.
+
+2009-05-09  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgLegoModel.h, IgLegoRep.h, IgRPhiModel.h, IgRPhiRep.h,
+	IgRZModel.h, IgRZRep.h, IgSimpleTextModel.h, IgSimpleTextRep.h,
+	IgTextModel.h, IgTextModelEvent.h, IgTextRep.h,
+	IgTreeItemDelegate.h, IgVisibility.h: Removed as unused any more.
+	* ISpyQueuedTwig.h, ISpyQueuedTwig.cc: Modified accordingly.
+	* IgSimpleTextModel.cc, IgSimpleTextRep.cc, IgTextModel.cc,
+	IgTextRep.cc, IgTreeItemDelegate.cc, IgVisibility.cc: Removed as
+	unused.
+
+	* test/test_IgCircleSector.cpp, test/test_IgHits.cpp,
+	test/test_IgRectangle.cpp, test/test_IgTrack.cpp,
+	test/test_IgTrapezoid.cpp, test/test_IggiTrack.cpp,
+	test/test_IggiTrajectory.cpp: Removed as based on removed
+	classes.
+
+	* ISpyControlCenter.h, ISpyItem.h, ISpyQueue.h,
+	ISpyQueueProcessor.h, ISpyScene.h, IgAnnotation.h,
+	IgCircleSector.h, IgHits.h, IgLine.h, IgPolarCSControl.h,
+	IgPolarCoordSystem.h, IgRZCSControl.h, IgRZCoordSystem.h,
+	IgRectangle.h, IgTrack.h, IgTrapezoid.h, ISpyControlCenter.cc,
+	ISpyItem.cc, ISpyQueue.cc, ISpyQueueProcessor.cc, ISpyScene.cc,
+	IgAnnotation.cc, IgCircleSector.cc, IgHits.cc, IgLine.cc,
+	IgPolarCSControl.cc, IgPolarCoordSystem.cc, IgRZCSControl.cc,
+	IgRZCoordSystem.cc, IgRectangle.cc, IgTrack.cc, IgTrapezoid.cc:
+	Removed as currently unused.
+
+	* interface/ispy.qrc: Renamed from iggi.qrc.
+	* *.ui: Updated to use the above.
+	* ISpyApplication.cc: Remove iggi.
+	* home.xpm, ortho.xpm, perspective.xpm, view_all.xpm, x_small.xpm,
+	xz_small.xpm, y_small.xpm, yx_small.xpm, yz_small.xpm,
+	z_small.xpm: Used icons. Note that we use them through a qrc file
+	which is in the same directory.
+	* qrc_ispy.cc: Auto-generated from ispy.qrc with rcc, e.g.
+	rcc interface/ispy.qrc -o src/qrc_ispy.cc 
+
+	* ISpyApplication.cc: Comment out include of xpm for standard
+	splash screen.
+	* ISpySplashScreen.ui: Enable opening of external links. Remove
+	frame, make it flat.
+	* ui_ISpySplashScreen.h: Auto-generated from above.
+
+2009-05-08  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpy3DView.cc: Reset camera. Add camera toggle, remove view
+	all.
+	* IgMainWindowMDI.1.0.ui: Modified GUI.
+	* ui_IgMainWindow.h: Auto-generated.
+	* iggi.qrc: Added the camera toggle icons.
+	* qrc_iggi.cc: Auto-generated from above.
+	* ISpySplashScreen.*: New splash screen.
+	* ui_ISpySplashScreen.h: Auto-generated.
+
+	* IGUANA_SPLASH.xpm: Added transparency.
+	* iggi.qrc: Added the splash icon to the resources.
+	* qrc_iggi.cc: Auto-generated from above.
+	* IgMainWindowMDI.ui: Beyond 1.0 GUI.
+	* ui_IgMainWindow.h: Auto-generated from above.
+	* IgMainWindowMDI.1.0.ui: Version 1.0 GUI.
+
+2009-05-07  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyMainWindow.cc: Update help dialogs.
+
+	* ISpyMainWindow.cc, ui_IgMainWindow.h, ISpyApplication.cc:
+	Reduced set of menus for v1.0.
+
+	* ISpyApplication.cc: Broadcast visibility string when it
+	changes.
+
+	* ISpyApplication.cc: Update menus. 
+
+2009-05-06  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.cc: Set visibility on if it hasn't been set
+	before.  
+
+2009-05-06 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyDTRecHitTwig.cc: Add line indicating left/right positions
+
+2009-05-06  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.cc: Do not update tree items on exit.
+
+2009-05-05  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyMainWindow.h, ISpyMainWindow.cc: Removed unused
+	functions. Migrate settings. 
+	* ISpyApplication.h, ISpyApplication.cc: Use accessors to get to
+	the main window members.
+	* IgSettingsEditor.h, IgSettingsEditor.cc: Update settings. 
+	* IgMainWindowMDI.ui: Simplify menus.
+	* ui_IgMainWindow.h: Auto-generated.
+	* ISpy3DView.cc: Set default minimum size.
+	* ISpyControlCenter.ui, IgMainWindow-mdi-noQGraphicsView.ui,
+	IgMainWindow-mdi.ui, IgMainWindow.ui, IgOpenFileDialog.ui,
+	IgPolarCSControl.ui, IgRZCSControl.ui, IgTreeViewForm.ui:
+	Removed.
+	* IgLocationDialog.cc: Update settings.
+
+	* ISpy3DView.cc: Set minimum size. Remove classlib calls.
+
+2009-05-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.cc: Remove some actions.
+	* ISpy3DView.h, ISpy3DView.cc: Add tool bar here.
+	* ISpyMainWindow.h, ISpyMainWindow.cc: Remove some actions.
+	* iggi.qrc: Add new icons for 3D view tool bar.
+	* qrc_iggi.cc: Auto-generated.
+	* IgMainWindowMDI.ui: Latest main window. Removed some actions. 
+	* ui_IgMainWindow.h: Auto-generated.
+
+2009-05-04 Tom McCauley <thomas.mccauley@cern.ch>
+	* add ISpyEERecHitTwig and ISpyEERecHitTwig
+	
+
+2009-05-04  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyRecoContent.cc: Remove non-existing includes of
+	ISpyEERecHitTwig and ISpyEBRecHitTwig.  
+
+2009-05-01 Tom McCauley <thomas.mccauley@cern.ch>
+	* ISpyDTDigi.h, ISpyDTDigi.cc: add support
+	* ISpyDTRecHit.h, ISpyDTRecHit.cc: add support
+	* ISpyApplication.cc: disable (possible) automagic rendering of above
+	* ISpyRecoContent.cc: add twig constructors
+	
+2009-04-30 Tom McCauley <thomas.mccauley@cern.ch>
+	* ISpyApplication.cc: disable 3D rendering of EBRecHits, EERecHits, and CaloHits 
+	* ISpyBasicClusterTwig.cc: draw associated CaloHits
+	
+2009-04-30  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Fix for automatic launch
+	on Mac. 
+
+	* ISpyApplication.cc: Fix a problem with opening a new file. 
+
+	* ISpyApplication.cc: Remove multiple windows.
+
+	* ISpyApplication.h, ISpyApplication.cc: Clean up some
+	connections. Remove the one from a table click.
+
+	* *: Updates to see if it works on Mac.
+
+2009-04-24  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Remove selection. Add
+	geometry items. Display everything by default.
+	
 2009-04-22  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* ISpy*Twig.cc: Check if a visibility setting already exists.

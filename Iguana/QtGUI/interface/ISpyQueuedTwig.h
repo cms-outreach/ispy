@@ -11,11 +11,6 @@
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
 class IgState;
-class Ig3DRep;
-class IgLegoRep;
-class IgTextRep;
-class IgRPhiRep;
-class IgRZRep;
 class SoNode;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
@@ -32,25 +27,13 @@ public:
     virtual ~ISpyQueuedTwig (void);
     
     virtual void	onNewEvent (ISpyEventMessage& message);
-
-    virtual void	update (Ig3DRep *rep);
-    virtual void	update (IgLegoRep *rep);
-    virtual void	update (IgTextRep *rep);
-    virtual void        update (IgRPhiRep *rep);
-    virtual void        update (IgRZRep *rep);
-
     IgState *		state (void);
 
 protected:
-    void                onBaseInvalidate (void);
     void 		clear (void);
     SoNode*		rep (void);
 
 private:
-
-    class ExactMatch;
-    friend class ExactMatch;
-
     SoNode	       *m_rep;
     IgState	       *m_state;		//< State context.
 };

@@ -1,86 +1,77 @@
-//<<<<<< INCLUDES                                                       >>>>>>
-
 #include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 #include "Iguana/QtGUI/interface/ISpyConsumer.h"
 #include <QSettings>
 
-//<<<<<< PRIVATE DEFINES                                                >>>>>>
-//<<<<<< PRIVATE CONSTANTS                                              >>>>>>
-//<<<<<< PRIVATE TYPES                                                  >>>>>>
-//<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
-//<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
-//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
-
-ISpyConsumerThread::ISpyConsumerThread(QObject * /*parent*/) 
+ISpyConsumerThread::ISpyConsumerThread (QObject * /*parent*/) 
 {
-    restart_ = false;
-    abort_ = false;
+    m_restart = false;
+    m_abort = false;
 }
 
-ISpyConsumerThread::~ISpyConsumerThread(void)
+ISpyConsumerThread::~ISpyConsumerThread (void)
 {
-    mutex_.lock();
-    abort_ = true;
-    condition_.wakeOne();
-    mutex_.unlock();
+    m_mutex.lock ();
+    m_abort = true;
+    m_condition.wakeOne ();
+    m_mutex.unlock ();
 
     // FIXME: wait();
 }
 
 void
-ISpyConsumerThread::nextEvent (void) 
+ISpyConsumerThread::nextEvent (IgDataStorage *toStorage) 
 {
-    QMutexLocker locker(&mutex_);
+    QMutexLocker locker (&m_mutex);
+    m_storage = toStorage;
 
-    if (! isRunning()) 
+    if (! isRunning ()) 
     {
-	start(LowPriority);
+	start (LowPriority);
     } 
     else 
     {
-	restart_ = true;
-	condition_.wakeOne();
+	m_restart = true;
+	m_condition.wakeOne ();
     }
 }
 
 void
-ISpyConsumerThread::run(void)
+ISpyConsumerThread::run (void)
 {
     QSettings settings;
     std::string host = settings.value ("igsource/host").value<QString> ().toStdString();
     int port = settings.value ("igsource/port").value<int> ();
     bool debug = settings.value ("igsource/debug").value<bool> ();
 
-    ISpyConsumer consumer(debug, host, port);
-    consumer.run();
+    ISpyConsumer consumer (debug, host, port);
+    consumer.run ();
 
     forever {
-	mutex_.lock();
+	m_mutex.lock ();
 	// Storing anything in local variables
 	// goes here
-	mutex_.unlock();
+	// FIXME: 
+	// IgDataStorage *storage = m_storage;
+	m_mutex.unlock ();
 
 	// Long loop
 	{	    
-	    if (restart_)
+	    if (m_restart)
 		break;
-	    if (abort_)
+	    if (m_abort)
 	    {		
-		onInterrupt(0);
-		consumer.shouldStop();
-		consumer.shutdown();
+		onInterrupt (0);
+		consumer.shouldStop ();
+		consumer.shutdown ();
 		
 		return;
 	    }
 	}
 	
-	mutex_.lock();
-	if (!restart_)
-	    condition_.wait(&mutex_);
-	restart_ = false;
-	mutex_.unlock();	    
+	m_mutex.lock ();
+	if (! m_restart)
+	    m_condition.wait (&m_mutex);
+	m_restart = false;
+	m_mutex.unlock ();	    
     }    
 }

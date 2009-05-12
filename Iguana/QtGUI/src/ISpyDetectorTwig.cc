@@ -5,7 +5,6 @@
 #include "Iguana/QtGUI/interface/ISpyDetectorTwig.h"
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
 #include "Iguana/Framework/interface/IgCollection.h"
-#include "Iguana/QtGUI/interface/debug.h"
 #include <Inventor/nodes/SoIndexedLineSet.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoSeparator.h>

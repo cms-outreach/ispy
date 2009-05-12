@@ -5,7 +5,6 @@
 /IgBrowserDB.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgBrowserMethods.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgCapabilityDB.h/1.1/Thu Apr 23 07:10:24 2009//
-/IgCollection.h/1.5/Thu Apr 23 07:12:33 2009//
 /IgDatum.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgDispatcher.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgDocumentDataRoot.h/1.1/Thu Apr 23 07:10:24 2009//
@@ -15,7 +14,6 @@
 /IgExtension.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgExtensionDB.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgLibraryPreloader.h/1.1/Thu Apr 23 07:10:24 2009//
-/IgLinearAlgebra.h/1.2/Thu Apr 23 07:10:24 2009//
 /IgMapUniqueIterator.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgModel.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgModule.h/1.1/Thu Apr 23 07:10:24 2009//
@@ -27,7 +25,6 @@
 /IgNetError.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgOnCrashService.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgOnLowMemoryService.h/1.1/Thu Apr 23 07:10:24 2009//
-/IgParser.h/1.4/Thu Apr 23 07:10:24 2009//
 /IgPluginCapabilities.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgPluginDef.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgPluginError.h/1.1/Thu Apr 23 07:10:24 2009//
@@ -50,4 +47,7 @@
 /IgTwig.h/1.1/Thu Apr 23 07:10:24 2009//
 /config.h/1.1/Thu Apr 23 07:10:24 2009//
 /xtypeinfo.h/1.1/Thu Apr 23 07:10:24 2009//
+/IgCollection.h/1.6/Tue May 12 12:45:16 2009//
+/IgLinearAlgebra.h/1.2/Thu Apr 23 09:37:42 2009//
+/IgParser.h/1.4/Thu Apr 23 09:37:42 2009//
 D

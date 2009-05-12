@@ -6,3 +6,4 @@
 <use name="pcre"/>
 <use name="openinventor"/>
 <use name="stdcpphack"/>
+<flags CPPDEFINES="QT_NO_DEBUG_OUTPUT"/>

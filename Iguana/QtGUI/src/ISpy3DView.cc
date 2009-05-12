@@ -19,25 +19,11 @@
 #include <Inventor/Qt/SoQtCursor.h>
 #include <QtGui>
 #include "classlib/utils/DebugAids.h"
-#include "classlib/utils/Log.h"
-
-//<<<<<< PRIVATE DEFINES                                                >>>>>>
-
-lat::logflag LF3DView = { 0, "iSpy3D", true, -1 };
-
-//<<<<<< PRIVATE CONSTANTS                                              >>>>>>
-//<<<<<< PRIVATE TYPES                                                  >>>>>>
-//<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
-//<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
-//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 ISpy3DView::ISpy3DView (IgState *state, Ig3DBaseModel *model, QWidget *parent)
     : SoQtExaminerViewer (parent, "iSpy 3D"),
       m_state (new IgState (state)),
-      m_parent (parent),
+      m_parent (parent),      
       m_model (model),
       m_gl2psOptions (GL2PS_SIMPLE_LINE_OFFSET 
 		      | GL2PS_BEST_ROOT
@@ -61,8 +47,124 @@ ISpy3DView::initWidget (void)
     setSceneGraph (model ()->sceneGraph ());
     initCamera ();
     setDecoration (false);
+    setupActions ();
+    parent ()->setMinimumSize (300, 200);
+}
+
+void
+ISpy3DView::setupActions (void)
+{
+//     QAction *actionViewAll = new QAction (parent ());
+//     actionViewAll->setObjectName (QString::fromUtf8 ("actionViewAll"));
+//     QIcon icon1;
+//     icon1.addPixmap (QPixmap (QString::fromUtf8 (":/images/view_all.xpm")), QIcon::Normal, QIcon::Off);
+//     actionViewAll->setIcon (icon1);
+//     actionViewAll->setText (QApplication::translate ("ISpy3DView", "ViewAll", 0, QApplication::UnicodeUTF8));
+// #ifndef QT_NO_TOOLTIP
+//     actionViewAll->setToolTip (QApplication::translate ("ISpy3DView", "View All", 0, QApplication::UnicodeUTF8));
+// #endif // QT_NO_TOOLTIP
+
+    QAction *actionZoomIn = new QAction (parent ());
+    actionZoomIn->setObjectName (QString::fromUtf8 ("actionZoomIn"));
+    QIcon icon3;
+    icon3.addPixmap (QPixmap (QString::fromUtf8 (":/images/zoom_in.png")), QIcon::Normal, QIcon::Off);
+    actionZoomIn->setIcon (icon3);
+    actionZoomIn->setText (QApplication::translate ("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
+    actionZoomIn->setShortcut (QApplication::translate ("ISpy3DView", "Ctrl++", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    actionZoomIn->setToolTip (QApplication::translate ("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
     
-    show ();
+    QAction *actionZoomOut = new QAction (parent ());
+    actionZoomOut->setObjectName (QString::fromUtf8("actionZoomOut"));
+    QIcon icon4;
+    icon4.addPixmap (QPixmap (QString::fromUtf8 (":/images/zoom_out.png")), QIcon::Normal, QIcon::Off);
+    actionZoomOut->setIcon (icon4);
+    actionZoomOut->setText (QApplication::translate ("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
+    actionZoomOut->setShortcut (QApplication::translate ("ISpy3DView", "Ctrl+-", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    actionZoomOut->setToolTip (QApplication::translate ("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+    QAction *actionHome = new QAction (parent ());
+    actionHome->setObjectName (QString::fromUtf8 ("actionHome"));
+    QIcon icon2;
+    icon2.addPixmap (QPixmap (QString::fromUtf8 (":/images/home.xpm")), QIcon::Normal, QIcon::Off);
+    actionHome->setIcon (icon2);
+    actionHome->setText (QApplication::translate ("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    actionHome->setToolTip (QApplication::translate ("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+   
+    QAction *actionViewPlaneX = new QAction (parent ());
+    actionViewPlaneX->setObjectName (QString::fromUtf8("actionViewPlaneX"));
+    QIcon icon5;
+    icon5.addPixmap (QPixmap (QString::fromUtf8 (":/images/yz_small.xpm")), QIcon::Normal, QIcon::Off);
+    actionViewPlaneX->setIcon (icon5);
+    actionViewPlaneX->setText (QApplication::translate ("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    actionViewPlaneX->setToolTip (QApplication::translate ("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+    QAction *actionViewPlaneY = new QAction (parent ());
+    actionViewPlaneY->setObjectName(QString::fromUtf8("actionViewPlaneY"));
+    QIcon icon6;
+    icon6.addPixmap (QPixmap (QString::fromUtf8 (":/images/xz_small.xpm")), QIcon::Normal, QIcon::Off);
+    actionViewPlaneY->setIcon (icon6);
+    actionViewPlaneY->setText (QApplication::translate ("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    actionViewPlaneY->setToolTip (QApplication::translate ("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+    QAction *actionViewPlaneZ = new QAction (parent ());
+    actionViewPlaneZ->setObjectName (QString::fromUtf8("actionViewPlaneZ"));
+    QIcon icon7;
+    icon7.addPixmap (QPixmap (QString::fromUtf8 (":/images/yx_small.xpm")), QIcon::Normal, QIcon::Off);
+    actionViewPlaneZ->setIcon (icon7);
+    actionViewPlaneZ->setText (QApplication::translate ("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    actionViewPlaneZ->setToolTip (QApplication::translate ("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+    QAction *actionCameraToggle = new QAction (parent ());
+    actionCameraToggle->setObjectName (QString::fromUtf8 ("actionCameraToggle"));
+    QIcon icon8;
+    icon8.addPixmap (QPixmap (QString::fromUtf8 (":/images/ortho.xpm")), QIcon::Normal, QIcon::On);
+    icon8.addPixmap (QPixmap (QString::fromUtf8 (":/images/perspective.xpm")), QIcon::Normal, QIcon::Off);
+    actionCameraToggle->setIcon (icon8);
+    actionCameraToggle->setCheckable (true);    
+    actionCameraToggle->setText (QApplication::translate ("ISpy3DView", "CameraToggle", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+    actionCameraToggle->setToolTip (QApplication::translate ("ISpy3DView", "CameraToggle", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+
+//     QObject::connect (actionViewAll, SIGNAL(triggered()), this, SLOT(viewAll()));
+    QObject::connect (actionHome, SIGNAL(triggered()), this, SLOT(resetToHomePosition()));
+    QObject::connect (actionZoomIn, SIGNAL(triggered ()), this, SLOT(zoomIn ()));
+    QObject::connect (actionZoomOut, SIGNAL(triggered ()), this, SLOT(zoomOut ()));
+    QObject::connect (actionViewPlaneX, SIGNAL(triggered ()), this, SLOT(viewPlaneX ()));
+    QObject::connect (actionViewPlaneY, SIGNAL(triggered ()), this, SLOT(viewPlaneY ()));
+    QObject::connect (actionViewPlaneZ, SIGNAL(triggered ()), this, SLOT(viewPlaneZ ()));
+    QObject::connect (actionCameraToggle, SIGNAL(triggered()), this, SLOT(toggleCameraType()));
+
+    m_toolBar = new QToolBar (parent ());
+    m_toolBar->setObjectName (QString::fromUtf8 ("ISpy3DView::toolBar"));
+    m_toolBar->addAction (actionHome);
+//     m_toolBar->addAction (actionViewAll);
+    m_toolBar->addAction (actionZoomIn);
+    m_toolBar->addAction (actionZoomOut);
+    m_toolBar->addAction (actionViewPlaneZ);
+    m_toolBar->addAction (actionViewPlaneY);
+    m_toolBar->addAction (actionViewPlaneX);
+    m_toolBar->addAction (actionCameraToggle);
+
+    m_toolBar->setWindowTitle (QApplication::translate ("ISpy3DView", "toolBar", 0, QApplication::UnicodeUTF8));
+
+    // FIXME: Position camera
+    actionCameraToggle->activate (QAction::Trigger);
+    zoomOut ();
+    zoomOut ();
 }
 
 void
@@ -72,19 +174,20 @@ ISpy3DView::initCamera (void)
     //create sersors to sence the near and for clip plane distance and
     //force them to be 0.1 and SHRT_MAX
     SoCamera * const camera = SoQtExaminerViewer::getCamera ();    
-    ASSERT (camera);
-    SbVec3f org (0.0, 0.0, 0.0);
+    if (!camera) return; // probably a scene-less viewer
+    const SbVec3f org (0.0, 0.0, 0.0);
     
     m_farDistanceSensor = new SoFieldSensor (&farDistanceSensorCB, this);
     m_farDistanceSensor->attach (&camera->farDistance);
     m_nearDistanceSensor = new SoFieldSensor (&nearDistanceSensorCB, this);
     m_nearDistanceSensor->attach (&camera->nearDistance);
-    camera->position.setValue (-18.1, 8.6, 14.0);
-    camera->orientation.setValue (-0.3, -0.93, -0.2, 1.1);
-    camera->nearDistance  = 0.1;
-    camera->farDistance  = 32767;
-    camera->focalDistance = 19.6;
-    camera->pointAt (org);
+//     camera->position.setValue (-18.1, 8.6, 14.0);
+//     camera->orientation.setValue (-0.3, -0.93, -0.2, 1.1);
+//     camera->nearDistance  = 0.1;
+//     camera->farDistance  = 32767;
+
+//     camera->focalDistance = 19.6;
+//     camera->pointAt (org);
     
 //     SoLight *headLight = getHeadlight ();
 //     SoSeparator *root = dynamic_cast<SoSeparator *>(getSceneManager ()->getSceneGraph ());
@@ -126,6 +229,10 @@ ISpy3DView::state (void) const
 QWidget *
 ISpy3DView::parent (void) const
 { return m_parent; }
+
+QToolBar *
+ISpy3DView::toolBar (void) const
+{ return m_toolBar; }
 
 Ig3DBaseModel *
 ISpy3DView::model (void) const
@@ -177,8 +284,7 @@ ISpy3DView::printBitmap (QString file, float ppi,
     }
     else if (!renderer->writeToFile (file.toStdString ().c_str (), format.toStdString ().c_str ()))
     {
-        LOG(0, trace, LF3DView, 
-	    QString(file + ": Failed to open file for writing.\n").toStdString ());
+        qDebug () << file << ": Failed to open file for writing.\n";
 	QMessageBox::warning (getShellWidget (), "System Error",
 			      "Failed to open file \""+file+"\" for writing.",
 			      "Ok");
@@ -201,7 +307,7 @@ ISpy3DView::printVector (QString file, QString format, int level)
 	else if (format == "eps")
 	    type = GL2PS_EPS;
 	else
-	    ASSERT (0);
+	    ASSERT (0);	
 
 	if (! gl2psAction )
 	    gl2psAction = new IgSoGL2PSAction (this->getViewportRegion ());
@@ -231,7 +337,7 @@ ISpy3DView::printVector (QString file, QString format, int level)
     }
     else
     {
-        LOG(0, trace, LF3DView, QString(file +": Failed to open file for writing.\n").toStdString ());
+	qDebug() << file << ": Failed to open file for writing.\n";
 	QMessageBox::warning (parent (), "System Error",
 			      "Failed to open file \""+file+"\" for writing.",
 			      "Ok");	
@@ -261,6 +367,7 @@ ISpy3DView::saveNode (SoNode *node, const QString& title,
 	filters.append (binary);
 	dialog.setFilters (filters);
 	dialog.setFileMode (QFileDialog::AnyFile);
+	dialog.setAcceptMode (QFileDialog::AcceptSave);	
 	dialog.setLabelText (QFileDialog::Accept, "&Save");
 	
         bool tryagain = true;
@@ -377,6 +484,7 @@ ISpy3DView::print (void)
     QFileDialog dialog (parent (), "Print To File");
     dialog.setFilters (filters);
     dialog.setFileMode (QFileDialog::AnyFile);
+    dialog.setAcceptMode (QFileDialog::AcceptSave);	
     dialog.setLabelText (QFileDialog::Accept, "&Save");
     bool tryagain = true;
     QString     f;
@@ -654,9 +762,12 @@ ISpy3DView::farDistanceSensorCB (void *me, SoSensor *)
     if (self->isAutoClipping ())
     {
         SoCamera * const camera = self->getCamera ();
-	self->m_farDistanceSensor->detach ();
-	camera->farDistance  = SHRT_MAX;
-	self->m_farDistanceSensor->attach (&camera->farDistance);
+        if (fabs(camera->farDistance.getValue() - SHRT_MAX) > 0.1)
+        {
+	    self->m_farDistanceSensor->detach ();
+	    camera->farDistance  = SHRT_MAX;
+	    self->m_farDistanceSensor->attach (&camera->farDistance);
+        }
     }
 }
 
@@ -667,9 +778,12 @@ ISpy3DView::nearDistanceSensorCB (void *me, SoSensor *)
     if (self->isAutoClipping ())
     {
         SoCamera * const camera = self->getCamera ();
-	self->m_nearDistanceSensor->detach ();
-	camera->nearDistance  = 0.1;
-	self->m_nearDistanceSensor->attach (&camera->nearDistance);
+        if (fabs(camera->nearDistance.getValue() - 0.1) > 0.0001)
+        {
+	    self->m_nearDistanceSensor->detach ();
+	    camera->nearDistance  = 0.1;
+	    self->m_nearDistanceSensor->attach (&camera->nearDistance);
+        }
     }
 }
 

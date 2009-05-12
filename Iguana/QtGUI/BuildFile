@@ -4,6 +4,10 @@
 <use name=coin>
 <use name=soqt>
 
+<makefile>      
+ CPPFLAGS += -DQT_NO_DEBUG_OUTPUT
+</makefile>
+
 <export>
  <Use name=Qt>
  <Lib name=IguanaQtGUI>

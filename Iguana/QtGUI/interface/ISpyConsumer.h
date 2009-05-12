@@ -79,7 +79,6 @@ public:
 	}
 private:
     std::vector<char> 	data_;
-    IgDataStorage      *storage_;    
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

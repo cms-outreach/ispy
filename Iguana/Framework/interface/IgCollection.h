@@ -565,14 +565,6 @@ public:
   typedef std::pair<ColumnType, IgColumnHandle> TypeColumn;
   typedef std::vector<IgProperty> Properties;
   
-  IgCollection (const char *name, int id)
-  : m_name (name), m_id(id), m_rowCount(0)
-  { }
-  
-  ~IgCollection ()
-  {
-  }
-  
   template <class T>
   IgProperty &addProperty(const char *label, T defaultValue)
   {
@@ -697,6 +689,18 @@ public:
   
   std::vector<LabelColumn> &columnLabels(void)
   { return m_columnLabelsIndex; };
+  
+protected:
+  IgCollection (const char *name, int id)
+  : m_name (name), m_id(id), m_rowCount(0)
+  { }
+  
+  ~IgCollection ()
+  {
+  }
+  
+  friend class IgDataStorage;
+
 private:
   bool doHasProperty (const char *label, Labels::iterator *i = 0)
   {
@@ -1070,12 +1074,6 @@ public:
   {
     return IgCollectionItem(m_collections[ref.collectionId()], 
                             ref.objectId());
-  }
-  
-  void attach(IgCollection *collection)
-  {
-    m_collectionNames.push_back(collection->name());
-    m_collections.push_back(collection);
   }
   
   CollectionNames &collectionNames(void)

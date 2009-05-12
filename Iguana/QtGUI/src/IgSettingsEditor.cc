@@ -16,122 +16,113 @@
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 IgSettingsEditor::IgSettingsEditor (QWidget *parent)
-    : QDialog (parent),
-      settingsTree_ (new IgSettingsTree)
+    : QMainWindow (parent),
+      m_settingsTree (new IgSettingsTree)
 {
-    locationDialog_ = 0;
+    m_locationDialog = 0;
 
     setupUi (this);
-    this->scrollArea->setWidget (settingsTree_);
-    
-//     QObject::connect(actionOpen_Settings, SIGNAL(triggered()), this, SLOT(openSettings()));
-//     QObject::connect(actionOpen_INI_File, SIGNAL(triggered()), this, SLOT(openIniFile()));
-//     QObject::connect(actionOpen_Mac_Property_List, SIGNAL(triggered()), this, SLOT(openPropertyList()));
-//     QObject::connect(actionOpen_Windows_Registry_Path, SIGNAL(triggered()), this, SLOT(openRegistryPath()));
-//     QObject::connect(actionClose, SIGNAL(triggered()), this, SLOT(hide()));
-//     QObject::connect(actionAbout, SIGNAL(triggered()), this, SLOT(about()));
-
-//     QObject::connect(actionRefresh, SIGNAL(triggered()), settingsTree_, SLOT(refresh()));
-//     QObject::connect(actionAuto_Refresh, SIGNAL(triggered(bool)), settingsTree_, SLOT(setAutoRefresh(bool)));
-//     QObject::connect(actionAuto_Refresh, SIGNAL(triggered(bool)), actionRefresh, SLOT(setDisabled(bool)));
-//     QObject::connect(actionFallback, SIGNAL(triggered(bool)), settingsTree_, SLOT(setFallbacksEnabled(bool)));
-
-// #ifndef Q_WS_MAC
-//     actionOpen_Mac_Property_List->setEnabled(false);
-// #endif
-// #ifndef Q_WS_WIN
-//     actionOpen_Windows_Registry_Path->setEnabled(false);
-// #endif
+    this->scrollArea->setWidget (m_settingsTree);
+    setupActions ();
 }
 
-// void 
-// IgSettingsEditor::openSettings (void)
-// {
-//     if (!locationDialog_)
-// 	locationDialog_ = new IgLocationDialog(this);
+void
+IgSettingsEditor::setupActions (void)
+{    
+#ifndef Q_WS_MAC
+    actionOpen_Mac_Property_List->setEnabled (false);
+#endif
+#ifndef Q_WS_WIN
+    actionOpen_Windows_Registry_Path->setEnabled (false);
+#endif
+    actionFallback->setEnabled (true);
+    setFallbacksEnabled (actionFallback->isChecked ());
+}
 
-//     if (locationDialog_->exec ()) 
-//     {
-// 	QSettings *settings = new QSettings(locationDialog_->format (),
-// 					    locationDialog_->scope (),
-// 					    locationDialog_->organization (),
-// 					    locationDialog_->application ());
-// 	setSettingsObject (settings);
-// 	actionFallback->setEnabled (true);
-//     }
-// }
+void 
+IgSettingsEditor::openSettings (void)
+{
+    if (!m_locationDialog)
+	m_locationDialog = new IgLocationDialog (this);
 
-// void 
-// IgSettingsEditor::openIniFile (void)
-// {
-//     QString fileName = QFileDialog::getOpenFileName(this, tr("Open INI File"),
-// 						    "", tr("INI Files (*.ini *.conf)"));
-//     if (! fileName.isEmpty ()) 
-//     {
-// 	QSettings *settings = new QSettings (fileName, QSettings::IniFormat);
-// 	setSettingsObject (settings);
-// 	actionFallback->setEnabled(false);
-//     }
-// }
+    if (m_locationDialog->exec ()) 
+    {
+	QSettings *settings = new QSettings(m_locationDialog->format (),
+					    m_locationDialog->scope (),
+					    m_locationDialog->organization (),
+					    m_locationDialog->application ());
+	setSettingsObject (settings);
+	actionFallback->setEnabled (true);
+	// showSettingsEditor ();	
+    }
+}
 
-// void 
-// IgSettingsEditor::openPropertyList (void)
-// {
-//     QString fileName = QFileDialog::getOpenFileName(this,
-// 						    tr("Open Property List"),
-// 						    "", tr("Property List Files (*.plist)"));
-//     if (! fileName.isEmpty ()) 
-//     {
-// 	QSettings *settings = new QSettings (fileName, QSettings::NativeFormat);
-// 	setSettingsObject (settings);
-// 	actionFallback->setEnabled (false);
-//     }
-// }
+void 
+IgSettingsEditor::openIniFile (void)
+{
+    QString fileName = QFileDialog::getOpenFileName (this, tr("Open INI File"),
+						     "", tr("INI Files (*.ini *.conf)"));
+    if (! fileName.isEmpty ()) 
+    {
+	QSettings *settings = new QSettings (fileName, QSettings::IniFormat);
+	setSettingsObject (settings);
+	actionFallback->setEnabled (false);
+    }
+}
 
-// void 
-// IgSettingsEditor::openRegistryPath (void)
-// {
-//     QString path = QInputDialog::getText(this, tr("Open Registry Path"),
-// 					 tr("Enter the path in the Windows registry:"),
-// 					 QLineEdit::Normal, "HKEY_CURRENT_USER\\");
-//     if (! path.isEmpty ()) 
-//     {
-// 	QSettings *settings = new QSettings (path, QSettings::NativeFormat);
-// 	setSettingsObject (settings);
-// 	actionFallback->setEnabled (false);
-//     }
-// }
+void 
+IgSettingsEditor::openPropertyList (void)
+{
+    QString fileName = QFileDialog::getOpenFileName (this,
+						     tr("Open Property List"),
+						     "", tr("Property List Files (*.plist)"));
+    if (! fileName.isEmpty ()) 
+    {
+	QSettings *settings = new QSettings (fileName, QSettings::NativeFormat);
+	setSettingsObject (settings);
+	actionFallback->setEnabled (false);
+    }
+}
 
-// void 
-// IgSettingsEditor::about (void)
-// {
-//     QMessageBox::about(this, tr("About Settings Editor"),
-// 		       tr("This <b>Settings Editor</b> example shows how to access "
-// 			  "application settings using Qt."));
-// }
+void 
+IgSettingsEditor::openRegistryPath (void)
+{
+    QString path = QInputDialog::getText (this, tr("Open Registry Path"),
+					  tr("Enter the path in the Windows registry:"),
+					  QLineEdit::Normal, "HKEY_CURRENT_USER\\");
+    if (! path.isEmpty ()) 
+    {
+	QSettings *settings = new QSettings (path, QSettings::NativeFormat);
+	setSettingsObject (settings);
+	actionFallback->setEnabled (false);
+    }
+}
 
 void 
 IgSettingsEditor::refresh (void)
 {
-    settingsTree_->refresh ();
+    m_settingsTree->refresh ();
 }
 
 void 
 IgSettingsEditor::setAutoRefresh (bool value)
 {
-    settingsTree_->setAutoRefresh (value);
+    m_settingsTree->setAutoRefresh (value);
 }
 
 void 
 IgSettingsEditor::setFallbacksEnabled (bool value)
 {
-    settingsTree_->setFallbacksEnabled (value);
+    m_settingsTree->setFallbacksEnabled (value);
 }
 
 void 
 IgSettingsEditor::setSettingsObject (QSettings *settings)
 {
-    settingsTree_->setSettingsObject (settings);
+    m_settingsTree->setSettingsObject (settings);
+
+    actionRefresh->setEnabled (true);
+    actionAuto_Refresh->setEnabled (true);
 
     QString niceName = settings->fileName ();
     niceName.replace("\\", "/");
@@ -143,4 +134,10 @@ IgSettingsEditor::setSettingsObject (QSettings *settings)
 	niceName = tr("%1 (read only)").arg(niceName);
 
     setWindowTitle(tr("%1 - %2").arg(niceName).arg(tr("Settings Editor")));
+}
+
+void 
+IgSettingsEditor::about (void)
+{
+    qDebug () << "IgSettingsEditor::about not implemented yet.";
 }

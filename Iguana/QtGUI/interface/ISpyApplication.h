@@ -4,6 +4,7 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 # include <QObject>
+# include <QStringList> 
 # include <QTimer>
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 # include "Iguana/QtGUI/interface/ISpyReadThread.h"
@@ -18,13 +19,14 @@ class IgCollection;
 class ISpyMainWindow;
 class ISpyTreeModel;
 class QModelIndex;
-class QSplashScreen;
 class IgDataStorage;
 class IgCollectionTableModel;
 class IgMultiStorageTreeModel;
 class Ig3DBaseModel;
 class QTreeWidget;
 class QTreeWidgetItem;
+class SoSwitch;
+class ISpySplashScreen;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
@@ -48,8 +50,9 @@ public:
     virtual const char *appname (void) const;
 
 public slots:
-    void 		open (void);
+    void 		openFileDialog (void);
     void 		open (const QString &fileName);
+    void 		openFile (const QString &fileName);
     void 		connect (void);
     void 		autoEvents (void);
     void		nextEvent (void);
@@ -65,6 +68,9 @@ signals:
     void 		showMessage (const QString &fileName);
     void 		print (void);
     void 		save (void);
+    void 		firstEvent (void);
+    void 		lastEvent (void);
+    void		splashDone (void);
 
 protected:
     virtual int         usage (void);
@@ -74,19 +80,20 @@ protected:
 
 private slots:
     void		cleanSelection (void);
-    void 		collectionChanged (const QModelIndex &index);
     void		displayCollection (const QModelIndex &index);
     void		displayItem (const QModelIndex &index);
     void		newMember (const QString& name);
     void		initTreeItems (IgDataStorage *storage);
     void		updateTreeItems (IgDataStorage *storage);
     void 		twigChanged (const QModelIndex &index);
-    void		displayTwigCollection (const QModelIndex &index);
+    void		displayTwigCollection (IgDataStorage *storage);
+    void		cleanSplash (void);
     
     void		onExit (void);
     void		exit (void);
 
 private:
+    void		createCollectionModel (IgDataStorage *storage);    
     int 		doRun (void);
     void		closeFile (void);
     void		loadFile (const QString &fileName);
@@ -97,8 +104,6 @@ private:
     void 		readGeomZipMember (lat::ZipArchive::Iterator it);
     void		defaultSettings (void);
     void		restoreSettings (void);
-    void		restoreMainWindowSettings (void);
-    void		saveSettings (void);    
     void		drawCollection (IgCollection *collection);
     
     IgState	       *m_state;
@@ -118,12 +123,16 @@ private:
     QTreeWidget 	       *m_treeWidget;    
     IgDataStorage 	       *m_storage;
     IgDataStorage 	       *m_geomStorage;
-    QSplashScreen 	       *m_splash;
+    ISpySplashScreen 	       *m_splash;
     ISpyConsumerThread 		m_consumer;
     ISpyReadThread		m_readThread;
     QList<QTreeWidgetItem *> 	m_items;
+    QStringList			m_fileNames;
+
+    typedef std::map<const std::string, SoSwitch *> CollDrawMap;
+    CollDrawMap		m_collDraw;
     
-    bool	    	m_init;
+    bool	    	m_onExit;
     QTimer	       *m_timer;
     bool		m_auto;
 };

@@ -27,6 +27,10 @@
 #include "Iguana/QtGUI/interface/ISpySiStripDigiTwig.h"
 #include "Iguana/QtGUI/interface/ISpyTrackingRecHitTwig.h"
 #include "Iguana/QtGUI/interface/ISpyTrackTwig.h"
+#include "Iguana/QtGUI/interface/ISpyDTDigiTwig.h"
+#include "Iguana/QtGUI/interface/ISpyDTRecHitTwig.h"
+#include "Iguana/QtGUI/interface/ISpyEBRecHitTwig.h"
+#include "Iguana/QtGUI/interface/ISpyEERecHitTwig.h"
 
 ISpyRecoContent::ISpyRecoContent (IgState *state)
     : m_state (state)
@@ -93,4 +97,8 @@ ISpyRecoContent::init (void)
     twig24->selfVisible (true);
     IgTwig *twig25 = new ISpyTrackTwig (state (), rootTwig, "Track");
     twig25->selfVisible (true);
+    IgTwig *twig26 = new ISpyDTDigiTwig(state(), rootTwig, "DTDigi");
+    twig26->selfVisible(true);
+    IgTwig *twig29 = new ISpyDTRecHitTwig(state(), rootTwig, "DTRecHit");
+    twig29->selfVisible(true);
 }

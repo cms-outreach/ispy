@@ -91,20 +91,19 @@ main()
   }
   
   //Adding another collection
-  IgCollection *clusters= new IgCollection("Clusters/V1");
-  storage->attach(clusters);
-  IgProperty C_X = clusters->addProperty("x", 0.0);
-  IgProperty C_Y = clusters->addProperty("y", 0.0);
-  IgProperty C_Z = clusters->addProperty("z", 0.0);
-  IgProperty C_E = clusters->addProperty("e", 0.0);
+  IgCollection &clusters= storage->getCollection("Clusters/V1");
+  IgProperty C_X = clusters.addProperty("x", 0.0);
+  IgProperty C_Y = clusters.addProperty("y", 0.0);
+  IgProperty C_Z = clusters.addProperty("z", 0.0);
+  IgProperty C_E = clusters.addProperty("e", 0.0);
  
   // Checks getProperty / hasProperty API. 
-  assert(clusters->hasProperty ("e"));
-  assert(!clusters->hasProperty ("foo"));
-  assert(clusters->getProperty ("e").handle().data() == C_E.handle().data());
+  assert(clusters.hasProperty ("e"));
+  assert(!clusters.hasProperty ("foo"));
+  assert(clusters.getProperty ("e").handle().data() == C_E.handle().data());
   bool didThrow = false;
   try {
-    clusters->getProperty("foo");
+    clusters.getProperty("foo");
   } 
   catch (IgSchemaError &e)
   {
@@ -112,7 +111,7 @@ main()
   }
   assert (didThrow);
 
-  IgCollectionItem c1 = clusters->create();
+  IgCollectionItem c1 = clusters.create();
   c1["e"] = 5.4;
   c1["z"] = 5.3;
   c1["y"] = 5.2;
