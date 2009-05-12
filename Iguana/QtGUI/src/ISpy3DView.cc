@@ -762,12 +762,9 @@ ISpy3DView::farDistanceSensorCB (void *me, SoSensor *)
     if (self->isAutoClipping ())
     {
         SoCamera * const camera = self->getCamera ();
-        if (fabs(camera->farDistance.getValue() - SHRT_MAX) > 0.1)
-        {
-	    self->m_farDistanceSensor->detach ();
-	    camera->farDistance  = SHRT_MAX;
-	    self->m_farDistanceSensor->attach (&camera->farDistance);
-        }
+	self->m_farDistanceSensor->detach ();
+	camera->farDistance  = SHRT_MAX;
+	self->m_farDistanceSensor->attach (&camera->farDistance);
     }
 }
 
@@ -778,12 +775,9 @@ ISpy3DView::nearDistanceSensorCB (void *me, SoSensor *)
     if (self->isAutoClipping ())
     {
         SoCamera * const camera = self->getCamera ();
-        if (fabs(camera->nearDistance.getValue() - 0.1) > 0.0001)
-        {
-	    self->m_nearDistanceSensor->detach ();
-	    camera->nearDistance  = 0.1;
-	    self->m_nearDistanceSensor->attach (&camera->nearDistance);
-        }
+	self->m_nearDistanceSensor->detach ();
+	camera->nearDistance  = 0.1;
+	self->m_nearDistanceSensor->attach (&camera->nearDistance);
     }
 }
 

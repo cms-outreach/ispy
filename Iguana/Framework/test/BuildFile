@@ -1,8 +1,6 @@
 <use name=Iguana/Framework>
-<flags CXXFLAGS="-O0 -ggdb">
 <bin file=test_CollectionIOPerformance.cpp></bin>
 <bin file=test_CreateSimpleAssociations.cpp></bin>
-<bin file=test_CreateSimpleAssociations02.cpp></bin>
 <bin file=test_CreateWriteReadWriteReadPrintNoAssociations.cpp></bin>
 <bin file=test_ContainersOverride.cpp></bin>
 <bin file=test_CreateSimpleCollection.cpp></bin>
