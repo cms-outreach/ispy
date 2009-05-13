@@ -49,8 +49,8 @@ ISpyRecoContent::init (void)
 
     IgTwig *twig1 = new ISpyEventTwig (state (), rootTwig, "Event");
     twig1->selfVisible (true);
-    IgTwig *twig2 = new ISpyBasicClusterTwig (state (), rootTwig, "BasicCluster");
-    twig2->selfVisible (true);
+    //IgTwig *twig2 = new ISpyBasicClusterTwig (state (), rootTwig, "BasicCluster");
+    //twig2->selfVisible (true);
     IgTwig *twig3 = new ISpyCaloTowerTwig (state (), rootTwig, "CaloTower");
     twig3->selfVisible (true);
     IgTwig *twig4 = new ISpyCSCSegmentTwig (state (), rootTwig, "CSCSegment");
@@ -75,12 +75,12 @@ ISpyRecoContent::init (void)
     twig13->selfVisible (true);
     IgTwig *twig14 = new ISpyMuonTwig (state (), rootTwig, "Muon");
     twig14->selfVisible (true);
-    IgTwig *twig15 = new ISpyPFClusterTwig (state (), rootTwig, "PFCluster");
-    twig15->selfVisible (true);
-    IgTwig *twig16 = new ISpyPFRecHitTwig (state (), rootTwig, "PFRecHit");
-    twig16->selfVisible (true);
-    IgTwig *twig17 = new ISpyPFRecTrackTwig (state (), rootTwig, "PFRecTrack");
-    twig17->selfVisible (true);
+    //IgTwig *twig15 = new ISpyPFClusterTwig (state (), rootTwig, "PFCluster");
+    //twig15->selfVisible (true);
+    //IgTwig *twig16 = new ISpyPFRecHitTwig (state (), rootTwig, "PFRecHit");
+    //twig16->selfVisible (true);
+    //IgTwig *twig17 = new ISpyPFRecTrackTwig (state (), rootTwig, "PFRecTrack");
+    //twig17->selfVisible (true);
     IgTwig *twig18 = new ISpyPixelDigiTwig (state (), rootTwig, "PixelDigi");
     twig18->selfVisible (true);
     IgTwig *twig19 = new ISpyRPCRecHitTwig (state (), rootTwig, "RPCRecHit");
