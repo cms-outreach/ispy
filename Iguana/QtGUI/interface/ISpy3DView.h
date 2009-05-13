@@ -102,11 +102,6 @@ private:
     bool                m_oldView;
     bool		m_oldSeek;
     
-    //FIXME: remove these two sensors once the SoQt fixes the continuous
-    //rendering problem
-    SoFieldSensor       *m_farDistanceSensor;
-    SoFieldSensor       *m_nearDistanceSensor;
-
     // undefined semantics
     ISpy3DView (const ISpy3DView &);
     ISpy3DView &operator= (const ISpy3DView &);

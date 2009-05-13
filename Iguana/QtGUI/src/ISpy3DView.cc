@@ -32,9 +32,7 @@ ISpy3DView::ISpy3DView (IgState *state, Ig3DBaseModel *model, QWidget *parent)
       m_whatsThisPicking (false),
       m_grid (false),
       m_oldView (true),
-      m_oldSeek (false),
-      m_farDistanceSensor (0),
-      m_nearDistanceSensor (0)
+      m_oldSeek (false)
 {
     initWidget ();
 }
@@ -170,17 +168,10 @@ ISpy3DView::setupActions (void)
 void
 ISpy3DView::initCamera (void)
 {
-    //FIXME: remove when SoQt fixes the continious rendering problem
-    //create sersors to sence the near and for clip plane distance and
-    //force them to be 0.1 and SHRT_MAX
     SoCamera * const camera = SoQtExaminerViewer::getCamera ();    
     if (!camera) return; // probably a scene-less viewer
     const SbVec3f org (0.0, 0.0, 0.0);
     
-    m_farDistanceSensor = new SoFieldSensor (&farDistanceSensorCB, this);
-    m_farDistanceSensor->attach (&camera->farDistance);
-    m_nearDistanceSensor = new SoFieldSensor (&nearDistanceSensorCB, this);
-    m_nearDistanceSensor->attach (&camera->nearDistance);
 //     camera->position.setValue (-18.1, 8.6, 14.0);
 //     camera->orientation.setValue (-0.3, -0.93, -0.2, 1.1);
 //     camera->nearDistance  = 0.1;
@@ -736,10 +727,6 @@ ISpy3DView::toggleCameraType (void)
     SoCamera * const camera = this->getCamera ();
     if (!camera) return; // probably a scene-less viewer
 
-    camera->farDistance  = SHRT_MAX;
-    camera->nearDistance  = 0.1;
-    m_farDistanceSensor->attach (&camera->farDistance);
-    m_nearDistanceSensor->attach (&camera->nearDistance);
     cameraToggled();
 }
 
@@ -753,32 +740,6 @@ ISpy3DView::invertCamera (void)
     camera->orientation.setValue (
         SbRotation (SbVec3f (0.F,-1.F,0.F), M_PI)
 	* camera->orientation.getValue ());
-}
-
-void
-ISpy3DView::farDistanceSensorCB (void *me, SoSensor *)
-{
-    ISpy3DView *self = static_cast<ISpy3DView *> (me);
-    if (self->isAutoClipping ())
-    {
-        SoCamera * const camera = self->getCamera ();
-	self->m_farDistanceSensor->detach ();
-	camera->farDistance  = SHRT_MAX;
-	self->m_farDistanceSensor->attach (&camera->farDistance);
-    }
-}
-
-void
-ISpy3DView::nearDistanceSensorCB (void *me, SoSensor *)
-{
-    ISpy3DView *self = static_cast<ISpy3DView *> (me);
-    if (self->isAutoClipping ())
-    {
-        SoCamera * const camera = self->getCamera ();
-	self->m_nearDistanceSensor->detach ();
-	camera->nearDistance  = 0.1;
-	self->m_nearDistanceSensor->attach (&camera->nearDistance);
-    }
 }
 
 void
