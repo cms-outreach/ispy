@@ -498,10 +498,6 @@ ISpyApplication::doRun (void)
     m_mainWindow->actionPrint->setEnabled (true);
     new ISpyRecoContent (state ());
 
-    QSettings settings;
-    QString fileName = settings.value ("igfiles/geometry").value<QString> ();
-    loadGeomFile (fileName);
-
     if (m_archive == 0)
     {
 	if (args->args () == 2)

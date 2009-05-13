@@ -31,7 +31,8 @@ ISpyMainWindow::setupActions (void)
 {    
     QSettings *settings = new QSettings (QCoreApplication::organizationDomain (),
 					 QCoreApplication::applicationName ());
-
+    settings->clear();
+    settings->sync();
     m_settingsEditor->setSettingsObject (settings);
 
     QObject::connect (actionFileOpen, SIGNAL(triggered()), this, SIGNAL(open()));
