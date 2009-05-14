@@ -1226,7 +1226,7 @@ ISpyApplication::open (const QString &fileName)
 	showMessage(QString("Opening ") + fileName + tr("..."));
 
 	QSettings settings;
-	QString geomFileName = settings.value ("igfiles/geometry").value<QString> ();
+	QString geomFileName = settings.value ("igfiles/geometry", "default-geometry.ig").value<QString> ();
 	qDebug () << "Geometry? " << geomFileName;
 	if (fileName.contains (geomFileName, Qt::CaseInsensitive))
 	{
