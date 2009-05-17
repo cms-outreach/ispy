@@ -11,6 +11,9 @@
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
+
+class IgDataStorage;
+
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
@@ -23,20 +26,21 @@ public:
     ISpyConsumerThread(QObject *parent = 0);
     ~ISpyConsumerThread (void);
     
-    void	nextEvent (void);
+    void	nextEvent (IgDataStorage *toStorage);
 
 signals:
-    void 	newEvent(void);
+    void 	newEvent (const QString &name);
 
 protected:
-    void run(void);
+    void 	run (void);
 
 private:
-    QMutex 		mutex_;
-    QWaitCondition 	condition_;
-    bool 		restart_;    
-    bool		abort_;
-    IgNet::Object      *data_;
+    QMutex 		m_mutex;
+    QWaitCondition 	m_condition;
+    IgDataStorage      *m_storage;
+    bool 		m_restart;    
+    bool		m_abort;
+    IgNet::Object      *m_data;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

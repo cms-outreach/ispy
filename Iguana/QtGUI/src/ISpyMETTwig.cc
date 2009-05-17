@@ -6,6 +6,7 @@
 #include "Iguana/QtGUI/interface/ISpyReadService.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Framework/interface/IgCollection.h"
+#include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoIndexedLineSet.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoVertexProperty.h>
@@ -45,17 +46,26 @@ ISpyMETTwig::onNewEvent (ISpyEventMessage& message)
     {	
 	SoSeparator *sep = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
 	sep->setName (SbName ("ISpyMETTwig"));
-
+	
 	SoMaterial *mat = new SoMaterial;
 	float rgbcomponents [4];
 	IgSbColorMap::unpack (0xFF5B0000, rgbcomponents);
 	mat->diffuseColor.setValue (SbColor (rgbcomponents));
 	sep->addChild (mat);
-
+	
 	SoDrawStyle *sty = new SoDrawStyle;
 	sty->style = SoDrawStyle::LINES;
 	sty->lineWidth.setValue (3);
 	sep->addChild (sty);
+
+	SoAnnotation *ann = new SoAnnotation;
+	sep->addChild (ann);
+
+	SoDrawStyle *dashed = new SoDrawStyle;
+	dashed->style = SoDrawStyle::LINES;
+	dashed->lineWidth.setValue (3);
+	dashed->linePattern.setValue (0x0f0f);
+	ann->addChild (dashed);
 
 	IgDataStorage *storage = readService->dataStorage ();
 	if (storage->hasCollection ("METs_V1"))
@@ -92,6 +102,7 @@ ISpyMETTwig::onNewEvent (ISpyEventMessage& message)
 		lineSet->vertexProperty = vertices;
 
 		sep->addChild (lineSet);
+		ann->addChild (lineSet);
 	    }
 	}
     }

@@ -3,7 +3,7 @@
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
-# include "ui_IgSettingsEditorDialog.h"
+# include "ui_IgSettingsEditorMainWindow.h"
 # include <QObject>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -18,7 +18,7 @@ class IgSettingsTree;
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-class IgSettingsEditor : public QDialog, public Ui::IgSettingsEditorDialog
+class IgSettingsEditor : public QMainWindow, private Ui::IgSettingsEditorMainWindow
 {
     Q_OBJECT
 public:
@@ -27,14 +27,23 @@ public:
     // implicit assignment operator
     // implicit destructor
 
-    void		refresh (void);
-    void 		setAutoRefresh (bool value);
-    void		setFallbacksEnabled (bool value);
     void 		setSettingsObject (QSettings *settings);
+
+public slots:
+    void 		about (void);
+    void 		openSettings (void);
+    void 		openIniFile (void);
+    void 		openPropertyList (void);
+    void 		openRegistryPath (void);
+    void 		refresh (void);
+    void 		setAutoRefresh (bool value);
+    void 		setFallbacksEnabled (bool value);
     
 private:
-    IgSettingsTree 	*settingsTree_;
-    IgLocationDialog 	*locationDialog_;
+    void		setupActions (void);
+    
+    IgSettingsTree 	*m_settingsTree;
+    IgLocationDialog 	*m_locationDialog;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

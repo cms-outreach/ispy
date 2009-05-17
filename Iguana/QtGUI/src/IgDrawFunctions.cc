@@ -6,6 +6,7 @@
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/Inventor/interface/IgSbColorMap.h"
 #include "Iguana/Inventor/interface/IgSoJet.h"
+#include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoIndexedLineSet.h>
 #include <Inventor/nodes/SoLineSet.h>
@@ -328,16 +329,33 @@ namespace
 		   const std::string &rep)
     {	    
 	double ecut = 0.1;
+	bool hlrMode = false;
 	
 	QSettings settings;
 	if (settings.contains ("igevents/cuts/calotowers/energy"))
 	{
 	    ecut = settings.value ("igevents/cuts/calotowers/energy").value<double> ();
 	}
+	if (settings.contains ("igdisplay/hadtowers/view3d/hiddenlineremoval"))
+	{
+	    hlrMode = settings.value ("igdisplay/hadtower/view3d/hiddenlineremoval").value<bool> ();
+	}
 
 	SoSeparator *sep = new SoSeparator;
 	sep->setName (SbName (collection.c_str ()));
-
+	SoAnnotation *ann = 0;
+	
+	if (hlrMode)
+	{	    
+	    ann = new SoAnnotation;
+	    sep->addChild (ann);
+	    SoDrawStyle *dashed = new SoDrawStyle;
+	    dashed->style = SoDrawStyle::LINES;
+	    dashed->lineWidth.setValue (1);
+	    dashed->linePattern.setValue (0x0f0f);
+	    ann->addChild (dashed);
+	}
+	
 	ISpyReadService* readService = ISpyReadService::get (state);
 	ASSERT (readService);
 
@@ -558,6 +576,11 @@ namespace
 
 		sep->addChild (lineSet);
 		
+		if (hlrMode)
+		{
+		    ann->addChild (lineSet);
+		}
+		
 		SoIndexedFaceSet *faces = new SoIndexedFaceSet;
 		faces->coordIndex.setValues (0, indices.size (), &indices [0]);
 		faces->vertexProperty = vertices;
@@ -574,16 +597,33 @@ namespace
 		     const std::string &rep)
     {	    
 	double ecut = 0.1;
+	bool hlrMode = false;
 	
 	QSettings settings;
 	if (settings.contains ("igevents/cuts/ecal/barrel/rechits/energy"))
 	{
 	    ecut = settings.value ("igevents/cuts/ecal/barrel/rechits/energy").value<double> ();
 	}
-
+	if (settings.contains ("igdisplay/crystalhits/view3d/hiddenlineremoval"))
+	{
+	    hlrMode = settings.value ("igdisplay/crystalhits/view3d/hiddenlineremoval").value<bool> ();
+	}
+	
 	SoSeparator *sep = new SoSeparator;
 	sep->setName (SbName (collection.c_str ()));
-
+	SoAnnotation *ann = 0;
+	
+	if (hlrMode)
+	{	    
+	    ann = new SoAnnotation;
+	    sep->addChild (ann);
+	    SoDrawStyle *dashed = new SoDrawStyle;
+	    dashed->style = SoDrawStyle::LINES;
+	    dashed->lineWidth.setValue (1);
+	    dashed->linePattern.setValue (0x0f0f);
+	    ann->addChild (dashed);
+	}
+	
 	ISpyReadService* readService = ISpyReadService::get (state);
 	ASSERT (readService);
 
@@ -803,6 +843,11 @@ namespace
 
 		sep->addChild (lineSet);
 		
+		if (hlrMode)
+		{	    
+		    ann->addChild (lineSet);
+		}
+		
 		SoIndexedFaceSet *faces = new SoIndexedFaceSet;
 		faces->coordIndex.setValues (0, indices.size (), &indices [0]);
 		faces->vertexProperty = vertices;
@@ -821,6 +866,27 @@ namespace
 	SoSeparator *sep = new SoSeparator;
 	sep->setName (SbName (collection.c_str ()));
 
+	bool hlrMode = false;
+
+	QSettings settings;
+	if (settings.contains ("igdisplay/crystals/view3d/hiddenlineremoval"))
+	{
+	    hlrMode = settings.value ("igdisplay/crystals/view3d/hiddenlineremoval").value<bool> ();
+	}
+
+	SoAnnotation *ann = 0;
+	
+	if (hlrMode)
+	{	    
+	    ann = new SoAnnotation;
+	    sep->addChild (ann);
+	    SoDrawStyle *dashed = new SoDrawStyle;
+	    dashed->style = SoDrawStyle::LINES;
+	    dashed->lineWidth.setValue (1);
+	    dashed->linePattern.setValue (0x0f0f);
+	    ann->addChild (dashed);
+	}
+	
 	ISpyReadService* readService = ISpyReadService::get (state);
 	ASSERT (readService);
 
@@ -1008,6 +1074,10 @@ namespace
 		lineSet->vertexProperty = vertices;
 
 		sep->addChild (lineSet);
+		if (hlrMode)
+		{	    
+		    ann->addChild (lineSet);
+		}
 		
 		SoIndexedFaceSet *faces = new SoIndexedFaceSet;
 		faces->coordIndex.setValues (0, indices.size (), &indices [0]);

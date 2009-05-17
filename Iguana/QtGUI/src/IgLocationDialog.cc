@@ -25,13 +25,13 @@ IgLocationDialog::IgLocationDialog (QWidget *parent)
     scopeComboBox->addItem(tr("System"));
 
     organizationComboBox = new QComboBox;
-    organizationComboBox->addItem(tr("Iguana"));
+    organizationComboBox->addItem(tr("iguana"));
     organizationComboBox->setEditable(true);
 
     applicationComboBox = new QComboBox;
     applicationComboBox->addItem(tr("Any"));
-    applicationComboBox->addItem(tr("iSpy"));
-    applicationComboBox->addItem(tr("Iguana"));
+    applicationComboBox->addItem(tr("ispy"));
+    applicationComboBox->addItem(tr("iguana"));
     applicationComboBox->setEditable(true);
     applicationComboBox->setCurrentIndex(1);
 

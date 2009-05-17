@@ -4,7 +4,6 @@
 /IgBrowserDB.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgBrowserMethods.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgCapabilityDB.cc/1.1/Thu Apr 23 07:10:24 2009//
-/IgCollection.cc/1.2/Thu Apr 23 07:10:24 2009//
 /IgDatum.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgDocumentDataRoot.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgDriver.cc/1.1/Thu Apr 23 07:10:24 2009//
@@ -42,4 +41,5 @@
 /debug.h/1.1/Thu Apr 23 07:10:24 2009//
 /utils.h/1.1/Thu Apr 23 07:10:24 2009//
 /xtypeinfo.cc/1.1/Thu Apr 23 07:10:24 2009//
+/IgCollection.cc/1.2/Thu Apr 23 09:37:42 2009//
 D

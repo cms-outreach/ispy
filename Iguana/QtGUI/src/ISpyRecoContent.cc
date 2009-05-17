@@ -27,6 +27,10 @@
 #include "Iguana/QtGUI/interface/ISpySiStripDigiTwig.h"
 #include "Iguana/QtGUI/interface/ISpyTrackingRecHitTwig.h"
 #include "Iguana/QtGUI/interface/ISpyTrackTwig.h"
+#include "Iguana/QtGUI/interface/ISpyDTDigiTwig.h"
+#include "Iguana/QtGUI/interface/ISpyDTRecHitTwig.h"
+#include "Iguana/QtGUI/interface/ISpyEBRecHitTwig.h"
+#include "Iguana/QtGUI/interface/ISpyEERecHitTwig.h"
 
 ISpyRecoContent::ISpyRecoContent (IgState *state)
     : m_state (state)
@@ -45,8 +49,8 @@ ISpyRecoContent::init (void)
 
     IgTwig *twig1 = new ISpyEventTwig (state (), rootTwig, "Event");
     twig1->selfVisible (true);
-    IgTwig *twig2 = new ISpyBasicClusterTwig (state (), rootTwig, "BasicCluster");
-    twig2->selfVisible (true);
+    //IgTwig *twig2 = new ISpyBasicClusterTwig (state (), rootTwig, "BasicCluster");
+    //twig2->selfVisible (true);
     IgTwig *twig3 = new ISpyCaloTowerTwig (state (), rootTwig, "CaloTower");
     twig3->selfVisible (true);
     IgTwig *twig4 = new ISpyCSCSegmentTwig (state (), rootTwig, "CSCSegment");
@@ -71,12 +75,12 @@ ISpyRecoContent::init (void)
     twig13->selfVisible (true);
     IgTwig *twig14 = new ISpyMuonTwig (state (), rootTwig, "Muon");
     twig14->selfVisible (true);
-    IgTwig *twig15 = new ISpyPFClusterTwig (state (), rootTwig, "PFCluster");
-    twig15->selfVisible (true);
-    IgTwig *twig16 = new ISpyPFRecHitTwig (state (), rootTwig, "PFRecHit");
-    twig16->selfVisible (true);
-    IgTwig *twig17 = new ISpyPFRecTrackTwig (state (), rootTwig, "PFRecTrack");
-    twig17->selfVisible (true);
+    //IgTwig *twig15 = new ISpyPFClusterTwig (state (), rootTwig, "PFCluster");
+    //twig15->selfVisible (true);
+    //IgTwig *twig16 = new ISpyPFRecHitTwig (state (), rootTwig, "PFRecHit");
+    //twig16->selfVisible (true);
+    //IgTwig *twig17 = new ISpyPFRecTrackTwig (state (), rootTwig, "PFRecTrack");
+    //twig17->selfVisible (true);
     IgTwig *twig18 = new ISpyPixelDigiTwig (state (), rootTwig, "PixelDigi");
     twig18->selfVisible (true);
     IgTwig *twig19 = new ISpyRPCRecHitTwig (state (), rootTwig, "RPCRecHit");
@@ -93,4 +97,8 @@ ISpyRecoContent::init (void)
     twig24->selfVisible (true);
     IgTwig *twig25 = new ISpyTrackTwig (state (), rootTwig, "Track");
     twig25->selfVisible (true);
+    IgTwig *twig26 = new ISpyDTDigiTwig(state(), rootTwig, "DTDigi");
+    twig26->selfVisible(true);
+    IgTwig *twig29 = new ISpyDTRecHitTwig(state(), rootTwig, "DTRecHit");
+    twig29->selfVisible(true);
 }

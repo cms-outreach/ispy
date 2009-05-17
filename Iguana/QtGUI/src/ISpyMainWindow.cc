@@ -3,6 +3,7 @@
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
 #include "Iguana/QtGUI/interface/IgLocationDialog.h"
 #include "Iguana/QtGUI/interface/IgSettingsEditor.h"
+#include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include <QtGui>
 #include <math.h>
 #include <iostream>
@@ -19,145 +20,100 @@
 
 ISpyMainWindow::ISpyMainWindow (QWidget *parent)
     : QMainWindow (parent),
-      m_RPhiGrid        (0),
-      m_RPhiGridControl (0),
-      m_RZGrid          (0),
-      m_RZGridControl   (0),
-      m_scene           (0),
-      m_focus           (0),
-      m_controlCenter   (new ISpyControlCenter),
-      m_xScale		(2.), 
-      m_yScale		(2.),
-      m_locationDialog	(0),
-      m_settingsEditor	(new IgSettingsEditor (this))
+      m_settingsEditor	(new IgSettingsEditor (parent))
 {
     setupUi (this);
-    // 	QRectF geo = graphicsView->geometry();
-    // 	m_scene = new ISpyScene (geo.x (), geo.y (), geo.width (), geo.height ());
-    // TODO dynamically adapt size? how do we fit the scene to the view dynamically?
-    //     m_scene = new ISpyScene (-200, -200, 400, 400); 
-    //     graphicsView->setScene (m_scene);
-    //     graphicsView->show();
-	
-    // used in order to uncheck the controlcenter button if it is closed by pressing "x"
-    connect( m_controlCenter, SIGNAL( isShown(bool) ), actionShowControlCenter, SLOT( setChecked(bool) ) );
+    setupActions ();
+}
 
-#ifndef Q_WS_MAC
-    actionOpen_Mac_Property_List->setEnabled(false);
-#endif
-#ifndef Q_WS_WIN
-    actionOpen_Windows_Registry_Path->setEnabled(false);
-#endif
-
-    QSettings defaultSettings;
-    
-    QSettings *settings = new QSettings(defaultSettings.format (),
-					defaultSettings.scope (),
-					"Iguana",
-					"iSpy");
-
+void
+ISpyMainWindow::setupActions (void)
+{    
+    QSettings *settings = new QSettings (QCoreApplication::organizationDomain (),
+					 QCoreApplication::applicationName ());
+    settings->clear();
+    settings->sync();
     m_settingsEditor->setSettingsObject (settings);
-    actionFallbacks->setEnabled (true);
+
+    QObject::connect (actionFileOpen, SIGNAL(triggered()), this, SIGNAL(open()));
+    QObject::connect (actionAuto, SIGNAL(triggered()), this, SIGNAL(autoEvents()));
+    QObject::connect (actionNext, SIGNAL(triggered()), this, SIGNAL(nextEvent()));
+    QObject::connect (actionPrevious, SIGNAL(triggered()), this, SIGNAL(previousEvent()));
+    QObject::connect (actionRewind, SIGNAL(triggered()), this, SIGNAL(rewind()));
+    QObject::connect (actionPrint, SIGNAL(triggered()), this, SIGNAL(print ()));
+    QObject::connect (actionSave, SIGNAL(triggered()), this, SIGNAL(save ()));
+    QObject::connect (actionMaximize, SIGNAL(triggered()), this, SLOT(maximize()));
+    QObject::connect (actionFull_screen, SIGNAL(triggered()), this, SLOT(fullScreen()));
+    actionFull_screen->setEnabled (false);
+    restoreSettings ();    
 }
 
 ISpyMainWindow::~ISpyMainWindow ()
-{
-    delete m_RPhiGrid;
-    delete m_RPhiGridControl;
-    delete m_RZGrid;
-    delete m_RZGridControl;
-    delete m_scene;
-    delete m_controlCenter;
-}
-
-void
-ISpyMainWindow::setZoomFocus (ISpyItem* item)
-{
-    // this method remembers the last item that has been shown/active,
-    // i.e. used for zooming
-    m_focus = item;
-}
-
-void
-ISpyMainWindow::zoomIn ()
-{
-    // using the fact that zoomIn is a virtual function of ISpyItem
-    if (m_focus != 0)
-	m_focus->zoomIn ();
-
-    //     graphicsView->scale (m_xScale, m_yScale);
-}
-
-void
-ISpyMainWindow::zoomOut ()
-{
-    if (m_focus != 0)
-	m_focus->zoomOut ();
-
-    //     graphicsView->scale (1. / m_xScale, 1. / m_yScale);
-}
+{}
 
 void 
-ISpyMainWindow::showControlCenter (bool show)
+ISpyMainWindow::restoreSettings (void)
 {
-    if (show)
-    {
-	m_controlCenter->show ();
-    }
-    else
-    {
-	m_controlCenter->hide ();
+    QSettings settings;
+    if (settings.contains ("mainwindow/treeview/shown"))
+	dockTreeWidget->setShown (settings.value ("mainwindow/treeview/shown").value<bool> ());
+    if (settings.contains ("mainwindow/treeview/floating"))
+	dockTreeWidget->setFloating(settings.value ("mainwindow/treeview/floating").value<bool> ());
+    if (settings.contains ("mainwindow/tableview/shown"))
+	dockTableWidget->setShown (settings.value ("mainwindow/tableview/shown").value<bool> ());
+    if (settings.contains ("mainwindow/tableview/floating"))
+	dockTableWidget->setFloating(settings.value ("mainwindow/tableview/floating").value<bool> ());
+    if (settings.contains ("mainwindow/configuration/save"))
+	actionSaveSettings->setChecked (settings.value ("mainwindow/configuration/save").value<bool> ());
+    
+    if (settings.contains ("igevents/auto"))
+    {	
+	bool flag = settings.value ("igevents/auto").value<bool> ();
+	actionAuto->setEnabled (flag);
+	actionAuto->setChecked (flag);
     }
 }
 
 void 
-ISpyMainWindow::showRPhiGrid (bool show)
+ISpyMainWindow::saveSettings (void)
 {
-    // show or hide the grid
-    if (show)
+    QSettings settings;
+    qDebug () << "ISpyMainWindow::saveSettings...\n";
+    bool saveFlag = actionSaveSettings->isChecked ();
+    settings.setValue ("mainwindow/configuration/save", saveFlag);
+    if (saveFlag)
     {
-	// instantiate the grid if it doesn't exist yet, add it to the scene
-	// and register it in the control center
-	if (m_RPhiGrid == 0)
-	{
-	    m_RPhiGrid = new IgPolarCoordSystem;
-	    m_scene->addItem (m_RPhiGrid);
-	    m_controlCenter->setControlledItem (0, m_RPhiGrid);
-	}
-	m_RPhiGrid->show ();
-	// the grid was just actived, so it's in focus
-	setZoomFocus (m_RPhiGrid);
+	bool treeFlag = actionTwig_Explorer->isChecked ();
+	bool tableFlag = actionObject_Inspector->isChecked ();
+
+	settings.setValue ("mainwindow/treeview/shown", treeFlag);
+	settings.setValue ("mainwindow/treeview/floating", dockTreeWidget->isFloating ());
+	settings.setValue ("mainwindow/tableview/shown", tableFlag);
+	settings.setValue ("mainwindow/tableview/floating", dockTableWidget->isFloating ());
+
+	settings.setValue ("igevents/auto", actionAuto->isChecked ());
+// 	settings.setValue ("mainwindow/toolbars/file/shown", actionFile_Toolbar->isChecked ());
+// 	settings.setValue ("mainwindow/toolbars/event/shown", actionFile_Event->isChecked ());
     }
     else
     {
-	m_RPhiGrid->hide ();
+	const QString visSettings ("igtwigs/visibility/");
+	settings.remove (visSettings);
     }
 }
 
-void 
-ISpyMainWindow::showRZGrid (bool show)
+QMdiArea *
+ISpyMainWindow::workspace (void) 
 {
-    if (show)
-    {
-	if (m_RZGrid == 0)
-	{
-	    m_RZGrid = new IgRZCoordSystem;
-	    m_scene->addItem (m_RZGrid);
-	    m_controlCenter->setControlledItem (1, m_RZGrid);
-	}
-	m_RZGrid->show ();
-		
-	setZoomFocus (m_RZGrid);
-    }
-    else
-    {
-	m_RZGrid->hide ();
-    }
+    return this->mdiArea;
 }
 
 void
 ISpyMainWindow::writeSettings (bool value)
-{}
+{
+    qDebug () << "ISpyMainWindow::writeSettings...\n";
+    saveSettings ();
+}
 
 void 
 ISpyMainWindow::showSettingsEditor (void)
@@ -171,101 +127,55 @@ ISpyMainWindow::showSettingsEditor (void)
 void 
 ISpyMainWindow::about (void)
 {
-    QMessageBox::about(this, tr("About iSpy"),
-		       tr("<b>IGUANA iSpy 1.0a</b> is an interactive graphics program "
-			  "that can be downloaded from the Web and used to display physics "
-			  "events without the need of any CMS software.\nCopyright (C) 2009 CMS\n"));
+    ISpySplashScreen *splash = new ISpySplashScreen;
+    splash->show ();
 }
 
 void 
-ISpyMainWindow::aboutQt (void)
+ISpyMainWindow::maximize (void)
 {
-    qApp->aboutQt ();
-}
-
-void 
-ISpyMainWindow::openSettings (void)
-{
-    if (!m_locationDialog)
-	m_locationDialog = new IgLocationDialog (this);
-
-    if (m_locationDialog->exec ()) 
+    if (this->isMaximized ())
     {
-	QSettings *settings = new QSettings(m_locationDialog->format (),
-					    m_locationDialog->scope (),
-					    m_locationDialog->organization (),
-					    m_locationDialog->application ());
-	setSettingsObject (settings);
-	actionFallbacks->setEnabled (true);
-	showSettingsEditor ();	
+        actionMaximize->setText(QApplication::translate("IgMainWindow", "Maximize", 0, QApplication::UnicodeUTF8));
+	actionFull_screen->setEnabled (true);
+	actionFull_screen->setEnabled (false);
+	this->showNormal ();
+    } 
+    else 
+    { 
+	actionMaximize->setText(QApplication::translate("IgMainWindow", "Show &Normal", 0, QApplication::UnicodeUTF8));
+	actionFull_screen->setEnabled (false);
+	this->showMaximized ();
     }
 }
 
 void 
-ISpyMainWindow::openIniFile (void)
+ISpyMainWindow::fullScreen (void)
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open INI File"),
-						    "", tr("INI Files (*.ini *.conf)"));
-    if (! fileName.isEmpty ()) 
+    if (isFullScreen ())
     {
-	QSettings *settings = new QSettings (fileName, QSettings::IniFormat);
-	setSettingsObject (settings);
-	actionFallbacks->setEnabled(false);
+	actionMaximize->setEnabled (true);
+	menubar->show ();
+	//	toolBarFile->show ();
+	toolBarEvent->show ();
+	dockTableWidgetContents->show ();
+	dockTreeWidgetContents->show ();
+	showNormal ();
+    } 
+    else 
+    { 
+        menubar->hide ();
+	//	toolBarFile->hide ();
+	toolBarEvent->hide ();
+	dockTableWidgetContents->hide ();
+	dockTreeWidgetContents->hide ();
+	actionMaximize->setEnabled (false);
+        showMaximized ();
     }
-}
-
-void 
-ISpyMainWindow::openPropertyList (void)
-{
-    QString fileName = QFileDialog::getOpenFileName(this,
-						    tr("Open Property List"),
-						    "", tr("Property List Files (*.plist)"));
-    if (! fileName.isEmpty ()) 
-    {
-	QSettings *settings = new QSettings (fileName, QSettings::NativeFormat);
-	setSettingsObject (settings);
-	actionFallbacks->setEnabled (false);
-    }
-}
-
-void 
-ISpyMainWindow::openRegistryPath (void)
-{
-    QString path = QInputDialog::getText(this, tr("Open Registry Path"),
-					 tr("Enter the path in the Windows registry:"),
-					 QLineEdit::Normal, "HKEY_CURRENT_USER\\");
-    if (! path.isEmpty ()) 
-    {
-	QSettings *settings = new QSettings (path, QSettings::NativeFormat);
-	setSettingsObject (settings);
-	actionFallbacks->setEnabled (false);
-    }
-}
-
-void 
-ISpyMainWindow::refreshSettingsEditor (void)
-{
-    m_settingsEditor->refresh ();
-}
-
-void 
-ISpyMainWindow::setAutoRefresh (bool value)
-{
-    m_settingsEditor->setAutoRefresh (value);
-}
-
-void 
-ISpyMainWindow::setFallbacksEnable (bool value)
-{
-    m_settingsEditor->setFallbacksEnabled (value);
 }
 
 void 
 ISpyMainWindow::setSettingsObject (QSettings *settings)
 {
-    settings->setFallbacksEnabled (actionFallbacks->isChecked ());
     m_settingsEditor->setSettingsObject (settings);
-
-    actionRefresh->setEnabled (true);
-    actionAuto_Refresh->setEnabled (true);
 }

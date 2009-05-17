@@ -11,6 +11,7 @@
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
 class IgState;
+class QToolBar;
 class QWidget;
 class Ig3DBaseModel;
 class SoFieldSensor;
@@ -33,6 +34,7 @@ public:
     virtual IgState *		state (void) const;
     virtual Ig3DBaseModel *     model (void) const;
     virtual QWidget *		parent (void) const;
+    virtual QToolBar *		toolBar (void) const;
     virtual void 		initCamera (void);
 
     virtual void   printBitmap (QString file, float ppi,
@@ -86,10 +88,12 @@ private:
 
     virtual void   	drawGrid (const bool enable);
     int 		getGL2PSOptions (void);
+    void		setupActions (void);
     SoNode *		findGroup (SoNode *node, const char* name);
     
     IgState    	       *m_state;
     QWidget	       *m_parent;
+    QToolBar	       *m_toolBar;    
     Ig3DBaseModel      *m_model;
     int     		m_gl2psOptions;
     int         	m_gl2psFBBufferSize;
@@ -98,11 +102,6 @@ private:
     bool                m_oldView;
     bool		m_oldSeek;
     
-    //FIXME: remove these two sensors once the SoQt fixes the continuous
-    //rendering problem
-    SoFieldSensor       *m_farDistanceSensor;
-    SoFieldSensor       *m_nearDistanceSensor;
-
     // undefined semantics
     ISpy3DView (const ISpy3DView &);
     ISpy3DView &operator= (const ISpy3DView &);

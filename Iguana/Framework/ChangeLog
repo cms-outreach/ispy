@@ -1,3 +1,8 @@
+2009-04-24  Ianna Osborne  <Ianna.Osborne@cern.ch>
+
+	* IgCollection.h: Constructor is protected.
+	* test_CreateSimpleCollection.cpp: Fixed compilation problem.
+
 2009-04-21  Ianna Osborne  <Ianna.Osborne@cern.ch>
 
 	* IgCollection.h: Bug fix for associated collections.  
