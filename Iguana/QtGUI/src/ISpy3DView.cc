@@ -20,6 +20,7 @@
 #include <QtGui>
 #include "classlib/utils/DebugAids.h"
 #include <iostream>
+#include <typeinfo>
 
 #include <Inventor/actions/SoSearchAction.h>
 #include <Inventor/nodekits/SoBaseKit.h>
@@ -175,17 +176,35 @@ ISpy3DView::setupActions (void)
     actionViewPlaneZ->setToolTip (QApplication::translate ("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
 
-    QAction *actionCameraToggle = new QAction (parent ());
-    actionCameraToggle->setObjectName (QString::fromUtf8 ("actionCameraToggle"));
+    QActionGroup *viewModeGroup = new QActionGroup(parent ());
+    viewModeGroup->setExclusive(true);
+
+    QAction *actionCameraPerspective = new QAction (parent ());
+    actionCameraPerspective->setObjectName (QString::fromUtf8 ("actionCameraToggle"));
     QIcon icon8;
-    icon8.addPixmap (QPixmap (QString::fromUtf8 (":/images/ortho.xpm")), QIcon::Normal, QIcon::On);
     icon8.addPixmap (QPixmap (QString::fromUtf8 (":/images/perspective.xpm")), QIcon::Normal, QIcon::Off);
-    actionCameraToggle->setIcon (icon8);
-    actionCameraToggle->setCheckable (true);
-    actionCameraToggle->setText (QApplication::translate ("ISpy3DView", "CameraToggle", 0, QApplication::UnicodeUTF8));
+    actionCameraPerspective->setIcon (icon8);
+    actionCameraPerspective->setCheckable (true);
+    actionCameraPerspective->setText (QApplication::translate ("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
+
 #ifndef QT_NO_TOOLTIP
-    actionCameraToggle->setToolTip (QApplication::translate ("ISpy3DView", "CameraToggle", 0, QApplication::UnicodeUTF8));
+    actionCameraPerspective->setToolTip (QApplication::translate ("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
+
+    QAction *actionCameraOrthographic = new QAction (parent ());
+    actionCameraOrthographic->setObjectName (QString::fromUtf8 ("actionCameraToggle"));
+    QIcon icon9;
+    icon9.addPixmap (QPixmap (QString::fromUtf8 (":/images/ortho.xpm")), QIcon::Normal, QIcon::On);
+    actionCameraOrthographic->setIcon (icon9);
+    actionCameraOrthographic->setText (QApplication::translate ("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
+    actionCameraOrthographic->setCheckable (true);
+    actionCameraOrthographic->setChecked (true);
+    #ifndef QT_NO_TOOLTIP
+    actionCameraOrthographic->setToolTip (QApplication::translate ("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
+    #endif // QT_NO_TOOLTIP
+    
+    viewModeGroup->addAction(actionCameraPerspective);
+    viewModeGroup->addAction(actionCameraOrthographic);
 
 
 //     QObject::connect (actionViewAll, SIGNAL(triggered()), this, SLOT(viewAll()));
@@ -195,7 +214,9 @@ ISpy3DView::setupActions (void)
     QObject::connect (actionViewPlaneX, SIGNAL(triggered ()), this, SLOT(viewPlaneX ()));
     QObject::connect (actionViewPlaneY, SIGNAL(triggered ()), this, SLOT(viewPlaneY ()));
     QObject::connect (actionViewPlaneZ, SIGNAL(triggered ()), this, SLOT(viewPlaneZ ()));
-    QObject::connect (actionCameraToggle, SIGNAL(triggered()), this, SLOT(toggleCameraType()));
+//    QObject::connect (actionCameraOrthographic, SIGNAL(triggered()), this, SLOT(toggleCameraType()));
+//    QObject::connect (actionCameraOrthographic, SIGNAL(triggered()), this, SLOT(toggleCameraType()));
+    QObject::connect (viewModeGroup, SIGNAL(selected(QAction*)), this, SLOT(setCameraType(QAction*)));
 
     m_toolBar = new QToolBar (parent ());
     m_toolBar->setObjectName (QString::fromUtf8 ("ISpy3DView::toolBar"));
@@ -206,8 +227,9 @@ ISpy3DView::setupActions (void)
     m_toolBar->addAction (actionViewPlaneZ);
     m_toolBar->addAction (actionViewPlaneY);
     m_toolBar->addAction (actionViewPlaneX);
-    m_toolBar->addAction (actionCameraToggle);
-
+    m_toolBar->addAction (actionCameraPerspective);
+    m_toolBar->addAction (actionCameraOrthographic);
+    
     m_toolBar->setWindowTitle (QApplication::translate ("ISpy3DView", "toolBar", 0, QApplication::UnicodeUTF8));
 }
 
@@ -787,6 +809,12 @@ ISpy3DView::toggleCameraType (void)
     }
 
     cameraToggled();
+}
+
+void
+ISpy3DView::setCameraType (QAction *action)
+{
+    toggleCameraType ();
 }
 
 void

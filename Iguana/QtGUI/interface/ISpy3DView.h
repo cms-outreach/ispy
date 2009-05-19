@@ -15,6 +15,7 @@ class QToolBar;
 class QWidget;
 class Ig3DBaseModel;
 class SoFieldSensor;
+class QAction;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
@@ -55,6 +56,7 @@ public slots:
     void         zoom (const float diffvalue);
     void         resetToHomePosition (void);
     void         saveHomePosition (void);
+    void         setCameraType (QAction *action);
     void         viewAll (void);
     void         seek (void);    
     void         setFeedbackVisibility (bool enable);
