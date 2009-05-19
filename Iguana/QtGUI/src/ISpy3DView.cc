@@ -19,6 +19,10 @@
 #include <Inventor/Qt/SoQtCursor.h>
 #include <QtGui>
 #include "classlib/utils/DebugAids.h"
+#include <iostream>
+
+#include <Inventor/actions/SoSearchAction.h>
+#include <Inventor/nodekits/SoBaseKit.h>
 
 ISpy3DView::ISpy3DView (IgState *state, Ig3DBaseModel *model, QWidget *parent)
     : SoQtExaminerViewer (parent, "iSpy 3D"),
@@ -37,13 +41,60 @@ ISpy3DView::ISpy3DView (IgState *state, Ig3DBaseModel *model, QWidget *parent)
     initWidget ();
 }
 
+void debugCameraClipPlanes (void * data, const SbVec2f & nearfar)
+{
+  SoCamera *camera =  ((ISpy3DView *) data)->getCamera ();
+  SoNode *scenegraph =  ((ISpy3DView *) data)->getSceneGraph ();
+
+  SbVec3f pos = camera->position.getValue();
+
+  SoSearchAction action;
+  SbBool oldsearch = SoBaseKit::isSearchingChildren();
+  SoBaseKit::setSearchingChildren(TRUE);
+
+  action.setSearchingAll(true);
+  action.setType(SoCamera::getClassTypeId());
+  action.setInterest(SoSearchAction::ALL);
+  action.apply(scenegraph);
+
+  SoBaseKit::setSearchingChildren(oldsearch);
+
+  SoPathList &cameras = action.getPaths();
+
+  for (int i = 0, e = cameras.getLength(); i != e; ++i)
+    std::cerr << "Camera #" << i << " = " << (void *) cameras[i]->getTail() << " (" << typeid(*cameras[i]->getTail()).name() << ")\n";
+
+  std::cerr << "Calculated clip-planes. Near: " << nearfar[0] << ". Far: " << nearfar[1] << "\n"
+            << "Current camera clip-planes. Near: " << camera->nearDistance.getValue() << ", Far: " << camera->farDistance.getValue() << "\n"
+            << "Camera ptr: " << (void *) camera << "\n"
+            << "Camera name: " << camera->getName() << "\n"
+            << "Camera type: " << typeid(*camera).name() << "\n"
+            << "Camera position: (" << pos[0] << ", " << pos[1] << ", " << pos[2] << ")\n"
+            << "Number of cameras in the scene: " << cameras.getLength() << "\n"
+            << "Focal distance: " << camera->focalDistance.getValue () << std::endl;
+}
+
+SbVec2f fixedDistanceClipPlanesCB (void * data, const SbVec2f & nearfar)
+{
+  SoCamera *camera =  ((ISpy3DView *) data)->getCamera ();
+  if (0) debugCameraClipPlanes (data, nearfar);
+
+  if (camera->nearDistance.getValue() != nearfar[0])
+    camera->nearDistance = nearfar[0];
+  if (camera->farDistance.getValue() != nearfar[1])
+    camera->farDistance = nearfar[1];
+
+  return nearfar;
+}
+
 void
 ISpy3DView::initWidget (void) 
 {
     setGLRenderAction (new SoLineHighlightRenderAction);
     setEventCallback (eventCallback, this);
-    setSceneGraph (model ()->sceneGraph ());
     initCamera ();
+    setSceneGraph (model ()->sceneGraph ());
+    setAutoClippingStrategy (CONSTANT_NEAR_PLANE, 0.9, fixedDistanceClipPlanesCB, this);
     setDecoration (false);
     setupActions ();
     parent ()->setMinimumSize (300, 200);
@@ -130,7 +181,7 @@ ISpy3DView::setupActions (void)
     icon8.addPixmap (QPixmap (QString::fromUtf8 (":/images/ortho.xpm")), QIcon::Normal, QIcon::On);
     icon8.addPixmap (QPixmap (QString::fromUtf8 (":/images/perspective.xpm")), QIcon::Normal, QIcon::Off);
     actionCameraToggle->setIcon (icon8);
-    actionCameraToggle->setCheckable (true);    
+    actionCameraToggle->setCheckable (true);
     actionCameraToggle->setText (QApplication::translate ("ISpy3DView", "CameraToggle", 0, QApplication::UnicodeUTF8));
 #ifndef QT_NO_TOOLTIP
     actionCameraToggle->setToolTip (QApplication::translate ("ISpy3DView", "CameraToggle", 0, QApplication::UnicodeUTF8));
@@ -158,19 +209,17 @@ ISpy3DView::setupActions (void)
     m_toolBar->addAction (actionCameraToggle);
 
     m_toolBar->setWindowTitle (QApplication::translate ("ISpy3DView", "toolBar", 0, QApplication::UnicodeUTF8));
-
-    // FIXME: Position camera
-    actionCameraToggle->activate (QAction::Trigger);
-    zoomOut ();
-    zoomOut ();
 }
 
 void
 ISpy3DView::initCamera (void)
 {
-    SoCamera * const camera = SoQtExaminerViewer::getCamera ();    
-    if (!camera) return; // probably a scene-less viewer
-    const SbVec3f org (0.0, 0.0, 0.0);
+    SoOrthographicCamera *camera = new SoOrthographicCamera;
+    camera->nearDistance = 1;
+    camera->farDistance = 10;
+    camera->pointAt (SbVec3f(0.0, 0.0, 0.0));
+    camera->scaleHeight (5.5f);
+    ((SoGroup *) model()->sceneGraph())->insertChild(camera, 0);
     
 //     camera->position.setValue (-18.1, 8.6, 14.0);
 //     camera->orientation.setValue (-0.3, -0.93, -0.2, 1.1);
@@ -726,6 +775,16 @@ ISpy3DView::toggleCameraType (void)
     SoQtExaminerViewer::toggleCameraType ();
     SoCamera * const camera = this->getCamera ();
     if (!camera) return; // probably a scene-less viewer
+
+    // FIXME: This is needed because the heighAngle values could get huge 
+    // when coming from orthographic camera.
+    // It resets them to 45 degrees although some better logic would
+    // be nice so that the detector does not change dimensions when
+    // going from orthographic to perspective view.
+    if (camera->isOfType(SoPerspectiveCamera::getClassTypeId()))
+    {
+      ((SoPerspectiveCamera *)camera)->heightAngle = 0.785398163;
+    }
 
     cameraToggled();
 }
