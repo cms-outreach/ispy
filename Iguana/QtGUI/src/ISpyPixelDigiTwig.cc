@@ -74,13 +74,15 @@ ISpyPixelDigiTwig::onNewEvent (ISpyEventMessage& message)
 		sep->setName (SbName ("PixelDigis_V1"));
 
 		SoMaterial *mat = new SoMaterial;
-		float rgbcomponents [4];
-		IgSbColorMap::unpack (0xB0E57C00, rgbcomponents);
-		mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		//float rgbcomponents [4];
+		//IgSbColorMap::unpack (0xB0E57C00, rgbcomponents);
+		//IgSbColorMap::unpack (0x0000CD00, rgbcomponents);
+		//mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		mat->diffuseColor.setValue (0.0, 0.0, 1.0);
 		sep->addChild (mat);
 
 		SoMFInt32 tmarkerIndex;
-		tmarkerIndex.setValue (SoMarkerSet::PLUS_5_5);
+		tmarkerIndex.setValue (SoMarkerSet::SQUARE_LINE_5_5);
 		
 		SoMarkerSet *sopoints = new SoMarkerSet;
 		sopoints->markerIndex = tmarkerIndex;

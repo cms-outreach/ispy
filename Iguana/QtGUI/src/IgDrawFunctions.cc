@@ -25,6 +25,9 @@
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
+static const double cCrystalHitScale = 0.3;
+static const double cCaloTowerScale = 0.03;
+
 namespace 
 {
     SoNode *
@@ -121,8 +124,10 @@ namespace
 		std::vector<SbVec3f> corners;		
 
 		float epsilon = 0.0001;
-		float scale = 1.0;		
-
+		//float scale = 1.0;
+		// NOTE: Rough estimate
+		float scale = cCaloTowerScale;
+		
 		IgCollectionIterator cit = recHits.begin ();
 		IgCollectionIterator cend = recHits.end ();
 		for (; cit != cend ; cit++) 
@@ -384,8 +389,9 @@ namespace
 		std::vector<SbVec3f> corners;		
 
 		float epsilon = 0.0001;
-		float scale = 1.0;		
-
+		//float scale = 1.0;		
+		float scale = cCaloTowerScale;
+		
 		IgCollectionIterator cit = recHits.begin ();
 		IgCollectionIterator cend = recHits.end ();
 		for (; cit != cend ; cit++) 
@@ -651,7 +657,10 @@ namespace
 		std::vector<SbVec3f> corners;		
 
 		float epsilon = 0.0001;
-		float scale = 1.0;		
+		//float scale = 1.0;
+		// NOTE Rough estimate
+		float scale = cCrystalHitScale;
+		
 
 		IgCollectionIterator cit = recHits.begin ();
 		IgCollectionIterator cend = recHits.end ();

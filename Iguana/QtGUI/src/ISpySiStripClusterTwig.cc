@@ -75,14 +75,14 @@ ISpySiStripClusterTwig::onNewEvent (ISpyEventMessage& message)
 
 		SoMaterial *mat = new SoMaterial;
 		float rgbcomponents [4];
-		//IgSbColorMap::unpack (0xFF000000, rgbcomponents);
-		IgSbColorMap::unpack (0x6600FF00, rgbcomponents);
+		IgSbColorMap::unpack (0x03C03C00, rgbcomponents);
+		//IgSbColorMap::unpack (0x6600FF00, rgbcomponents);
 		mat->diffuseColor.setValue (SbColor (rgbcomponents));
 		sep->addChild (mat);
 
 		SoMFInt32 tmarkerIndex;
 		//tmarkerIndex.setValue (SoMarkerSet::CIRCLE_LINE_7_7);
-		tmarkerIndex.setValue (SoMarkerSet::CIRCLE_FILLED_5_5);
+		tmarkerIndex.setValue (SoMarkerSet::CIRCLE_FILLED_7_7);
 
 		
 		SoMarkerSet *sopoints = new SoMarkerSet;

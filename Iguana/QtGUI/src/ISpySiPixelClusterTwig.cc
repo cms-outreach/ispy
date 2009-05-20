@@ -74,10 +74,10 @@ ISpySiPixelClusterTwig::onNewEvent (ISpyEventMessage& message)
 		sep->setName (SbName ("SiPixelClusters_V1"));
 
 		SoMaterial *mat = new SoMaterial;
-		//float rgbcomponents [4];
-		//IgSbColorMap::unpack (0xFF000000, rgbcomponents);
-		//mat->diffuseColor.setValue (SbColor (rgbcomponents));
-		mat->diffuseColor.setValue (0.0, 0.0, 1.0);
+		float rgbcomponents [4];
+		IgSbColorMap::unpack (0x00BFFF00, rgbcomponents);
+		mat->diffuseColor.setValue (SbColor (rgbcomponents));
+		//mat->diffuseColor.setValue (0.0, 0.0, 1.0);
 		sep->addChild (mat);
 
 		SoMFInt32 tmarkerIndex;

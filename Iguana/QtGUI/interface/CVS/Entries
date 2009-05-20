@@ -45,7 +45,6 @@
 /Ig3DBaseModel.h/1.3/Tue May 19 16:45:49 2009//
 /Ig3DBaseRep.h/1.2/Tue May 19 16:45:49 2009//
 /Ig3DModelEvent.h/1.1/Tue May 19 16:45:49 2009//
-/IgCollectionTableModel.h/1.1/Tue May 19 16:45:49 2009//
 /IgDataStorageTableModel.h/1.1/Tue May 19 16:45:49 2009//
 /IgDrawFactoryService.h/1.1/Tue May 19 16:45:49 2009//
 /IgDrawFunctions.h/1.1/Tue May 19 16:45:49 2009//
@@ -85,4 +84,5 @@
 /yz_small.xpm/1.1/Tue May 19 16:45:49 2009//
 /zoom_in.png/1.1/Tue May 19 16:45:49 2009//
 /zoom_out.png/1.1/Tue May 19 16:45:49 2009//
+/IgCollectionTableModel.h/1.1/Wed May 20 15:22:25 2009//
 D

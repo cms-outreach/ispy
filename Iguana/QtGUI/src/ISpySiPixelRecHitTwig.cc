@@ -81,7 +81,7 @@ ISpySiPixelRecHitTwig::onNewEvent (ISpyEventMessage& message)
 		sep->addChild (mat);
 
 		SoMFInt32 tmarkerIndex;
-		tmarkerIndex.setValue (SoMarkerSet::PLUS_5_5);
+		tmarkerIndex.setValue (SoMarkerSet::PLUS_7_7);
 		
 		SoMarkerSet *sopoints = new SoMarkerSet;
 		sopoints->markerIndex = tmarkerIndex;
