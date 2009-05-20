@@ -241,6 +241,7 @@ ISpy3DView::initCamera (void)
     camera->farDistance = 10;
     camera->pointAt (SbVec3f(0.0, 0.0, 0.0));
     camera->scaleHeight (5.5f);
+    camera->focalDistance = 1;
     ((SoGroup *) model()->sceneGraph())->insertChild(camera, 0);
     
 //     camera->position.setValue (-18.1, 8.6, 14.0);
@@ -668,7 +669,27 @@ ISpy3DView::zoom (const float diffvalue)
 void
 ISpy3DView::resetToHomePosition (void)
 {
-    SoQtViewer::resetToHomePosition ();    
+    if (isAnimating ())
+      stopAnimating ();
+    SoCamera *camera = this->getCamera ();
+    if (!camera)
+    {
+        return;
+    }
+    if (camera->getTypeId ().isDerivedFrom (SoPerspectiveCamera::getClassTypeId ()))
+    {
+        camera->position = SbVec3f(0,0,20);
+        camera->focalDistance = 20;
+        ((SoPerspectiveCamera *)camera)->heightAngle = 0.785398163;
+    }
+    else
+    {
+        camera->position = SbVec3f(0,0,1);
+        camera->focalDistance = 1;
+        ((SoOrthographicCamera *)camera)->height = 11;
+    }
+
+    camera->orientation = SbRotation::identity();
 }
 
 void
@@ -867,6 +888,8 @@ ISpy3DView::autoPrint (const std::string text)
 void
 ISpy3DView::viewPlaneX (void) 
 {
+    if (isAnimating ())
+      stopAnimating ();
     SoCamera * const camera = this->getCamera ();
     if (!camera) return; // probably a scene-less viewer
     
@@ -877,6 +900,8 @@ ISpy3DView::viewPlaneX (void)
 void
 ISpy3DView::viewPlaneY (void)
 {
+    if (isAnimating ())
+      stopAnimating ();
     SoCamera * const camera = this->getCamera ();
     if (!camera) return; // probably a scene-less viewer
     
@@ -889,6 +914,8 @@ ISpy3DView::viewPlaneY (void)
 void
 ISpy3DView::viewPlaneZ (void) 
 {
+    if (isAnimating ())
+      stopAnimating ();
     SoCamera * const camera = this->getCamera ();
     if (!camera) return; // probably a scene-less viewer
     
