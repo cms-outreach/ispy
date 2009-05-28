@@ -9,7 +9,7 @@
 #include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoFont.h>
 #include <Inventor/nodes/SoMaterial.h>
-#include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/nodes/SoTranslation.h>
@@ -23,13 +23,21 @@
 //<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
 //<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
 //<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
+void
+createTextLine(SoGroup *group, SoTranslation *trans, const std::string &text)
+{
+    SoText2 *label = new SoText2;
+    label->string = text.c_str ();
+    group->addChild (trans);
+    group->addChild (label);
+}
+
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 ISpyEventTwig::ISpyEventTwig (IgState *state, IgTwig *parent,
 				const std::string &name /* = "" */)
-    : ISpyQueuedTwig (state, parent, name),
-      m_text ("no info")
+    : ISpyQueuedTwig (state, parent, name)
 {}
 
 void
@@ -53,24 +61,16 @@ ISpyEventTwig::onNewEvent (ISpyEventMessage& message)
 	    IgCollection &event = storage->getCollection ("Event_V1");
 	    if (event.size () > 0)
 	    {	    
-		IgColumnHandle runHandle = event.getHandleByLabel ("run");
-		IgColumnHandle eventHandle = event.getHandleByLabel ("event");
-		IgColumnHandle lsHandle = event.getHandleByLabel ("ls");
-		IgColumnHandle orbitHandle = event.getHandleByLabel ("orbit");
-		IgColumnHandle bxHandle = event.getHandleByLabel ("bx");
-		IgColumnHandle timeHandle = event.getHandleByLabel ("time");
-
 		IgCollectionIterator it = event.begin();
 		IgCollectionItem eventId = *it;
 
-		m_text = (QString ("%1 GMT: Run %2, Event %3, LS %4, Orbit %5, BX %6")
-			  .arg (eventId.get<std::string>("time").c_str ())
-			  .arg (eventId.get<int>("run"))
-			  .arg (eventId.get<int>("event"))
-			  .arg (eventId.get<int>("ls"))
-			  .arg (eventId.get<int>("orbit"))
-			  .arg (eventId.get<int>("bx"))
-			  .toStdString ());
+                m_time  = (QString ("Data recorded  %1").arg (eventId.get<std::string>("time").c_str ()).toStdString ());
+                m_run   = (QString ("Run number     %1").arg (eventId.get<int>("run"))  .toStdString ());
+                m_event = (QString ("Event number   %1").arg (eventId.get<int>("event")).toStdString ());
+                m_ls    = (QString ("Lumi section   %1").arg (eventId.get<int>("ls"))   .toStdString ());
+                m_orbit = (QString ("Orbit number   %1").arg (eventId.get<int>("orbit")).toStdString ());
+                m_bx    = (QString ("Beam crossing  %1").arg (eventId.get<int>("bx"))   .toStdString ());
+
 	    }
 	}	
     }
@@ -78,37 +78,41 @@ ISpyEventTwig::onNewEvent (ISpyEventMessage& message)
     SoSeparator *top = dynamic_cast<SoSeparator *>(ISpyQueuedTwig::rep ());
     SoAnnotation *overlayScene = new SoAnnotation;
     top->addChild (overlayScene);
-    
-    SoPerspectiveCamera *pcam = new SoPerspectiveCamera;
-    pcam->position = SbVec3f (0, 0, 5);
-    pcam->nearDistance = 0.1;
-    pcam->farDistance = 10;
-    overlayScene->addChild (pcam);
+
+    SoOrthographicCamera *camera = new SoOrthographicCamera;
+    camera->nearDistance = 1;
+    camera->farDistance = 10;
+    camera->pointAt (SbVec3f(0.0, 0.0, 0.0));
+    camera->scaleHeight (5.5f);
+    camera->focalDistance = 1;
+    overlayScene->addChild (camera);
 
     SoSeparator *sep = new SoSeparator;
-    SoMaterial *mat = new SoMaterial;
-    float rgbcomponents [4];
-    IgSbColorMap::unpack (0x8b898900, rgbcomponents); // snow4
-    mat->diffuseColor.setValue (SbColor (rgbcomponents));
-    sep->addChild (mat);
-    
-    SoText2 *eventLabel = new SoText2;
-    eventLabel->string = m_text.c_str ();
-    
-    SoFont* labelFont = new SoFont;
-    labelFont->size.setValue (14.0);
-    labelFont->name.setValue ("Arial");
-    sep->addChild (labelFont);
-    
-    SoTranslation *eventLabelTranslation = new SoTranslation;
-    
-    SbVec3f pos = SbVec3f (-2.5,
-			   1.65,
-			   0.0);
 
-    eventLabelTranslation->translation = pos;
-    sep->addChild (eventLabelTranslation);
-    sep->addChild (eventLabel);
-    
+    SoMaterial *mat = new SoMaterial;
+    mat->diffuseColor.setValue (1.0, 1.0, 1.0);
+    sep->addChild (mat);
+
+    SoFont *labelFont = new SoFont;
+    labelFont->size.setValue (13.0);
+    labelFont->name.setValue ("Courier"); // LT FIXME: fixed width font used in formatting. Should layout a proper table one day.
+    sep->addChild (labelFont);
+
+    SoTranslation *textStartTranslation = new SoTranslation;
+    SoTranslation *nextLineTranslation  = new SoTranslation;
+
+    textStartTranslation->translation = SbVec3f (-5.0,  5.0,  0.0);
+    nextLineTranslation ->translation = SbVec3f ( 0.0, -0.25, 0.0);
+
+    createTextLine (sep, textStartTranslation, 
+                    "-- iSpy -- http://iguana.cern.ch/ispy");
+
+    createTextLine (sep, nextLineTranslation, m_time);
+    createTextLine (sep, nextLineTranslation, m_run);
+    createTextLine (sep, nextLineTranslation, m_event);
+    createTextLine (sep, nextLineTranslation, m_ls);
+    createTextLine (sep, nextLineTranslation, m_orbit);
+    createTextLine (sep, nextLineTranslation, m_bx);
+
     overlayScene->addChild (sep);
 }
