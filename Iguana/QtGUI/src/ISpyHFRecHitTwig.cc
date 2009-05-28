@@ -46,10 +46,8 @@ ISpyHFRecHitTwig::onNewEvent (ISpyEventMessage& message)
 	sep->setName (SbName ("ISpyHFRecHitTwig"));
 
 	SoMaterial *mat = new SoMaterial;
-	//float rgbcomponents [4];
-	//IgSbColorMap::unpack (0x21B6A800, rgbcomponents);
-	//mat->diffuseColor.setValue (SbColor (rgbcomponents));
-	mat->diffuseColor.setValue(0.0, 0.4, 1.0);
+	mat->diffuseColor.setValue (0.0, 0.2, 0.5);
+	mat->transparency.setValue (0.3);
 
 	sep->addChild (mat);
 	sep->addChild (rep);

@@ -48,8 +48,10 @@ ISpyJetTwig::onNewEvent (ISpyEventMessage& message)
 
 	SoMaterial *mat = new SoMaterial;
 	float rgbcomponents [4];
-	IgSbColorMap::unpack (0xFF5EAA00, rgbcomponents);
+	//	IgSbColorMap::unpack (0xFF5EAA00, rgbcomponents);
+       	IgSbColorMap::unpack (0xFFEEEE00, rgbcomponents);
 	mat->diffuseColor.setValue (SbColor (rgbcomponents));
+	mat->transparency.setValue (0.25);  
 	sep->addChild (mat);
 	sep->addChild (rep);
     }

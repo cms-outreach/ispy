@@ -1,6 +1,5 @@
 /IGUANA_SPLASH.xpm/1.2/Tue May 19 16:45:49 2009//
 /ISpy3DView.h/1.6/Tue May 19 16:45:49 2009//
-/ISpyApplication.h/1.20/Tue May 19 16:45:49 2009//
 /ISpyBasicClusterTwig.h/1.2/Tue May 19 16:45:49 2009//
 /ISpyCSCSegmentTwig.h/1.2/Tue May 19 16:45:49 2009//
 /ISpyCaloTowerTwig.h/1.2/Tue May 19 16:45:49 2009//
@@ -14,7 +13,6 @@
 /ISpyEERecHitTwig.h/1.1/Tue May 19 16:45:49 2009//
 /ISpyEcalRecHitTwig.h/1.1/Tue May 19 16:45:49 2009//
 /ISpyEventFilter.h/1.2/Tue May 19 16:45:49 2009//
-/ISpyEventTwig.h/1.2/Tue May 19 16:45:49 2009//
 /ISpyHBRecHitTwig.h/1.1/Tue May 19 16:45:49 2009//
 /ISpyHERecHitTwig.h/1.1/Tue May 19 16:45:49 2009//
 /ISpyHFRecHitTwig.h/1.1/Tue May 19 16:45:49 2009//
@@ -39,7 +37,6 @@
 /ISpySiPixelRecHitTwig.h/1.1/Tue May 19 16:45:49 2009//
 /ISpySiStripClusterTwig.h/1.1/Tue May 19 16:45:49 2009//
 /ISpySiStripDigiTwig.h/1.1/Tue May 19 16:45:49 2009//
-/ISpySplashScreen.h/1.3/Tue May 19 16:45:49 2009//
 /ISpyTrackTwig.h/1.1/Tue May 19 16:45:49 2009//
 /ISpyTrackingRecHitTwig.h/1.1/Tue May 19 16:45:49 2009//
 /Ig3DBaseModel.h/1.3/Tue May 19 16:45:49 2009//
@@ -75,7 +72,6 @@
 /play.png/1.1/Tue May 19 16:45:49 2009//
 /previous.png/1.1/Tue May 19 16:45:49 2009//
 /print.png/1.1/Tue May 19 16:45:49 2009//
-/ui_ISpySplashScreen.h/1.3/Tue May 19 16:45:49 2009//
 /ui_IgMainWindow.h/1.15/Tue May 19 16:45:49 2009//
 /ui_IgSettingsEditorMainWindow.h/1.2/Tue May 19 16:45:49 2009//
 /view_all.xpm/1.1/Tue May 19 16:45:49 2009//
@@ -85,4 +81,9 @@
 /zoom_in.png/1.1/Tue May 19 16:45:49 2009//
 /zoom_out.png/1.1/Tue May 19 16:45:49 2009//
 /IgCollectionTableModel.h/1.1/Wed May 20 15:22:25 2009//
+/ISpyApplication.h/1.20/Thu May 28 13:35:31 2009//
+/ISpyEventTwig.h/1.2/Thu May 28 15:11:43 2009//
+/ISpyLucasTestTwig.h/1.1/Thu May 28 14:54:58 2009//
+/ISpySplashScreen.h/1.3/Thu May 28 13:35:31 2009//
+/ui_ISpySplashScreen.h/1.3/Thu May 28 13:35:31 2009//
 D

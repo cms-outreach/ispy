@@ -28,6 +28,8 @@
 static const double cCrystalHitScale = 0.3;
 static const double cCaloTowerScale = 0.03;
 
+
+
 namespace 
 {
     SoNode *
@@ -80,6 +82,11 @@ namespace
 	
 	return sep;
     }
+
+
+
+
+
     
     SoNode *
     drawEmTowers (IgState *state, const std::string &collection,
@@ -274,37 +281,6 @@ namespace
 			indices.push_back (i);
 			indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
 
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 9);
-			// 		    indices.push_back (i + 10);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 10);
-			// 		    indices.push_back (i + 11);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 11);
-			// 		    indices.push_back (i + 8);
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 8);
-			// 		    indices.push_back (i + 9);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-			// 		    // i += 8;
-			// 		    i += 16;
 			i += 8;		    
 		    }
 		}
@@ -327,6 +303,12 @@ namespace
 	
 	return sep;
     }
+
+
+
+
+
+
 
     SoNode *
     drawHadTowers (IgState *state, const std::string &collection,
@@ -538,37 +520,6 @@ namespace
 			indices.push_back (i);
 			indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
 
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 9);
-			// 		    indices.push_back (i + 10);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 10);
-			// 		    indices.push_back (i + 11);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 11);
-			// 		    indices.push_back (i + 8);
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 8);
-			// 		    indices.push_back (i + 9);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-			// 		    // i += 8;
-			// 		    i += 16;
 			i += 8;		    
 		    }
 		}
@@ -597,11 +548,19 @@ namespace
 	return sep;
     }
 
+
+
+
+
     SoNode *
     drawCrystalHits (IgState *state, const std::string &collection,
 		     const std::string &name,
 		     const std::string &rep)
+
+    // FIXME LT: rename if used also for HCAL   
+
     {	    
+
 	double ecut = 0.1;
 	bool hlrMode = false;
 	
@@ -617,6 +576,8 @@ namespace
 	
 	SoSeparator *sep = new SoSeparator;
 	sep->setName (SbName (collection.c_str ()));
+
+
 	SoAnnotation *ann = 0;
 	
 	if (hlrMode)
@@ -808,37 +769,6 @@ namespace
 			indices.push_back (i);
 			indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
 
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 9);
-			// 		    indices.push_back (i + 10);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 10);
-			// 		    indices.push_back (i + 11);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (i + 14);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 11);
-			// 		    indices.push_back (i + 8);
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (i + 15);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-			// 		    indices.push_back (i + 8);
-			// 		    indices.push_back (i + 9);
-			// 		    indices.push_back (i + 13);
-			// 		    indices.push_back (i + 12);
-			// 		    indices.push_back (SO_END_FACE_INDEX);
-			// 		    // i += 8;
-			// 		    i += 16;
 			i += 8;		    
 		    }
 		}
@@ -863,6 +793,7 @@ namespace
 		sep->addChild (faces);
 	    }
 	}
+
 	
 	return sep;
     }
@@ -1040,37 +971,6 @@ namespace
 		    indices.push_back (i);
 		    indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
 
-		    // 		    indices.push_back (i + 12);
-		    // 		    indices.push_back (i + 13);
-		    // 		    indices.push_back (i + 14);
-		    // 		    indices.push_back (i + 15);
-		    // 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-		    // 		    indices.push_back (i + 9);
-		    // 		    indices.push_back (i + 10);
-		    // 		    indices.push_back (i + 14);
-		    // 		    indices.push_back (i + 13);
-		    // 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-		    // 		    indices.push_back (i + 10);
-		    // 		    indices.push_back (i + 11);
-		    // 		    indices.push_back (i + 15);
-		    // 		    indices.push_back (i + 14);
-		    // 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-		    // 		    indices.push_back (i + 11);
-		    // 		    indices.push_back (i + 8);
-		    // 		    indices.push_back (i + 12);
-		    // 		    indices.push_back (i + 15);
-		    // 		    indices.push_back (SO_END_FACE_INDEX);
-		    
-		    // 		    indices.push_back (i + 8);
-		    // 		    indices.push_back (i + 9);
-		    // 		    indices.push_back (i + 13);
-		    // 		    indices.push_back (i + 12);
-		    // 		    indices.push_back (SO_END_FACE_INDEX);
-		    // 		    // i += 8;
-		    // 		    i += 16;
 		    i += 8;		    
 
 		}

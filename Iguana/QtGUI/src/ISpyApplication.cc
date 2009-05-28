@@ -174,7 +174,7 @@ ISpyApplication::ISpyApplication (void)
 #else
     QCoreApplication::setApplicationName ("iSpy");
 #endif
-    QCoreApplication::setApplicationVersion ("1.0 (beta)");
+    QCoreApplication::setApplicationVersion ("1.x (beta)");
     QCoreApplication::setOrganizationDomain ("iguana");
     QCoreApplication::setOrganizationName ("iguana");
     
@@ -185,8 +185,12 @@ ISpyApplication::ISpyApplication (void)
     QObject::connect (&m_readThread, SIGNAL(readMember (const QString&)), this, SLOT (newMember (const QString&)));
 }
 
+
+
 ISpyApplication::~ISpyApplication (void)
 {}
+
+
 
 void
 ISpyApplication::onExit (void)
@@ -201,9 +205,9 @@ ISpyApplication::onExit (void)
     }
     closeFile ();
     closeGeomFile ();
-    if (ISpySceneGraphService* sceen = ISpySceneGraphService::get (state ()))
+    if (ISpySceneGraphService* scene = ISpySceneGraphService::get (state ()))
     {
-	dynamic_cast<SoSeparator *>(sceen->sceneGraph ())->removeAllChildren ();
+	dynamic_cast<SoSeparator *>(scene->sceneGraph ())->removeAllChildren ();
     }
 
     m_mainWindow->saveSettings ();
@@ -211,25 +215,37 @@ ISpyApplication::onExit (void)
     exit ();    
 }
 
+
+
 void
 ISpyApplication::exit (void)
 {
     qApp->closeAllWindows ();
 }
 
+
+
 IgState *
 ISpyApplication::state (void) const
 { return m_state; }
+
+
 
 int
 ISpyApplication::argc (void) const
 { return m_argc; }
 
+
+
 char **
 ISpyApplication::argv (void) const
 { return m_argv; }
 
+
+
 //////////////////////////////////////////////////////////////////////
+
+
 int
 ISpyApplication::run (int argc, char *argv[])
 {    
@@ -269,6 +285,8 @@ ISpyApplication::run (int argc, char *argv[])
     return doRun ();
 }
 
+
+
 const char *
 ISpyApplication::appname (void) const
 {
@@ -289,6 +307,8 @@ ISpyApplication::usage (void)
     return EXIT_FAILURE;
 }
 
+
+
 int
 ISpyApplication::version (void)
 {
@@ -297,6 +317,8 @@ ISpyApplication::version (void)
 
     return EXIT_SUCCESS;
 }
+
+
 
 int
 ISpyApplication::initState (void)
@@ -309,6 +331,8 @@ ISpyApplication::initState (void)
 
     return EXIT_SUCCESS;
 }
+
+
 
 void
 ISpyApplication::defaultSettings (void) 
@@ -438,6 +462,8 @@ ISpyApplication::defaultSettings (void)
     }
 }
 
+
+
 void
 ISpyApplication::restoreSettings (void) 
 {
@@ -448,6 +474,8 @@ ISpyApplication::restoreSettings (void)
 	autoEvents ();
     }
 }
+
+
 
 int
 ISpyApplication::doRun (void)
@@ -541,12 +569,16 @@ ISpyApplication::doRun (void)
     return 0;
 }
 
+
+
 void
 ISpyApplication::cleanSplash (void)
 {
     ASSERT (m_splash);
     delete m_splash;
 }
+
+
 
 void
 ISpyApplication::setupMainWindow (void) 
@@ -557,13 +589,13 @@ ISpyApplication::setupMainWindow (void)
     
     m_mainWindow = new ISpyMainWindow;
 
-    QObject::connect (m_mainWindow, SIGNAL(open()), this, SLOT(openFileDialog()));
-    QObject::connect (m_mainWindow, SIGNAL(autoEvents()), this, SLOT(autoEvents()));
-    QObject::connect (m_mainWindow, SIGNAL(nextEvent()), this, SLOT(nextEvent()));
+    QObject::connect (m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
+    QObject::connect (m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
+    QObject::connect (m_mainWindow, SIGNAL(nextEvent()),     this, SLOT(nextEvent()));
     QObject::connect (m_mainWindow, SIGNAL(previousEvent()), this, SLOT(previousEvent()));
-    QObject::connect (m_mainWindow, SIGNAL(rewind()), this, SLOT(rewind()));
-    QObject::connect (m_mainWindow, SIGNAL(print()), this, SIGNAL(print ()));
-    QObject::connect (m_mainWindow, SIGNAL(save()), this, SIGNAL(save ()));
+    QObject::connect (m_mainWindow, SIGNAL(rewind()),        this, SLOT(rewind()));
+    QObject::connect (m_mainWindow, SIGNAL(print()),         this, SIGNAL(print ()));
+    QObject::connect (m_mainWindow, SIGNAL(save()),          this, SIGNAL(save ()));
     
     m_mainWindow->actionNext->setEnabled (false);
     m_mainWindow->actionPrevious->setEnabled (false);
@@ -585,6 +617,8 @@ ISpyApplication::setupMainWindow (void)
     
     QObject::connect (m_treeWidget, SIGNAL(clicked(const QModelIndex)),this,SLOT(twigChanged(const QModelIndex)));
 }
+
+
 
 void 
 ISpyApplication::twigChanged (const QModelIndex &index)
@@ -636,6 +670,8 @@ ISpyApplication::twigChanged (const QModelIndex &index)
     }
 }
 
+
+
 void
 ISpyApplication::createCollectionModel (IgDataStorage *storage)
 {
@@ -684,9 +720,16 @@ ISpyApplication::displayCollection(const QModelIndex &index)
     }
 }	
 
+
+
+
 void 
 ISpyApplication::displayItem(const QModelIndex &index)
 {
+
+  std::cout << "LT debug -- ISpyApplication::displayItem invoked" << std::endl;
+
+
     SoSeparator *node = dynamic_cast<SoSeparator *>(ISpySceneGraphService::get (state ())->sceneGraph ());
     ASSERT (node);	
     node->removeAllChildren ();	
@@ -860,14 +903,20 @@ ISpyApplication::cleanSelection (void)
 //     }    
 }
 
+
+
 void
 ISpyApplication::drawCollection (IgCollection *collection) 
 {
+
     std::string collName = collection->name ();
+
+    std::cout << "LT debug -- ISpyApplication::drawCollection invoked for collection = " << collName << std::endl;
+
 
     // We assume these reps will not change and
     // we exclude event data collections for now
-    // which are represented by twig classses
+    // which are represented by twig classes
     if (collName == "Tracker_V1" ||
 	collName == "EcalBarrel_V1" ||
 	collName == "EcalEndcap_V1" ||
@@ -878,7 +927,12 @@ ISpyApplication::drawCollection (IgCollection *collection)
 	collName == "HcalForward_V1" ||
 	collName == "DTs_V1" ||
 	collName == "CSC_V1" ||
-	collName == "RPC_V1")
+	collName == "RPC_V1" )
+
+      // 	collName == "HBRecHits_V1" ||
+      //	collName == "HERecHits_V1" ||
+      //	collName == "HFRecHits_V1" ||
+      //	collName == "HORecHits_V1" ||
 
 // 	collName == "Event_V1" ||
 // 	collName == "BasicClusters_V1" ||
@@ -891,10 +945,6 @@ ISpyApplication::drawCollection (IgCollection *collection)
 // 	collName == "CaloTowers_V1" ||
 // 	collName == "DTRecSegment4D_V1" ||
 // 	collName == "EcalRecHits_V1" ||
-// 	collName == "HBRecHits_V1" ||
-// 	collName == "HERecHits_V1" ||
-// 	collName == "HFRecHits_V1" ||
-// 	collName == "HORecHits_V1" ||
 // 	collName == "METs_V1" ||
 // 	collName == "Muons_V1" ||
 // 	collName == "Points_V1" ||
@@ -965,10 +1015,18 @@ ISpyApplication::drawCollection (IgCollection *collection)
 		     collName == "HFRecHits_V1" ||
 		     collName == "HORecHits_V1")
 	    {
+	      
+	        std::cout << "LT debug: ISpyApplication::drawCollection:   drawing collection = " << collName << std::endl;
+
 		IgDrawFactoryService *drawService = IgDrawFactoryService::get (state ());
 		std::string what = "CrystalHits";
 		std::string repName = "3D";
-    
+
+		SoMaterial *mat = new SoMaterial;
+		mat->diffuseColor.setValue (1.0, 0.0, 0.0);	
+		mat->transparency.setValue (0.25);
+		selSep->addChild (mat);
+ 
 		SoSeparator *rep = dynamic_cast<SoSeparator *>(drawService->draw (what, state (), collection->name (), repName));
 		selSep->addChild (rep);
 	    }    
@@ -1191,6 +1249,9 @@ ISpyApplication::drawCollection (IgCollection *collection)
 	(i->second)->whichChild = SO_SWITCH_ALL;
     }
 }
+
+
+
 
 void
 ISpyApplication::openFileDialog (void) 

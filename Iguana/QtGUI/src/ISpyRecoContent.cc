@@ -69,7 +69,8 @@ ISpyRecoContent::init (void)
     twig10->selfVisible (true);
     IgTwig *twig11 = new ISpyHORecHitTwig (state (), rootTwig, "HORecHit");
     twig11->selfVisible (true);
-    IgTwig *twig12 = new ISpyJetTwig (state (), rootTwig, "Jet");
+ 
+   IgTwig *twig12 = new ISpyJetTwig (state (), rootTwig, "Jet");
     twig12->selfVisible (true);
     IgTwig *twig13 = new ISpyMETTwig (state (), rootTwig, "MET");
     twig13->selfVisible (true);
