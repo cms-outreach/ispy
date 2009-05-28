@@ -1,0 +1,6 @@
+Improved overlay display (2009-05-28).
+
+* Better formatting / control of formatting
+* Multi-line (primitive table) for event info
+* perspective -> orthographic camera to avoid strange behaviour when resizing  
+  window

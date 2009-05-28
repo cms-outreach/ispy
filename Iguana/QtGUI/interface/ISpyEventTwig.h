@@ -23,7 +23,7 @@ public:
     virtual void  onNewEvent (ISpyEventMessage& message);
 
 private:
-    std::string	      	m_text;
+    std::string m_time, m_run, m_event, m_ls, m_orbit, m_bx;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
