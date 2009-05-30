@@ -500,30 +500,50 @@ public:
   { }
   
   IgCollectionItem operator*();
+  IgCollectionItem operator->(void);
 
-  void operator++(int /*dummy*/)
+  IgCollectionIterator operator++(int /*dummy*/)
+  {
+    IgCollectionIterator tmp(m_collection, m_rowPosition);
+    m_rowPosition++;
+    return tmp;
+  }
+  
+  IgCollectionIterator& operator++(void)
   {
     m_rowPosition++;
+    return *this;
   }
   
-  void operator--(int /*dummy*/)
+  IgCollectionIterator operator--(int /*dummy*/)
+  {
+    IgCollectionIterator tmp(m_collection, m_rowPosition);
+    m_rowPosition--;
+    return tmp;
+  }
+  
+  IgCollectionIterator& operator--(void)
   {
     m_rowPosition--;
+    return *this;
   }
   
-  void operator+=(int delta)
+  IgCollectionIterator& operator+=(int delta)
   {
     m_rowPosition += delta;
+    return *this;
   }
   
-  void operator-=(int delta)
+  IgCollectionIterator& operator-=(int delta)
   {
     m_rowPosition -= delta;
+    return *this;
   }
   
-  void operator=(int value)
+  IgCollectionIterator& operator=(int value)
   {
     m_rowPosition = value;
+    return *this;
   }
 
   bool operator==(const IgCollectionIterator& other)
@@ -600,6 +620,11 @@ public:
   bool hasProperty (const char *label)
   {
     return doHasProperty(label);
+  }
+
+  bool hasProperty (const std::string &label)
+  {
+    return doHasProperty(label.c_str());
   }
 
   int size(void)
@@ -742,6 +767,11 @@ public:
   IgCollectionItem (IgCollection *collection, int position)
   :m_collection(collection), m_position(position), m_propertyPosition(0)
   {
+  }
+
+  IgCollectionItem *operator->(void)
+  {
+    return this;
   }
 
   int currentColumn()
@@ -1034,8 +1064,19 @@ public:
     return *(m_collections[index]);
   }
   
+  IgCollection *getCollectionPtr(size_t indexInNameList)
+  {
+    return m_collections[indexInNameList];
+  }
+  
+  IgCollection *getCollectionPtr(const std::string &label)
+  {
+    return getCollectionPtr(label.c_str());
+  }
+
   IgCollection *getCollectionPtr(const char *label)
   {
+    
     CollectionNames::iterator n = std::find (m_collectionNames.begin(), 
                                              m_collectionNames.end(), 
                                              label);
@@ -1049,12 +1090,22 @@ public:
     }
     return m_collections[std::distance(m_collectionNames.begin(), n)];
   }
-  
+
   IgAssociationSet &getAssociationSet(const char *label)
   {
     return *getAssociationSetPtr(label);
   }
   
+  IgAssociationSet *getAssociationSetPtr(size_t indexInASetNames)
+  {
+    return m_associationSets[indexInASetNames];
+  }
+
+  IgAssociationSet *getAssociationSetPtr(const std::string &label)
+  {
+    return getAssociationSetPtr(label.c_str());
+  }
+
   IgAssociationSet *getAssociationSetPtr(const char * label)
   {
     AssociationSetNames::iterator n = std::find(m_associationSetNames.begin(),
@@ -1210,5 +1261,11 @@ std::ostream &operator<<(std::ostream &stream, const IgRef &ref);
 std::ostream &operator<<(std::ostream &stream, const IgAssociation &association);
 std::ostream &operator<<(std::ostream &stream, IgAssociationSet &associationSet);
 std::ostream &operator<<(std::ostream &stream, IgDataStorage &storage);
+
+inline IgCollectionItem
+IgCollectionIterator::operator->(void)
+{
+  return **this;
+}
 
 #endif /* IGUANA_IG_FILE_IG_COLLECTION_H */

@@ -13,6 +13,10 @@ public:
   ParseError(int position = POSITION_UNKNOWN)
   :m_position(position)
   {}
+
+  int position(void) const
+  { return m_position; }
+
 private:
   int m_position;
 };
