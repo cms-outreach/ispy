@@ -1,4 +1,14 @@
-Improved overlay display (2009-05-28).
+Improved API for IgCollection, IgCollectionIterator, IgDataStorage, ParseError
+
+* Operators ++, --, -= += for IgCollectionIterator properly implemented. 
+* Arrow (->) operator added for IgCollectionIterator.
+* IgCollection::hasProperty(const std::string &) added.
+* IgDataStorage::getCollectionPtr / IgDataStorage::getAssociationSet
+  now can retrieve properties using an std::string or the position 
+  of the collection / association set in the data storage.
+* ParseError now can return the  position where the error occurred.
+
+Improved overlay display.
 
 * Better formatting / control of formatting
 * Multi-line (primitive table) for event info

@@ -630,6 +630,7 @@ ISpyApplication::twigChanged (const QModelIndex &index)
     
     QString visSettings ("igtwigs/visibility/");
     visSettings.append (collectionName);
+    const char *label = collectionName.toAscii ().constData();
     if (settings.contains (visSettings))
     {
 	if (settings.value (visSettings).value<int> () != flag)
@@ -648,24 +649,24 @@ ISpyApplication::twigChanged (const QModelIndex &index)
 	settings.setValue (visSettings, flag);
     }
     
-    if (m_storage != 0 && m_storage->hasCollection (collectionName.toAscii()))
+    if (m_storage != 0 && m_storage->hasCollection (label))
     {
 	ASSERT (m_storage);
 	
 	if (m_collectionModel == 0)
 	    createCollectionModel (m_storage);
 	
-	m_collectionModel->setCollection (m_storage->getCollectionPtr(collectionName.toAscii()));
+	m_collectionModel->setCollection (m_storage->getCollectionPtr(label));
 	displayTwigCollection (m_storage);    
     }
-    else if (m_geomStorage != 0 && m_geomStorage->hasCollection (collectionName.toAscii()))
+    else if (m_geomStorage != 0 && m_geomStorage->hasCollection (label))
     {
 	ASSERT (m_geomStorage);
 
 	if (m_collectionModel == 0)
 	    createCollectionModel (m_geomStorage);
 
-	m_collectionModel->setCollection (m_geomStorage->getCollectionPtr(collectionName.toAscii()));
+	m_collectionModel->setCollection (m_geomStorage->getCollectionPtr (label));
 	displayTwigCollection (m_geomStorage);    
     }
 }
@@ -686,7 +687,7 @@ ISpyApplication::displayTwigCollection (IgDataStorage *storage)
     ASSERT (storage);
     QString collectionName = m_treeWidget->currentItem ()->text (0);
     
-    IgCollection *collection = storage->getCollectionPtr(collectionName.toAscii());
+    IgCollection *collection = storage->getCollectionPtr(collectionName.toAscii().constData());
     
     if (collection != NULL && collection->size () > 0)
     {
@@ -698,6 +699,7 @@ void
 ISpyApplication::displayCollection(const QModelIndex &index)
 {
     QString collectionName = m_storageModel->data(index, Qt::DisplayRole).toString();
+    const char *label = collectionName.toAscii().constData();
     
     IgCollection *collection = 0;
     
@@ -705,13 +707,13 @@ ISpyApplication::displayCollection(const QModelIndex &index)
     {
 	return;
     }
-    if (m_storage->hasCollection (collectionName.toAscii()))
+    if (m_storage->hasCollection (label))
     {	
-	collection = m_storage->getCollectionPtr(collectionName.toAscii());
+	collection = m_storage->getCollectionPtr(label);
     }
-    else if (m_geomStorage->hasCollection (collectionName.toAscii()))
+    else if (m_geomStorage->hasCollection (label))
     {
-	collection = m_geomStorage->getCollectionPtr(collectionName.toAscii());
+	collection = m_geomStorage->getCollectionPtr (label);
     }
     
     if (collection != NULL && collection->size () > 0)
@@ -738,16 +740,17 @@ ISpyApplication::displayItem(const QModelIndex &index)
     qDebug() << selected << " parent selection";
     
     QString collectionName = m_storageModel->data(selected, Qt::DisplayRole).toString();
+    const char *label = collectionName.toAscii ().constData();
     qDebug() << collectionName << " collection";
 
     IgCollection *collection = 0;
-    if (m_storage->hasCollection (collectionName.toAscii()))
+    if (m_storage->hasCollection (label))
     {	
-	collection = m_storage->getCollectionPtr(collectionName.toAscii());
+	collection = m_storage->getCollectionPtr (label);
     }
-    else if (m_geomStorage->hasCollection (collectionName.toAscii()))
+    else if (m_geomStorage->hasCollection (label))
     {
-	collection = m_geomStorage->getCollectionPtr(collectionName.toAscii());
+        collection = m_geomStorage->getCollectionPtr(label);
     }
     if (collection != NULL && collection->size () > 0)
     {
