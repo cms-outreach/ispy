@@ -3,8 +3,6 @@
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
-# include <QObject>
-# include "Iguana/Framework/interface/IgModel.h"
 # include <string>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -14,43 +12,31 @@
 class SbString;
 class SbName;
 class SoGroup;
-class IgState;
-class Ig3DBaseRep;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-class Ig3DBaseModel : public QObject, public IgModel
+class Ig3DBaseModel
 {
-    Q_OBJECT
 public:
-    Ig3DBaseModel (IgState *state);
+    Ig3DBaseModel (void);
     ~Ig3DBaseModel (void);
     
-    virtual void        add (Ig3DBaseRep *rep);
-    virtual void        remove (Ig3DBaseRep *rep, bool search = false);
-    virtual void        change (Ig3DBaseRep *rep);
-    virtual Ig3DBaseRep *lookup (SoGroup *node) const;
-
-    virtual SoGroup *   sceneGraph (void) const;
-    virtual Ig3DBaseRep *attachPoint (void) const;
-
-    virtual IgState *   state (void) const;
+    SoGroup *		sceneGraph (void) const;
+    SoGroup *		contents (void) const;
+    SoGroup *		selection (void) const;
 
     static SbString     encode (const std::string &name);
     static std::string  decode (const std::string &name);
     static std::string  decode (const SbName &name);
 
-signals:
-    void        	changed (void);
-
 private:
     void 		initScene (SoGroup *root);
     
-    IgState            *m_state;
-    SoGroup            *m_sceneGraph;
-    Ig3DBaseRep        *m_attachPoint;
+    SoGroup		*m_sceneGraph;
+    SoGroup		*m_contents;
+    SoGroup		*m_selection;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

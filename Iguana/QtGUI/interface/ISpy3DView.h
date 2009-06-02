@@ -10,7 +10,6 @@
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
-class IgState;
 class QToolBar;
 class QWidget;
 class Ig3DBaseModel;
@@ -26,13 +25,12 @@ class ISpy3DView : public QObject,
 {
     Q_OBJECT
 public:
-    ISpy3DView (IgState *state, Ig3DBaseModel *model, QWidget *parent);
+    ISpy3DView (Ig3DBaseModel *model, QWidget *parent);
     // implicit copy constructor
     // implicit assignment operator
     // implicit destructor
     ~ISpy3DView (void);
     
-    virtual IgState *		state (void) const;
     virtual Ig3DBaseModel *     model (void) const;
     virtual QWidget *		parent (void) const;
     virtual QToolBar *		toolBar (void) const;
@@ -93,7 +91,6 @@ private:
     void		setupActions (void);
     SoNode *		findGroup (SoNode *node, const char* name);
     
-    IgState    	       *m_state;
     QWidget	       *m_parent;
     QToolBar	       *m_toolBar;    
     Ig3DBaseModel      *m_model;

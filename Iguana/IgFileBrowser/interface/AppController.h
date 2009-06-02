@@ -52,7 +52,7 @@ collectionChanged(const QModelIndex &index)
 	    {
 		return;
 	    }
-	    collectionModel->setCollection (storage->getCollectionPtr(collectionName.toAscii()));
+	    collectionModel->setCollection (storage->getCollectionPtr(collectionName.toAscii().constData()));
 	}
 
     void

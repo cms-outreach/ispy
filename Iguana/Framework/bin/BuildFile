@@ -1,15 +1,3 @@
-<bin file=IgModuleLoadCheck.cpp>
-  <use name=Iguana/Utilities>
-  <Flags INSTALL_SCRIPTS=IgModuleSymCheck>
-</bin>
-<bin file=IgPluginDump.cpp>
-  <use name=Iguana/Utilities>
-  <use name=Iguana/Framework>
-</bin>
-<bin file=IgPluginRefresh.cpp>
-  <use name=Iguana/Utilities>
-  <use name=Iguana/Framework>
-</bin>
 <bin file=igdumpstats.cpp>
   <flags CXXFLAGS="-O2 -ggdb">
   <use name=Iguana/Framework>
