@@ -3,10 +3,8 @@
 
 #include "Iguana/QtGUI/interface/ISpy3DView.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
-#include "Iguana/QtGUI/interface/Ig3DBaseRep.h"
 #include "Iguana/QtGUI/interface/IgSoGL2PSAction.h"
 #include "Iguana/QtGUI/interface/gl2ps.h"
-#include "Iguana/Framework/interface/IgState.h"
 #include "Iguana/Inventor/interface/IgSoGridPlane.h"
 #include <Inventor/SoOffscreenRenderer.h>
 #include <Inventor/nodes/SoDirectionalLight.h>
@@ -25,9 +23,8 @@
 #include <Inventor/actions/SoSearchAction.h>
 #include <Inventor/nodekits/SoBaseKit.h>
 
-ISpy3DView::ISpy3DView (IgState *state, Ig3DBaseModel *model, QWidget *parent)
+ISpy3DView::ISpy3DView (Ig3DBaseModel *model, QWidget *parent)
     : SoQtExaminerViewer (parent, "iSpy 3D"),
-      m_state (new IgState (state)),
       m_parent (parent),      
       m_model (model),
       m_gl2psOptions (GL2PS_SIMPLE_LINE_OFFSET 
@@ -242,7 +239,7 @@ ISpy3DView::initCamera (void)
     camera->pointAt (SbVec3f(0.0, 0.0, 0.0));
     camera->scaleHeight (5.5f);
     camera->focalDistance = 1;
-    ((SoGroup *) model()->sceneGraph())->insertChild(camera, 0);
+    model()->sceneGraph()->insertChild(camera, 0);
     
 //     camera->position.setValue (-18.1, 8.6, 14.0);
 //     camera->orientation.setValue (-0.3, -0.93, -0.2, 1.1);
@@ -284,10 +281,6 @@ ISpy3DView::initCamera (void)
 
 ISpy3DView::~ISpy3DView (void) 
 {}
-
-IgState *
-ISpy3DView::state (void) const
-{ return m_state; }
 
 QWidget *
 ISpy3DView::parent (void) const
@@ -760,7 +753,7 @@ void
 ISpy3DView::drawGrid (const bool enable) 
 {
     // find the grid planes group
-    SoNode* grid = findGroup (model ()->attachPoint (), Ig3DBaseModel::encode ("Grid Planes").getString ());
+    SoNode* grid = findGroup (model ()->contents (), Ig3DBaseModel::encode ("Grid Planes").getString ());
     SoGroup* all = 0;
     
     if (grid)
