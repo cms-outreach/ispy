@@ -28,6 +28,7 @@
 /IgSoGridPlaneMap.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoHits.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoIdealTrack.cc/1.1/Thu Apr 23 07:10:24 2009//
+/IgSoJet.cc/1.2/Result of merge//
 /IgSoLegoPlot.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoLegoTowers.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoPcon.cc/1.1/Thu Apr 23 07:10:24 2009//
@@ -50,5 +51,4 @@
 /IgSoViewpoint.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoXYZGrid.cc/1.1/Thu Apr 23 07:10:24 2009//
 /IgSurfaceOperation.cc/1.1/Thu Apr 23 07:10:24 2009//
-/IgSoJet.cc/1.2/Fri Jun  5 15:03:18 2009//
 D

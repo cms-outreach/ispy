@@ -39,6 +39,7 @@
 /IgSoQuad.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoRZHist.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoRectColHist.h/1.1/Thu Apr 23 07:10:24 2009//
+/IgSoRectHist.h/1.2/Tue May 19 16:45:49 2009//
 /IgSoRotSolid.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoShapeKit.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgSoSiStrips.h/1.1/Thu Apr 23 07:10:24 2009//
@@ -54,5 +55,4 @@
 /IgSurfaceOperation.h/1.1/Thu Apr 23 07:10:24 2009//
 /IgXYGrid.h/1.1/Thu Apr 23 07:10:24 2009//
 /config.h/1.1/Thu Apr 23 07:10:24 2009//
-/IgSoRectHist.h/1.2/Tue May 19 16:45:49 2009//
 D
