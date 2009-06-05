@@ -1,5 +1,5 @@
-#ifndef IGUANA_IGGI_IG_PARSER_H
-#define IGUANA_IGGI_IG_PARSER_H
+#ifndef IGUANA_IG_PARSER_H
+#define IGUANA_IG_PARSER_H
 # ifdef PROJECT_NAME 
 # include <Iguana/Framework/interface/IgCollection.h>
 # else
@@ -367,4 +367,4 @@ private:
   std::string m_currentCollectionName;
 };
 
-#endif // IGUANA_IG_FILE_IG_PARSER_H
+#endif // IGUANA_IG_PARSER_H

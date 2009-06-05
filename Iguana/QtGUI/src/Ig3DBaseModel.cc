@@ -1,12 +1,6 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
-#include "Iguana/QtGUI/interface/Ig3DBaseRep.h"
-#include "Iguana/QtGUI/interface/ISpySelectionService.h"
-#include "Iguana/QtGUI/interface/ISpySceneGraphService.h"
-#include "Iguana/Inventor/interface/IgSbColorMap.h"
-#include <Inventor/actions/SoSearchAction.h>
-#include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoDrawStyle.h>
 #include <Inventor/nodes/SoMaterial.h>
 #include <Inventor/nodes/SoPerspectiveCamera.h>
@@ -14,146 +8,56 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <classlib/utils/DebugAids.h>
 
-Ig3DBaseModel::Ig3DBaseModel (IgState *state)
-    : m_state (state),
-      m_sceneGraph (new SoSelection),
-      m_attachPoint (0)
+Ig3DBaseModel::Ig3DBaseModel (void)
+    : m_sceneGraph (new SoSelection),
+      m_contents (0),
+      m_selection (0)
 {
     // ASSERT ("attachPoint is the scene graph or within it");
     m_sceneGraph->ref ();
-    m_sceneGraph->setName ("IGUANA_SCENE_GRAPH_V2");
-    Ig3DBaseRep *rep = new Ig3DBaseRep (this, 0, 0, new SoSeparator);
-    ASSERT (m_attachPoint == rep);
+    m_sceneGraph->setName ("ISPY_SCENE_GRAPH_V1");
     initScene (m_sceneGraph);
 }
 
 void
 Ig3DBaseModel::initScene (SoGroup *top)
 {
-    SoSeparator *root = dynamic_cast <SoSeparator *>(top);
+    SoSelection *root = dynamic_cast <SoSelection *>(top);
     // FIXME: root->addChild(new SoPerspectiveCamera);
 
     SoSeparator *sel = new SoSeparator;
     sel->setName (SbName ("CollectionSelection"));
     SoDrawStyle *sty = new SoDrawStyle;
     sty->style = SoDrawStyle::LINES;
-    sty->lineWidth.setValue (3);
+    sty->lineWidth = 3;
     sel->addChild (sty);
 
     SoMaterial *mat = new SoMaterial;
-    float rgbcomponents [4];
-    IgSbColorMap::unpack (0xC0000000, rgbcomponents); // Free Speech Red
-    mat->diffuseColor.setValue (SbColor (rgbcomponents));
+    mat->diffuseColor = SbColor(0xC0/255., 0x00/255., 0x00/255.);
     sel->addChild (mat);
-    SoSeparator *selSep = new SoSeparator;
-    sel->addChild (selSep);
+
+    m_selection = new SoSeparator;
+    sel->addChild (m_selection);
     root->addChild (sel);
     
-    SoSeparator *mainScene = new SoSeparator;
-    root->addChild (mainScene);
-    SoSeparator *mainSep = new SoSeparator;
-    mainScene->addChild (mainSep);
-
-    new ISpySceneGraphService (state (), mainSep);
-    new ISpySelectionService (state (), selSep);
+    m_contents = new SoSeparator;
+    root->addChild (m_contents);
 }
 
 Ig3DBaseModel::~Ig3DBaseModel (void)
 { m_sceneGraph->unref (); }
 
-// void
-// Ig3DBaseModel::changed (void)
-// {
-//     if (ISpySelectionService *sel = ISpySelectionService::get (state ()))
-//     {
-// 	dynamic_cast<SoSeparator *>(sel->selection ())->removeAllChildren ();	
-//     }
-//     if (ISpySceneGraphService* sceen = ISpySceneGraphService::get (state ()))
-//     {
-// 	dynamic_cast<SoSeparator *>(sceen->sceneGraph ())->removeAllChildren ();
-//     }    
-// }
-
-Ig3DBaseRep *
-Ig3DBaseModel::lookup (SoGroup *node) const
-{ ASSERT (false); return dynamic_cast<Ig3DBaseRep *> (node); }
-
-void
-Ig3DBaseModel::add (Ig3DBaseRep *rep)
-{
-    ASSERT (rep);
-    
-    if (! m_attachPoint)
-    {
-        // Initialising: creating the root rep.
-	ASSERT (m_sceneGraph->getNumChildren () == 0);
-	m_sceneGraph->addChild (m_attachPoint = rep);
-    }
-    else
-    {
-        ASSERT (m_attachPoint->findChild (rep) == -1);
-	m_attachPoint->addChild (rep);
-	changed ();
-    }
-}
-
-void
-Ig3DBaseModel::remove (Ig3DBaseRep *rep, bool search /* = false */)
-{
-    ASSERT (rep);
-    // Be conservative -- the rep has no way of knowing it has been
-    // added to a model or to a parent.
-    int index;
-    if ((index = m_attachPoint->findChild (rep)) != -1)
-        m_attachPoint->removeChild (index);
-    
-    if (search)
-    {
-        // NB: The object rep can be attached in only one place.  We
-        // end up here if the rep is being deleted via its object
-	// going away and the rep doesn't know where it belongs to,
-	// asking us to do the hard work.
-	//
-	// Find the parent.  Since this is a rep, the parent must
-	// always be a rep (a separator) and not hidden inside
-	// switches.  It might have been in the attach point but we
-	// already removed that one, so we know the path must be at
-	// least two levels.
-	SoSearchAction searcher;
-	searcher.setNode (rep);
-	searcher.apply (m_attachPoint);
-
-	if (searcher.getPath ())
-	{
-	    ASSERT (searcher.getPath ()->getLength () > 1);
-	    SoNode *parent = searcher.getPath ()->getNodeFromTail (1);
-	    ASSERT (parent && parent->isOfType(SoSeparator::getClassTypeId()));
-            SoSeparator *p = static_cast<SoSeparator *> (parent);
-	    p->removeChild (rep);
-         }
-    }
-    
-    changed ();
-}
-
-void
-Ig3DBaseModel::change (Ig3DBaseRep *rep)
-{
-    ASSERT (rep);
-    changed ();
-}
-
 SoGroup *
 Ig3DBaseModel::sceneGraph (void) const
 { return m_sceneGraph; }
 
-Ig3DBaseRep *
-Ig3DBaseModel::attachPoint (void) const
-{ return m_attachPoint; }
+SoGroup *
+Ig3DBaseModel::contents (void) const
+{ return m_contents; }
 
-IgState *
-Ig3DBaseModel::state (void) const
-{ return m_state; }
+SoGroup *
+Ig3DBaseModel::selection (void) const
+{ return m_selection; }
 
 SbString
 Ig3DBaseModel::encode (const std::string &name)
@@ -224,4 +128,3 @@ Ig3DBaseModel::decode (const std::string &name)
 std::string
 Ig3DBaseModel::decode (const SbName &name)
 { return decode (std::string (name.getString ())); }
-

@@ -1,5 +1,5 @@
-#ifndef FRAMEWORK_IG_NET_ERROR_H
-# define FRAMEWORK_IG_NET_ERROR_H
+#ifndef IGUANA_IG_NET_ERROR_H
+# define IGUANA_IG_NET_ERROR_H
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
@@ -31,4 +31,4 @@ private:
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
 //<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 
-#endif // FRAMEWORK_IG_NET_ERROR_H
+#endif // IGUANA_IG_NET_ERROR_H
