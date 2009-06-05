@@ -1,5 +1,5 @@
-#ifndef IGUANA_IG_FILE_IG_COLLECTION_H
-#define IGUANA_IG_FILE_IG_COLLECTION_H
+#ifndef IGUANA_IG_COLLECTION_H
+#define IGUANA_IG_COLLECTION_H
 
 # ifdef PROJECT_NAME 
 #  include <Iguana/Framework/interface/IgLinearAlgebra.h>
@@ -1268,4 +1268,4 @@ IgCollectionIterator::operator->(void)
   return **this;
 }
 
-#endif /* IGUANA_IG_FILE_IG_COLLECTION_H */
+#endif /* IGUANA_IG_COLLECTION_H */

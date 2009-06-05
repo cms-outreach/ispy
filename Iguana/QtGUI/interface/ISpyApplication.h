@@ -1,5 +1,5 @@
-#ifndef IGGI_IGGI_APPLICATION_H
-# define IGGI_IGGI_APPLICATION_H
+#ifndef IGUANA_ISPY_APPLICATION_H
+# define IGUANA_ISPY_APPLICATION_H
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
@@ -153,4 +153,4 @@ private:
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
 //<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 
-#endif // IGGI_IGGI_APPLICATION_H
+#endif // IGUANA_ISPY_APPLICATION_H

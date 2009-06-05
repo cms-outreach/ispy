@@ -1,5 +1,5 @@
-#ifndef IGUANA_FRAMEWORK_IG_NET_H
-# define IGUANA_FRAMEWORK_IG_NET_H
+#ifndef IGUANA_IG_NET_H
+# define IGUANA_IG_NET_H
 
 # include "classlib/iobase/InetServerSocket.h"
 # include "classlib/iobase/IOSelector.h"
@@ -185,4 +185,4 @@ private:
   IgNet &operator=(const IgNet &);
 };
 
-#endif // IGUANA_FRAMEWORK_IG_NET_H
+#endif // IGUANA_IG_NET_H

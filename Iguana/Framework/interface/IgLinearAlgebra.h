@@ -1,3 +1,8 @@
+
+#ifndef IGUANA_IG_LINEAR_ALGEBRA_H
+#define IGUANA_IG_LINEAR_ALGEBRA_H
+
+
 #include <cassert>
 
 template <class T, int N>
@@ -136,3 +141,5 @@ typedef GetterPolicy<StoragePolicy, int, 4> IgV4i;
 typedef GetterPolicy<StoragePolicy, float, 2> IgV2f;
 typedef GetterPolicy<StoragePolicy, float, 3> IgV3f;
 typedef GetterPolicy<StoragePolicy, float, 4> IgV4f;
+
+#endif // IGUANA_IG_LINEAR_ALGEBRA_H

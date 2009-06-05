@@ -84,9 +84,15 @@ IgSoJet::refresh (void)
     // something meaningful; first attempt to relate hat height to
     // energy.  For now, hat height varies from 0 up to maxR,
     // depending on what max energy is set to.)
-    float	hatRadius = 1.4 * bodyRadius;
-    float	hatHeight = maxR.getValue () * energy.getValue ()
-			    / maxEnergy.getValue ();
+
+    // float	hatRadius = 1.4 * bodyRadius;
+    // float	hatHeight = maxR.getValue () * energy.getValue () / maxEnergy.getValue ();
+
+// fixed (small) hat
+    float hatRadius = 1.0 * bodyRadius;
+    float hatHeight = 0.1; 
+   
+
 
     hatCone->bottomRadius = hatRadius;
     hatCone->height = hatHeight;

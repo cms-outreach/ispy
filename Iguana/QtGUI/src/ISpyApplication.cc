@@ -7,55 +7,17 @@
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
 #include "Iguana/QtGUI/interface/IgCollectionTableModel.h"
+#include "Iguana/QtGUI/interface/IgDrawTowerHelper.h"
+
 #include "Iguana/Framework/interface/IgCollection.h"
 #include "Iguana/Framework/interface/IgParser.h"
-#include "Iguana/Inventor/interface/IgParticleChar.h"
-#include "Iguana/Inventor/interface/IgSbColorMap.h"
-#include "Iguana/Inventor/interface/IgSo2DArrow.h"
-#include "Iguana/Inventor/interface/IgSo3DErrorBar.h"
-#include "Iguana/Inventor/interface/IgSoAnimator.h"
-#include "Iguana/Inventor/interface/IgSoArrow.h"
-#include "Iguana/Inventor/interface/IgSoAxis.h"
-#include "Iguana/Inventor/interface/IgSoCalHit.h"
-#include "Iguana/Inventor/interface/IgSoCircleArc.h"
-#include "Iguana/Inventor/interface/IgSoCircularHist.h"
-#include "Iguana/Inventor/interface/IgSoClipPlane.h"
-#include "Iguana/Inventor/interface/IgSoCoordinateAxis.h"
-#include "Iguana/Inventor/interface/IgSoCrystalHit.h"
-#include "Iguana/Inventor/interface/IgSoCube.h"
-#include "Iguana/Inventor/interface/IgSoEllipsoid.h"
-#include "Iguana/Inventor/interface/IgSoFieldPlane.h"
-#include "Iguana/Inventor/interface/IgSoFieldPlaneMap.h"
-#include "Iguana/Inventor/interface/IgSoG4Box.h"
-#include "Iguana/Inventor/interface/IgSoG4Trap.h"
-#include "Iguana/Inventor/interface/IgSoG4Trd.h"
-#include "Iguana/Inventor/interface/IgSoGrid.h"
-#include "Iguana/Inventor/interface/IgSoGridPlane.h"
-#include "Iguana/Inventor/interface/IgSoGridPlaneMap.h"
-#include "Iguana/Inventor/interface/IgSoHits.h"
-#include "Iguana/Inventor/interface/IgSoIdealTrack.h"
+
+// FIXME : these should be migrated from shapes into draw functions
+
 #include "Iguana/Inventor/interface/IgSoJet.h"
-#include "Iguana/Inventor/interface/IgSoLegoPlot.h"
-#include "Iguana/Inventor/interface/IgSoLegoTowers.h"
-#include "Iguana/Inventor/interface/IgSoPcon.h"
-#include "Iguana/Inventor/interface/IgSoPlaneManip.h"
-#include "Iguana/Inventor/interface/IgSoPolyVol.h"
-#include "Iguana/Inventor/interface/IgSoQuad.h"
-#include "Iguana/Inventor/interface/IgSoRZHist.h"
-#include "Iguana/Inventor/interface/IgSoRectColHist.h"
-#include "Iguana/Inventor/interface/IgSoRectHist.h"
-#include "Iguana/Inventor/interface/IgSoRotSolid.h"
-#include "Iguana/Inventor/interface/IgSoShapeKit.h"
-#include "Iguana/Inventor/interface/IgSoSiStrips.h"
 #include "Iguana/Inventor/interface/IgSoSimpleTrajectory.h"
-#include "Iguana/Inventor/interface/IgSoSlicer.h"
-#include "Iguana/Inventor/interface/IgSoSlicerEngine.h"
-#include "Iguana/Inventor/interface/IgSoSphereHit.h"
 #include "Iguana/Inventor/interface/IgSoSplineTrack.h"
-#include "Iguana/Inventor/interface/IgSoTower.h"
-#include "Iguana/Inventor/interface/IgSoTowerRadii.h"
-#include "Iguana/Inventor/interface/IgSoViewpoint.h"
-#include "Iguana/Inventor/interface/IgSoXYZGrid.h"
+
 #include "classlib/iobase/File.h"
 #include "classlib/iobase/Filename.h"
 #include "classlib/iotools/InputStream.h"
@@ -64,6 +26,7 @@
 #include "classlib/utils/Error.h"
 #include "classlib/zip/ZipMember.h"
 #include "classlib/zip/ZipArchive.h"
+
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 #include <Inventor/nodes/SoAnnotation.h>
@@ -86,6 +49,7 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoVertexProperty.h>
+
 #include <QApplication>
 #include <QEventLoop>
 #include <QDebug>
@@ -99,8 +63,6 @@
 #include <QtGui>
 #include <iostream>
 
-static const double cCrystalHitScale = 0.3;
-static const double cCaloTowerScale = 0.03;
 
 using namespace lat;
 
@@ -108,53 +70,19 @@ using namespace lat;
 
 static void initShapes (void)
 {
-  IgParticleChar::initParticles ();
-  IgSoShapeKit::initClass ();
-  IgSo2DArrow::initClass ();
-  IgSo3DErrorBar::initClass ();
-  IgSoArrow::initClass ();
-  IgSoAxis::initClass ();
-  IgSoCalHit::initClass ();
-  IgSoCircleArc::initClass ();
-  IgSoCoordinateAxis::initClass ();
-  IgSoCrystalHit::initClass ();
-  IgSoCube::initClass ();
-  IgSoEllipsoid::initClass ();
-  IgSoFieldPlane::initClass ();
-  IgSoFieldPlaneMap::initClass ();
-  IgSoG4Box::initClass ();
-  IgSoG4Trap::initClass ();
-  IgSoG4Trd::initClass ();
-  IgSoGrid::initClass ();
-  IgSoHits::initClass ();
-  IgSoIdealTrack::initClass ();
-  IgSoJet::initClass ();
-  IgSoLegoPlot::initClass ();
-  IgSoLegoTowers::initClass ();
-  IgSoPcon::initClass ();
-  IgSoPolyVol::initClass ();
-  IgSoQuad::initClass ();
-  IgSoRectHist::initClass ();
-  IgSoRectColHist::initClass ();
-  IgSoRotSolid::initClass ();
-  IgSoRZHist::initClass ();
-  IgSoSiStrips::initClass ();
-  IgSoSimpleTrajectory::initClass ();
-  IgSoSphereHit::initClass ();
-  IgSoSplineTrack::initClass ();
-  IgSoTower::initClass ();
-  IgSoTowerRadii::initClass ();
-  IgSoXYZGrid::initClass ();
-  IgSoAnimator::initClass ();
-  IgSoClipPlane::initClass ();
-  IgSoSlicer::initClass ();
-  IgSoSlicerEngine::initClass ();
-  IgSoViewpoint::initClass ();
-  IgSoPlaneManip::initClass();
-  IgSoCircularHist::initClass ();
-  IgSoGridPlane::initClass ();
-  IgSoGridPlaneMap::initClass ();
+   IgSoShapeKit::initClass ();
+   IgSoJet::initClass ();
+   IgSoSimpleTrajectory::initClass ();
+   IgSoSplineTrack::initClass ();
 }
+
+
+
+
+// ------------------------------------------------------
+// Draw Text Overlays 
+// ------------------------------------------------------
+
 
 static void
 createTextLine(SoGroup *group, SoTranslation *trans, const std::string &text)
@@ -163,1275 +91,6 @@ createTextLine(SoGroup *group, SoTranslation *trans, const std::string &text)
   label->string = text.c_str ();
   group->addChild (trans);
   group->addChild (label);
-}
-
-static void
-make3DPointSetShapes(IgCollection **collections,
-		     IgAssociationSet **,
-		     SoSeparator *sep,
-		     SbColor colour,
-		     int kind)
-{
-  IgCollection		*c = collections[0];
-  IgProperty		POS = c->getProperty ("pos");
-  SoMaterial		*mat = new SoMaterial;
-  SoMarkerSet		*points = new SoMarkerSet;
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  int			n = 0;
-
-  mat->diffuseColor = colour;
-  sep->addChild (mat);
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d p1 = ci->get<IgV3d> (POS);
-
-    double x = p1.x ();
-    double y = p1.y ();
-    double z = p1.z ();
-    vertices->vertex.set1Value (n++, SbVec3f (x, y, z));
-  }
-  vertices->vertex.setNum (n);
-
-  points->markerIndex = kind;
-  points->vertexProperty = vertices;
-  points->numPoints = n;
-  sep->addChild (points);
-}
-
-static void
-make3DCrystalHitShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  QSettings		settings;
-  double		ecut = 0.1;
-  bool			hlrMode = false;
-  SoAnnotation		*ann = 0;
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  SoIndexedFaceSet	*faces = new SoIndexedFaceSet;
-  std::vector<int>	lineIndices;
-  std::vector<int>	indices;
-  std::vector<SbVec3f>	corners;
-  int			i = 0;
-  float			epsilon = 0.0001;
-  float			scale = cCrystalHitScale;
-
-  ecut = settings.value ("igevents/cuts/ecal/barrel/rechits/energy", ecut).value<double> ();
-  hlrMode = settings.value ("igdisplay/crystalhits/view3d/hiddenlineremoval", hlrMode).value<bool> ();
-
-  if (hlrMode)
-  {
-    ann = new SoAnnotation;
-    sep->addChild (ann);
-    SoDrawStyle *dashed = new SoDrawStyle;
-    dashed->style = SoDrawStyle::LINES;
-    dashed->lineWidth = 1;
-    dashed->linePattern = 0x0f0f;
-    ann->addChild (dashed);
-  }
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    double energy = ci->get<double> ("energy");
-    if (energy > ecut)
-    {
-      float eScale = scale * energy;
-
-      IgV3d p1  = ci->get<IgV3d> ("front_1");
-      IgV3d p2  = ci->get<IgV3d> ("front_2");
-      IgV3d p3  = ci->get<IgV3d> ("front_3");
-      IgV3d p4  = ci->get<IgV3d> ("front_4");
-      IgV3d p5  = ci->get<IgV3d> ("back_1");
-      IgV3d p6  = ci->get<IgV3d> ("back_2");
-      IgV3d p7  = ci->get<IgV3d> ("back_3");
-      IgV3d p8  = ci->get<IgV3d> ("back_4");
-
-      SbVec3f front1(static_cast<double>(p1.x ()),
-		     static_cast<double>(p1.y ()),
-		     static_cast<double>(p1.z ()));
-
-      SbVec3f front2(static_cast<double>(p2.x ()),
-		     static_cast<double>(p2.y ()),
-		     static_cast<double>(p2.z ()));
-
-      SbVec3f front3(static_cast<double>(p3.x ()),
-		     static_cast<double>(p3.y ()),
-		     static_cast<double>(p3.z ()));
-
-      SbVec3f front4(static_cast<double>(p4.x ()),
-		     static_cast<double>(p4.y ()),
-		     static_cast<double>(p4.z ()));
-
-      SbVec3f back1(static_cast<double>(p5.x ()),
-		    static_cast<double>(p5.y ()),
-		    static_cast<double>(p5.z ()));
-
-      SbVec3f back2(static_cast<double>(p6.x ()),
-		    static_cast<double>(p6.y ()),
-		    static_cast<double>(p6.z ()));
-
-      SbVec3f back3(static_cast<double>(p7.x ()),
-		    static_cast<double>(p7.y ()),
-		    static_cast<double>(p7.z ()));
-
-      SbVec3f back4(static_cast<double>(p8.x ()),
-		    static_cast<double>(p8.y ()),
-		    static_cast<double>(p8.z ()));
-
-      SbVec3f eFront1 = front1.getValue () + (front3.getValue () - front1.getValue ());
-      SbVec3f eFront2 = front2.getValue () + (front4.getValue () - front2.getValue ());
-      SbVec3f eFront3 = front3.getValue () + (front1.getValue () - front3.getValue ());
-      SbVec3f eFront4 = front4.getValue () + (front2.getValue () - front4.getValue ());
-
-      SbVec3f eBack1  = back1.getValue ()  + (back3.getValue ()  - back1.getValue ());
-      SbVec3f eBack2  = back2.getValue ()  + (back4.getValue ()  - back2.getValue ());
-      SbVec3f eBack3  = back3.getValue ()  + (back1.getValue ()  - back3.getValue ());
-      SbVec3f eBack4  = back4.getValue ()  + (back2.getValue ()  - back4.getValue ());
-
-      corners.push_back (eBack1 + (eBack1 - eFront1) * epsilon);
-      corners.push_back (eBack2 + (eBack2 - eFront2) * epsilon);
-      corners.push_back (eBack3 + (eBack3 - eFront3) * epsilon);
-      corners.push_back (eBack4 + (eBack4 - eFront4) * epsilon);
-      corners.push_back (corners[i]  + (eBack1 - eFront1) * eScale);
-      corners.push_back (corners[i + 1]  + (eBack2 - eFront2) * eScale);
-      corners.push_back (corners[i + 2] + (eBack3 - eFront3) * eScale);
-      corners.push_back (corners[i + 3] + (eBack4 - eFront4) * eScale);
-
-      lineIndices.push_back (i);
-      lineIndices.push_back (i + 1);
-      lineIndices.push_back (i + 2);
-      lineIndices.push_back (i + 3);
-      lineIndices.push_back (i);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (i + 5);
-      lineIndices.push_back (i + 6);
-      lineIndices.push_back (i + 7);
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      lineIndices.push_back (i);
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 1);
-      lineIndices.push_back (i + 5);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 2);
-      lineIndices.push_back (i + 6);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 3);
-      lineIndices.push_back (i + 7);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      // Face set indices
-      indices.push_back (i + 3);
-      indices.push_back (i + 2);
-      indices.push_back (i + 1);
-      indices.push_back (i + 0);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 4);
-      indices.push_back (i + 5);
-      indices.push_back (i + 6);
-      indices.push_back (i + 7);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 5);
-      indices.push_back (i + 1);
-      indices.push_back (i + 2);
-      indices.push_back (i + 6);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 2);
-      indices.push_back (i + 3);
-      indices.push_back (i + 7);
-      indices.push_back (i + 6);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 7);
-      indices.push_back (i + 3);
-      indices.push_back (i);
-      indices.push_back (i + 4);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 1);
-      indices.push_back (i + 5);
-      indices.push_back (i + 4);
-      indices.push_back (i);
-      indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
-
-      i += 8;
-    }
-  }
-
-  vertices->vertex.setValues (0, corners.size (), &corners [0]);
-  vertices->vertex.setNum (corners.size ());
-
-  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-  lineSet->vertexProperty = vertices;
-
-  faces->coordIndex.setValues (0, indices.size (), &indices [0]);
-  faces->vertexProperty = vertices;
-
-  if (hlrMode)
-    ann->addChild (lineSet);
-
-  sep->addChild (lineSet);
-  sep->addChild (faces);
-}
-
-static void
-make3DJetShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  double		ecut = 0.1;
-
-  ecut = QSettings().value ("igevents/cuts/jets/energy", ecut).value<double> ();
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    double energy = ci->get<double> ("et");
-    if (energy > ecut)
-    {
-      IgSoJet *recoJet = new IgSoJet;
-      recoJet->theta.setValue (ci->get<double> ("theta"));
-      recoJet->phi.setValue (ci->get<double> ("phi"));
-      recoJet->energy.setValue (energy);
-      sep->addChild (recoJet);
-    }
-  }
-}
-
-static void
-make3DEmTowerShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  double		ecut = 0.1;
-  int			i = 0;
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  SoIndexedFaceSet	*faces = new SoIndexedFaceSet;
-  std::vector<int>	lineIndices;
-  std::vector<int>	indices;
-  std::vector<SbVec3f>	corners;
-  float			epsilon = 0.0001;
-  float			scale = cCaloTowerScale;
-
-  ecut = QSettings().value ("igevents/cuts/calotowers/energy", ecut).value<double> ();
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    double energy = ci->get<double> ("emEnergy");
-    if (energy > ecut)
-    {
-      float eScale = scale * energy;
-
-      IgV3d p1  = ci->get<IgV3d> ("front_1");
-      IgV3d p2  = ci->get<IgV3d> ("front_2");
-      IgV3d p3  = ci->get<IgV3d> ("front_3");
-      IgV3d p4  = ci->get<IgV3d> ("front_4");
-      IgV3d p5  = ci->get<IgV3d> ("back_1");
-      IgV3d p6  = ci->get<IgV3d> ("back_2");
-      IgV3d p7  = ci->get<IgV3d> ("back_3");
-      IgV3d p8  = ci->get<IgV3d> ("back_4");
-
-      SbVec3f front1(static_cast<double>(p1.x ()),
-		     static_cast<double>(p1.y ()),
-		     static_cast<double>(p1.z ()));
-
-      SbVec3f front2(static_cast<double>(p2.x ()),
-		     static_cast<double>(p2.y ()),
-		     static_cast<double>(p2.z ()));
-
-      SbVec3f front3(static_cast<double>(p3.x ()),
-		     static_cast<double>(p3.y ()),
-		     static_cast<double>(p3.z ()));
-
-      SbVec3f front4(static_cast<double>(p4.x ()),
-		     static_cast<double>(p4.y ()),
-		     static_cast<double>(p4.z ()));
-
-      SbVec3f back1(static_cast<double>(p5.x ()),
-		    static_cast<double>(p5.y ()),
-		    static_cast<double>(p5.z ()));
-
-      SbVec3f back2(static_cast<double>(p6.x ()),
-		    static_cast<double>(p6.y ()),
-		    static_cast<double>(p6.z ()));
-
-      SbVec3f back3(static_cast<double>(p7.x ()),
-		    static_cast<double>(p7.y ()),
-		    static_cast<double>(p7.z ()));
-
-      SbVec3f back4(static_cast<double>(p8.x ()),
-		    static_cast<double>(p8.y ()),
-		    static_cast<double>(p8.z ()));
-
-      SbVec3f eFront1 = front1.getValue () + (front3.getValue () - front1.getValue ());
-      SbVec3f eFront2 = front2.getValue () + (front4.getValue () - front2.getValue ());
-      SbVec3f eFront3 = front3.getValue () + (front1.getValue () - front3.getValue ());
-      SbVec3f eFront4 = front4.getValue () + (front2.getValue () - front4.getValue ());
-
-      SbVec3f eBack1  = back1.getValue ()  + (back3.getValue ()  - back1.getValue ());
-      SbVec3f eBack2  = back2.getValue ()  + (back4.getValue ()  - back2.getValue ());
-      SbVec3f eBack3  = back3.getValue ()  + (back1.getValue ()  - back3.getValue ());
-      SbVec3f eBack4  = back4.getValue ()  + (back2.getValue ()  - back4.getValue ());
-
-      corners.push_back (eBack1 + (eBack1 - eFront1) * epsilon);
-      corners.push_back (eBack2 + (eBack2 - eFront2) * epsilon);
-      corners.push_back (eBack3 + (eBack3 - eFront3) * epsilon);
-      corners.push_back (eBack4 + (eBack4 - eFront4) * epsilon);
-      corners.push_back (corners[i]  + (eBack1 - eFront1) * eScale);
-      corners.push_back (corners[i + 1]  + (eBack2 - eFront2) * eScale);
-      corners.push_back (corners[i + 2] + (eBack3 - eFront3) * eScale);
-      corners.push_back (corners[i + 3] + (eBack4 - eFront4) * eScale);
-
-      lineIndices.push_back (i);
-      lineIndices.push_back (i + 1);
-      lineIndices.push_back (i + 2);
-      lineIndices.push_back (i + 3);
-      lineIndices.push_back (i);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (i + 5);
-      lineIndices.push_back (i + 6);
-      lineIndices.push_back (i + 7);
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      lineIndices.push_back (i);
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 1);
-      lineIndices.push_back (i + 5);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 2);
-      lineIndices.push_back (i + 6);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 3);
-      lineIndices.push_back (i + 7);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      // Face set indices
-      indices.push_back (i + 3);
-      indices.push_back (i + 2);
-      indices.push_back (i + 1);
-      indices.push_back (i + 0);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 4);
-      indices.push_back (i + 5);
-      indices.push_back (i + 6);
-      indices.push_back (i + 7);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 5);
-      indices.push_back (i + 1);
-      indices.push_back (i + 2);
-      indices.push_back (i + 6);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 2);
-      indices.push_back (i + 3);
-      indices.push_back (i + 7);
-      indices.push_back (i + 6);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 7);
-      indices.push_back (i + 3);
-      indices.push_back (i);
-      indices.push_back (i + 4);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 1);
-      indices.push_back (i + 5);
-      indices.push_back (i + 4);
-      indices.push_back (i);
-      indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
-
-      i += 8;
-    }
-  }
-
-  vertices->vertex.setValues (0, corners.size (), &corners [0]);
-  vertices->vertex.setNum (corners.size ());
-
-  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-  lineSet->vertexProperty = vertices;
-
-  faces->coordIndex.setValues (0, indices.size (), &indices [0]);
-  faces->vertexProperty = vertices;
-
-  sep->addChild (lineSet);
-  sep->addChild (faces);
-}
-
-static void
-make3DHadTowerShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  double		ecut = 0.1;
-  bool			hlrMode = false;
-  int			i = 0;
-  QSettings		settings;
-  SoAnnotation		*ann = 0;
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  SoIndexedFaceSet	*faces = new SoIndexedFaceSet;
-  std::vector<int>	lineIndices;
-  std::vector<int>	indices;
-  std::vector<SbVec3f>	corners;
-  float			epsilon = 0.0001;
-  float			scale = cCaloTowerScale;
-
-  ecut = settings.value ("igevents/cuts/calotowers/energy", ecut).value<double> ();
-  hlrMode = settings.value ("igdisplay/hadtowers/view3d/hiddenlineremoval", hlrMode).value<bool> ();
-
-  if (hlrMode)
-  {
-    ann = new SoAnnotation;
-    sep->addChild (ann);
-    SoDrawStyle *dashed = new SoDrawStyle;
-    dashed->style = SoDrawStyle::LINES;
-    dashed->lineWidth.setValue (1);
-    dashed->linePattern.setValue (0x0f0f);
-    ann->addChild (dashed);
-  }
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    double energy = ci->get<double> ("emEnergy") + ci->get<double> ("hadEnergy");
-    if (energy > ecut)
-    {
-      float eScale = scale * energy;
-
-      IgV3d p1  = ci->get<IgV3d> ("front_1");
-      IgV3d p2  = ci->get<IgV3d> ("front_2");
-      IgV3d p3  = ci->get<IgV3d> ("front_3");
-      IgV3d p4  = ci->get<IgV3d> ("front_4");
-      IgV3d p5  = ci->get<IgV3d> ("back_1");
-      IgV3d p6  = ci->get<IgV3d> ("back_2");
-      IgV3d p7  = ci->get<IgV3d> ("back_3");
-      IgV3d p8  = ci->get<IgV3d> ("back_4");
-
-      SbVec3f front1(static_cast<double>(p1.x ()),
-		     static_cast<double>(p1.y ()),
-		     static_cast<double>(p1.z ()));
-
-      SbVec3f front2(static_cast<double>(p2.x ()),
-		     static_cast<double>(p2.y ()),
-		     static_cast<double>(p2.z ()));
-
-      SbVec3f front3(static_cast<double>(p3.x ()),
-		     static_cast<double>(p3.y ()),
-		     static_cast<double>(p3.z ()));
-
-      SbVec3f front4(static_cast<double>(p4.x ()),
-		     static_cast<double>(p4.y ()),
-		     static_cast<double>(p4.z ()));
-
-      SbVec3f back1(static_cast<double>(p5.x ()),
-		    static_cast<double>(p5.y ()),
-		    static_cast<double>(p5.z ()));
-
-      SbVec3f back2(static_cast<double>(p6.x ()),
-		    static_cast<double>(p6.y ()),
-		    static_cast<double>(p6.z ()));
-
-      SbVec3f back3(static_cast<double>(p7.x ()),
-		    static_cast<double>(p7.y ()),
-		    static_cast<double>(p7.z ()));
-
-      SbVec3f back4(static_cast<double>(p8.x ()),
-		    static_cast<double>(p8.y ()),
-		    static_cast<double>(p8.z ()));
-
-      SbVec3f eFront1 = front1.getValue () + (front3.getValue () - front1.getValue ());
-      SbVec3f eFront2 = front2.getValue () + (front4.getValue () - front2.getValue ());
-      SbVec3f eFront3 = front3.getValue () + (front1.getValue () - front3.getValue ());
-      SbVec3f eFront4 = front4.getValue () + (front2.getValue () - front4.getValue ());
-
-      SbVec3f eBack1  = back1.getValue ()  + (back3.getValue ()  - back1.getValue ());
-      SbVec3f eBack2  = back2.getValue ()  + (back4.getValue ()  - back2.getValue ());
-      SbVec3f eBack3  = back3.getValue ()  + (back1.getValue ()  - back3.getValue ());
-      SbVec3f eBack4  = back4.getValue ()  + (back2.getValue ()  - back4.getValue ());
-
-      corners.push_back (eBack1 + (eBack1 - eFront1) * epsilon);
-      corners.push_back (eBack2 + (eBack2 - eFront2) * epsilon);
-      corners.push_back (eBack3 + (eBack3 - eFront3) * epsilon);
-      corners.push_back (eBack4 + (eBack4 - eFront4) * epsilon);
-      corners.push_back (corners[i]  + (eBack1 - eFront1) * eScale);
-      corners.push_back (corners[i + 1]  + (eBack2 - eFront2) * eScale);
-      corners.push_back (corners[i + 2] + (eBack3 - eFront3) * eScale);
-      corners.push_back (corners[i + 3] + (eBack4 - eFront4) * eScale);
-
-      lineIndices.push_back (i);
-      lineIndices.push_back (i + 1);
-      lineIndices.push_back (i + 2);
-      lineIndices.push_back (i + 3);
-      lineIndices.push_back (i);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (i + 5);
-      lineIndices.push_back (i + 6);
-      lineIndices.push_back (i + 7);
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      lineIndices.push_back (i);
-      lineIndices.push_back (i + 4);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 1);
-      lineIndices.push_back (i + 5);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 2);
-      lineIndices.push_back (i + 6);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-      lineIndices.push_back (i + 3);
-      lineIndices.push_back (i + 7);
-      lineIndices.push_back (SO_END_LINE_INDEX);
-
-      // Face set indices
-      indices.push_back (i + 3);
-      indices.push_back (i + 2);
-      indices.push_back (i + 1);
-      indices.push_back (i + 0);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 4);
-      indices.push_back (i + 5);
-      indices.push_back (i + 6);
-      indices.push_back (i + 7);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 5);
-      indices.push_back (i + 1);
-      indices.push_back (i + 2);
-      indices.push_back (i + 6);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 2);
-      indices.push_back (i + 3);
-      indices.push_back (i + 7);
-      indices.push_back (i + 6);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 7);
-      indices.push_back (i + 3);
-      indices.push_back (i);
-      indices.push_back (i + 4);
-      indices.push_back (SO_END_FACE_INDEX);
-
-      indices.push_back (i + 1);
-      indices.push_back (i + 5);
-      indices.push_back (i + 4);
-      indices.push_back (i);
-      indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
-
-      i += 8;
-    }
-  }
-
-  vertices->vertex.setValues (0, corners.size (), &corners [0]);
-  vertices->vertex.setNum (corners.size ());
-
-  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-  lineSet->vertexProperty = vertices;
-
-  faces->coordIndex.setValues (0, indices.size (), &indices [0]);
-  faces->vertexProperty = vertices;
-
-  if (hlrMode)
-    ann->addChild (lineSet);
-
-  sep->addChild (lineSet);
-  sep->addChild (faces);
-}
-
-#if 0
-static void
-make3DCrystalShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  bool			hlrMode = false;
-  SoAnnotation		*ann = 0;
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  SoIndexedFaceSet	*faces = new SoIndexedFaceSet;
-  std::vector<int>	lineIndices;
-  std::vector<int>	indices;
-  std::vector<SbVec3f>	corners;
-  int			i = 0;
-
-  hlrMode = QSettings().value ("igdisplay/crystals/view3d/hiddenlineremoval").value<bool> ();
-
-  if (hlrMode)
-  {
-    ann = new SoAnnotation;
-    sep->addChild (ann);
-    SoDrawStyle *dashed = new SoDrawStyle;
-    dashed->style = SoDrawStyle::LINES;
-    dashed->lineWidth = 1;
-    dashed->linePattern = 0x0f0f;
-    ann->addChild (dashed);
-  }
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d p1  = ci->get<IgV3d> ("front_1");
-    IgV3d p2  = ci->get<IgV3d> ("front_2");
-    IgV3d p3  = ci->get<IgV3d> ("front_3");
-    IgV3d p4  = ci->get<IgV3d> ("front_4");
-    IgV3d p5  = ci->get<IgV3d> ("back_1");
-    IgV3d p6  = ci->get<IgV3d> ("back_2");
-    IgV3d p7  = ci->get<IgV3d> ("back_3");
-    IgV3d p8  = ci->get<IgV3d> ("back_4");
-
-    SbVec3f front1(static_cast<double>(p1.x ()),
-		   static_cast<double>(p1.y ()),
-		   static_cast<double>(p1.z ()));
-    corners.push_back (front1);
-
-    SbVec3f front2(static_cast<double>(p2.x ()),
-		   static_cast<double>(p2.y ()),
-		   static_cast<double>(p2.z ()));
-    corners.push_back (front2);
-
-    SbVec3f front3(static_cast<double>(p3.x ()),
-		   static_cast<double>(p3.y ()),
-		   static_cast<double>(p3.z ()));
-    corners.push_back (front3);
-
-    SbVec3f front4(static_cast<double>(p4.x ()),
-		   static_cast<double>(p4.y ()),
-		   static_cast<double>(p4.z ()));
-    corners.push_back (front4);
-
-    SbVec3f back1(static_cast<double>(p5.x ()),
-		  static_cast<double>(p5.y ()),
-		  static_cast<double>(p5.z ()));
-    corners.push_back (back1);
-
-    SbVec3f back2(static_cast<double>(p6.x ()),
-		  static_cast<double>(p6.y ()),
-		  static_cast<double>(p6.z ()));
-    corners.push_back (back2);
-
-    SbVec3f back3(static_cast<double>(p7.x ()),
-		  static_cast<double>(p7.y ()),
-		  static_cast<double>(p7.z ()));
-    corners.push_back (back3);
-
-    SbVec3f back4(static_cast<double>(p8.x ()),
-		  static_cast<double>(p8.y ()),
-		  static_cast<double>(p8.z ()));
-    corners.push_back (back4);
-
-    lineIndices.push_back (i);
-    lineIndices.push_back (i + 1);
-    lineIndices.push_back (i + 2);
-    lineIndices.push_back (i + 3);
-    lineIndices.push_back (i);
-    lineIndices.push_back (SO_END_LINE_INDEX);
-
-    lineIndices.push_back (i + 4);
-    lineIndices.push_back (i + 5);
-    lineIndices.push_back (i + 6);
-    lineIndices.push_back (i + 7);
-    lineIndices.push_back (i + 4);
-    lineIndices.push_back (SO_END_LINE_INDEX);
-
-    lineIndices.push_back (i);
-    lineIndices.push_back (i + 4);
-    lineIndices.push_back (SO_END_LINE_INDEX);
-    lineIndices.push_back (i + 1);
-    lineIndices.push_back (i + 5);
-    lineIndices.push_back (SO_END_LINE_INDEX);
-    lineIndices.push_back (i + 2);
-    lineIndices.push_back (i + 6);
-    lineIndices.push_back (SO_END_LINE_INDEX);
-    lineIndices.push_back (i + 3);
-    lineIndices.push_back (i + 7);
-    lineIndices.push_back (SO_END_LINE_INDEX);
-
-    // Face set indices
-    indices.push_back (i + 3);
-    indices.push_back (i + 2);
-    indices.push_back (i + 1);
-    indices.push_back (i + 0);
-    indices.push_back (SO_END_FACE_INDEX);
-
-    indices.push_back (i + 4);
-    indices.push_back (i + 5);
-    indices.push_back (i + 6);
-    indices.push_back (i + 7);
-    indices.push_back (SO_END_FACE_INDEX);
-
-    indices.push_back (i + 5);
-    indices.push_back (i + 1);
-    indices.push_back (i + 2);
-    indices.push_back (i + 6);
-    indices.push_back (SO_END_FACE_INDEX);
-
-    indices.push_back (i + 2);
-    indices.push_back (i + 3);
-    indices.push_back (i + 7);
-    indices.push_back (i + 6);
-    indices.push_back (SO_END_FACE_INDEX);
-
-    indices.push_back (i + 7);
-    indices.push_back (i + 3);
-    indices.push_back (i);
-    indices.push_back (i + 4);
-    indices.push_back (SO_END_FACE_INDEX);
-
-    indices.push_back (i + 1);
-    indices.push_back (i + 5);
-    indices.push_back (i + 4);
-    indices.push_back (i);
-    indices.push_back (SO_END_FACE_INDEX); // end of crystal vertices: 6*5
-
-    i += 8;
-  }
-
-  vertices->vertex.setValues (0, corners.size (), &corners [0]);
-  vertices->vertex.setNum (corners.size ());
-
-  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-  lineSet->vertexProperty = vertices;
-
-  faces->coordIndex.setValues (0, indices.size (), &indices [0]);
-  faces->vertexProperty = vertices;
-
-  if (hlrMode)
-    ann->addChild (lineSet);
-
-  sep->addChild (lineSet);
-  sep->addChild (faces);
-}
-#endif
-
-static void
-make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  std::vector<int>	lineIndices;
-  std::vector<SbVec3f>	points;
-  int			i = 0;
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d p1 = ci->get<IgV3d> ("pos_1");
-    IgV3d p2 = ci->get<IgV3d> ("pos_2");
-
-    points.push_back (SbVec3f (static_cast<double>(p1.x ()),
-			       static_cast<double>(p1.y ()),
-			       static_cast<double>(p1.z ())));
-    points.push_back (SbVec3f (static_cast<double>(p2.x ()),
-			       static_cast<double>(p2.y ()),
-			       static_cast<double>(p2.z ())));
-    lineIndices.push_back (i);
-    lineIndices.push_back (i + 1);
-    lineIndices.push_back (SO_END_LINE_INDEX);
-    i += 2;
-  }
-
-  vertices->vertex.setValues (0, points.size (), &points [0]);
-  vertices->vertex.setNum (points.size ());
-
-  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-  lineSet->vertexProperty = vertices;
-
-  sep->addChild (lineSet);
-}
-
-#if 0
-static void
-make3DBasicCluster(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  IgCollection		*clusters = collections[0];
-  IgCollection		*calohits = collections[1];
-  IgAssociationSet	*assoc = assocs[0];
-  IgProperty		POS = clusters->getProperty("pos");
-  IgProperty		ENERGY = clusters->getProperty("energy");
-  IgProperty		FRACTION = calohits->getProperty("fraction");
-  IgProperty		F1 = calohits->getProperty("front_1");
-  IgProperty		F2 = calohits->getProperty("front_2");
-  IgProperty		F3 = calohits->getProperty("front_3");
-  IgProperty		F4 = calohits->getProperty("front_4");
-  IgProperty		B1 = calohits->getProperty("back_1");
-  IgProperty		B2 = calohits->getProperty("back_2");
-  IgProperty		B3 = calohits->getProperty("back_3");
-  IgProperty		B4 = calohits->getProperty("back_4");
-  SoMaterial		*mat = new SoMaterial;
-
-  mat->diffuseColor = SbColor(0xB0/255., 0xE5/255., 0x7C/255.);
-  sep->addChild (mat);
-
-  for (IgCollectionIterator ci = clusters->begin(), ce = clusters->end(); ci != ce; ++ci)
-  {
-    SoVertexProperty *vertices = new SoVertexProperty;
-    SoMarkerSet *points = new SoMarkerSet;
-    IgV3d p1 = ci->get<IgV3d> (POS);
-    int n = 0;
-
-    double x = p1.x ();
-    double y = p1.y ();
-    double z = p1.z ();
-    vertices->vertex.set1Value (n, SbVec3f (x, y, z));
-
-    double energy = ci->get<double>(ENERGY);
-
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-    {
-      if ( ai->first().objectId() == ci->currentRow())
-      {
-	IgCollectionItem c(calohits, ai->second().objectId());
-
-	IgV3d f1 = c.get<IgV3d>(F1);
-	IgV3d f2 = c.get<IgV3d>(F2);
-	IgV3d f3 = c.get<IgV3d>(F3);
-	IgV3d f4 = c.get<IgV3d>(F4);
-
-	IgV3d b1 = c.get<IgV3d>(B1);
-	IgV3d b2 = c.get<IgV3d>(B2);
-	IgV3d b3 = c.get<IgV3d>(B3);
-	IgV3d b4 = c.get<IgV3d>(B4);
-
-	IgSoCrystalHit *crystalHit = new IgSoCrystalHit;
-	crystalHit->energy.setValue(energy);
-	crystalHit->scale.setValue(1.0);
-	crystalHit->relativeWidth.setValue(1.0);
-	crystalHit->drawCrystal.setValue(true);
-	crystalHit->drawHit.setValue(true);
-
-	crystalHit->front1.setValue(f1.x(), f1.y(), f1.z());
-	crystalHit->front2.setValue(f2.x(), f2.y(), f2.z());
-	crystalHit->front3.setValue(f3.x(), f3.y(), f3.z());
-	crystalHit->front4.setValue(f4.x(), f4.y(), f4.z());
-
-	crystalHit->back1.setValue(f1.x(), f1.y(), f1.z());
-	crystalHit->back2.setValue(f2.x(), f2.y(), f2.z());
-	crystalHit->back3.setValue(f3.x(), f3.y(), f3.z());
-	crystalHit->back4.setValue(f4.x(), f4.y(), f4.z());
-
-	sep->addChild(crystalHit);
-      }
-    }
-
-    vertices->vertex.setNum (n);
-    points->markerIndex = SoMarkerSet::PLUS_5_5;
-    points->vertexProperty = vertices;
-    points->numPoints = n;
-    sep->addChild (points);
-  }
-}
-#endif
-
-static void
-make3DCSCSegments(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial	*mat = new SoMaterial;
-  SoDrawStyle	*sty = new SoDrawStyle;
-
-  mat->diffuseColor = SbColor (0xC0/255., 0, 0);
-  sep->addChild (mat);
-
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth = 3;
-  sep->addChild (sty);
-
-  make3DSegmentShapes(collections, assocs, sep);
-}
-
-static void
-make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial	*emat = new SoMaterial;
-  SoMaterial	*hmat = new SoMaterial;
-
-  emat->diffuseColor = SbColor (0xB0/255., 0x50/255., 0);
-  sep->addChild (emat);
-  make3DEmTowerShapes(collections, assocs, sep);
-
-  hmat->diffuseColor = SbColor (0, 0xE5/255., 0x7C/255.);
-  sep->addChild (hmat);
-  make3DHadTowerShapes(collections, assocs, sep);
-}
-
-static void
-make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  IgProperty		POS = c->getProperty("pos");
-  IgProperty		AXIS = c->getProperty("axis");
-  IgProperty		ANGLE = c->getProperty("angle");
-  IgProperty		CELL_L = c->getProperty("cellLength");
-  IgProperty		CELL_W = c->getProperty("cellWidth");
-  IgProperty		CELL_H = c->getProperty("cellHeight");
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoMarkerSet		*points = new SoMarkerSet;
-  SoMaterial		*mat = new SoMaterial;
-  int			n = 0;
-
-  mat->diffuseColor = SbColor (0x66/255., 0xff/255., 0x00/255.);
-  sep->addChild (mat);
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d pos = ci->get<IgV3d>(POS);
-
-    double x = pos.x();
-    double y = pos.y();
-    double z = pos.z();
-    vertices->vertex.set1Value(n++, SbVec3f (x, y, z));
-
-    IgV3d axis = ci->get<IgV3d>(AXIS);
-    double angle = ci->get<double>(ANGLE);
-
-    SoTransform *transform = new SoTransform;
-    transform->translation.setValue(x,y,z);
-    transform->rotation.setValue(SbVec3f(axis.x(),axis.y(),axis.z()), angle);
-
-    SoCube *cube = new SoCube;
-    cube->width = ci->get<double>(CELL_W);
-    cube->height = ci->get<double>(CELL_L);
-    cube->depth = ci->get<double>(CELL_H);
-
-    SoSeparator *separator = new SoSeparator;
-    separator->addChild(transform);
-    separator->addChild(cube);
-    sep->addChild(separator);
-  }
-
-  vertices->vertex.setNum(n);
-  points->markerIndex = SoMarkerSet::SQUARE_LINE_7_7;
-  points->vertexProperty = vertices;
-  points->numPoints = n;
-  sep->addChild (points);
-}
-
-static void
-make3DDTRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  IgProperty		LPLUS_GLOBALPOS = c->getProperty("lPlusGlobalPos");
-  IgProperty		LMINUS_GLOBALPOS = c->getProperty("lMinusGlobalPos");
-  IgProperty		RPLUS_GLOBALPOS = c->getProperty("rPlusGlobalPos");
-  IgProperty		RMINUS_GLOBALPOS = c->getProperty("rMinusGlobalPos");
-  IgProperty		LGLOBALPOS = c->getProperty("lGlobalPos");
-  IgProperty		RGLOBALPOS = c->getProperty("rGlobalPos");
-  IgProperty		WPOS = c->getProperty("wirePos");
-  IgProperty		AXIS = c->getProperty("axis");
-  IgProperty		ANGLE = c->getProperty("angle");
-  IgProperty		CELL_L = c->getProperty("cellLength");
-  IgProperty		CELL_W = c->getProperty("cellWidth");
-  IgProperty		CELL_H = c->getProperty("cellHeight");
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoMarkerSet		*points = new SoMarkerSet;
-  SoDrawStyle		*wdrawStyle = new SoDrawStyle;
-  int			n = 0;
-
-  vertices->materialBinding = SoVertexProperty::OVERALL;
-  vertices->orderedRGBA = 0x0000FFFF;
-
-  wdrawStyle->style = SoDrawStyle::LINES;
-  wdrawStyle->lineWidth.setValue(1.0);
-  sep->addChild(wdrawStyle);
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d lPlusGlobalPos = ci->get<IgV3d>(LPLUS_GLOBALPOS);
-    IgV3d lMinusGlobalPos = ci->get<IgV3d>(LMINUS_GLOBALPOS);
-    IgV3d rPlusGlobalPos = ci->get<IgV3d>(RPLUS_GLOBALPOS);
-    IgV3d rMinusGlobalPos = ci->get<IgV3d>(RMINUS_GLOBALPOS);
-    IgV3d lGlobalPos = ci->get<IgV3d>(LGLOBALPOS);
-    IgV3d rGlobalPos = ci->get<IgV3d>(RGLOBALPOS);
-
-    SoLineSet *linel = new SoLineSet;
-    linel->numVertices = 2;
-    SoVertexProperty* vtxl = new SoVertexProperty;
-    vtxl->vertex.set1Value(0, SbVec3f(lPlusGlobalPos.x(),
-				      lPlusGlobalPos.y(),
-				      lPlusGlobalPos.z()));
-
-    vtxl->vertex.set1Value(1, SbVec3f(lMinusGlobalPos.x(),
-				      lMinusGlobalPos.y(),
-				      lMinusGlobalPos.z()));
-    linel->vertexProperty = vtxl;
-
-    SoLineSet *liner = new SoLineSet;
-    liner->numVertices = 2;
-    SoVertexProperty *vtxr = new SoVertexProperty;
-    vtxr->vertex.set1Value(0, SbVec3f(rPlusGlobalPos.x(),
-				      rPlusGlobalPos.y(),
-				      rPlusGlobalPos.z()));
-    vtxr->vertex.set1Value(1, SbVec3f(rMinusGlobalPos.x(),
-				      rMinusGlobalPos.y(),
-				      rMinusGlobalPos.z()));
-    liner->vertexProperty = vtxr;
-
-    sep->addChild(linel);
-    sep->addChild(liner);
-
-    vertices->vertex.set1Value(n++, SbVec3f(lGlobalPos.x(),
-					    lGlobalPos.y(),
-					    lGlobalPos.z()));
-
-    vertices->vertex.set1Value(n++, SbVec3f(rGlobalPos.x(),
-					    rGlobalPos.y(),
-					    rGlobalPos.z()));
-
-    IgV3d pos = ci->get<IgV3d>(WPOS);
-    IgV3d axis = ci->get<IgV3d>(AXIS);
-    double angle = ci->get<double>(ANGLE);
-    SoTransform *transform = new SoTransform;
-    transform->translation.setValue(pos.x(),pos.y(),pos.z());
-    transform->rotation.setValue(SbVec3f(axis.x(),axis.y(),axis.z()), angle);
-
-    SoCube *cube = new SoCube;
-    cube->width = ci->get<double>(CELL_W);
-    cube->height = ci->get<double>(CELL_L);
-    cube->depth = ci->get<double>(CELL_H);
-
-    SoSeparator *separator = new SoSeparator;
-    separator->addChild(transform);
-    separator->addChild(cube);
-    sep->addChild(separator);
-  }
-
-  points->markerIndex = SoMarkerSet::PLUS_7_7;
-  points->vertexProperty = vertices;
-  points->numPoints = n;
-  sep->addChild (points);
-}
-
-static void
-make3DDTRecSegment4D(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial	*mat = new SoMaterial;
-  SoDrawStyle	*sty = new SoDrawStyle;
-
-  mat->diffuseColor = SbColor (0xC0/255., 0x00/255., 0x00/255.);
-  sep->addChild (mat);
-
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth.setValue (3);
-  sep->addChild (sty);
-
-  make3DSegmentShapes(collections, assocs, sep);
-}
-
-static void
-make3DDetector(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  IgCollection		*obj = collections[0];
-  IgCollection		*geom = collections[1];
-  IgAssociationSet	*assoc = assocs[0];
-  IgProperty		SHAPE = obj->getProperty("shape");
-  IgProperty		F1 = geom->getProperty("front_1");
-  IgProperty		F2 = geom->getProperty("front_2");
-  IgProperty		F3 = geom->getProperty("front_3");
-  IgProperty		F4 = geom->getProperty("front_4");
-  IgProperty		B1 = geom->getProperty("back_1");
-  IgProperty		B2 = geom->getProperty("back_2");
-  IgProperty		B3 = geom->getProperty("back_3");
-  IgProperty		B4 = geom->getProperty("back_4");
-  IgProperty		POS1 = geom->getProperty("pos_1");
-  IgProperty		POS2 = geom->getProperty("pos_2");
-  IgProperty		POS = geom->getProperty("pos");
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  std::vector<int>	lineIndices;
-  std::vector<SbVec3f>	corners;
-  int			i = 0;
-
-  for (IgCollectionIterator ci = obj->begin(), ce = obj->end(); ci != ce; ++ci)
-  {
-    std::string shape = ci->get<std::string>(SHAPE);
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-    {
-      if (ai->first().objectId() == ci->currentRow())
-      {
-	IgCollectionItem m(geom, ai->second().objectId());
-	if (shape == "box")
-	{
-	  IgV3d p1  = m.get<IgV3d>(F1);
-	  IgV3d p2  = m.get<IgV3d>(F2);
-	  IgV3d p3  = m.get<IgV3d>(F3);
-	  IgV3d p4  = m.get<IgV3d>(F4);
-	  IgV3d p5  = m.get<IgV3d>(B1);
-	  IgV3d p6  = m.get<IgV3d>(B2);
-	  IgV3d p7  = m.get<IgV3d>(B3);
-	  IgV3d p8  = m.get<IgV3d>(B4);
-
-	  corners.push_back (SbVec3f (static_cast<double>(p1.x ()),
-				      static_cast<double>(p1.y ()),
-				      static_cast<double>(p1.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p2.x ()),
-				      static_cast<double>(p2.y ()),
-				      static_cast<double>(p2.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p3.x ()),
-				      static_cast<double>(p3.y ()),
-				      static_cast<double>(p3.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p4.x ()),
-				      static_cast<double>(p4.y ()),
-				      static_cast<double>(p4.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p5.x ()),
-				      static_cast<double>(p5.y ()),
-				      static_cast<double>(p5.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p6.x ()),
-				      static_cast<double>(p6.y ()),
-				      static_cast<double>(p6.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p7.x ()),
-				      static_cast<double>(p7.y ()),
-				      static_cast<double>(p7.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p8.x ()),
-				      static_cast<double>(p8.y ()),
-				      static_cast<double>(p8.z ())));
-
-	  lineIndices.push_back (i);
-	  lineIndices.push_back (i + 1);
-	  lineIndices.push_back (i + 2);
-	  lineIndices.push_back (i + 3);
-	  lineIndices.push_back (i);
-	  lineIndices.push_back (SO_END_LINE_INDEX);
-
-	  lineIndices.push_back (i + 4);
-	  lineIndices.push_back (i + 5);
-	  lineIndices.push_back (i + 6);
-	  lineIndices.push_back (i + 7);
-	  lineIndices.push_back (i + 4);
-	  lineIndices.push_back (SO_END_LINE_INDEX);
-
-	  lineIndices.push_back (i);
-	  lineIndices.push_back (i + 4);
-	  lineIndices.push_back (SO_END_LINE_INDEX);
-	  lineIndices.push_back (i + 1);
-	  lineIndices.push_back (i + 5);
-	  lineIndices.push_back (SO_END_LINE_INDEX);
-	  lineIndices.push_back (i + 2);
-	  lineIndices.push_back (i + 6);
-	  lineIndices.push_back (SO_END_LINE_INDEX);
-	  lineIndices.push_back (i + 3);
-	  lineIndices.push_back (i + 7);
-	  lineIndices.push_back (SO_END_LINE_INDEX);
-
-	  i += 8;
-	}
-	else if (shape == "point")
-	{
-	  IgV3d p1 = m.get<IgV3d>(POS);
-	  corners.push_back (SbVec3f (static_cast<double>(p1.x ()),
-				      static_cast<double>(p1.y ()),
-				      static_cast<double>(p1.z ())));
-	}
-	else if (shape == "line")
-	{
-	  IgV3d p1 = m.get<IgV3d>(POS1);
-	  IgV3d p2 = m.get<IgV3d>(POS2);
-	  corners.push_back (SbVec3f (static_cast<double>(p1.x ()),
-				      static_cast<double>(p1.y ()),
-				      static_cast<double>(p1.z ())));
-	  corners.push_back (SbVec3f (static_cast<double>(p2.x ()),
-				      static_cast<double>(p2.y ()),
-				      static_cast<double>(p2.z ())));
-	  lineIndices.push_back (i);
-	  lineIndices.push_back (i + 1);
-	  lineIndices.push_back (SO_END_LINE_INDEX);
-	  i += 2;
-	}
-
-	vertices->vertex.setValues (0, corners.size (), &corners [0]);
-	vertices->vertex.setNum (corners.size ());
-
-	if (shape == "box" || shape == "line")
-	{
-	  SoIndexedLineSet *lineSet = new SoIndexedLineSet;
-	  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-	  lineSet->vertexProperty = vertices;
-	  sep->addChild (lineSet);
-	}
-	else if (shape == "point")
-	{
-	  SoPointSet *pointSet = new SoPointSet;
-	  pointSet->vertexProperty.setValue (vertices);
-	  pointSet->numPoints.setValue (corners.size ());
-	  sep->addChild (pointSet);
-	}
-      }
-    }
-  }
-}
-
-#if 0
-static void
-make3DEcalCrystalHits(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  SoMaterial		*mat = new SoMaterial;
-
-  mat->diffuseColor.setValue(1.0, 0.0, 153.0 / 255.0);
-  sep->addChild(mat);
-
-  IgProperty ENERGY = c->getProperty("energy");
-  IgProperty F1 = c->getProperty("front_1");
-  IgProperty F2 = c->getProperty("front_2");
-  IgProperty F3 = c->getProperty("front_3");
-  IgProperty F4 = c->getProperty("front_4");
-  IgProperty B1 = c->getProperty("back_1");
-  IgProperty B2 = c->getProperty("back_2");
-  IgProperty B3 = c->getProperty("back_3");
-  IgProperty B4 = c->getProperty("back_4");
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    double energy = ci->get<double>(ENERGY);
-
-    IgV3d f1 = ci->get<IgV3d>(F1);
-    IgV3d f2 = ci->get<IgV3d>(F2);
-    IgV3d f3 = ci->get<IgV3d>(F3);
-    IgV3d f4 = ci->get<IgV3d>(F4);
-
-    IgV3d b1 = ci->get<IgV3d>(B1);
-    IgV3d b2 = ci->get<IgV3d>(B2);
-    IgV3d b3 = ci->get<IgV3d>(B3);
-    IgV3d b4 = ci->get<IgV3d>(B4);
-
-    IgSoCrystalHit *crystalHit = new IgSoCrystalHit;
-    crystalHit->energy = energy;
-    crystalHit->scale = 1.0;
-    crystalHit->relativeWidth = 1.0;
-    crystalHit->drawCrystal = false;
-    crystalHit->drawHit = true;
-
-    crystalHit->front1.setValue(f1.x(), f1.y(), f1.z());
-    crystalHit->front2.setValue(f2.x(), f2.y(), f2.z());
-    crystalHit->front3.setValue(f3.x(), f3.y(), f3.z());
-    crystalHit->front4.setValue(f4.x(), f4.y(), f4.z());
-
-    crystalHit->back1.setValue(f1.x(), f1.y(), f1.z());
-    crystalHit->back2.setValue(f2.x(), f2.y(), f2.z());
-    crystalHit->back3.setValue(f3.x(), f3.y(), f3.z());
-    crystalHit->back4.setValue(f4.x(), f4.y(), f4.z());
-
-    sep->addChild(crystalHit);
-  }
-}
-#endif
-
-static void
-make3DEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor.setValue(1.0, 0.0, 153.0 / 255.0);
-  sep->addChild (mat);
-  make3DCrystalHitShapes(collections, assocs, sep);
 }
 
 static void
@@ -1479,176 +138,161 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   sep->addChild (overlay);
 }
 
-static void
-make3DHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor = SbColor(0.0, 0.2, 0.5);
-  mat->transparency = 0.3;
-  sep->addChild (mat);
-  make3DCrystalHitShapes(collections, assocs, sep);
-}
+
+
+
+
+
+// ------------------------------------------------------
+// Draw Generic shapes  
+// ------------------------------------------------------
+
 
 static void
-make3DJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor = SbColor (0xFF/255., 0xEE/255., 0xEE/255.);
-  mat->transparency = 0.25;
-  sep->addChild (mat);
-  make3DJetShapes(collections, assocs, sep);
-}
-
-static void
-make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DPointSetShapes(IgCollection **collections,
+		     IgAssociationSet **,
+		     SoSeparator *sep,
+		     SbColor colour,
+		     int kind)
 {
   IgCollection		*c = collections[0];
+  IgProperty		POS = c->getProperty ("pos");
   SoMaterial		*mat = new SoMaterial;
-  SoDrawStyle		*sty = new SoDrawStyle;
-  SoAnnotation		*ann = new SoAnnotation;
-  SoDrawStyle		*dashed = new SoDrawStyle;
+  SoMarkerSet		*points = new SoMarkerSet;
   SoVertexProperty	*vertices = new SoVertexProperty;
-  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  std::vector<int>	lineIndices;
-  std::vector<SbVec3f>	points;
-  int			i = 0;
+  int			n = 0;
 
-  mat->diffuseColor = SbColor(0xFF/255., 0x5B/255., 0x00/255.);
-  sep->addChild(mat);
-
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth.setValue (3);
-  sep->addChild (sty);
-
-  sep->addChild (ann);
-
-  dashed->style = SoDrawStyle::LINES;
-  dashed->lineWidth = 3;
-  dashed->linePattern = 0x0f0f;
-  ann->addChild (dashed);
+  mat->diffuseColor = colour;
+  sep->addChild (mat);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    points.push_back (SbVec3f (0., 0., 0.));
-    points.push_back (SbVec3f (ci->get<double>("px"), ci->get<double>("py"), 0.));
-    lineIndices.push_back (i);
-    lineIndices.push_back (i + 1);
-    lineIndices.push_back (SO_END_LINE_INDEX);
+    IgV3d p1 = ci->get<IgV3d> (POS);
+
+    double x = p1.x ();
+    double y = p1.y ();
+    double z = p1.z ();
+    vertices->vertex.set1Value (n++, SbVec3f (x, y, z));
+  }
+  vertices->vertex.setNum (n);
+
+  points->markerIndex = kind;
+  points->vertexProperty = vertices;
+  points->numPoints = n;
+  sep->addChild (points);
+}
+
+
+
+static void
+make3DAnyBox(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection *c = collections[0];
+  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    {  
+      IgV3d f1  = ci->get<IgV3d> ("front_1");
+      IgV3d f2  = ci->get<IgV3d> ("front_2");
+      IgV3d f3  = ci->get<IgV3d> ("front_3");
+      IgV3d f4  = ci->get<IgV3d> ("front_4");
+      
+      IgV3d b1  = ci->get<IgV3d> ("back_1");
+      IgV3d b2  = ci->get<IgV3d> ("back_2");
+      IgV3d b3  = ci->get<IgV3d> ("back_3");
+      IgV3d b4  = ci->get<IgV3d> ("back_4");
+      
+      drawTowerHelper->addTower (f1,f2,f3,f4, 
+				 b1,b2,b3,b4);
+    }
+}
+
+
+static void
+make3DAnyLine(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection		*c = collections[0];
+  IgProperty		P1 = c->getProperty ("pos_1");
+  IgProperty		P2 = c->getProperty ("pos_2");
+  SoVertexProperty	*vertices = new SoVertexProperty;
+  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
+  std::vector<SbVec3f>	corners;
+  std::vector<int>	indices;
+  int			i = 0;
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    IgV3d p1 = ci->get<IgV3d> (P1);
+    IgV3d p2 = ci->get<IgV3d> (P2);
+    corners.push_back (SbVec3f (static_cast<double>(p1.x ()),
+				static_cast<double>(p1.y ()),
+				static_cast<double>(p1.z ())));
+    corners.push_back (SbVec3f (static_cast<double>(p2.x ()),
+				static_cast<double>(p2.y ()),
+				static_cast<double>(p2.z ())));
+    indices.push_back (i);
+    indices.push_back (i + 1);
+    indices.push_back (SO_END_LINE_INDEX);
     i += 2;
   }
 
-  vertices->vertex.setValues (0, points.size (), &points [0]);
-  vertices->vertex.setNum (points.size ());
+  vertices->vertex.setValues (0, corners.size (), &corners [0]);
+  vertices->vertex.setNum (corners.size ());
 
-  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
+  lineSet->coordIndex.setValues (0, indices.size (), &indices [0]);
   lineSet->vertexProperty = vertices;
 
   sep->addChild (lineSet);
-  ann->addChild (lineSet);
 }
 
-static void
-make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  IgCollection		*muons = collections[0];
-  IgCollection		*points = collections[1];
-  IgAssociationSet	*assoc = assocs[0];
-  SoMaterial		*mat = new SoMaterial;
-  
-  mat->diffuseColor = SbColor(0x8B/255., 0x89/255., 0x89/255.);
-  sep->addChild(mat);
 
-  for (IgCollectionIterator ci = muons->begin(), ce = muons->end(); ci != ce; ++ci)
+
+static void
+make3DAnyPoint(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection		*c = collections[0];
+  IgProperty		POS = c->getProperty ("pos");
+  SoPointSet		*points = new SoPointSet;
+  SoVertexProperty	*vertices = new SoVertexProperty;
+  int			n = 0;
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
-    track->lineWidth = 3.0;
+    IgV3d p1 = ci->get<IgV3d> (POS);
 
-    int n = 0;
-    for (IgAssociationSet::Iterator ai = assoc->begin (), ae = assoc->end(); ai != ae; ++ai)
-    {
-      if (ai->first ().objectId () == ci->currentRow ())
-      {
-	IgCollectionItem hm (points, ai->second ().objectId ());
-	double x = hm.get<IgV3d>("pos").x ();
-	double y = hm.get<IgV3d>("pos").y ();
-	double z = hm.get<IgV3d>("pos").z ();
-	track->controlPoints.set1Value (n, SbVec3f(x, y, z));
-	track->markerPoints.set1Value (n, SbVec3f(x, y, z));
-	n++;
-      }
-    }
-    sep->addChild (track);
+    double x = p1.x ();
+    double y = p1.y ();
+    double z = p1.z ();
+    vertices->vertex.set1Value (n++, SbVec3f (x, y, z));
   }
-}
 
-#if 0
-static void
-make3DPFClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0xB0 / 255., 0xE5 / 255., 0x7C / 255.),
-		       SoMarkerSet::PLUS_5_5);
+  vertices->vertex.setNum (n);
+  points->vertexProperty = vertices;
+  points->numPoints = n;
+  sep->addChild (points);
 }
 
 static void
-make3DPFRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+make3DAnyDetId(IgCollection **, IgAssociationSet **, SoSeparator *)
 {
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0xB0 / 255., 0xE5 / 255., 0x7C / 255.),
-		       SoMarkerSet::PLUS_5_5);
 }
 
-static void
-make3DPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0xB0 / 255., 0xE5 / 255., 0x7C / 255.),
-		       SoMarkerSet::PLUS_5_5);
-}
-#endif
+
+
+
+
+
+// ------------------------------------------------------
+// Draw Tracker data  
+// ------------------------------------------------------
+
 
 static void
 make3DPixelDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DPointSetShapes(collections, assocs, sep,
+  make3DPointSetShapes(collections, assocs, sep,  
 		       SbColor(0.0, 0.0, 1.0),
 		       SoMarkerSet::SQUARE_LINE_5_5);
-}
-
-static void
-make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
-{
-  IgCollection		*c = collections[0];
-  IgProperty		U1 = c->getProperty("u1");
-  IgProperty		U2 = c->getProperty("u2");
-  IgProperty		V1 = c->getProperty("v1");
-  IgProperty		V2 = c->getProperty("v2");
-  IgProperty		W1 = c->getProperty("w1");
-  IgProperty		W2 = c->getProperty("w2");
-  SoMaterial		*mat = new SoMaterial;
-
-  mat->diffuseColor = SbColor (0xff/255., 0xff/255., 0x00/255.);
-  sep->addChild (mat);
-
-  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d u1 = ci->get<IgV3d>(U1);
-    IgV3d u2 = ci->get<IgV3d>(U2);
-    IgV3d v1 = ci->get<IgV3d>(V1);
-    IgV3d v2 = ci->get<IgV3d>(V2);
-    IgV3d w1 = ci->get<IgV3d>(W1);
-    IgV3d w2 = ci->get<IgV3d>(W2);
-
-    IgSo3DErrorBar *errorBar = new IgSo3DErrorBar;
-    errorBar->u1.setValue(u1.x(),u1.y(),u1.z());
-    errorBar->u2.setValue(u2.x(),u2.y(),u2.z());
-    errorBar->v1.setValue(v1.x(),v1.y(),v1.z());
-    errorBar->v2.setValue(v2.x(),v2.y(),v2.z());
-    errorBar->w1.setValue(w1.x(),w1.y(),w1.z());
-    errorBar->w2.setValue(w2.x(),w2.y(),w2.z());
-    errorBar->lineWidth.setValue (2.0);
-    sep->addChild(errorBar);
-  }
 }
 
 static void
@@ -1656,7 +300,7 @@ make3DSiPixelClusters(IgCollection **collections, IgAssociationSet **assocs, SoS
 {
   make3DPointSetShapes(collections, assocs, sep,
 		       SbColor(0x00 / 255., 0xBF / 255., 0xFF / 255.),
-		       SoMarkerSet::SQUARE_FILLED_7_7);
+		       SoMarkerSet::SQUARE_FILLED_5_5);
 }
 
 static void
@@ -1664,7 +308,7 @@ make3DSiPixelRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSe
 {
   make3DPointSetShapes(collections, assocs, sep,
 		       SbColor(1.0, 0.0, 0.0),
-		       SoMarkerSet::PLUS_7_7);
+		       SoMarkerSet::PLUS_5_5);
 }
 
 static void
@@ -1672,7 +316,7 @@ make3DSiStripClusters(IgCollection **collections, IgAssociationSet **assocs, SoS
 {
   make3DPointSetShapes(collections, assocs, sep,
 		       SbColor(0x03 / 255., 0xC0 / 255., 0x3C / 255.),
-		       SoMarkerSet::CIRCLE_FILLED_7_7);
+		       SoMarkerSet::SQUARE_FILLED_5_5);
 }
 
 static void
@@ -1680,7 +324,15 @@ make3DSiStripDigis(IgCollection **collections, IgAssociationSet **assocs, SoSepa
 {
   make3DPointSetShapes(collections, assocs, sep,
 		       SbColor(0x55 / 255., 0x1A / 255., 0x8B / 255.),
-		       SoMarkerSet::CIRCLE_LINE_5_5);
+		       SoMarkerSet::SQUARE_LINE_5_5);
+}
+
+static void
+make3DTrackingRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DPointSetShapes(collections, assocs, sep,
+		       SbColor(0xEE/255., 0x2C/255., 0x2C/255.),
+		       SoMarkerSet::SQUARE_LINE_5_5);
 }
 
 static void
@@ -1773,173 +425,651 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   vsep->addChild (mpoints);
 }
 
+
+
+// ------------------------------------------------------
+// Draw Calorimeter data  
+// ------------------------------------------------------
+
+
+// FIXME LT:  can still generalise the following a bit more 
+
+
 static void
-make3DTrackingRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0xEE/255., 0x2C/255., 0x2C/255.),
-		       SoMarkerSet::CIRCLE_LINE_5_5);
+  IgCollection		*c = collections[0];
+  float energyScaleFactor = 0.03;  // m/GeV    FIXME LT: should get it from some service
+  float minimumEnergy     = 0.25;  // GeV      FIXME LT: should get it from some service
+  
+  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    {
+      double energy = ci->get<double> ("energy");
+      
+      if (energy > minimumEnergy)
+	{ 
+	  IgV3d f1  = ci->get<IgV3d> ("front_1");
+	  IgV3d f2  = ci->get<IgV3d> ("front_2");
+	  IgV3d f3  = ci->get<IgV3d> ("front_3");
+	  IgV3d f4  = ci->get<IgV3d> ("front_4");
+	  
+	  IgV3d b1  = ci->get<IgV3d> ("back_1");
+	  IgV3d b2  = ci->get<IgV3d> ("back_2");
+	  IgV3d b3  = ci->get<IgV3d> ("back_3");
+	  IgV3d b4  = ci->get<IgV3d> ("back_4");
+	  
+	  drawTowerHelper->addTower (f1,f2,f3,f4, 
+				     b1,b2,b3,b4, 
+				     energy, 
+				     energyScaleFactor);
+	}
+    }
+}
+
+
+static void
+make3DEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial *mat = new SoMaterial;
+  mat->diffuseColor.setValue(1.0, 0.0, 153.0 / 255.0);
+  sep->addChild (mat);
+  make3DEnergyTowers(collections, assocs, sep);
 }
 
 static void
-make3DAnyBox(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial *mat = new SoMaterial;
+  mat->diffuseColor = SbColor(0.0, 0.5, 1.0);
+  mat->transparency = 0.0;
+  sep->addChild (mat);
+  make3DEnergyTowers(collections, assocs, sep);
+}
+
+
+static void
+make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
   IgCollection		*c = collections[0];
-  IgProperty		F1 = c->getProperty("front_1");
-  IgProperty		F2 = c->getProperty("front_2");
-  IgProperty		F3 = c->getProperty("front_3");
-  IgProperty		F4 = c->getProperty("front_4");
-  IgProperty		B1 = c->getProperty("back_1");
-  IgProperty		B2 = c->getProperty("back_2");
-  IgProperty		B3 = c->getProperty("back_3");
-  IgProperty		B4 = c->getProperty("back_4");
-  SoVertexProperty	*vertices = new SoVertexProperty;
-  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  std::vector<SbVec3f>	corners;
-  std::vector<int>	indices;
-  int			i = 0;
+  float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
+  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
+  
+  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    {
+      double energy = ci->get<double> ("emEnergy");
+      
+      if (energy > minimumEnergy)
+	{ 
+	  IgV3d f1  = ci->get<IgV3d> ("front_1");
+	  IgV3d f2  = ci->get<IgV3d> ("front_2");
+	  IgV3d f3  = ci->get<IgV3d> ("front_3");
+	  IgV3d f4  = ci->get<IgV3d> ("front_4");
+	  
+	  IgV3d b1  = ci->get<IgV3d> ("back_1");
+	  IgV3d b2  = ci->get<IgV3d> ("back_2");
+	  IgV3d b3  = ci->get<IgV3d> ("back_3");
+	  IgV3d b4  = ci->get<IgV3d> ("back_4");
+	  
+	  drawTowerHelper->addTower (f1,f2,f3,f4, 
+				     b1,b2,b3,b4, 
+				     energy, 
+				     energyScaleFactor);
+	}
+    }
+}
+
+static void
+make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection		*c = collections[0];
+  float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
+  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
+  
+  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    {
+      double energy = ci->get<double> ("emEnergy") + ci->get<double> ("hadEnergy");
+      
+      if (energy > minimumEnergy)
+	{ 
+	  IgV3d f1  = ci->get<IgV3d> ("front_1");
+	  IgV3d f2  = ci->get<IgV3d> ("front_2");
+	  IgV3d f3  = ci->get<IgV3d> ("front_3");
+	  IgV3d f4  = ci->get<IgV3d> ("front_4");
+	  
+	  IgV3d b1  = ci->get<IgV3d> ("back_1");
+	  IgV3d b2  = ci->get<IgV3d> ("back_2");
+	  IgV3d b3  = ci->get<IgV3d> ("back_3");
+	  IgV3d b4  = ci->get<IgV3d> ("back_4");
+	  
+	  drawTowerHelper->addTower (f1,f2,f3,f4, 
+				     b1,b2,b3,b4, 
+				     energy, 
+				     energyScaleFactor);
+	}
+    }
+}
+
+
+static void
+make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial	*emat = new SoMaterial;
+  SoMaterial	*hmat = new SoMaterial;
+
+  // FIXME LT: now we draw EM+Had tower first then Em tower after (over the top of first)
+  // FIXME LT: but sides are co-planar so can get funny rendering effects
+  // FIXME LT: fix it by drawing properly 2 stacked towers instead (first Em then Had on top)
+
+  hmat->diffuseColor.setValue(0.2, 0.2, 1.0);
+  sep->addChild (hmat);
+  make3DEmPlusHadCaloTowerShapes(collections, assocs, sep);
+
+  emat->diffuseColor.setValue(1.0, 0.0, 153.0 / 255.0);
+  sep->addChild (emat);
+  make3DEmCaloTowerShapes(collections, assocs, sep);
+}
+
+static void 
+make3DJet (SoGroup* sep, double et, double theta, double phi)
+{
+  // FIXME LT: this code not yet used. 
+  // FIXME LT: it is a first attempt to merge in IgSoJet because
+  // FIXME LT: (1) it has a bug and (2) 
+
+
+  // FIXME LT: this jet drawing is utter crap (both physics and graphics)
+
+  std::cout << "et=" << et << " theta=" << theta << " phi=" << phi << "\n" << std::endl;
+  
+  SoSeparator	*body = new SoSeparator;
+  SoTransform	*bodyTrans = new SoTransform;
+  SoCone	*bodyCone = new SoCone;
+  SoSeparator	*hat = new SoSeparator;
+  SoTransform	*hatTrans = new SoTransform;
+  SoCone	*hatCone = new SoCone;
+
+  float thrust =1.0;
+  float maxZ=      4.0;               // set these to something more sensible ...
+  float maxR=      2.0 ;
+  float maxEnergy=100.0 ;
+
+  
+  // private data members
+
+  double	ct = cos (theta);
+  double	st = sin (theta);
+  double	cp = cos (phi);
+  double	sp = sin (phi);
+  
+  // Define cone rotations and translations; rotVec is the normal of
+  // the thrust-y plane and alpha the angle between the y and thrust
+  // axes.
+  SbVec3f	rotVec (ct, 0.0, -st * cp);
+  float	alpha = acos (st * sp);
+  
+  // The body cone of the jet (FIXME: Set radius to something
+  // meaningful; first attempt to make bodyRadius somehow related to
+  // thrust.)  Move cone on its head (M_PI rotation) and vertex at
+  // the origin
+  float	length1 = ct ? maxZ / fabs (ct) : maxZ;
+  float	length2 = st ? maxR / fabs (st) : maxR;
+  float	bodyHeight = length1 < length2 ? length1 : length2;
+  float	bodyRadius = 0.3 * (1.0 / (thrust + 0.001));
+  
+  bodyCone->bottomRadius = bodyRadius;
+  bodyCone->height = bodyHeight;
+  bodyTrans->rotation.setValue (rotVec, alpha + M_PI);
+  bodyTrans->translation = SbVec3f (bodyHeight * st * cp / 2.0,
+				    bodyHeight * st * sp / 2.0,
+				    bodyHeight * ct / 2.0);
+  
+  // The pointy "hat" on top of the jet.  (FIXME: Set height to
+  // something meaningful; first attempt to relate hat height to
+  // energy.  For now, hat height varies from 0 up to maxR,
+  // depending on what max energy is set to.)
+  float	hatRadius = 1.4 * bodyRadius;
+  float	hatHeight = maxR * et / maxEnergy ;
+  
+  hatCone->bottomRadius = hatRadius;
+  hatCone->height = hatHeight;
+  hatTrans->rotation.setValue (rotVec, alpha);
+  hatTrans->translation = SbVec3f ((bodyHeight + hatHeight / 2.0) * st * cp,
+				   (bodyHeight + hatHeight / 2.0) * st * sp,
+				   (bodyHeight + hatHeight / 2.0) * ct);
+  
+  sep->addChild (body);
+  sep->addChild (bodyTrans);
+  sep->addChild (bodyCone);
+
+  sep->addChild (hat);
+  sep->addChild (hatTrans);
+  sep->addChild (hatCone);
+
+}
+
+
+
+static void
+make3DJetShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection		*c = collections[0];
+  double		ecut = 5.0;  // FIXME LT: get value from some service 
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d p1  = ci->get<IgV3d>(F1);
-    IgV3d p2  = ci->get<IgV3d>(F2);
-    IgV3d p3  = ci->get<IgV3d>(F3);
-    IgV3d p4  = ci->get<IgV3d>(F4);
-    IgV3d p5  = ci->get<IgV3d>(B1);
-    IgV3d p6  = ci->get<IgV3d>(B2);
-    IgV3d p7  = ci->get<IgV3d>(B3);
-    IgV3d p8  = ci->get<IgV3d>(B4);
+    double et    = ci->get<double> ("et");
+    double theta = ci->get<double> ("theta");
+    double phi   = ci->get<double> ("phi");
 
-    corners.push_back (SbVec3f (static_cast<double>(p1.x ()),
-				static_cast<double>(p1.y ()),
-				static_cast<double>(p1.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p2.x ()),
-				static_cast<double>(p2.y ()),
-				static_cast<double>(p2.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p3.x ()),
-				static_cast<double>(p3.y ()),
-				static_cast<double>(p3.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p4.x ()),
-				static_cast<double>(p4.y ()),
-				static_cast<double>(p4.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p5.x ()),
-				static_cast<double>(p5.y ()),
-				static_cast<double>(p5.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p6.x ()),
-				static_cast<double>(p6.y ()),
-				static_cast<double>(p6.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p7.x ()),
-				static_cast<double>(p7.y ()),
-				static_cast<double>(p7.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p8.x ()),
-				static_cast<double>(p8.y ()),
-				static_cast<double>(p8.z ())));
+    if (et > ecut)
+    {
+      IgSoJet *recoJet = new IgSoJet;
+      recoJet->theta.setValue  (theta);
+      recoJet->phi.setValue    (phi);
+      recoJet->energy.setValue (et);
+      sep->addChild (recoJet);
 
-    indices.push_back (i);
-    indices.push_back (i + 1);
-    indices.push_back (i + 2);
-    indices.push_back (i + 3);
-    indices.push_back (i);
-    indices.push_back (SO_END_LINE_INDEX);
+//      make3DJet (sep, et, theta, phi);   // FIXME LT: this does not yet work
 
-    indices.push_back (i + 4);
-    indices.push_back (i + 5);
-    indices.push_back (i + 6);
-    indices.push_back (i + 7);
-    indices.push_back (i + 4);
-    indices.push_back (SO_END_LINE_INDEX);
-
-    indices.push_back (i);
-    indices.push_back (i + 4);
-    indices.push_back (SO_END_LINE_INDEX);
-    indices.push_back (i + 1);
-    indices.push_back (i + 5);
-    indices.push_back (SO_END_LINE_INDEX);
-    indices.push_back (i + 2);
-    indices.push_back (i + 6);
-    indices.push_back (SO_END_LINE_INDEX);
-    indices.push_back (i + 3);
-    indices.push_back (i + 7);
-    indices.push_back (SO_END_LINE_INDEX);
-
-    i += 8;
+    }
   }
+}
 
-  vertices->vertex.setValues (0, corners.size (), &corners [0]);
-  vertices->vertex.setNum (corners.size ());
 
-  lineSet->coordIndex.setValues (0, indices.size (), &indices [0]);
-  lineSet->vertexProperty = vertices;
-
-  sep->addChild (lineSet);
+static void
+make3DJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial *mat = new SoMaterial;
+  mat->diffuseColor = SbColor (1.0, 1.0, 1.0);
+  mat->transparency = 0.8;
+  sep->addChild (mat);
+  make3DJetShapes(collections, assocs, sep);
 }
 
 static void
-make3DAnyLine(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
   IgCollection		*c = collections[0];
-  IgProperty		P1 = c->getProperty ("pos_1");
-  IgProperty		P2 = c->getProperty ("pos_2");
+  SoMaterial		*mat = new SoMaterial;
+  SoDrawStyle		*sty = new SoDrawStyle;
+  SoAnnotation		*ann = new SoAnnotation;
+  SoDrawStyle		*dashed = new SoDrawStyle;
   SoVertexProperty	*vertices = new SoVertexProperty;
   SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
-  std::vector<SbVec3f>	corners;
-  std::vector<int>	indices;
+  std::vector<int>	lineIndices;
+  std::vector<SbVec3f>	points;
   int			i = 0;
+
+  mat->diffuseColor = SbColor(0xFF/255., 0x5B/255., 0x00/255.);
+  sep->addChild(mat);
+
+  sty->style = SoDrawStyle::LINES;
+  sty->lineWidth.setValue (3);
+  sep->addChild (sty);
+
+  sep->addChild (ann);
+
+  dashed->style = SoDrawStyle::LINES;
+  dashed->lineWidth = 3;
+  dashed->linePattern = 0x0f0f;
+  ann->addChild (dashed);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d p1 = ci->get<IgV3d> (P1);
-    IgV3d p2 = ci->get<IgV3d> (P2);
-    corners.push_back (SbVec3f (static_cast<double>(p1.x ()),
-				static_cast<double>(p1.y ()),
-				static_cast<double>(p1.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p2.x ()),
-				static_cast<double>(p2.y ()),
-				static_cast<double>(p2.z ())));
-    indices.push_back (i);
-    indices.push_back (i + 1);
-    indices.push_back (SO_END_LINE_INDEX);
+    points.push_back (SbVec3f (0., 0., 0.));
+    points.push_back (SbVec3f (ci->get<double>("px"), ci->get<double>("py"), 0.));
+    lineIndices.push_back (i);
+    lineIndices.push_back (i + 1);
+    lineIndices.push_back (SO_END_LINE_INDEX);
     i += 2;
   }
 
-  vertices->vertex.setValues (0, corners.size (), &corners [0]);
-  vertices->vertex.setNum (corners.size ());
+  vertices->vertex.setValues (0, points.size (), &points [0]);
+  vertices->vertex.setNum (points.size ());
 
-  lineSet->coordIndex.setValues (0, indices.size (), &indices [0]);
+  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
+  lineSet->vertexProperty = vertices;
+
+  sep->addChild (lineSet);
+  ann->addChild (lineSet);
+}
+
+
+
+// ------------------------------------------------------
+// Draw Muon data  
+// ------------------------------------------------------
+
+
+
+
+static void
+make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection		*c = collections[0];
+  SoVertexProperty	*vertices = new SoVertexProperty;
+  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
+  std::vector<int>	lineIndices;
+  std::vector<SbVec3f>	points;
+  int			i = 0;
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    IgV3d p1 = ci->get<IgV3d> ("pos_1");
+    IgV3d p2 = ci->get<IgV3d> ("pos_2");
+
+    points.push_back (SbVec3f (static_cast<double>(p1.x ()),
+			       static_cast<double>(p1.y ()),
+			       static_cast<double>(p1.z ())));
+    points.push_back (SbVec3f (static_cast<double>(p2.x ()),
+			       static_cast<double>(p2.y ()),
+			       static_cast<double>(p2.z ())));
+    lineIndices.push_back (i);
+    lineIndices.push_back (i + 1);
+    lineIndices.push_back (SO_END_LINE_INDEX);
+    i += 2;
+  }
+
+  vertices->vertex.setValues (0, points.size (), &points [0]);
+  vertices->vertex.setNum (points.size ());
+
+  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
   lineSet->vertexProperty = vertices;
 
   sep->addChild (lineSet);
 }
 
+
+
 static void
-make3DAnyPoint(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DCSCSegments(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial	*mat = new SoMaterial;
+  SoDrawStyle	*sty = new SoDrawStyle;
+
+  mat->diffuseColor = SbColor (0xC0/255., 0, 0);
+  sep->addChild (mat);
+
+  sty->style = SoDrawStyle::LINES;
+  sty->lineWidth = 3;
+  sep->addChild (sty);
+
+  make3DSegmentShapes(collections, assocs, sep);
+}
+
+
+static void
+make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
   IgCollection		*c = collections[0];
-  IgProperty		POS = c->getProperty ("pos");
-  SoPointSet		*points = new SoPointSet;
+  IgProperty		POS = c->getProperty("pos");
+  IgProperty		AXIS = c->getProperty("axis");
+  IgProperty		ANGLE = c->getProperty("angle");
+  IgProperty		CELL_L = c->getProperty("cellLength");
+  IgProperty		CELL_W = c->getProperty("cellWidth");
+  IgProperty		CELL_H = c->getProperty("cellHeight");
   SoVertexProperty	*vertices = new SoVertexProperty;
+  SoMarkerSet		*points = new SoMarkerSet;
+  SoMaterial		*mat = new SoMaterial;
   int			n = 0;
+
+  mat->diffuseColor = SbColor (0x66/255., 0xff/255., 0x00/255.);
+  sep->addChild (mat);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d p1 = ci->get<IgV3d> (POS);
+    IgV3d pos = ci->get<IgV3d>(POS);
 
-    double x = p1.x ();
-    double y = p1.y ();
-    double z = p1.z ();
-    vertices->vertex.set1Value (n++, SbVec3f (x, y, z));
+    double x = pos.x();
+    double y = pos.y();
+    double z = pos.z();
+    vertices->vertex.set1Value(n++, SbVec3f (x, y, z));
+
+    IgV3d axis = ci->get<IgV3d>(AXIS);
+    double angle = ci->get<double>(ANGLE);
+
+    SoTransform *transform = new SoTransform;
+    transform->translation.setValue(x,y,z);
+    transform->rotation.setValue(SbVec3f(axis.x(),axis.y(),axis.z()), angle);
+
+    SoCube *cube = new SoCube;
+    cube->width = ci->get<double>(CELL_W);
+    cube->height = ci->get<double>(CELL_L);
+    cube->depth = ci->get<double>(CELL_H);
+
+    SoSeparator *separator = new SoSeparator;
+    separator->addChild(transform);
+    separator->addChild(cube);
+    sep->addChild(separator);
   }
 
-  vertices->vertex.setNum (n);
+  vertices->vertex.setNum(n);
+  points->markerIndex = SoMarkerSet::SQUARE_LINE_5_5;
   points->vertexProperty = vertices;
   points->numPoints = n;
   sep->addChild (points);
 }
 
 static void
-make3DAnyDetId(IgCollection **, IgAssociationSet **, SoSeparator *)
+make3DDTRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
+  IgCollection		*c = collections[0];
+  IgProperty		LPLUS_GLOBALPOS = c->getProperty("lPlusGlobalPos");
+  IgProperty		LMINUS_GLOBALPOS = c->getProperty("lMinusGlobalPos");
+  IgProperty		RPLUS_GLOBALPOS = c->getProperty("rPlusGlobalPos");
+  IgProperty		RMINUS_GLOBALPOS = c->getProperty("rMinusGlobalPos");
+  IgProperty		LGLOBALPOS = c->getProperty("lGlobalPos");
+  IgProperty		RGLOBALPOS = c->getProperty("rGlobalPos");
+  IgProperty		WPOS = c->getProperty("wirePos");
+  IgProperty		AXIS = c->getProperty("axis");
+  IgProperty		ANGLE = c->getProperty("angle");
+  IgProperty		CELL_L = c->getProperty("cellLength");
+  IgProperty		CELL_W = c->getProperty("cellWidth");
+  IgProperty		CELL_H = c->getProperty("cellHeight");
+  SoVertexProperty	*vertices = new SoVertexProperty;
+  SoMarkerSet		*points = new SoMarkerSet;
+  SoDrawStyle		*wdrawStyle = new SoDrawStyle;
+  int			n = 0;
+
+  //  vertices->materialBinding = SoVertexProperty::OVERALL;
+  //  vertices->orderedRGBA = 0x0000FFFF;
+
+  wdrawStyle->style = SoDrawStyle::LINES;
+  wdrawStyle->lineWidth.setValue(2.0);
+  sep->addChild(wdrawStyle);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    IgV3d lPlusGlobalPos = ci->get<IgV3d>(LPLUS_GLOBALPOS);
+    IgV3d lMinusGlobalPos = ci->get<IgV3d>(LMINUS_GLOBALPOS);
+    IgV3d rPlusGlobalPos = ci->get<IgV3d>(RPLUS_GLOBALPOS);
+    IgV3d rMinusGlobalPos = ci->get<IgV3d>(RMINUS_GLOBALPOS);
+    IgV3d lGlobalPos = ci->get<IgV3d>(LGLOBALPOS);
+    IgV3d rGlobalPos = ci->get<IgV3d>(RGLOBALPOS);
+
+    SoLineSet *linel = new SoLineSet;
+    linel->numVertices = 2;
+    SoVertexProperty* vtxl = new SoVertexProperty;
+    vtxl->vertex.set1Value(0, SbVec3f(lPlusGlobalPos.x(),
+				      lPlusGlobalPos.y(),
+				      lPlusGlobalPos.z()));
+
+    vtxl->vertex.set1Value(1, SbVec3f(lMinusGlobalPos.x(),
+				      lMinusGlobalPos.y(),
+				      lMinusGlobalPos.z()));
+    linel->vertexProperty = vtxl;
+
+    SoLineSet *liner = new SoLineSet;
+    liner->numVertices = 2;
+    SoVertexProperty *vtxr = new SoVertexProperty;
+    vtxr->vertex.set1Value(0, SbVec3f(rPlusGlobalPos.x(),
+				      rPlusGlobalPos.y(),
+				      rPlusGlobalPos.z()));
+    vtxr->vertex.set1Value(1, SbVec3f(rMinusGlobalPos.x(),
+				      rMinusGlobalPos.y(),
+				      rMinusGlobalPos.z()));
+    liner->vertexProperty = vtxr;
+
+    sep->addChild(linel);
+    sep->addChild(liner);
+
+    vertices->vertex.set1Value(n++, SbVec3f(lGlobalPos.x(),
+					    lGlobalPos.y(),
+					    lGlobalPos.z()));
+
+    vertices->vertex.set1Value(n++, SbVec3f(rGlobalPos.x(),
+					    rGlobalPos.y(),
+					    rGlobalPos.z()));
+
+    IgV3d pos = ci->get<IgV3d>(WPOS);
+    IgV3d axis = ci->get<IgV3d>(AXIS);
+    double angle = ci->get<double>(ANGLE);
+    SoTransform *transform = new SoTransform;
+    transform->translation.setValue(pos.x(),pos.y(),pos.z());
+    transform->rotation.setValue(SbVec3f(axis.x(),axis.y(),axis.z()), angle);
+
+    SoCube *cube = new SoCube;
+    cube->width = ci->get<double>(CELL_W);
+    cube->height = ci->get<double>(CELL_L);
+    cube->depth = ci->get<double>(CELL_H);
+
+    SoSeparator *separator = new SoSeparator;
+    separator->addChild(transform);
+    separator->addChild(cube);
+    sep->addChild(separator);
+  }
+
+  points->markerIndex = SoMarkerSet::PLUS_7_7;
+  points->vertexProperty = vertices;
+  points->numPoints = n;
+  sep->addChild (points);
 }
+
+
+static void
+make3DDTRecSegment4D(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial	*mat = new SoMaterial;
+  SoDrawStyle	*sty = new SoDrawStyle;
+
+  mat->diffuseColor = SbColor (0xC0/255., 0x00/255., 0x00/255.);
+  sep->addChild (mat);
+
+  sty->style = SoDrawStyle::LINES;
+  sty->lineWidth.setValue (3);
+  sep->addChild (sty);
+
+  make3DSegmentShapes(collections, assocs, sep);
+}
+
+
+
+static void
+make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+
+  IgCollection		*c = collections[0];
+
+  SoDrawStyle		*drawStyle  = new SoDrawStyle;
+  SoVertexProperty	*vertices = new SoVertexProperty;
+  SoIndexedLineSet	*lineSet = new SoIndexedLineSet;
+  std::vector<int>	lineIndices;
+  std::vector<SbVec3f>	points;
+  int			i = 0;
+
+  SoMaterial		*mat = new SoMaterial;
+
+  mat->diffuseColor = SbColor (0xff/255., 0xff/255., 0x00/255.);
+  sep->addChild (mat);
+  drawStyle->lineWidth   = 3;
+  drawStyle->linePattern = 0xffff;    // 0xffff = solid
+  sep->addChild (drawStyle);
+
+
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    IgV3d u1 = ci->get<IgV3d>("u1");
+    IgV3d u2 = ci->get<IgV3d>("u2");
+    IgV3d v1 = ci->get<IgV3d>("v1");
+    IgV3d v2 = ci->get<IgV3d>("v2");
+    IgV3d w1 = ci->get<IgV3d>("w1");
+    IgV3d w2 = ci->get<IgV3d>("w2");
+
+    points.push_back (SbVec3f (static_cast<double>(u1.x()),static_cast<double>(u1.y()),static_cast<double>(u1.z())));
+    points.push_back (SbVec3f (static_cast<double>(u2.x()),static_cast<double>(u2.y()),static_cast<double>(u2.z())));
+    points.push_back (SbVec3f (static_cast<double>(v1.x()),static_cast<double>(v1.y()),static_cast<double>(v1.z())));
+    points.push_back (SbVec3f (static_cast<double>(v2.x()),static_cast<double>(v2.y()),static_cast<double>(v2.z())));
+    points.push_back (SbVec3f (static_cast<double>(w1.x()),static_cast<double>(w1.y()),static_cast<double>(w1.z())));
+    points.push_back (SbVec3f (static_cast<double>(w2.x()),static_cast<double>(w2.y()),static_cast<double>(w2.z())));
+
+    lineIndices.push_back (i);
+    lineIndices.push_back (i + 1);
+    lineIndices.push_back (SO_END_LINE_INDEX);
+    lineIndices.push_back (i + 2);
+    lineIndices.push_back (i + 3);
+    lineIndices.push_back (SO_END_LINE_INDEX);
+    lineIndices.push_back (i + 4);
+    lineIndices.push_back (i + 5);
+    lineIndices.push_back (SO_END_LINE_INDEX);
+
+    i += 6;
+  }
+
+  vertices->vertex.setValues (0, points.size (), &points [0]);
+  vertices->vertex.setNum (points.size ());
+
+  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
+  lineSet->vertexProperty = vertices;
+
+  sep->addChild (lineSet);
+}
+
+
+static void
+make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  IgCollection		*muons = collections[0];
+  IgCollection		*points = collections[1];
+  IgAssociationSet	*assoc = assocs[0];
+  SoMaterial		*mat = new SoMaterial;
+  
+  mat->diffuseColor = SbColor(0x8B/255., 0x89/255., 0x89/255.);
+  sep->addChild(mat);
+
+  for (IgCollectionIterator ci = muons->begin(), ce = muons->end(); ci != ce; ++ci)
+  {
+    IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
+    track->lineWidth = 3.0;
+
+    int n = 0;
+    for (IgAssociationSet::Iterator ai = assoc->begin (), ae = assoc->end(); ai != ae; ++ai)
+    {
+      if (ai->first ().objectId () == ci->currentRow ())
+      {
+	IgCollectionItem hm (points, ai->second ().objectId ());
+	double x = hm.get<IgV3d>("pos").x ();
+	double y = hm.get<IgV3d>("pos").y ();
+	double z = hm.get<IgV3d>("pos").z ();
+	track->controlPoints.set1Value (n, SbVec3f(x, y, z));
+	track->markerPoints.set1Value (n, SbVec3f(x, y, z));
+	n++;
+      }
+    }
+    sep->addChild (track);
+  }
+}
+
+
+
+
+
 
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
@@ -1975,217 +1105,95 @@ ISpyApplication::ISpyApplication (void)
   if (QDir::home ().isReadable ())
     defaultSettings ();
 
-  collection("Tracker",
-	     "Tracker_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "TrackerGeometry_V1",
-	     make3DDetector);
+// For now, draw the detector with the default "make3DAnyBox" code but explicit state 
+// this in each case so lables in visibility widget a nice than default ones 
 
-  collection("EcalBarrel",
-	     "EcalBarrel_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "EcalBarrelGeometry_V1",
-	     make3DDetector);
-
-  collection("EcalEndcap",
-	     "EcalEndcap_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "EcalEndcapGeometry_V1",
-	     make3DDetector);
-
-  collection("EcalPreshower",
-	     "EcalPreshower_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "EcalPreshowerGeometry_V1",
-	     make3DDetector);
-
-  collection("HcalBarrel",
-	     "HcalBarrel_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "HCalBarrelGeometry_V1",
-	     make3DDetector);
-
-  collection("HcalEndcap",
-	     "HcalEndcap_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "HcalEndccapGeometry_V1",
-	     make3DDetector);
-
-  collection("HcalOuter",
-	     "HcalOuter_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "HcalOuterGeometry_V1",
-	     make3DDetector);
-
-  collection("HcalForward",
-	     "HcalForward_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "HcalForwardGeometry_V1",
-	     make3DDetector);
-
-  collection("DT",
-	     "DTs_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "DTGeometry_V1",
-	     make3DDetector);
-
-  collection("CSC",
-	     "CSC_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "CSCGeometry_V1",
-	     make3DDetector);
-
-  collection("RPC",
-	     "RPC_V1:detid:shape",
-	     "Geometry_V1:detid",
-	     "RPCGeometry_V1",
-	     make3DDetector);
-
-#if 0
-  collection("BasicCluster",
-	     "BasicClusters_V1:pos:energy",
-	     "CaloHits_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-	     "BasicClustersCaloHits_V1",
-	     make3DBasicCluster);
-#endif
-
-  collection("CSCSegment",
-	     "CSCSegments_V1:pos_1:pos_2",
+  collection("CMS Tracker",
+	     "Tracker_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
-	     make3DCSCSegments);
+	     make3DAnyBox);
 
-  collection("CaloTower",
-	     "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+  collection("CMS ECAL Barrel",
+	     "EcalBarrel_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
-	     make3DCaloTowers);
+	     make3DAnyBox);
 
-  collection("DTDigi",
-	     "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
+  collection("CMS ECAL Endcap",
+	     "EcalEndcap_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
-	     make3DDTDigis);
+	     make3DAnyBox);
 
-  collection("DTRecHit",
-	     "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
-	     ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
+  collection("CMS Preshower",
+	     "EcalPreshower_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
-	     make3DDTRecHits);
+	     make3DAnyBox);
 
-  collection("DTRecSegment4D",
-	     "DTRecSegment4D_V1:pos_1:pos_2",
+  collection("CMS HCAL Barrel",
+	     "HcalBarrel_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
-	     make3DDTRecSegment4D);
-#if 0
-  collection("EBRecHit",
-	     "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-	     0,
-	     0,
-	     make3DEcalCrystalHits);
+	     make3DAnyBox);
 
-  collection("EERecHit",
-	     "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+  collection("CMS HCAL Endcap",
+	     "HcalEndcap_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
-	     make3DEcalCrystalHits);
-#endif
+	     make3DAnyBox);
 
-  collection("EcalRecHit",
-	     "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+  collection("CMS HCAL Outer",
+	     "HcalOuter_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
-	     make3DEcalRecHits);
+	     make3DAnyBox);
 
-  collection("Event",
+  collection("CMS HCAL Forward",
+	     "HcalForward_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DAnyBox);
+
+  collection("CMS Drift Tubes",
+	     "DTs_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DAnyBox);
+
+  collection("CMS Cathode Strip Chambers",
+	     "CSC_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DAnyBox);
+
+  collection("CMS Resistive Plate Chambers",
+	     "RPC_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DAnyBox);
+
+
+  collection("Event information",
 	     "Event_V1:time:run:event:ls:orbit:bx",
 	     0,
 	     0,
 	     make3DEvent);
 
-  collection("HBRecHit",
-	     "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-	     0,
-	     0,
-	     make3DHcalRecHits);
-
-  collection("HERecHit",
-	     "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-	     0,
-	     0,
-	     make3DHcalRecHits);
-
-  collection("HFRecHit",
-	     "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-	     0,
-	     0,
-	     make3DHcalRecHits);
-
-  collection("HORecHit",
-	     "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-	     0,
-	     0,
-	     make3DHcalRecHits);
-
-  collection("Jet",
-	     "Jets_V1:et:theta:phi",
-	     0,
-	     0,
-	     make3DJets);
-
-  collection("MET",
-	     "METs_V1:pt:px:py:phi",
-	     0,
-	     0,
-	     make3DMET);
-
-  collection("Muon",
-	     "Muons_V1:pt:charge:rp:phi:eta",
-	     "Points_V1:pos",
-	     "MuonTrackerPoints_V1",
-	     make3DMuons);
-
-#if 0
-  collection("PFCluster",
-	     "PFClusters_V1:pos",
-	     0,
-	     0,
-	     make3DPFClusters);
-
-  collection("PFRecHit",
-	     "PFRecHits_V1:pos",
-	     0,
-	     0,
-	     make3DPFRecHits);
-
-  collection("PFRecTrack",
-	     "PFRecTracks_V1:pos",
-	     0,
-	     0,
-	     make3DPFRecTracks);
-#endif
-
-  collection("PixelDigi",
+  collection("Pixel Digis",
 	     "PixelDigis_V1:pos",
 	     0,
 	     0,
 	     make3DPixelDigis);
 
-  collection("RPCRecHit",
-	     "RPCRecHits_V1:u1:u2:v1:v2:w2",
-	     0,
-	     0,
-	     make3DRPCRecHits);
-
-  collection("SiPixelCluster",
+  collection("Si Pixel Clusters",
 	     "SiPixelClusters_V1:pos",
 	     0,
 	     0,
 	     make3DSiPixelClusters);
 
-  collection("SiPixelRecHit",
+  collection("Si Pixel Rec. Hits",
 	     "SiPixelRecHits_V1:pos",
 	     0,
 	     0,
@@ -2197,29 +1205,126 @@ ISpyApplication::ISpyApplication (void)
 	     0,
 	     make3DSiStripClusters);
 
-  collection("SiStripDigi",
+  collection("Si Strip Digis",
 	     "SiStripDigis_V1:pos",
 	     0,
 	     0,
 	     make3DSiStripDigis);
 
-  collection("Track",
+  collection("Tracks",
 	     "Tracks_V1:pt:pos:dir",
 	     "Extras_V1:pos_1:dir_1:pos_2:dir_2",
 	     "TrackExtras_V1",
 	     make3DTracks);
 
-  collection("TrackingRecHit",
+  collection("Tracking Rec. Hits",
 	     "TrackingRecHits_V1:pos",
 	     0,
 	     0,
 	     make3DTrackingRecHits);
 
-  collection(0, ":front_1:front_2:front_3:front_4", 0, 0, make3DAnyBox);
+  collection("ECAL Rec. Hit",
+	     "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DEcalRecHits);
+
+  collection("HCAL Barrel Rec. Hits",
+	     "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DHcalRecHits);
+
+  collection("HCAL Endcap Rec. Hits",
+	     "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DHcalRecHits);
+
+  collection("HCAL Forward Rec. Hits",
+	     "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DHcalRecHits);
+
+  collection("HCAL Outer Rec. Hits",
+	     "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DHcalRecHits);
+
+  collection("Calorimeter Energy Towers",
+	     "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+	     0,
+	     0,
+	     make3DCaloTowers);
+
+  collection("Jets",
+	     "Jets_V1:et:theta:phi",
+	     0,
+	     0,
+	     make3DJets);
+
+  collection("Missing Transverse Energy",
+	     "METs_V1:pt:px:py:phi",
+	     0,
+	     0,
+	     make3DMET);
+
+
+  collection("DT Digis",
+	     "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
+	     0,
+	     0,
+	     make3DDTDigis);
+
+  collection("DT Rec. Hits",
+	     "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
+	     ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
+	     0,
+	     0,
+	     make3DDTRecHits);
+
+  collection("DT Rec. Segments (4D)",
+	     "DTRecSegment4D_V1:pos_1:pos_2",
+	     0,
+	     0,
+	     make3DDTRecSegment4D);
+
+  collection("CSC Segments",
+	     "CSCSegments_V1:pos_1:pos_2",
+	     0,
+	     0,
+	     make3DCSCSegments);
+
+  collection("RPC Rec. Hits",
+	     "RPCRecHits_V1:u1:u2:v1:v2:w2",
+	     0,
+	     0,
+	     make3DRPCRecHits);
+
+  collection("Muon Tracks",
+	     "Muons_V1:pt:charge:rp:phi:eta",
+	     "Points_V1:pos",
+	     "MuonTrackerPoints_V1",
+	     make3DMuons);
+
+  // Don't draw the following 
+
+  collection("Not drawn: Extras_V1","Extras_V1",0,0,NULL);
+  collection("Not drawn: Hits_V1","Hits_V1",0,0,NULL);
+  collection("Not drawn: Points_V1","Points_V1",0,0,NULL);
+  collection("Not drawn: DetIds_V1","DetIds_V1",0,0,NULL);
+
+  
+  // Default drawing operations if none of the above explicitly matched
+  
+  collection(0, ":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4", 0, 0, make3DAnyBox);
   collection(0, ":pos_1:pos_2", 0, 0, make3DAnyLine);
   collection(0, ":pos", 0, 0, make3DAnyPoint);
   collection(0, ":detid", 0, 0, make3DAnyDetId);
 }
+
 
 /** Destroy the application.  A no-op since everything is done on exit. */
 ISpyApplication::~ISpyApplication(void)
@@ -2424,15 +1529,6 @@ ISpyApplication::defaultSettings(void)
     }
 
     //
-    // Default geometry file
-    //
-    if (! settings.contains ("igfiles/geometry"))
-    {
-      QString fileName ("default-geometry.ig");
-      settings.setValue ("igfiles/geometry", fileName);
-    }
-
-    //
     // Network connection configuration
     //
     if (! settings.contains ("igsource/host"))
@@ -2458,39 +1554,6 @@ ISpyApplication::defaultSettings(void)
       int timeout = 15000;
       settings.setValue ("igevents/timeout", timeout);
     }
-    if (! settings.contains ("igevents/cuts/jets/energy"))
-    {
-      settings.setValue ("igevents/cuts/jets/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/calotowers/energy"))
-    {
-      settings.setValue ("igevents/cuts/calotowers/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/ecal/barrel/rechits/energy"))
-    {
-      settings.setValue ("igevents/cuts/ecal/barrel/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/ecal/endcap/rechits/energy"))
-    {
-      settings.setValue ("igevents/cuts/ecal/endcap/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/barrel/rechits/energy"))
-    {
-      settings.setValue ("igevents/cuts/hcal/barrel/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/endcap/rechits/energy"))
-    {
-      settings.setValue ("igevents/cuts/hcal/endcap/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/forward/rechits/energy"))
-    {
-      settings.setValue ("igevents/cuts/hcal/forward/rechits/energy", 0.1);
-    }
-    if (! settings.contains ("igevents/cuts/hcal/outer/rechits/energy"))
-    {
-      settings.setValue ("igevents/cuts/hcal/outer/rechits/energy", 0.1);
-    }
-
     //
     // Main window configuration
     //
@@ -2513,24 +1576,6 @@ ISpyApplication::defaultSettings(void)
     if (! settings.contains ("mainwindow/tableview/floating"))
     {
       settings.setValue ("mainwindow/tableview/floating", false);
-    }
-
-    // HLR
-    if (! settings.contains ("igdisplay/hadtowers/view3d/hiddenlineremoval"))
-    {
-      settings.setValue ("igdisplay/hadtowers/view3d/hiddenlineremoval", false);
-    }
-    if (! settings.contains ("igdisplay/crystalhits/view3d/hiddenlineremoval"))
-    {
-      settings.setValue ("igdisplay/crystalhits/view3d/hiddenlineremoval", false);
-    }
-    if (! settings.contains ("igdisplay/crystals/view3d/hiddenlineremoval"))
-    {
-      settings.setValue ("igdisplay/crystals/view3d/hiddenlineremoval", false);
-    }
-    if (! settings.contains ("igdisplay/detector/view3d/hiddenlineremoval"))
-    {
-      settings.setValue ("igdisplay/detector/view3d/hiddenlineremoval", false);
     }
   }
 }
@@ -2568,12 +1613,12 @@ ISpyApplication::setupMainWindow(void)
   m_mainWindow->treeView->hide ();
 
   QStringList headers;
-  headers << "Collection" << "Size" << "Visibility";
+  headers << "Collection" << "Items" << "Show";
   m_treeWidget = new QTreeWidget(m_mainWindow->dockTreeWidgetContents);
 
   m_treeWidget->setHeaderLabels (headers);
-  m_treeWidget->setColumnWidth (1, 50);
-  m_treeWidget->setColumnWidth (2, 40);
+  m_treeWidget->setColumnWidth (1, 90);
+  m_treeWidget->setColumnWidth (2, 30);
   m_treeWidget->setAlternatingRowColors (true);
   m_mainWindow->gridLayout_3->addWidget(m_treeWidget);
 
@@ -2959,20 +2004,20 @@ ISpyApplication::open(const QString &fileName)
 
   events.reserve(file->size());
   for (zi = file->begin(), ze = file->end(); zi != ze; ++zi, ++index)
-    if (! strncmp((*zi)->name(), "Geometry/", 9))
-    {
-      if (geometry)
-	qDebug() << "Oopsla, multiple geometries, keeping last one.";
-      geometry = *zi;
-    }
-    else if (! strncmp((*zi)->name(), "Events/", 7))
-    {
-      events.resize(events.size()+1);
-      Event &e = events.back();
-      e.index = index;
-      e.archive = file;
-      e.contents = *zi;
-    }
+      if (! strncmp((*zi)->name(), "Geometry/", 9))
+	{
+	  if (geometry)
+	    qDebug() << "Oopsla, multiple geometries, keeping last one.";
+	  geometry = *zi;
+	}
+      else if (! strncmp((*zi)->name(), "Events/", 7))  
+	{
+	  events.resize(events.size()+1);
+	  Event &e = events.back();
+	  e.index = index;
+	  e.archive = file;
+	  e.contents = *zi;
+	}
 
   // If the file had only geometry, take it as the geometry file.  If
   // the file has events and geometry, take both from it.  If the file
