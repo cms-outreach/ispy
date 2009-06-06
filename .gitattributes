@@ -1,3 +1,6 @@
 CVS/* -crlf -diff -merge
 **/CVS/* -crlf -diff -merge
+*/CVS/* -crlf -diff -merge
 */*/CVS/* -crlf -diff -merge
+*/*/*/CVS/* -crlf -diff -merge
+*/*/*/*/CVS/* -crlf -diff -merge
