@@ -112,6 +112,9 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   std::string		orbit = std::string("Orbit number   ") + (sprintf(buf, "%d", e.get<int>("orbit")), buf);
   std::string		bx    = std::string("Beam crossing  ") + (sprintf(buf, "%d", e.get<int>("bx")), buf);
 
+  // FIXME LT: make text positioning independent of window resize
+  // FIXME LT: make visibilty of each line switchable in the interface (and settings) e.g. as for ig collections
+
   camera->nearDistance = 1;
   camera->farDistance = 10;
   camera->pointAt (SbVec3f(0.0, 0.0, 0.0));
@@ -137,9 +140,6 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   createTextLine (overlay, nextLineTranslation, bx);
   sep->addChild (overlay);
 }
-
-
-
 
 
 
@@ -188,7 +188,7 @@ static void
 make3DAnyBox(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
   IgCollection *c = collections[0];
-  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
+  IgDrawTowerHelper drawTowerHelper (sep);
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
     {  
@@ -202,8 +202,7 @@ make3DAnyBox(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
       IgV3d b3  = ci->get<IgV3d> ("back_3");
       IgV3d b4  = ci->get<IgV3d> ("back_4");
       
-      drawTowerHelper->addTower (f1,f2,f3,f4, 
-				 b1,b2,b3,b4);
+      drawTowerHelper.addTower (f1,f2,f3,f4, b1,b2,b3,b4);
     }
 }
 
@@ -224,12 +223,8 @@ make3DAnyLine(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   {
     IgV3d p1 = ci->get<IgV3d> (P1);
     IgV3d p2 = ci->get<IgV3d> (P2);
-    corners.push_back (SbVec3f (static_cast<double>(p1.x ()),
-				static_cast<double>(p1.y ()),
-				static_cast<double>(p1.z ())));
-    corners.push_back (SbVec3f (static_cast<double>(p2.x ()),
-				static_cast<double>(p2.y ()),
-				static_cast<double>(p2.z ())));
+    corners.push_back (SbVec3f (p1.x(), p1.y(), p1.z () ));
+    corners.push_back (SbVec3f (p2.x(), p2.y(), p2.z () ));
     indices.push_back (i);
     indices.push_back (i + 1);
     indices.push_back (SO_END_LINE_INDEX);
@@ -286,54 +281,51 @@ make3DAnyDetId(IgCollection **, IgAssociationSet **, SoSeparator *)
 // Draw Tracker data  
 // ------------------------------------------------------
 
+// For hits drawn digis, clusters and rechits as different shapes
+// Make them shades of same colour (more populous ones are darker)
+// Do Si Strips one colour and pixels another  
 
+// Tons of these, rarely drawn, make very unobtrusive
 static void
 make3DPixelDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DPointSetShapes(collections, assocs, sep,  
-		       SbColor(0.0, 0.0, 1.0),
-		       SoMarkerSet::SQUARE_LINE_5_5);
+  make3DPointSetShapes(collections, assocs, sep, SbColor(0.2,0.0, 0.0), SoMarkerSet::PLUS_5_5);
 }
-
-static void
-make3DSiPixelClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0x00 / 255., 0xBF / 255., 0xFF / 255.),
-		       SoMarkerSet::SQUARE_FILLED_5_5);
-}
-
-static void
-make3DSiPixelRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(1.0, 0.0, 0.0),
-		       SoMarkerSet::PLUS_5_5);
-}
-
-static void
-make3DSiStripClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0x03 / 255., 0xC0 / 255., 0x3C / 255.),
-		       SoMarkerSet::SQUARE_FILLED_5_5);
-}
-
 static void
 make3DSiStripDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0x55 / 255., 0x1A / 255., 0x8B / 255.),
-		       SoMarkerSet::SQUARE_LINE_5_5);
+  make3DPointSetShapes(collections, assocs, sep, SbColor(0.2, 0.1, 0.0),SoMarkerSet::PLUS_5_5);
+}
+
+
+// Quite a lot of these, not often drawn, make quite unobtrusive
+static void
+make3DSiPixelClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DPointSetShapes(collections, assocs, sep, SbColor(0.4, 0.0, 0.0), SoMarkerSet::CROSS_5_5);
+}
+static void
+make3DSiStripClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DPointSetShapes(collections, assocs, sep, SbColor(0.4, 0.2, 0.0), SoMarkerSet::CROSS_5_5);
+}
+
+
+// If you draw any tracekr hits its usually these ones so make more visible
+static void
+make3DSiPixelRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DPointSetShapes(collections, assocs, sep, SbColor(0.7, 0.0, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
 }
 
 static void
 make3DTrackingRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DPointSetShapes(collections, assocs, sep,
-		       SbColor(0xEE/255., 0x2C/255., 0x2C/255.),
-		       SoMarkerSet::SQUARE_LINE_5_5);
+  make3DPointSetShapes(collections, assocs, sep, SbColor(0.7, 0.4, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
 }
+
+
+
 
 static void
 make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
@@ -356,16 +348,15 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   SoMarkerSet		*mpoints = new SoMarkerSet;
   int			nv = 0;
   
-  mat->diffuseColor = SbColor(0x99/255., 0xCC/255., 0xFF/255.);
-  sep->addChild (mat);
-
+  mat->diffuseColor = SbColor(0.8, 0.8, 0.5);
   sty->style = SoDrawStyle::LINES;
-  sty->lineWidth = 3;
-  sep->addChild (sty);
+  sty->lineWidth = 2;
 
+  sep->addChild (mat);
+  sep->addChild (sty);
   sep->addChild (vsep);
 
-  vmat->diffuseColor = SbColor(0x00/255., 0x33/255., 0x66/255.);
+  vmat->diffuseColor = SbColor(0.9, 1.0, 0.3);
   vsep->addChild (mat);
 
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
@@ -410,7 +401,7 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
     }
 
     tvertices->vertex.setNum (nVtx);
-    tpoints->markerIndex = SoMarkerSet::CIRCLE_LINE_7_7;
+    tpoints->markerIndex = SoMarkerSet::SQUARE_LINE_5_5;
     tpoints->vertexProperty = tvertices;
     tpoints->numPoints.setValue (nVtx);
 
@@ -419,7 +410,7 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   }
 
   vertices->vertex.setNum (nv);
-  mpoints->markerIndex = SoMarkerSet::CROSS_9_9;
+  mpoints->markerIndex = SoMarkerSet::CROSS_7_7;
   mpoints->vertexProperty.setValue (vertices);
   mpoints->numPoints.setValue (nv);
   vsep->addChild (mpoints);
@@ -432,23 +423,40 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
 // ------------------------------------------------------
 
 
-// FIXME LT:  can still generalise the following a bit more 
+// FIXME LT: can still generalise the following a bit more 
+// FIXME LT: make single box 3Dbox draw function with a bunch of switches for 
+// FIXME LT: -- render styles: e.g. draw faces, draw outlines, draw both, front face only, etc.
+// FIXME LT: -- shape styles:  e.g. scaled box, scaled tower, stacked tower, no scaling 
+// FIXME LT:                   centred box, from centre towards front [/back], etc.
 
 
 static void
-make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
   IgCollection		*c = collections[0];
-  float energyScaleFactor = 0.03;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.25;  // GeV      FIXME LT: should get it from some service
+  float minEnergy     = 0.2;   // GeV  FIXME LT: should get it from some service
+  float maxEnergy     = 5.0;  // GeV  Not a cut -- just used to set max box size
   
-  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
+
+  // FIXME: can compress the following code
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    {
+      double energy = ci->get<double> ("energy");
+      if (energy > maxEnergy)
+	{ 
+	  maxEnergy = energy;
+	    }
+    }
   
+
+  IgDrawTowerHelper drawTowerHelper (sep);
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
     {
       double energy = ci->get<double> ("energy");
       
-      if (energy > minimumEnergy)
+      if (energy > minEnergy)
 	{ 
 	  IgV3d f1  = ci->get<IgV3d> ("front_1");
 	  IgV3d f2  = ci->get<IgV3d> ("front_2");
@@ -460,7 +468,38 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator 
 	  IgV3d b3  = ci->get<IgV3d> ("back_3");
 	  IgV3d b4  = ci->get<IgV3d> ("back_4");
 	  
-	  drawTowerHelper->addTower (f1,f2,f3,f4, 
+ 	  drawTowerHelper.addScaledBox (f1,f2,f3,f4, b1,b2,b3,b4, energy/maxEnergy);
+	}
+    }
+}
+
+
+static void
+make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection		*c = collections[0];
+  float energyScaleFactor = 0.03;  // m/GeV    FIXME LT: should get it from some service
+  float minEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
+  
+  IgDrawTowerHelper drawTowerHelper (sep);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    {
+      double energy = ci->get<double> ("energy");
+      
+      if (energy > minEnergy)
+	{ 
+	  IgV3d f1  = ci->get<IgV3d> ("front_1");
+	  IgV3d f2  = ci->get<IgV3d> ("front_2");
+	  IgV3d f3  = ci->get<IgV3d> ("front_3");
+	  IgV3d f4  = ci->get<IgV3d> ("front_4");
+	  
+	  IgV3d b1  = ci->get<IgV3d> ("back_1");
+	  IgV3d b2  = ci->get<IgV3d> ("back_2");
+	  IgV3d b3  = ci->get<IgV3d> ("back_3");
+	  IgV3d b4  = ci->get<IgV3d> ("back_4");
+	  
+	  drawTowerHelper.addTower (f1,f2,f3,f4, 
 				     b1,b2,b3,b4, 
 				     energy, 
 				     energyScaleFactor);
@@ -469,24 +508,7 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator 
 }
 
 
-static void
-make3DEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor.setValue(1.0, 0.0, 153.0 / 255.0);
-  sep->addChild (mat);
-  make3DEnergyTowers(collections, assocs, sep);
-}
 
-static void
-make3DHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor = SbColor(0.0, 0.5, 1.0);
-  mat->transparency = 0.0;
-  sep->addChild (mat);
-  make3DEnergyTowers(collections, assocs, sep);
-}
 
 
 static void
@@ -494,10 +516,10 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSepar
 {
   IgCollection		*c = collections[0];
   float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
+  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
   
-  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
-  
+  IgDrawTowerHelper drawTowerHelper (sep);
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
     {
       double energy = ci->get<double> ("emEnergy");
@@ -514,10 +536,10 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSepar
 	  IgV3d b3  = ci->get<IgV3d> ("back_3");
 	  IgV3d b4  = ci->get<IgV3d> ("back_4");
 	  
-	  drawTowerHelper->addTower (f1,f2,f3,f4, 
-				     b1,b2,b3,b4, 
-				     energy, 
-				     energyScaleFactor);
+	  drawTowerHelper.addTower (f1,f2,f3,f4, 
+				    b1,b2,b3,b4, 
+				    energy, 
+				    energyScaleFactor);
 	}
     }
 }
@@ -527,9 +549,9 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
 {
   IgCollection		*c = collections[0];
   float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
+  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
   
-  IgDrawTowerHelper *drawTowerHelper = new IgDrawTowerHelper (sep);
+  IgDrawTowerHelper drawTowerHelper (sep);
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
     {
@@ -547,14 +569,33 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
 	  IgV3d b3  = ci->get<IgV3d> ("back_3");
 	  IgV3d b4  = ci->get<IgV3d> ("back_4");
 	  
-	  drawTowerHelper->addTower (f1,f2,f3,f4, 
-				     b1,b2,b3,b4, 
-				     energy, 
-				     energyScaleFactor);
+	  drawTowerHelper.addTower (f1,f2,f3,f4, 
+				    b1,b2,b3,b4, 
+				    energy, 
+				    energyScaleFactor);
 	}
     }
 }
 
+
+static void
+make3DEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial *mat = new SoMaterial;
+  mat->diffuseColor.setValue(1.0, 0.2, 0.7);
+  sep->addChild (mat);
+  make3DEnergyTowers(collections, assocs, sep);
+}
+
+static void
+make3DHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial *mat = new SoMaterial;
+  mat->diffuseColor = SbColor(0.3, 0.8, 1.0);
+  mat->transparency = 0.0;
+  sep->addChild (mat);
+  make3DEnergyBoxes(collections, assocs, sep);
+}
 
 static void
 make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
@@ -565,12 +606,15 @@ make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSepara
   // FIXME LT: now we draw EM+Had tower first then Em tower after (over the top of first)
   // FIXME LT: but sides are co-planar so can get funny rendering effects
   // FIXME LT: fix it by drawing properly 2 stacked towers instead (first Em then Had on top)
+  // FIXME LT: *** think how to render so not confused with rec hits *** e.g. wireframe?
 
-  hmat->diffuseColor.setValue(0.2, 0.2, 1.0);
+  hmat->diffuseColor.setValue(0.1, 0.5, 0.5);
+  hmat->transparency = 0.5;
   sep->addChild (hmat);
   make3DEmPlusHadCaloTowerShapes(collections, assocs, sep);
 
-  emat->diffuseColor.setValue(1.0, 0.0, 153.0 / 255.0);
+  emat->diffuseColor.setValue(0.5, 0.1, 0.35);
+  emat->transparency = 0.5;
   sep->addChild (emat);
   make3DEmCaloTowerShapes(collections, assocs, sep);
 }
@@ -675,7 +719,7 @@ make3DJetShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *se
       recoJet->energy.setValue (et);
       sep->addChild (recoJet);
 
-//      make3DJet (sep, et, theta, phi);   // FIXME LT: this does not yet work
+//    make3DJet (sep, et, theta, phi);   // FIXME LT: this should replace above lines but does not yet work
 
     }
   }
@@ -692,6 +736,7 @@ make3DJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *s
   make3DJetShapes(collections, assocs, sep);
 }
 
+
 static void
 make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 {
@@ -705,12 +750,15 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   std::vector<int>	lineIndices;
   std::vector<SbVec3f>	points;
   int			i = 0;
+  float etRadius = 8.0; // radius in x,y, to draw Etmiss vectors --- FIXME: calculate based on scene ??? 
 
-  mat->diffuseColor = SbColor(0xFF/255., 0x5B/255., 0x00/255.);
+
+  mat->diffuseColor = SbColor(0.8, 0.8, 0.8);
   sep->addChild(mat);
 
   sty->style = SoDrawStyle::LINES;
-  sty->lineWidth.setValue (3);
+  sty->lineWidth = 3;
+  dashed->linePattern = 0x0f0f;
   sep->addChild (sty);
 
   sep->addChild (ann);
@@ -720,24 +768,60 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   dashed->linePattern = 0x0f0f;
   ann->addChild (dashed);
 
+  SbVec3f direction (0.,0.,0.);
+  float etMiss = -999.; 
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     points.push_back (SbVec3f (0., 0., 0.));
-    points.push_back (SbVec3f (ci->get<double>("px"), ci->get<double>("py"), 0.));
+
+    float px = ci->get<double>("px"); 
+    float py = ci->get<double>("py"); 
+    float pz = 0.0; 
+
+    direction.setValue (px, py, pz);
+    etMiss = direction.length();    
+    direction.normalize();
+    direction *=etRadius;
+
+    points.push_back (direction);
     lineIndices.push_back (i);
     lineIndices.push_back (i + 1);
     lineIndices.push_back (SO_END_LINE_INDEX);
     i += 2;
   }
 
-  vertices->vertex.setValues (0, points.size (), &points [0]);
-  vertices->vertex.setNum (points.size ());
+  if (etMiss > 0) 
+    {
+      vertices->vertex.setValues (0, points.size (), &points [0]);
+      vertices->vertex.setNum (points.size ());
+      
+      lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
+      lineSet->vertexProperty = vertices;
+      
+      sep->addChild (lineSet);
+      ann->addChild (lineSet);
+      
+      // Add text label a bit past the end of the line
 
-  lineSet->coordIndex.setValues (0, lineIndices.size (), &lineIndices [0]);
-  lineSet->vertexProperty = vertices;
+      direction *=1.05; 
+      
+      SoTranslation *textPos = new SoTranslation;
+      textPos->translation = direction;
+      
+      SoText2 *label = new SoText2;
+      label->justification.setValue (SoText2::CENTER);
 
-  sep->addChild (lineSet);
-  ann->addChild (lineSet);
+      char buf [128];
+
+      //      std::string run  = std::string("Run number") + (sprintf(buf, "%d", e.get<int>("run")), buf);
+
+      std::string text = std::string("Et miss=")   + (sprintf(buf, "%4.1f", etMiss),buf);
+      label->string = text.c_str ();
+      
+      sep->addChild (textPos);
+      sep->addChild (label);
+    }
 }
 
 
@@ -764,12 +848,8 @@ make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, SoSeparator
     IgV3d p1 = ci->get<IgV3d> ("pos_1");
     IgV3d p2 = ci->get<IgV3d> ("pos_2");
 
-    points.push_back (SbVec3f (static_cast<double>(p1.x ()),
-			       static_cast<double>(p1.y ()),
-			       static_cast<double>(p1.z ())));
-    points.push_back (SbVec3f (static_cast<double>(p2.x ()),
-			       static_cast<double>(p2.y ()),
-			       static_cast<double>(p2.z ())));
+    points.push_back (SbVec3f (p1.x(), p1.y(), p1.z() ));
+    points.push_back (SbVec3f (p2.x(), p2.y(), p2.z() ));
     lineIndices.push_back (i);
     lineIndices.push_back (i + 1);
     lineIndices.push_back (SO_END_LINE_INDEX);
@@ -784,7 +864,6 @@ make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, SoSeparator
 
   sep->addChild (lineSet);
 }
-
 
 
 static void
@@ -1002,12 +1081,12 @@ make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *s
     IgV3d w1 = ci->get<IgV3d>("w1");
     IgV3d w2 = ci->get<IgV3d>("w2");
 
-    points.push_back (SbVec3f (static_cast<double>(u1.x()),static_cast<double>(u1.y()),static_cast<double>(u1.z())));
-    points.push_back (SbVec3f (static_cast<double>(u2.x()),static_cast<double>(u2.y()),static_cast<double>(u2.z())));
-    points.push_back (SbVec3f (static_cast<double>(v1.x()),static_cast<double>(v1.y()),static_cast<double>(v1.z())));
-    points.push_back (SbVec3f (static_cast<double>(v2.x()),static_cast<double>(v2.y()),static_cast<double>(v2.z())));
-    points.push_back (SbVec3f (static_cast<double>(w1.x()),static_cast<double>(w1.y()),static_cast<double>(w1.z())));
-    points.push_back (SbVec3f (static_cast<double>(w2.x()),static_cast<double>(w2.y()),static_cast<double>(w2.z())));
+    points.push_back (SbVec3f ( u1.x(), u1.y(), u1.z() ));
+    points.push_back (SbVec3f ( u2.x(), u2.y(), u2.z() ));
+    points.push_back (SbVec3f ( v1.x(), v1.y(), v1.z() ));
+    points.push_back (SbVec3f ( v2.x(), v2.y(), v2.z() ));
+    points.push_back (SbVec3f ( w1.x(), w1.y(), w1.z() ));
+    points.push_back (SbVec3f ( w2.x(), w2.y(), w2.z() ));
 
     lineIndices.push_back (i);
     lineIndices.push_back (i + 1);
@@ -1040,7 +1119,7 @@ make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *
   IgAssociationSet	*assoc = assocs[0];
   SoMaterial		*mat = new SoMaterial;
   
-  mat->diffuseColor = SbColor(0x8B/255., 0x89/255., 0x89/255.);
+  mat->diffuseColor = SbColor(1.0, 0.2, 0.0);
   sep->addChild(mat);
 
   for (IgCollectionIterator ci = muons->begin(), ce = muons->end(); ci != ce; ++ci)
@@ -1223,31 +1302,31 @@ ISpyApplication::ISpyApplication (void)
 	     0,
 	     make3DTrackingRecHits);
 
-  collection("ECAL Rec. Hit",
+  collection("ECAL Rec. Hits",
 	     "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
 	     make3DEcalRecHits);
 
-  collection("HCAL Barrel Rec. Hits",
+  collection("HB Rec. Hits",
 	     "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
 	     make3DHcalRecHits);
 
-  collection("HCAL Endcap Rec. Hits",
+  collection("HE Rec. Hits",
 	     "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
 	     make3DHcalRecHits);
 
-  collection("HCAL Forward Rec. Hits",
+  collection("HF Rec. Hits",
 	     "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
 	     make3DHcalRecHits);
 
-  collection("HCAL Outer Rec. Hits",
+  collection("HO Rec. Hits",
 	     "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
 	     0,
 	     0,
@@ -1265,7 +1344,7 @@ ISpyApplication::ISpyApplication (void)
 	     0,
 	     make3DJets);
 
-  collection("Missing Transverse Energy",
+  collection("Et Missing",
 	     "METs_V1:pt:px:py:phi",
 	     0,
 	     0,
@@ -1675,10 +1754,8 @@ ISpyApplication::doRun(void)
   QObject::connect (this, SIGNAL(print ()), view, SLOT(print ()));
   QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
   QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(onExit()));
-  QObject::connect(this, SIGNAL(showMessage (const QString &)),
-		   m_mainWindow->statusBar (), SLOT(showMessage (const QString &)));
-  QObject::connect (&filter, SIGNAL(open (const QString &)),
-		    this, SLOT(open (const QString &)));
+  QObject::connect(this, SIGNAL(showMessage (const QString &)), m_mainWindow->statusBar (), SLOT(showMessage (const QString &)));
+  QObject::connect (&filter, SIGNAL(open (const QString &)),this, SLOT(open (const QString &)));
   app.installEventFilter (&filter);
 
   // Show splash screen now.

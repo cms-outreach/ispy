@@ -1,3 +1,17 @@
+Improved event drawing logic to highlight interesting parts. (Lucas)
+
+* General tuning of all drawstyles to be able to see key physics features
+  without the need to turn off all low energy / high multiplicity objects 
+  first.
+* Fix tracker/pixel hits, digis and rec hits colors and shapes
+    * same base colour per detector
+    * higher multiplicity objects (e.g. digis) dimmer
+    * pixels hotter than strips
+* Draws the HCAL energy not as towers but as boxes centred on
+  Calorimeter cell and scaled by energy but not to exceed tower size.
+* Create IgDrawTowerHelpers on stack (to avoid memory leaks).
+* New missing Et drawing with energy label.
+
 Reworked drawing logic by Lassi.
 
 * All the twigs are now gone, drawing logic moved completely to
