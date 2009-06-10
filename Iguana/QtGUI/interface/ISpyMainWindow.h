@@ -8,12 +8,13 @@ class IgLocationDialog;
 class IgSettingsEditor;
 class QSettings;
 class QMdiArea;
+class ISpyApplication;
 
 class ISpyMainWindow : public QMainWindow, public Ui::IgMainWindow
 {
     Q_OBJECT
 public:
-    ISpyMainWindow (QWidget *parent = 0);
+    ISpyMainWindow (ISpyApplication *application, QWidget *parent = 0);
     ~ISpyMainWindow ();
 
     void 		restoreSettings (void);    
@@ -23,7 +24,6 @@ public:
 public slots:
     void 		writeSettings (bool value);
     void 		showSettingsEditor (void);    
-    void 		about (void);
     void 		maximize (void);
     void 		fullScreen (void);
 
@@ -41,7 +41,7 @@ protected:
     
 private:
     IgSettingsEditor   *m_settingsEditor;
-
+    ISpyApplication    *m_application;
     void 		setSettingsObject (QSettings *settings);
 };
 

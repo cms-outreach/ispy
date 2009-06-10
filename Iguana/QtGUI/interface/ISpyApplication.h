@@ -6,6 +6,7 @@
 # include <QObject>
 # include <QStringList> 
 # include <QTimer>
+# include <QUrl>
 # include <vector>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -24,6 +25,12 @@ class QTreeWidgetItem;
 class SoSwitch;
 class SoSeparator;
 class ISpySplashScreen;
+class QNetworkReply;
+class QNetworkAccessManager;
+class IgNetworkReplyHandler;
+class QNetworkReply;
+class QProgressDialog;
+
 namespace lat 
 {
   class ZipArchive;
@@ -45,14 +52,17 @@ public:
   int			argc(void) const;
   char **		argv(void) const;
   const char *		appname(void) const;
+  QNetworkReply *       getUrl(const QUrl &link);
 
 public slots:
   void 			openFileDialog(void);
+  void                  openUrlDialog(void);
   void 			open(const QString &fileName);
   void 			connect(void);
   void 			autoEvents(void);
   void			nextEvent(void);
   void			previousEvent(void);
+  void                  showAbout(void);
 
 signals:
   void 			showMessage(const QString &fileName);
@@ -63,9 +73,10 @@ signals:
   void			print(void);
 
 protected:
-  int			usage(void);
-  int			version(void);
-  void			setupMainWindow(void);
+  int                   usage(void);
+  int                   version(void);
+  void                  setupMainWindow(void);
+  void                  setupSplashScreen (void);
 
 private slots:
   void			cleanSplash(void);
@@ -74,6 +85,11 @@ private slots:
   void			onExit(void);
   void			exit(void);
   void			rewind(void);
+  void                  handleWizardLinks(const QUrl &link);
+  void                  fileDownloaded(IgNetworkReplyHandler *handler);
+  void                  handleAbortedDownload(IgNetworkReplyHandler *handler);
+  void                  setProgress(qint64 current, qint64 final);
+  void                  handleDownloadError(IgNetworkReplyHandler *handler);
 
 private:
   typedef void (*Make3D) (IgCollection **, IgAssociationSet **, SoSeparator *);
@@ -112,8 +128,8 @@ private:
   typedef std::vector<Event>		Events;
 
   int 			doRun(void);
-  void			defaultSettings (void);
-  void			restoreSettings (void);
+  void			defaultSettings(void);
+  void			restoreSettings(void);
 
   void			collection(const char *friendlyName,
 				   const char *collectionSpec,
@@ -127,7 +143,8 @@ private:
 				 lat::ZipArchive *archive,
 				 lat::ZipMember *source);
   void			newEvent(void);
-    
+  void                  downloadFile(const QUrl &url);
+  
   int			m_argc;
   char			**m_argv;
   char			*m_appname;
@@ -148,6 +165,8 @@ private:
   bool			m_autoEvents;
   bool			m_exiting;
   QTimer		*m_timer;
+  QNetworkAccessManager *m_networkManager;
+  QProgressDialog       *m_progressDialog;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

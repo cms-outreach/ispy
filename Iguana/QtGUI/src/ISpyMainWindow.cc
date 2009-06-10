@@ -1,6 +1,7 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
+#include "Iguana/QtGUI/interface/ISpyApplication.h"
 #include "Iguana/QtGUI/interface/IgLocationDialog.h"
 #include "Iguana/QtGUI/interface/IgSettingsEditor.h"
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
@@ -18,9 +19,10 @@
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
-ISpyMainWindow::ISpyMainWindow (QWidget *parent)
+ISpyMainWindow::ISpyMainWindow (ISpyApplication *application, QWidget *parent)
     : QMainWindow (parent),
-      m_settingsEditor	(new IgSettingsEditor (parent))
+      m_settingsEditor	(new IgSettingsEditor (parent)),
+      m_application (application)
 {
     setupUi (this);
     setupActions ();
@@ -36,6 +38,7 @@ ISpyMainWindow::setupActions (void)
     m_settingsEditor->setSettingsObject (settings);
 
     QObject::connect (actionFileOpen, SIGNAL(triggered()), this, SIGNAL(open()));
+    QObject::connect (actionOpenUrl, SIGNAL(triggered()), m_application, SLOT(openUrlDialog()));
     QObject::connect (actionAuto, SIGNAL(triggered()), this, SIGNAL(autoEvents()));
     QObject::connect (actionNext, SIGNAL(triggered()), this, SIGNAL(nextEvent()));
     QObject::connect (actionPrevious, SIGNAL(triggered()), this, SIGNAL(previousEvent()));
@@ -44,6 +47,7 @@ ISpyMainWindow::setupActions (void)
     QObject::connect (actionSave, SIGNAL(triggered()), this, SIGNAL(save ()));
     QObject::connect (actionMaximize, SIGNAL(triggered()), this, SLOT(maximize()));
     QObject::connect (actionFull_screen, SIGNAL(triggered()), this, SLOT(fullScreen()));
+    QObject::connect (actionAbout, SIGNAL(triggered()), m_application, SLOT(showAbout()));
     actionFull_screen->setEnabled (false);
     restoreSettings ();    
 }
@@ -122,13 +126,6 @@ ISpyMainWindow::showSettingsEditor (void)
 	m_settingsEditor->show ();
     m_settingsEditor->activateWindow ();
     m_settingsEditor->raise ();
-}
-
-void 
-ISpyMainWindow::about (void)
-{
-    ISpySplashScreen *splash = new ISpySplashScreen;
-    splash->show ();
 }
 
 void 

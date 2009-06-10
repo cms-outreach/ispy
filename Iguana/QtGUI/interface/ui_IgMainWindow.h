@@ -1,14 +1,14 @@
 /********************************************************************************
 ** Form generated from reading ui file 'IgMainWindowMDI.1.0.ui'
 **
-** Created: Tue May 12 08:37:02 2009
+** Created: Mon Jun 8 19:40:55 2009
 **      by: Qt User Interface Compiler version 4.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
 ********************************************************************************/
 
-#ifndef UI_IGMAINWINDOW_H
-#define UI_IGMAINWINDOW_H
+#ifndef IGMAINWINDOWMDI_H
+#define IGMAINWINDOWMDI_H
 
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -63,6 +63,8 @@ public:
     QAction *actionFile_Toolbar;
     QAction *actionEvent_Toolbar;
     QAction *action3D_Window;
+    QAction *actionOpenWizard;
+    QAction *actionOpenUrl;
     QWidget *centralwidget;
     QGridLayout *gridLayout;
     QMdiArea *mdiArea;
@@ -99,6 +101,7 @@ public:
         QIcon icon1;
         icon1.addPixmap(QPixmap(QString::fromUtf8(":/images/fileopen.png")), QIcon::Normal, QIcon::Off);
         actionFileOpen->setIcon(icon1);
+        actionFileOpen->setIconVisibleInMenu(false);
         actionAbout = new QAction(IgMainWindow);
         actionAbout->setObjectName(QString::fromUtf8("actionAbout"));
         actionAbout->setEnabled(true);
@@ -192,6 +195,10 @@ public:
         actionEvent_Toolbar->setChecked(true);
         action3D_Window = new QAction(IgMainWindow);
         action3D_Window->setObjectName(QString::fromUtf8("action3D_Window"));
+        actionOpenWizard = new QAction(IgMainWindow);
+        actionOpenWizard->setObjectName(QString::fromUtf8("actionOpenWizard"));
+        actionOpenUrl = new QAction(IgMainWindow);
+        actionOpenUrl->setObjectName(QString::fromUtf8("actionOpenUrl"));
         centralwidget = new QWidget(IgMainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout = new QGridLayout(centralwidget);
@@ -228,6 +235,7 @@ public:
         IgMainWindow->addToolBar(Qt::TopToolBarArea, toolBarEvent);
         dockTreeWidget = new QDockWidget(IgMainWindow);
         dockTreeWidget->setObjectName(QString::fromUtf8("dockTreeWidget"));
+        dockTreeWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
         dockTreeWidgetContents = new QWidget();
         dockTreeWidgetContents->setObjectName(QString::fromUtf8("dockTreeWidgetContents"));
         gridLayout_3 = new QGridLayout(dockTreeWidgetContents);
@@ -243,6 +251,7 @@ public:
         IgMainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dockTreeWidget);
         dockTableWidget = new QDockWidget(IgMainWindow);
         dockTableWidget->setObjectName(QString::fromUtf8("dockTableWidget"));
+        dockTableWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
         dockTableWidgetContents = new QWidget();
         dockTableWidgetContents->setObjectName(QString::fromUtf8("dockTableWidgetContents"));
         gridLayout_4 = new QGridLayout(dockTableWidgetContents);
@@ -261,6 +270,8 @@ public:
         menubar->addAction(menuOptions->menuAction());
         menubar->addAction(menuHelp->menuAction());
         menuFile->addAction(actionFileOpen);
+        menuFile->addAction(actionOpenUrl);
+        menuFile->addAction(actionOpenWizard);
         menuFile->addSeparator();
         menuFile->addAction(actionQuit);
         menuHelp->addAction(actionAbout);
@@ -275,7 +286,6 @@ public:
         retranslateUi(IgMainWindow);
         QObject::connect(actionSaveSettings, SIGNAL(triggered(bool)), IgMainWindow, SLOT(writeSettings(bool)));
         QObject::connect(actionEditSettings, SIGNAL(triggered()), IgMainWindow, SLOT(showSettingsEditor()));
-        QObject::connect(actionAbout, SIGNAL(triggered()), IgMainWindow, SLOT(about()));
         QObject::connect(actionObject_Inspector, SIGNAL(triggered(bool)), actionObject_Inspector, SLOT(setChecked(bool)));
         QObject::connect(actionTwig_Explorer, SIGNAL(triggered(bool)), actionTwig_Explorer, SLOT(setChecked(bool)));
         QObject::connect(actionTile, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
@@ -295,6 +305,7 @@ public:
         actionQuit->setText(QApplication::translate("IgMainWindow", "&Quit", 0, QApplication::UnicodeUTF8));
         actionQuit->setShortcut(QApplication::translate("IgMainWindow", "Ctrl+Q", 0, QApplication::UnicodeUTF8));
         actionFileOpen->setText(QApplication::translate("IgMainWindow", "Open...", 0, QApplication::UnicodeUTF8));
+        actionFileOpen->setShortcut(QApplication::translate("IgMainWindow", "Ctrl+O", 0, QApplication::UnicodeUTF8));
         actionAbout->setText(QApplication::translate("IgMainWindow", "About iSpy", 0, QApplication::UnicodeUTF8));
         actionNext->setText(QApplication::translate("IgMainWindow", "&Next", 0, QApplication::UnicodeUTF8));
         actionNext->setShortcut(QApplication::translate("IgMainWindow", "Ctrl+N", "Show next event in the ig file", QApplication::UnicodeUTF8));
@@ -334,6 +345,9 @@ public:
         actionFile_Toolbar->setText(QApplication::translate("IgMainWindow", "File Toolbar", 0, QApplication::UnicodeUTF8));
         actionEvent_Toolbar->setText(QApplication::translate("IgMainWindow", "Event Toolbar", 0, QApplication::UnicodeUTF8));
         action3D_Window->setText(QApplication::translate("IgMainWindow", "3D Window", 0, QApplication::UnicodeUTF8));
+        actionOpenWizard->setText(QApplication::translate("IgMainWindow", "Show Wizard...", 0, QApplication::UnicodeUTF8));
+        actionOpenUrl->setText(QApplication::translate("IgMainWindow", "Open Url...", 0, QApplication::UnicodeUTF8));
+        actionOpenUrl->setShortcut(QApplication::translate("IgMainWindow", "Ctrl+Alt+O", 0, QApplication::UnicodeUTF8));
         menuFile->setTitle(QApplication::translate("IgMainWindow", "&File", 0, QApplication::UnicodeUTF8));
         menuHelp->setTitle(QApplication::translate("IgMainWindow", "&Help", 0, QApplication::UnicodeUTF8));
         menuOptions->setTitle(QApplication::translate("IgMainWindow", "&Tools", 0, QApplication::UnicodeUTF8));
@@ -349,4 +363,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // UI_IGMAINWINDOW_H
+#endif // IGMAINWINDOWMDI_H

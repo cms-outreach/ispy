@@ -7,6 +7,7 @@
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
 #include "Iguana/QtGUI/interface/IgCollectionTableModel.h"
+#include "Iguana/QtGUI/interface/IgNetworkReplyHandler.h"
 #include "Iguana/QtGUI/interface/IgDrawTowerHelper.h"
 
 #include "Iguana/Framework/interface/IgCollection.h"
@@ -61,6 +62,7 @@
 #include <QStringList>
 #include <QTreeWidget>
 #include <QtGui>
+#include <QtNetwork>
 #include <iostream>
 
 
@@ -1166,7 +1168,9 @@ ISpyApplication::ISpyApplication (void)
     m_splash (0),
     m_autoEvents (false),
     m_exiting (false),
-    m_timer (new QTimer (this))
+    m_timer (new QTimer (this)),
+    m_networkManager (new QNetworkAccessManager),
+    m_progressDialog (0)
 {
   m_archives[0] = m_archives[1] = 0;
   m_storages[0] = new IgDataStorage;
@@ -1177,7 +1181,7 @@ ISpyApplication::ISpyApplication (void)
 #else
   QCoreApplication::setApplicationName ("iSpy");
 #endif
-  QCoreApplication::setApplicationVersion ("1.x (beta)");
+  QCoreApplication::setApplicationVersion ("1.1");
   QCoreApplication::setOrganizationDomain ("iguana");
   QCoreApplication::setOrganizationName ("iguana");
 
@@ -1675,7 +1679,7 @@ ISpyApplication::restoreSettings(void)
 void
 ISpyApplication::setupMainWindow(void)
 {
-  m_mainWindow = new ISpyMainWindow;
+  m_mainWindow = new ISpyMainWindow (this);
 
   QObject::connect (m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
   QObject::connect (m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
@@ -1719,6 +1723,12 @@ ISpyApplication::cleanSplash(void)
   delete m_splash;
 }
 
+void
+ISpyApplication::showAbout(void)
+{
+  m_splash->showAbout();
+}
+
 /** Main application run loop.  Initialises the application, shows its
     windows, opens any files requested (on command line or from
     operating system open file events) and executes the run loop.
@@ -1758,30 +1768,34 @@ ISpyApplication::doRun(void)
   QObject::connect (&filter, SIGNAL(open (const QString &)),this, SLOT(open (const QString &)));
   app.installEventFilter (&filter);
 
-  // Show splash screen now.
-  QTimer::singleShot (6000, this, SLOT(cleanSplash()));
-  m_splash = new ISpySplashScreen;
-  m_splash->show ();
+  // Activate but do not show the main window yet. We want to show
+  // it only once we know what to do with the splash screen.
+  mainwin->show ();
+  m_mainWindow->actionSave->setEnabled (true);
+  m_mainWindow->actionPrint->setEnabled (true);
 
   // Process pending events now to allow file open events through
   // (mac), calling "open()" on the files. Exclude user input and
-  // don't wait for events to occur.  Also shows the splash screen.
+  // don't wait for events to occur.
   evloop.processEvents(QEventLoop::ExcludeUserInputEvents);
 
   // Open file names given on the command line (unix, windows).
   for (int i = 1; i < m_argc; ++i)
     open(m_argv[i]);
 
-  // Show main window.
-  mainwin->show ();
-  m_mainWindow->actionSave->setEnabled (true);
-  m_mainWindow->actionPrint->setEnabled (true);
-  m_mainWindow->show ();
-
-  // If we don't have any files open, show file open dialog.  Note
-  // that this already enters a full event loop since it's modal.
+  // If we don't have any files open, show the splash screen as a file
+  // opening wizard. The file open dialog will eventually show the main
+  // window. If we opened files above just make the "About iSpy" splash
+  // screen visible for a few seconds, show the main window and proceed
+  // immediatly to the main app event loop.
+  m_splash = new ISpySplashScreen(this);
+  QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()), 
+                   m_splash, SLOT(showWizard()));
+  
   if (! m_archives[0] && ! m_archives[1])
-    openFileDialog ();
+    m_splash->showWizard();
+  else
+    m_mainWindow->show();
 
   // Now run.
   SoQt::mainLoop();
@@ -2051,6 +2065,11 @@ ISpyApplication::openFileDialog(void)
 
   if (f.exec())
     open(f.selectedFiles().front());
+
+  // If we didn't show the main window yet, show it now
+  if (! m_mainWindow->isVisible())
+    m_mainWindow->show ();
+
 }
 
 /** Open a new file.  Auto-detects file contents to judge what to do
@@ -2139,6 +2158,11 @@ ISpyApplication::open(const QString &fileName)
 
   if (update)
     updateCollections();
+  if (m_splash->isVisible())
+  {
+    m_mainWindow->show();
+    m_splash->hide();
+  }
 }
 
 /** Helper function to load zip archive index contents. */
@@ -2206,6 +2230,193 @@ void
 ISpyApplication::connect(void)
 {
   qDebug() << "Connect not implemented.";
+}
+
+void 
+ISpyApplication::handleWizardLinks (const QUrl &link)
+{
+    QString linkString = link.toString();
+    
+    if (linkString == "OpenUrl")
+    {
+        m_splash->hide ();
+        m_mainWindow->show ();
+        m_mainWindow->raise ();
+        openUrlDialog();
+    }
+    else if (linkString == "OpenWeb")
+    {
+        m_splash->setRightPage(QUrl("http://iguana.web.cern.ch/iguana/ispy/igfiles/"));
+    }
+    else if (linkString == "OpenFile")
+    {
+        m_splash->hide ();
+        m_mainWindow->show ();
+        this->openFileDialog ();
+    }
+    else if (linkString.endsWith (".ig"))
+    {
+        m_splash->hide ();
+        m_mainWindow->show ();
+        this->downloadFile (m_splash->rightPage()
+                                     .toString()
+                                     .replace(QRegExp("/[?].*"), "/") + linkString);
+    }
+    else if (linkString.startsWith ("mailto:"))
+    {
+        QDesktopServices::openUrl (link);
+    }
+    else if (linkString.startsWith("http://"))
+    {
+        QDesktopServices::openUrl (link);
+    }
+    else
+    {
+        QUrl baseUrl = m_splash->rightPage();
+        if (linkString[0] != '?' && !linkString.endsWith("/"))
+        {
+            std::cerr << linkString.replace(QRegExp("/[?].*"), "/").toStdString()<< std::endl;
+            QDesktopServices::openUrl (baseUrl
+                                       .toString()
+                                       .replace(QRegExp("/[?].*"), "/")
+                                       + linkString);
+            return;
+        }
+        if (linkString[0] == '/')
+        {
+            baseUrl.setPath (linkString);
+            linkString = baseUrl.toString().replace(QRegExp("/[?].*"), "/");   
+        }
+        else
+            linkString = baseUrl
+                        .toString()
+                        .replace(QRegExp("/[?].*"), "/") + linkString;
+        m_splash->setRightPage(linkString);
+    }
+}
+
+void
+ISpyApplication::downloadFile (const QUrl &link)
+{
+  if (m_splash)
+  {
+    m_splash->hide ();
+  }
+
+  QNetworkReply *reply = getUrl(link);
+
+  // FIXME: pickup download location from QSettings, hardcode to Desktop for the time being.
+  QString saveDir = QDir::homePath();
+  if (QDir::home().exists("Desktop"))
+  {
+    saveDir = QDir::home().filePath("Desktop");
+  }
+  
+  QString savedFileName = link.toString().replace(QRegExp(".*/"), saveDir + "/");
+  IgNetworkReplyHandler *handler = new IgNetworkReplyHandler (reply,
+                                                              new QFile (savedFileName));
+  QObject::connect (handler, SIGNAL(done(IgNetworkReplyHandler *)), 
+                    this, SLOT(fileDownloaded(IgNetworkReplyHandler *)));
+  
+  if (!m_progressDialog)
+     m_progressDialog = new QProgressDialog;
+  m_progressDialog->setLabelText ("Downloading " + savedFileName + "...");
+  m_progressDialog->show();
+  // FIXME: handle case for files larger than 2GB.
+  QObject::connect (reply, SIGNAL(downloadProgress(qint64,qint64)), 
+                    this, SLOT(setProgress(qint64,qint64)));
+  QObject::connect (m_progressDialog, SIGNAL(canceled()),
+                    handler, SLOT(abort()));
+  QObject::connect (handler, SIGNAL(downloadAborted(IgNetworkReplyHandler *)),
+                    this, SLOT(handleAbortedDownload(IgNetworkReplyHandler *)));
+  QObject::connect (handler, SIGNAL(downloadError(IgNetworkReplyHandler *)),
+                    this, SLOT(handleDownloadError(IgNetworkReplyHandler *)));
+}
+
+void
+ISpyApplication::setProgress (qint64 current, qint64 final)
+{
+  if (current == final)
+  {
+     m_progressDialog->reset();
+     m_progressDialog->hide();
+     return;
+  }  
+    
+  if (final > 0)
+    m_progressDialog->setRange (0, final/1024);
+  m_progressDialog->setValue (current/1024);
+}
+
+/** Helper functon to create QNetworkReplies which have iSpy user agent set*/
+QNetworkReply *
+ISpyApplication::getUrl (const QUrl &url)
+{
+  QNetworkRequest request;
+  request.setUrl(url);
+  request.setRawHeader("User-Agent", "iSpy 1.1");
+  return m_networkManager->get(request);
+}
+
+/** Handles the case a file has been downloaded.*/
+void
+ISpyApplication::fileDownloaded (IgNetworkReplyHandler *handler)
+{
+  m_progressDialog->disconnect();
+  QFile *file = static_cast<QFile *>(handler->device());
+  try
+  {
+    open(file->fileName());
+  }catch (...)
+  {
+    QMessageBox::critical(m_mainWindow, "Error while downloading file.", 
+                          "Unable to open downloaded file: " + file->fileName ());
+    showMessage("");
+    //FIXME: handle various errors and in particula lat::ZError.
+  }
+}
+
+/** Handles when a user clicks on the cancel button in the download dialog*/
+void
+ISpyApplication::handleAbortedDownload(IgNetworkReplyHandler *handler)
+{
+  handler->reply()->disconnect();
+  handler->disconnect();
+  m_progressDialog->reset();
+  m_progressDialog->hide();
+  showMessage("");
+  if (handler->reply()->error())
+  {
+    QFile *file = static_cast<QFile *>(handler->device());
+    QMessageBox::critical(m_mainWindow, "Error while downloading file.", 
+                          "Cannot download file" + file->fileName());
+  }
+  delete handler;
+}
+
+void
+ISpyApplication::handleDownloadError(IgNetworkReplyHandler *handler)
+{
+  m_progressDialog->reset();
+  m_progressDialog->hide();
+  showMessage("");
+  QMessageBox::critical(m_mainWindow, "Error while downloading file.", 
+                        "Cannot download from url:" + handler->reply()->request().url().toString());
+}
+
+/** Handles the open url action */
+void
+ISpyApplication::openUrlDialog (void)
+{
+    QInputDialog dialog;
+    dialog.setLabelText("Specify an ig-file url:");
+    dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/RelValWjet.ig");
+    dialog.resize(430,72);
+    // FIXME: use the latest file downloaded as default.
+    if (!dialog.exec())
+        return;
+
+    this->downloadFile(dialog.textValue());
 }
 
 /** Toggle events auto-play. */

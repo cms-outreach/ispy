@@ -1,3 +1,15 @@
+New web wizard and ability to fetch stuff from the web (Giulio).
+
+* On startup, if no files are provided, a new wizard pops up, allowing you,   
+  among other things, to download files from the web.
+* The new startup wizard also provides a "Latest News" dialog and a slighly
+  reworked "About" dialog. The "Latest News" dialog fetches news from:
+
+    http://iguana.web.cern.ch/iguana/ispy/ispy-news.htm
+
+* An "Open url" dialog (accessible from the "File" menu) is provided to 
+  download ig files by specifying a url. 
+
 Improved event drawing logic to highlight interesting parts. (Lucas)
 
 * General tuning of all drawstyles to be able to see key physics features

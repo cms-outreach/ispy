@@ -54,6 +54,8 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionFileOpen"/>
+    <addaction name="actionOpenUrl"/>
+    <addaction name="actionOpenWizard"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -106,6 +108,9 @@
    <addaction name="actionNext"/>
   </widget>
   <widget class="QDockWidget" name="dockTreeWidget">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
@@ -125,6 +130,9 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="dockTableWidget">
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
    <attribute name="dockWidgetArea">
     <number>8</number>
    </attribute>
@@ -158,6 +166,12 @@
    </property>
    <property name="text">
     <string>Open...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+   <property name="iconVisibleInMenu">
+    <bool>false</bool>
    </property>
   </action>
   <action name="actionAbout">
@@ -401,6 +415,19 @@
     <string>3D Window</string>
    </property>
   </action>
+  <action name="actionOpenWizard">
+   <property name="text">
+    <string>Show Wizard...</string>
+   </property>
+  </action>
+  <action name="actionOpenUrl">
+   <property name="text">
+    <string>Open Url...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Alt+O</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../interface/ispy.qrc"/>
@@ -427,22 +454,6 @@
    <signal>triggered()</signal>
    <receiver>IgMainWindow</receiver>
    <slot>showSettingsEditor()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>512</x>
-     <y>387</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionAbout</sender>
-   <signal>triggered()</signal>
-   <receiver>IgMainWindow</receiver>
-   <slot>about()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>-1</x>
