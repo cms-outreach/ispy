@@ -2100,7 +2100,9 @@ ISpyApplication::open(const QString &fileName)
 
   events.reserve(file->size());
   for (zi = file->begin(), ze = file->end(); zi != ze; ++zi, ++index)
-      if (! strncmp((*zi)->name(), "Geometry/", 9))
+      if ((*zi)->isDirectory() || (*zi)->size(ZipMember::UNCOMPRESSED) == 0)
+	continue;
+      else if (! strncmp((*zi)->name(), "Geometry/", 9))
 	{
 	  if (geometry)
 	    qDebug() << "Oopsla, multiple geometries, keeping last one.";
@@ -2158,7 +2160,8 @@ ISpyApplication::open(const QString &fileName)
 
   if (update)
     updateCollections();
-  if (m_splash->isVisible())
+
+  if (m_splash && m_splash->isVisible())
   {
     m_mainWindow->show();
     m_splash->hide();
