@@ -92,6 +92,7 @@ ISpy3DView::initWidget (void)
     setEventCallback (eventCallback, this);
     initCamera ();
     setSceneGraph (model ()->sceneGraph ());
+    getSceneManager()->getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
     setAutoClippingStrategy (CONSTANT_NEAR_PLANE, 0.9, fixedDistanceClipPlanesCB, this);
     setDecoration (false);
     setupActions ();
