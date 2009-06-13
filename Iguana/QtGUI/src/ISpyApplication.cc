@@ -1513,8 +1513,12 @@ ISpyApplication::onExit(void)
   for (int i = 0; i < 2; ++i)
   {
     delete m_storages[i];
-    delete m_archives[i];
   }
+
+  if (m_archives[0] != m_archives[1])
+    delete m_archives[1];
+  delete m_archives[0];
+
   m_mainWindow->saveSettings ();
   exit ();
 }
@@ -2121,6 +2125,7 @@ ISpyApplication::open(const QString &fileName)
   // the file has events and geometry, take both from it.  If the file
   // has no geometry, take event list from it, whether it had any
   // events or not.
+  ZipArchive *deleted = 0;
   bool update = false;
   if (geometry)
   {
@@ -2130,9 +2135,12 @@ ISpyApplication::open(const QString &fileName)
       m_collections[ci].sep = 0;
 
     if (m_archives[1])
+    {
       m_archives[1]->close();
+      delete m_archives[1];
+      deleted = m_archives[1];
+    }
     delete m_storages[1];
-    delete m_archives[1];
     m_storages[1] = new IgDataStorage;
     m_archives[1] = file;
     readData(m_storages[1], file, geometry);
@@ -2141,10 +2149,12 @@ ISpyApplication::open(const QString &fileName)
 
   if (! events.empty() || ! geometry)
   {
-    if (m_archives[0])
+    if (m_archives[0] && m_archives[0] != deleted)
+    {
       m_archives[0]->close();
+      delete m_archives[0];
+    }
     delete m_storages[0];
-    delete m_archives[0];
     events.swap(m_events);
     m_storages[0] = new IgDataStorage;
     m_archives[0] = file;
