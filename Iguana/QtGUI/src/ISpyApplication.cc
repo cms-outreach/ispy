@@ -2063,8 +2063,7 @@ ISpyApplication::openFileDialog(void)
   f.setFileMode(QFileDialog::ExistingFiles);
 
   QList<QUrl> shortcuts = f.sidebarUrls();
-  shortcuts.append(QSettings().value ("igfiles/home").value<QUrl>());
-  shortcuts.append(QUrl("file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/EventDisplay"));
+  shortcuts.append(QUrl("file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/ispy-files"));
   f.setSidebarUrls(shortcuts);
 
   if (f.exec())
