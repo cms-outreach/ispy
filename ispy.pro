@@ -1,4 +1,5 @@
 TEMPLATE = app
+TARGET = iSpy
 
 ISPY_SDK = /Users/ktf/.nix-profile
 COIN3D_BASE=$$system(scram tool info coin | grep COIN3D_BASE | cut -f2 -d=)
