@@ -1,6 +1,5 @@
 /COPYING.GL2PS/1.1/Tue May 19 16:45:49 2009//
 /COPYING.LGPL/1.1/Tue May 19 16:45:49 2009//
-/ISpy3DView.cc/1.16/Fri Jun  5 15:41:50 2009//
 /ISpyEventFilter.cc/1.2/Tue May 19 16:45:49 2009//
 /Ig3DBaseModel.cc/1.4/Fri Jun  5 15:41:50 2009//
 /IgCollectionTableModel.cc/1.1/Tue May 19 16:45:49 2009//
@@ -17,11 +16,12 @@
 /gl2ps.c/1.1/Tue May 19 16:45:49 2009//
 /gl2ps.pdf/1.1/Tue May 19 16:45:49 2009//
 /qrc_ispy.cc/1.1/Tue May 19 16:45:49 2009//
-/IgDrawTowerHelper.cc/1.4/Mon Jun  8 08:31:37 2009//
-/ISpyApplication.cc/1.47/Wed Jun 10 13:50:14 2009//
 /ISpyMainWindow.cc/1.15/Wed Jun 10 13:50:14 2009//
 /ISpySplashScreen.cc/1.4/Wed Jun 10 13:50:14 2009//
-/ISpySplashScreen.ui/1.5/Wed Jun 10 13:50:14 2009//
-/IgMainWindowMDI.1.0.ui/1.5/Wed Jun 10 13:50:14 2009//
 /IgNetworkReplyHandler.cc/1.1/Wed Jun 10 13:50:14 2009//
+/IgDrawTowerHelper.cc/1.4/Mon Jun  8 08:33:57 2009//
+/IgMainWindowMDI.1.0.ui/1.5/Mon Jun 15 08:05:06 2009//
+/ISpy3DView.cc/1.17/Mon Jun 15 08:00:21 2009//
+/ISpyApplication.cc/1.48/Mon Jun 15 08:00:21 2009//
+/ISpySplashScreen.ui/1.6/Mon Jun 15 08:00:21 2009//
 D
