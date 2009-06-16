@@ -1743,26 +1743,18 @@ ISpyApplication::doRun(void)
 {
   ISpyEventFilter filter;
   QApplication app (m_argc, m_argv);
-  QWidget *mainwin = SoQt::init (m_argc, m_argv, m_argv[0]);
+  SoQt::init (m_argc, m_argv, m_argv[0]);
   QEventLoop evloop;
 
   setupMainWindow ();
-  m_mainWindow->workspace ()->addSubWindow (mainwin);
-  mainwin->setWindowTitle ("iSpy 3D");
 
   restoreSettings ();
   initShapes ();
 
   m_3DModel = new Ig3DBaseModel;
-  ISpy3DView *view = new ISpy3DView (m_3DModel, mainwin);
+  ISpy3DView *view = new ISpy3DView (m_3DModel, m_mainWindow->workspace ());
   view->setFeedbackVisibility (true);
   m_mainWindow->addToolBar (Qt::TopToolBarArea, view->toolBar ());
-
-  QList <QMdiSubWindow *> winList = m_mainWindow->workspace ()->subWindowList ();
-  if (winList.length () > 1)
-    m_mainWindow->workspace ()->tileSubWindows ();
-  else
-    winList.first ()->showMaximized ();
 
   QObject::connect (this, SIGNAL(save ()), view, SLOT(save ()));
   QObject::connect (this, SIGNAL(print ()), view, SLOT(print ()));
@@ -1774,7 +1766,6 @@ ISpyApplication::doRun(void)
 
   // Activate but do not show the main window yet. We want to show
   // it only once we know what to do with the splash screen.
-  mainwin->show ();
   m_mainWindow->actionSave->setEnabled (true);
   m_mainWindow->actionPrint->setEnabled (true);
 
@@ -2108,7 +2099,9 @@ ISpyApplication::open(const QString &fileName)
       else if (! strncmp((*zi)->name(), "Geometry/", 9))
 	{
 	  if (geometry)
+          {
 	    qDebug() << "Oopsla, multiple geometries, keeping last one.";
+          }
 	  geometry = *zi;
 	}
       else if (! strncmp((*zi)->name(), "Events/", 7))  

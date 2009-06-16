@@ -1,3 +1,12 @@
+MDI Widget removed.
+
+The following patch fixes a few warnings, in particular:
+
+* Removes (or uses properly) unused parameters.
+* Fixes a warning about signed / unsigned conversions.
+* Removes useless assert for unsigned int > 0.
+* Fixes ambiguous if - else if statement.
+
 Misc fixes (Lassi & Giulio).
 
 * Uses /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/ispy-files as shortcut in the dialog.

@@ -19,7 +19,7 @@ public:
 
     void 		restoreSettings (void);    
     void 		saveSettings (void);
-    QMdiArea *		workspace (void);    
+    QWidget *		workspace (void);    
     
 public slots:
     void 		writeSettings (bool value);

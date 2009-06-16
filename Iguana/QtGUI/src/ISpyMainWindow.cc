@@ -106,14 +106,14 @@ ISpyMainWindow::saveSettings (void)
     }
 }
 
-QMdiArea *
+QWidget *
 ISpyMainWindow::workspace (void) 
 {
-    return this->mdiArea;
+    return this->centralwidget;
 }
 
 void
-ISpyMainWindow::writeSettings (bool value)
+ISpyMainWindow::writeSettings (bool /*value*/)
 {
     qDebug () << "ISpyMainWindow::writeSettings...\n";
     saveSettings ();
