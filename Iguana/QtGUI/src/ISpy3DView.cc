@@ -827,7 +827,7 @@ ISpy3DView::toggleCameraType (void)
 }
 
 void
-ISpy3DView::setCameraType (QAction *action)
+ISpy3DView::setCameraType (QAction * /*action*/)
 {
     toggleCameraType ();
 }

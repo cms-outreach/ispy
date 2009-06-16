@@ -1,3 +1,20 @@
+MDI Widget removed.
+
+The following patch fixes a few warnings, in particular:
+
+* Removes (or uses properly) unused parameters.
+* Fixes a warning about signed / unsigned conversions.
+* Removes useless assert for unsigned int > 0.
+* Fixes ambiguous if - else if statement.
+
+Misc fixes (Lassi & Giulio).
+
+* Uses /afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/ispy-files as shortcut in the dialog.
+* Uses a working url as default for the Open Url dialog.
+* Removes "," after please.
+* Transparency is now back to "sorted object blend".
+* Resilient handling of archives with both geometry and events.
+
 New web wizard and ability to fetch stuff from the web (Giulio).
 
 * On startup, if no files are provided, a new wizard pops up, allowing you,   

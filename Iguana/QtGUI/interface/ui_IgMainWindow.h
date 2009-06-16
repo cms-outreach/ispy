@@ -1,14 +1,14 @@
 /********************************************************************************
 ** Form generated from reading ui file 'IgMainWindowMDI.1.0.ui'
 **
-** Created: Mon Jun 8 19:40:55 2009
+** Created: Tue Jun 16 16:39:31 2009
 **      by: Qt User Interface Compiler version 4.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
 ********************************************************************************/
 
-#ifndef IGMAINWINDOWMDI_H
-#define IGMAINWINDOWMDI_H
+#ifndef UI_IGMAINWINDOW_H
+#define UI_IGMAINWINDOW_H
 
 #include <QtCore/QVariant>
 #include <QtGui/QAction>
@@ -18,7 +18,6 @@
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QMainWindow>
-#include <QtGui/QMdiArea>
 #include <QtGui/QMenu>
 #include <QtGui/QMenuBar>
 #include <QtGui/QStatusBar>
@@ -67,7 +66,6 @@ public:
     QAction *actionOpenUrl;
     QWidget *centralwidget;
     QGridLayout *gridLayout;
-    QMdiArea *mdiArea;
     QMenuBar *menubar;
     QMenu *menuFile;
     QMenu *menuHelp;
@@ -203,17 +201,10 @@ public:
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout = new QGridLayout(centralwidget);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        mdiArea = new QMdiArea(centralwidget);
-        mdiArea->setObjectName(QString::fromUtf8("mdiArea"));
-        mdiArea->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        mdiArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-
-        gridLayout->addWidget(mdiArea, 0, 0, 1, 1);
-
         IgMainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(IgMainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 1050, 22));
+        menubar->setGeometry(QRect(0, 0, 1050, 26));
         menuFile = new QMenu(menubar);
         menuFile->setObjectName(QString::fromUtf8("menuFile"));
         menuFile->setTearOffEnabled(true);
@@ -288,8 +279,6 @@ public:
         QObject::connect(actionEditSettings, SIGNAL(triggered()), IgMainWindow, SLOT(showSettingsEditor()));
         QObject::connect(actionObject_Inspector, SIGNAL(triggered(bool)), actionObject_Inspector, SLOT(setChecked(bool)));
         QObject::connect(actionTwig_Explorer, SIGNAL(triggered(bool)), actionTwig_Explorer, SLOT(setChecked(bool)));
-        QObject::connect(actionTile, SIGNAL(triggered()), mdiArea, SLOT(tileSubWindows()));
-        QObject::connect(actionCascade, SIGNAL(triggered()), mdiArea, SLOT(cascadeSubWindows()));
         QObject::connect(actionTwig_Explorer, SIGNAL(triggered(bool)), dockTreeWidget, SLOT(setVisible(bool)));
         QObject::connect(actionObject_Inspector, SIGNAL(triggered(bool)), dockTableWidget, SLOT(setVisible(bool)));
         QObject::connect(dockTableWidget, SIGNAL(visibilityChanged(bool)), actionObject_Inspector, SLOT(setChecked(bool)));
@@ -363,4 +352,4 @@ namespace Ui {
 
 QT_END_NAMESPACE
 
-#endif // IGMAINWINDOWMDI_H
+#endif // UI_IGMAINWINDOW_H

@@ -586,7 +586,7 @@ public:
   typedef std::vector<IgProperty> Properties;
   
   template <class T>
-  IgProperty &addProperty(const char *label, T defaultValue)
+  IgProperty &addProperty(const char *label, T /*defaultValue*/)
   {
     Labels::iterator l;
     if (doHasProperty(label, &l))
@@ -1059,7 +1059,6 @@ public:
   
   IgCollection &getCollectionByIndex(unsigned int index)
   {
-    assert(index >= 0);
     assert(index < m_collections.size());
     return *(m_collections[index]);
   }

@@ -101,16 +101,21 @@ IgCollectionTableModel::headerData (int section, Qt::Orientation orientation,
     if (orientation == Qt::Vertical)
 	return QVariant (section);
 
-    if (section >= m_collection->columnLabels ().size ())
-    {
+    if (section < 0)
+        return QVariant();
+
+    if ((unsigned int) section >= m_collection->columnLabels ().size ())
 	return QVariant ();
-    }
+
     return QString (m_collection->columnLabels ()[section].first);
 }
 
 int 
 IgCollectionTableModel::rowCount (const QModelIndex &parent) const
 {
+    if (parent.isValid ())
+        return 0;
+
     if (! m_collection)
         return 0;
     return m_collection->size ();
@@ -119,6 +124,9 @@ IgCollectionTableModel::rowCount (const QModelIndex &parent) const
 int
 IgCollectionTableModel::columnCount (const QModelIndex &parent) const
 {
+    if (parent.isValid ())
+        return 0;
+
     if (! m_collection)
         return 0;
 

@@ -36,14 +36,14 @@ IgDataStorageTableModel::label (void)
 QVariant 
 IgDataStorageTableModel::data (const QModelIndex &index, int role) const
 {
-    if (!index.isValid ())
-	return QVariant ();
-    if (role != Qt::DisplayRole)
-	return QVariant ();
-    if (index.column () == 0)
-	return  QString (m_storage->collectionNames ()[index.row()].c_str ());
-    if (index.column () == 1)
-	return m_storage->getCollectionByIndex (index.row ()).size (); 
+    if (index.isValid () && role == Qt::DisplayRole)
+    {
+        if (index.column () == 0)
+            return  QString (m_storage->collectionNames ()[index.row()].c_str ());
+        else if (index.column () == 1)
+            return m_storage->getCollectionByIndex (index.row ()).size ();
+    }
+   return QVariant ();
 }
 
 QVariant 
@@ -61,12 +61,17 @@ IgDataStorageTableModel::headerData (int section, Qt::Orientation orientation,
     case 1:
 	return QString ("Size");
 	break;
+    default:
+        return QVariant ();
     }
 }
 
 int 
 IgDataStorageTableModel::rowCount (const QModelIndex &parent) const
 {
+    if (parent.isValid())
+        return 0;
+
     ASSERT (m_storage);    
     return m_storage->collectionNames ().size ();
 }
@@ -74,5 +79,8 @@ IgDataStorageTableModel::rowCount (const QModelIndex &parent) const
 int
 IgDataStorageTableModel::columnCount (const QModelIndex &parent) const
 {
+    if (parent.isValid())
+        return 0;
+
     return 2;
 }
