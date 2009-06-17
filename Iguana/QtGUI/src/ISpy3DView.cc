@@ -5,7 +5,7 @@
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
 #include "Iguana/QtGUI/interface/IgSoGL2PSAction.h"
 #include "Iguana/QtGUI/interface/gl2ps.h"
-#include "Iguana/Inventor/interface/IgSoGridPlane.h"
+#include "Iguana/QtGUI/src/IgSoGridPlane.h"
 #include <Inventor/SoOffscreenRenderer.h>
 #include <Inventor/nodes/SoDirectionalLight.h>
 #include <Inventor/nodes/SoPointLight.h>

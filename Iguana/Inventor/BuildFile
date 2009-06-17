@@ -1,9 +1,0 @@
-<Use name=Iguana/Utilities>
-<Use name=OpenInventor>
-
-<export>
- <Use name=Iguana/Utilities>
- <Use name=OpenInventor>
- <lib name=IguanaInventor>
-</export>
-
