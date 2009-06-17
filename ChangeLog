@@ -1,3 +1,5 @@
+Remove gl2ps and associated code.
+
 Cleans up Iguana/Inventor shapes.
 
 * Unused shapes (and tests) removed from Iguana/Inventor.

@@ -8,7 +8,6 @@
 /IgMultiStorageTreeModel.h/1.1/Tue May 19 16:45:49 2009//
 /IgSettingsEditor.h/1.4/Tue May 19 16:45:49 2009//
 /IgSettingsTree.h/1.2/Tue May 19 16:45:49 2009//
-/IgSoGL2PSAction.h/1.1/Tue May 19 16:45:49 2009//
 /IgVariantDelegate.h/1.1/Tue May 19 16:45:49 2009//
 /controlcenter.png/1.1/Tue May 19 16:45:49 2009//
 /controlcenter_old.png/1.1/Tue May 19 16:45:49 2009//
@@ -16,7 +15,6 @@
 /filenew.png/1.1/Tue May 19 16:45:49 2009//
 /fileopen.png/1.1/Tue May 19 16:45:49 2009//
 /filesave.png/1.1/Tue May 19 16:45:49 2009//
-/gl2ps.h/1.1/Tue May 19 16:45:49 2009//
 /grid.png/1.1/Tue May 19 16:45:49 2009//
 /home.xpm/1.1/Tue May 19 16:45:49 2009//
 /iguana-small.xpm/1.1/Tue May 19 16:45:49 2009//
@@ -45,4 +43,6 @@
 /ISpySplashScreen.h/1.4/Mon Jun 15 21:29:03 2009//
 /IgNetworkReplyHandler.h/1.1/Mon Jun 15 21:29:03 2009//
 /ui_ISpySplashScreen.h/1.4/Mon Jun 15 21:29:03 2009//
+/IgSoGL2PSAction.h/-1.1/dummy timestamp//
+/gl2ps.h/-1.1/dummy timestamp//
 D
