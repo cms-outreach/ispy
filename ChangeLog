@@ -1,3 +1,12 @@
+Remove gl2ps and associated code.
+
+Cleans up Iguana/Inventor shapes.
+
+* Unused shapes (and tests) removed from Iguana/Inventor.
+* Used shapes (and tests) moved to Iguana/QtGUI/src (or test).
+* Workaround to get the patch working with old release
+  areas.
+
 MDI Widget removed.
 
 The following patch fixes a few warnings, in particular:

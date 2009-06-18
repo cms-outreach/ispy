@@ -1,5 +1,4 @@
 /IGUANA_SPLASH.xpm/1.2/Tue May 19 16:45:49 2009//
-/ISpy3DView.h/1.7/Fri Jun  5 15:41:50 2009//
 /ISpyEventFilter.h/1.2/Tue May 19 16:45:49 2009//
 /Ig3DBaseModel.h/1.4/Fri Jun  5 15:41:50 2009//
 /IgCollectionTableModel.h/1.1/Wed May 20 15:22:25 2009//
@@ -8,7 +7,6 @@
 /IgMultiStorageTreeModel.h/1.1/Tue May 19 16:45:49 2009//
 /IgSettingsEditor.h/1.4/Tue May 19 16:45:49 2009//
 /IgSettingsTree.h/1.2/Tue May 19 16:45:49 2009//
-/IgSoGL2PSAction.h/1.1/Tue May 19 16:45:49 2009//
 /IgVariantDelegate.h/1.1/Tue May 19 16:45:49 2009//
 /controlcenter.png/1.1/Tue May 19 16:45:49 2009//
 /controlcenter_old.png/1.1/Tue May 19 16:45:49 2009//
@@ -16,7 +14,6 @@
 /filenew.png/1.1/Tue May 19 16:45:49 2009//
 /fileopen.png/1.1/Tue May 19 16:45:49 2009//
 /filesave.png/1.1/Tue May 19 16:45:49 2009//
-/gl2ps.h/1.1/Tue May 19 16:45:49 2009//
 /grid.png/1.1/Tue May 19 16:45:49 2009//
 /home.xpm/1.1/Tue May 19 16:45:49 2009//
 /iguana-small.xpm/1.1/Tue May 19 16:45:49 2009//
@@ -39,10 +36,11 @@
 /zoom_in.png/1.1/Tue May 19 16:45:49 2009//
 /zoom_out.png/1.1/Tue May 19 16:45:49 2009//
 /IgDrawTowerHelper.h/1.4/Mon Jun  8 08:33:57 2009//
-/ISpyMainWindow.h/1.9/Tue Jun 16 19:27:21 2009//
-/ui_IgMainWindow.h/1.17/Tue Jun 16 19:27:21 2009//
 /ISpyApplication.h/1.23/Mon Jun 15 21:29:03 2009//
 /ISpySplashScreen.h/1.4/Mon Jun 15 21:29:03 2009//
 /IgNetworkReplyHandler.h/1.1/Mon Jun 15 21:29:03 2009//
 /ui_ISpySplashScreen.h/1.4/Mon Jun 15 21:29:03 2009//
+/ISpy3DView.h/1.8/Wed Jun 17 21:38:25 2009//
+/ISpyMainWindow.h/1.9/Tue Jun 16 19:38:48 2009//
+/ui_IgMainWindow.h/1.17/Tue Jun 16 19:38:48 2009//
 D

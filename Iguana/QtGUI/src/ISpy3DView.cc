@@ -3,9 +3,7 @@
 
 #include "Iguana/QtGUI/interface/ISpy3DView.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
-#include "Iguana/QtGUI/interface/IgSoGL2PSAction.h"
-#include "Iguana/QtGUI/interface/gl2ps.h"
-#include "Iguana/Inventor/interface/IgSoGridPlane.h"
+#include "Iguana/QtGUI/src/IgSoGridPlane.h"
 #include <Inventor/SoOffscreenRenderer.h>
 #include <Inventor/nodes/SoDirectionalLight.h>
 #include <Inventor/nodes/SoPointLight.h>
@@ -27,10 +25,6 @@ ISpy3DView::ISpy3DView (Ig3DBaseModel *model, QWidget *parent)
     : SoQtExaminerViewer (parent, "iSpy 3D"),
       m_parent (parent),      
       m_model (model),
-      m_gl2psOptions (GL2PS_SIMPLE_LINE_OFFSET 
-		      | GL2PS_BEST_ROOT
-		      | GL2PS_OCCLUSION_CULL),
-      m_gl2psFBBufferSize (1024*1024),
       m_whatsThisPicking (false),
       m_grid (false),
       m_oldView (true),
@@ -351,57 +345,6 @@ ISpy3DView::printBitmap (QString file, float ppi,
 }
 
 void
-ISpy3DView::printVector (QString file, QString format, int level)
-{
-    // Use gl2ps to print vector graphics output.  To be extended to
-    // handle other vector graphics formats (SVG, WMF).
-    static IgSoGL2PSAction  *gl2psAction = 0;
-    if (FILE *output = fopen (file.toStdString ().c_str (), "wb+"))
-    {
-        int type = GL2PS_EPS;
-	if (format == "pdf")
-	    type = GL2PS_PDF;
-	else if (format == "eps")
-	    type = GL2PS_EPS;
-	else
-	    ASSERT (0);	
-
-	if (! gl2psAction )
-	    gl2psAction = new IgSoGL2PSAction (this->getViewportRegion ());
-	
-	gl2psAction->setViewportRegion (this->getViewportRegion ());
-	SoGLRenderAction* prevAction = this->getGLRenderAction ();
-	setGLRenderAction (gl2psAction);
-	
-	int state = GL2PS_OVERFLOW;
-	while (state == GL2PS_OVERFLOW)
-	{ 
-	    int gl2psOptions = GL2PS_SILENT | GL2PS_USE_CURRENT_VIEWPORT
-			       | (level < 3 ? GL2PS_NO_PS3_SHADING : 0)
-			       | getGL2PSOptions ();
-	    gl2psBeginPage ("IGUANA Scene Graph", "IGUANA", NULL,
-			    type, GL2PS_BSP_SORT,
-			    gl2psOptions,
-			    GL_RGBA, 0, NULL,0, 0, 0,
-			    m_gl2psFBBufferSize, output, NULL);
-	    actualRedraw ();
-	    state = gl2psEndPage();
-	    if (state == GL2PS_OVERFLOW)
-		m_gl2psFBBufferSize += 1024*1024;
-	}
-	fclose (output);
-	setGLRenderAction (prevAction);
-    }
-    else
-    {
-	qDebug() << file << ": Failed to open file for writing.\n";
-	QMessageBox::warning (parent (), "System Error",
-			      "Failed to open file \""+file+"\" for writing.",
-			      "Ok");	
-    }
-}
-
-void
 ISpy3DView::save (void)
 { 
     saveNode (getSceneManager ()->getSceneGraph(), "Save Scene As...", parent ()); 
@@ -499,12 +442,7 @@ ISpy3DView::writeNode (SoNode *node, const QString& file, bool binary,
 void
 ISpy3DView::print (void)
 {
-    QString     vector2EPS ("Vector EPS [Level 2] (*.eps)");
-    QString     vector3EPS ("Vector EPS [Level 3] (*.eps)");
-    QString     vectorPDF  ("Portable Document Format (*.pdf)");
-    QStringList filters (vector2EPS);
-    filters.append (vector3EPS);
-    filters.append (vectorPDF);
+    QStringList filters;
     
     SoOffscreenRenderer *renderer =
         new SoOffscreenRenderer (this->getViewportRegion ());
@@ -513,8 +451,6 @@ ISpy3DView::print (void)
 
     if (num == 0)
     {
-        filters.append ("Encapsulated postscript (*.eps)");
-	filters.append ("Encapsulated postscript (*.ps)");
 	filters.append ("The SGI RGB file format (*.rgb)");
 	filters.append ("The SGI RGB file format (*.rgba)");
 	filters.append ("The SGI RGB file format (*.bw)");
@@ -590,14 +526,7 @@ ISpy3DView::print (void)
     QDir::setCurrent (QFileInfo (f).absoluteFilePath ());
     
     QApplication::setOverrideCursor (Qt::WaitCursor);
-    if (sfilter == vector2EPS)
-        printVector (f, format, 2);
-    else if (sfilter == vector3EPS)
-        printVector (f, format, 3);
-    else if (sfilter == vectorPDF)
-        printVector (f, format, 0);
-    else
-        printBitmap (f, ppi, dpi, format);
+    printBitmap (f, ppi, dpi, format);
     QApplication::restoreOverrideCursor ();
 }
 
@@ -781,10 +710,6 @@ ISpy3DView::drawGrid (const bool enable)
     m_grid = enable;
 }
 
-int
-ISpy3DView::getGL2PSOptions (void)
-{ return m_gl2psOptions; }
-
 SoNode*
 ISpy3DView::findGroup (SoNode *node, const char* name)
 {
@@ -916,10 +841,6 @@ ISpy3DView::viewPlaneZ (void)
     camera->position = SbVec3f(0,0,1) * camera->position.getValue().length();
     camera->orientation = SbRotation::identity();
 }
-
-void
-ISpy3DView::setGL2PSOptions (int options)
-{ m_gl2psOptions = options; }
 
 void
 ISpy3DView::setWhatsThisPicking (bool enable /* = true */)

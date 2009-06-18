@@ -15,9 +15,9 @@
 
 // FIXME : these should be migrated from shapes into draw functions
 
-#include "Iguana/Inventor/interface/IgSoJet.h"
-#include "Iguana/Inventor/interface/IgSoSimpleTrajectory.h"
-#include "Iguana/Inventor/interface/IgSoSplineTrack.h"
+#include "Iguana/QtGUI/src/IgSoJet.h"
+#include "Iguana/QtGUI/src/IgSoSimpleTrajectory.h"
+#include "Iguana/QtGUI/src/IgSoSplineTrack.h"
 
 #include "classlib/iobase/File.h"
 #include "classlib/iobase/Filename.h"

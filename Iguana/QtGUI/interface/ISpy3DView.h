@@ -38,7 +38,6 @@ public:
 
     virtual void   printBitmap (QString file, float ppi,
 				float dpi, QString format);
-    virtual void   printVector (QString file, QString format, int level);
 
     static bool    saveNode (SoNode *node, const QString& title,
 			     QWidget *parent = 0, const char* file = 0);
@@ -62,7 +61,6 @@ public slots:
     void         view (void);
     void         pick (void);
     void         setWhatsThisPicking (bool enable = true);
-    void         setGL2PSOptions (int options);
     
     virtual void autoPrint (void);
     virtual void autoPrint (const std::string text);
@@ -87,15 +85,12 @@ private:
     static void    	nearDistanceSensorCB (void *me, SoSensor *sensor);
 
     virtual void   	drawGrid (const bool enable);
-    int 		getGL2PSOptions (void);
     void		setupActions (void);
     SoNode *		findGroup (SoNode *node, const char* name);
     
     QWidget	       *m_parent;
     QToolBar	       *m_toolBar;    
     Ig3DBaseModel      *m_model;
-    int     		m_gl2psOptions;
-    int         	m_gl2psFBBufferSize;
     bool		m_whatsThisPicking;
     bool        	m_grid;
     bool                m_oldView;
