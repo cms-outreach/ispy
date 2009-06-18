@@ -24,26 +24,26 @@
  *  to pass through each point.
  *
  *  A set of markers may also be drawn.
- */ 
+ */
 class IgSoSimpleTrajectory : public IgSoShapeKit
 {
-    SO_KIT_HEADER (IgSoTrajectory);
-    SO_KIT_CATALOG_ENTRY_HEADER (style);
-    SO_KIT_CATALOG_ENTRY_HEADER (line);
-    SO_KIT_CATALOG_ENTRY_HEADER (markers);
+    SO_KIT_HEADER(IgSoTrajectory);
+    SO_KIT_CATALOG_ENTRY_HEADER(style);
+    SO_KIT_CATALOG_ENTRY_HEADER(line);
+    SO_KIT_CATALOG_ENTRY_HEADER(markers);
 
 public:
-    IgSoSimpleTrajectory (void);
-    static void initClass (void);
+    IgSoSimpleTrajectory(void);
+    static void initClass(void);
 
     SoMFVec3f		controlPoints; //< Control points for the curve
     SoMFVec3f		markerPoints;  //< Optional list of points to receive markers
-    SoSFFloat		lineWidth;        
+    SoSFFloat		lineWidth;
     SoSFFloat		pointSize;
     SoSFUShort          linePattern;
 
 protected:
-    virtual void refresh (void);
+    virtual void refresh(void);
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

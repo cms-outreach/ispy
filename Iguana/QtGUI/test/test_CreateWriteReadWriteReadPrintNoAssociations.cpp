@@ -51,20 +51,20 @@ main(int argc, char **argv)
     c[C_Z] = static_cast<double>(i);
     c[C_E] = static_cast<double>(i);
   }
-  
+
   // Writing out in Ig JSON based format.
   std::ostringstream os1;
   os1 << storage << std::endl;
-  
+
   // Parse the data in a new storage.
   IgDataStorage storage2;
   IgParser parser(&storage2);
   parser.parse(os1.str().c_str());
-  
+
   // Stream it back.
   std::ostringstream os2;
   os2 << storage2 << std::endl;
-  
+
   // Read again.
   IgDataStorage storage3;
   IgParser parser2(&storage3);
@@ -76,5 +76,5 @@ main(int argc, char **argv)
 
   // Check it is always the same.
   assert (os2.str() == os1.str());
-  assert (os3.str() == os1.str());  
+  assert (os3.str() == os1.str());
 }

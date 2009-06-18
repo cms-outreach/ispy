@@ -14,12 +14,12 @@
 
 class ISpyEventFilter : public QObject
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    bool eventFilter (QObject *obj, QEvent *event);
+  bool eventFilter(QObject *obj, QEvent *event);
 
 signals:
-    void 		open (const QString &fileName);
+  void          open(const QString &fileName);
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

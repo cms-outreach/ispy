@@ -16,17 +16,17 @@
 #include <iostream>
 #include <cassert>
 
-#define MESSAGE_SIZE_LIMIT	(2*1024*1024)
-#define SOCKET_BUF_SIZE		(8*1024*1024)
-#define SOCKET_READ_SIZE	(SOCKET_BUF_SIZE/8)
-#define SOCKET_READ_GROWTH	(SOCKET_BUF_SIZE)
+#define MESSAGE_SIZE_LIMIT (2*1024*1024)
+#define SOCKET_BUF_SIZE (8*1024*1024)
+#define SOCKET_READ_SIZE (SOCKET_BUF_SIZE/8)
+#define SOCKET_READ_GROWTH (SOCKET_BUF_SIZE)
 
 using namespace lat;
 
 //////////////////////////////////////////////////////////////////////
 // Generate log prefix.
 std::ostream &
-IgNet::logme (void)
+IgNet::logme(void)
 {
   return std::cerr
     << Time::current().format(true, "%Y-%m-%d %H:%M:%S")
@@ -38,13 +38,13 @@ void
 IgNet::copydata(Bucket *b, const void *data, size_t len)
 {
   b->data.insert(b->data.end(),
-		 (const unsigned char *)data,
-		 (const unsigned char *)data + len);
+                 (const unsigned char *)data,
+                 (const unsigned char *)data + len);
 }
 
 // Discard a bucket chain.
 void
-IgNet::discard (Bucket *&b)
+IgNet::discard(Bucket *&b)
 {
   while (b)
   {
@@ -60,12 +60,12 @@ IgNet::discard (Bucket *&b)
     purges any pending wait requests linked to the socket.  */
 bool
 IgNet::losePeer(const char *reason,
-		 Peer *peer,
-		 IOSelectEvent *ev,
-		 Error *err)
+                Peer *peer,
+                IOSelectEvent *ev,
+                Error *err)
 {
   if (reason)
-    logme ()
+    logme()
       << reason << peer->peeraddr
       << (err ? "; error was: " + err->explain() : std::string(""))
       << std::endl;
@@ -170,7 +170,7 @@ void
 IgNet::releaseFromWait(Bucket *msg, WaitObject &w, Object *o)
 {
   if (o)
-    sendObjectToPeer (msg, *o, true);
+    sendObjectToPeer(msg, *o, true);
   else
   {
     uint32_t words[3];
@@ -193,10 +193,10 @@ IgNet::sendObjectToPeer(Bucket *msg, Object &o, bool data)
   uint32_t flags = o.flags & ~VIS_FLAG_ZOMBIE;
   DataBlob objdata;
 
-  if (data || (flags & VIS_FLAG_SCALAR))
+  if (data ||(flags & VIS_FLAG_SCALAR))
     objdata.insert(objdata.end(),
-		   &o.rawdata[0],
-		   &o.rawdata[0] + o.rawdata.size());
+                   &o.rawdata[0],
+                   &o.rawdata[0] + o.rawdata.size());
 
   uint32_t words[7];
   uint32_t namelen = o.name.size();
@@ -225,23 +225,23 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
 {
   // Decode and process this message.
   uint32_t type;
-  memcpy (&type, data + sizeof(uint32_t), sizeof (type));
+  memcpy(&type, data + sizeof(uint32_t), sizeof(type));
   switch (type)
   {
   case VIS_MSG_UPDATE_ME:
     {
       if (len != 2*sizeof(uint32_t))
       {
-	logme()
-	  << "ERROR: corrupt 'UPDATE_ME' message of length " << len
-	  << " from peer " << p->peeraddr << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'UPDATE_ME' message of length " << len
+          << " from peer " << p->peeraddr << std::endl;
+        return false;
       }
 
       if (debug_)
-	logme()
-	  << "DEBUG: received message 'UPDATE ME' from peer "
-	  << p->peeraddr << std::endl;
+        logme()
+          << "DEBUG: received message 'UPDATE ME' from peer "
+          << p->peeraddr << std::endl;
 
       p->update = true;
     }
@@ -250,9 +250,9 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
   case VIS_MSG_LIST_OBJECTS:
     {
       if (debug_)
-	logme()
-	  << "DEBUG: received message 'LIST OBJECTS' from peer "
-	  << p->peeraddr << std::endl;
+        logme()
+          << "DEBUG: received message 'LIST OBJECTS' from peer "
+          << p->peeraddr << std::endl;
 
       // Send over current status: list of known objects.
       lock();
@@ -264,28 +264,28 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
   case VIS_MSG_GET_OBJECT:
     {
       if (debug_)
-	logme()
-	  << "DEBUG: received message 'GET OBJECT' from peer "
-	  << p->peeraddr << std::endl;
+        logme()
+          << "DEBUG: received message 'GET OBJECT' from peer "
+          << p->peeraddr << std::endl;
 
       if (len < 3*sizeof(uint32_t))
       {
-	logme()
-	  << "ERROR: corrupt 'GET IMAGE' message of length " << len
-	  << " from peer " << p->peeraddr << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'GET IMAGE' message of length " << len
+          << " from peer " << p->peeraddr << std::endl;
+        return false;
       }
 
       uint32_t namelen;
       memcpy(&namelen, data + 2*sizeof(uint32_t), sizeof(namelen));
       if (len != 3*sizeof(uint32_t) + namelen)
       {
-	logme()
-	  << "ERROR: corrupt 'GET OBJECT' message of length " << len
-	  << " from peer " << p->peeraddr
-	  << ", expected length " << (3*sizeof(uint32_t))
-	  << " + " << namelen << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'GET OBJECT' message of length " << len
+          << " from peer " << p->peeraddr
+          << ", expected length " << (3*sizeof(uint32_t))
+          << " + " << namelen << std::endl;
+        return false;
       }
 
       lock();
@@ -294,22 +294,22 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       Object *o = findObject(0, name, &owner);
       if (o)
       {
-	o->lastreq = Time::current();
-	if (o->rawdata.empty())
-	  waitForData(p, name, "", owner);
-	else
-	  sendObjectToPeer(msg, *o, true);
+        o->lastreq = Time::current();
+        if (o->rawdata.empty())
+          waitForData(p, name, "", owner);
+        else
+          sendObjectToPeer(msg, *o, true);
       }
       else
       {
-	uint32_t words[3];
-	words[0] = sizeof(words) + name.size();
-	words[1] = VIS_REPLY_NONE;
-	words[2] = name.size();
+        uint32_t words[3];
+        words[0] = sizeof(words) + name.size();
+        words[1] = VIS_REPLY_NONE;
+        words[2] = name.size();
 
-	msg->data.reserve(msg->data.size() + words[0]);
-	copydata(msg, &words[0], sizeof(words));
-	copydata(msg, &name[0], name.size());
+        msg->data.reserve(msg->data.size() + words[0]);
+        copydata(msg, &words[0], sizeof(words));
+        copydata(msg, &name[0], name.size());
       }
       unlock();
     }
@@ -319,16 +319,16 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
     {
       if (len != 4*sizeof(uint32_t))
       {
-	logme()
-	  << "ERROR: corrupt 'LIST BEGIN' message of length " << len
-	  << " from peer " << p->peeraddr << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'LIST BEGIN' message of length " << len
+          << " from peer " << p->peeraddr << std::endl;
+        return false;
       }
 
       if (debug_)
-	logme()
-	  << "DEBUG: received message 'LIST BEGIN' from "
-	  << p->peeraddr << std::endl;
+        logme()
+          << "DEBUG: received message 'LIST BEGIN' from "
+          << p->peeraddr << std::endl;
 
       // Get the update status: whether this is a full update.
       uint32_t flags;
@@ -341,9 +341,9 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       // there continues to be interest in it.
       if (flags)
       {
-	lock();
-	markObjectsZombies(p);
-	unlock();
+        lock();
+        markObjectsZombies(p);
+        unlock();
       }
     }
     return true;
@@ -352,10 +352,10 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
     {
       if (len != 4*sizeof(uint32_t))
       {
-	logme()
-	  << "ERROR: corrupt 'LIST END' message of length " << len
-	  << " from peer " << p->peeraddr << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'LIST END' message of length " << len
+          << " from peer " << p->peeraddr << std::endl;
+        return false;
       }
 
       // Get the update status: whether this is a full update.
@@ -368,15 +368,15 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       // between; this avoids us lying live objects are dead.
       if (flags)
       {
-	lock();
-	markObjectsDead(p);
-	unlock();
+        lock();
+        markObjectsDead(p);
+        unlock();
       }
 
       if (debug_)
-	logme()
-	  << "DEBUG: received message 'LIST END' from "
-	  << p->peeraddr << std::endl;
+        logme()
+          << "DEBUG: received message 'LIST END' from "
+          << p->peeraddr << std::endl;
 
       // Indicate we have received another update from this peer.
       // Also indicate we should flush to our clients.
@@ -390,10 +390,10 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       uint32_t words[7];
       if (len < sizeof(words))
       {
-	logme()
-	  << "ERROR: corrupt 'OBJECT' message of length " << len
-	  << " from peer " << p->peeraddr << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'OBJECT' message of length " << len
+          << " from peer " << p->peeraddr << std::endl;
+        return false;
       }
 
       memcpy(&words[0], data, sizeof(words));
@@ -402,14 +402,14 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
 
       if (len != sizeof(words) + namelen + datalen)
       {
-	logme()
-	  << "ERROR: corrupt 'OBJECT' message of length " << len
-	  << " from peer " << p->peeraddr
-	  << ", expected length " << sizeof(words)
-	  << " + " << namelen
-	  << " + " << datalen
-	  << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'OBJECT' message of length " << len
+          << " from peer " << p->peeraddr
+          << ", expected length " << sizeof(words)
+          << " + " << namelen
+          << " + " << datalen
+          << std::endl;
+        return false;
       }
 
       unsigned char *namedata = data + sizeof(words);
@@ -419,9 +419,9 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       assert(enddata == data + len);
 
       if (debug_)
-	logme()
-	  << "DEBUG: received message 'OBJECT " << name
-	  << "' from " << p->peeraddr << std::endl;
+        logme()
+          << "DEBUG: received message 'OBJECT " << name
+          << "' from " << p->peeraddr << std::endl;
 
       // Mark the peer as a known object source.
       p->source = true;
@@ -430,7 +430,7 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       lock();
       Object *o = findObject(p, name);
       if (! o)
-	o = makeObject(p, name);
+        o = makeObject(p, name);
 
       bool hadobject = ! o->rawdata.empty();
       o->flags = words[2] | VIS_FLAG_RECEIVED;
@@ -441,11 +441,11 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       // If we had an object for this one already and this is a list
       // update without data, issue an immediate data get request.
       if (hadobject && ! datalen)
-	requestObject(p, (namelen ? &name[0] : 0), namelen);
+        requestObject(p,(namelen ? &name[0] : 0), namelen);
 
       // If we have the object data, release from wait.
       if (datalen)
-	releaseWaiters(o);
+        releaseWaiters(o);
       unlock();
     }
     return true;
@@ -455,10 +455,10 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       uint32_t words[3];
       if (len < sizeof(words))
       {
-	logme()
-	  << "ERROR: corrupt 'NONE' message of length " << len
-	  << " from peer " << p->peeraddr << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'NONE' message of length " << len
+          << " from peer " << p->peeraddr << std::endl;
+        return false;
       }
 
       memcpy(&words[0], data, sizeof(words));
@@ -466,12 +466,12 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
 
       if (len != sizeof(words) + namelen)
       {
-	logme()
-	  << "ERROR: corrupt 'NONE' message of length " << len
-	  << " from peer " << p->peeraddr
-	  << ", expected length " << sizeof(words)
-	  << " + " << namelen << std::endl;
-	return false;
+        logme()
+          << "ERROR: corrupt 'NONE' message of length " << len
+          << " from peer " << p->peeraddr
+          << ", expected length " << sizeof(words)
+          << " + " << namelen << std::endl;
+        return false;
       }
 
       unsigned char *namedata = data + sizeof(words);
@@ -480,9 +480,9 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       assert(enddata == data + len);
 
       if (debug_)
-	logme()
-	  << "DEBUG: received message 'NONE " << name
-	  << "' from " << p->peeraddr << std::endl;
+        logme()
+          << "DEBUG: received message 'NONE " << name
+          << "' from " << p->peeraddr << std::endl;
 
       // Mark the peer as a known object source.
       p->source = true;
@@ -491,7 +491,7 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
       lock();
       Object *o = findObject(p, name);
       if (o)
-	o->flags |= VIS_FLAG_DEAD;
+        o->flags |= VIS_FLAG_DEAD;
 
       // If someone was waiting for this, let them go.
       releaseWaiters(o);
@@ -513,7 +513,7 @@ IgNet::onMessage(Bucket *msg, Peer *p, unsigned char *data, size_t len)
 bool
 IgNet::onPeerData(IOSelectEvent *ev, Peer *p)
 {
-  assert(getPeer(dynamic_cast<Socket *> (ev->source)) == p);
+  assert(getPeer(dynamic_cast<Socket *>(ev->source)) == p);
 
   // If there is a problem with the peer socket, discard the peer
   // and tell the selector to stop prcessing events for it.  If
@@ -524,8 +524,8 @@ IgNet::onPeerData(IOSelectEvent *ev, Peer *p)
     if (p->automatic)
     {
       logme()
-	<< "WARNING: connection to the server at " << p->peeraddr
-	<< " lost (will attempt to reconnect in 15 seconds)\n";
+        << "WARNING: connection to the server at " << p->peeraddr
+        << " lost(will attempt to reconnect in 15 seconds)\n";
       return losePeer(0, p, ev);
     }
     else
@@ -539,36 +539,36 @@ IgNet::onPeerData(IOSelectEvent *ev, Peer *p)
     {
       IOSize len = b->data.size() - p->sendpos;
       const void *data = (len ? (const void *)&b->data[p->sendpos]
-			  : (const void *)&data);
+                         : (const void *)&data);
       IOSize done;
 
       try
       {
-	done = (len ? ev->source->write (data, len) : 0);
-	if (debug_ && len)
-	  logme()
-	    << "DEBUG: sent " << done << " bytes to peer "
-	    << p->peeraddr << std::endl;
+        done = (len ? ev->source->write(data, len) : 0);
+        if (debug_ && len)
+          logme()
+            << "DEBUG: sent " << done << " bytes to peer "
+            << p->peeraddr << std::endl;
       }
-      catch (Error &e)
+      catch(Error &e)
       {
-	return losePeer("WARNING: unable to write to peer ",
-			p, ev, &e);
+        return losePeer("WARNING: unable to write to peer ",
+                        p, ev, &e);
       }
 
       p->sendpos += done;
       if (p->sendpos == b->data.size())
       {
-	Bucket *old = p->sendq;
-	p->sendq = old->next;
-	p->sendpos = 0;
-	old->next = 0;
-	discard(old);
+        Bucket *old = p->sendq;
+        p->sendq = old->next;
+        p->sendpos = 0;
+        old->next = 0;
+        discard(old);
       }
 
       if (! done && len)
-	// Cannot write any more.
-	break;
+        // Cannot write any more.
+        break;
     }
   }
 
@@ -584,79 +584,79 @@ IgNet::onPeerData(IOSelectEvent *ev, Peer *p)
     {
       std::vector<unsigned char> buf(SOCKET_READ_SIZE);
       do
-	if ((sz = ev->source->read(&buf[0], buf.size())))
-	{
-	  if (debug_)
-	    logme()
-	      << "DEBUG: received " << sz << " bytes from peer "
-	      << p->peeraddr << std::endl;
-	  DataBlob &data = p->incoming;
-	  if (data.capacity () < data.size () + sz)
-	    data.reserve (data.size() + SOCKET_READ_GROWTH);
-	  data.insert (data.end(), &buf[0], &buf[0] + sz);
-	}
-      while (sz == sizeof (buf));
+        if ((sz = ev->source->read(&buf[0], buf.size())))
+        {
+          if (debug_)
+            logme()
+              << "DEBUG: received " << sz << " bytes from peer "
+              << p->peeraddr << std::endl;
+          DataBlob &data = p->incoming;
+          if (data.capacity() < data.size() + sz)
+            data.reserve(data.size() + SOCKET_READ_GROWTH);
+          data.insert(data.end(), &buf[0], &buf[0] + sz);
+        }
+      while (sz == sizeof(buf));
     }
-    catch (Error &e)
+    catch(Error &e)
     {
       SystemError *next = dynamic_cast<SystemError *>(e.next());
       if (next && next->portable() == SysErr::ErrTryAgain)
-	sz = 1; // Ignore it, and fake no end of data.
+        sz = 1; // Ignore it, and fake no end of data.
       else
-	// Houston we have a problem.
-	return losePeer("WARNING: failed to read from peer ",
-			p, ev, &e);
+        // Houston we have a problem.
+        return losePeer("WARNING: failed to read from peer ",
+                        p, ev, &e);
     }
 
     // Process fully received messages as long as we can.
     size_t consumed = 0;
     DataBlob &data = p->incoming;
     while (data.size()-consumed >= sizeof(uint32_t)
-	   && p->waiting < MAX_PEER_WAITREQS)
+           && p->waiting < MAX_PEER_WAITREQS)
     {
       uint32_t msglen;
-      memcpy (&msglen, &data[0]+consumed, sizeof(msglen));
+      memcpy(&msglen, &data[0]+consumed, sizeof(msglen));
 
       if (msglen >= MESSAGE_SIZE_LIMIT)
-	return losePeer("WARNING: excessively large message from ", p, ev);
+        return losePeer("WARNING: excessively large message from ", p, ev);
 
       if (data.size()-consumed >= msglen)
       {
-	bool valid = true;
-	if (msglen < 2*sizeof(uint32_t))
-	{
-	  logme()
-	    << "ERROR: corrupt peer message of length " << msglen
-	    << " from peer " << p->peeraddr << std::endl;
-	  valid = false;
-	}
-	else
-	{
-	  // Decode and process this message.
-	  Bucket msg;
-	  msg.next = 0;
-	  valid = onMessage(&msg, p, &data[0]+consumed, msglen);
+        bool valid = true;
+        if (msglen < 2*sizeof(uint32_t))
+        {
+          logme()
+            << "ERROR: corrupt peer message of length " << msglen
+            << " from peer " << p->peeraddr << std::endl;
+          valid = false;
+        }
+        else
+        {
+          // Decode and process this message.
+          Bucket msg;
+          msg.next = 0;
+          valid = onMessage(&msg, p, &data[0]+consumed, msglen);
 
-	  // If we created a response, chain it to the write queue.
-	  if (! msg.data.empty())
-	  {
-	    Bucket **prev = &p->sendq;
+          // If we created a response, chain it to the write queue.
+          if (! msg.data.empty())
+          {
+            Bucket **prev = &p->sendq;
             while (*prev)
-               prev = &(*prev)->next;
+              prev = &(*prev)->next;
 
             *prev = new Bucket;
             (*prev)->next = 0;
             (*prev)->data.swap(msg.data);
-	  }
-	}
+          }
+        }
 
-	if (! valid)
-	  return losePeer("WARNING: data stream error with ", p, ev);
+        if (! valid)
+          return losePeer("WARNING: data stream error with ", p, ev);
 
-	consumed += msglen;
+        consumed += msglen;
       }
       else
-	break;
+        break;
     }
 
     data.erase(data.begin(), data.begin()+consumed);
@@ -692,8 +692,8 @@ IgNet::onPeerConnect(IOSelectEvent *ev)
   InetAddress peeraddr = ((InetSocket *) s)->peername();
   InetAddress myaddr = ((InetSocket *) s)->sockname();
   p->peeraddr = StringFormat("%1:%2")
-		.arg(peeraddr.hostname())
-		.arg(peeraddr.port());
+                .arg(peeraddr.hostname())
+                .arg(peeraddr.port());
   p->mask = IORead|IOUrgent;
   p->socket = s;
 
@@ -727,15 +727,15 @@ IgNet::onLocalNotify(IOSelectEvent *ev)
     while ((sz = ev->source->read(buf, sizeof(buf))))
       ;
   }
-  catch (Error &e)
+  catch(Error &e)
   {
     SystemError *next = dynamic_cast<SystemError *>(e.next());
     if (next && next->portable() == SysErr::ErrTryAgain)
       ; // Ignore it
     else
       logme()
-	<< "WARNING: error reading from notification pipe: "
-	<< e.explain() << std::endl;
+        << "WARNING: error reading from notification pipe: "
+        << e.explain() << std::endl;
   }
 
   // Tell the main event pump to send an update in a little while.
@@ -755,10 +755,10 @@ IgNet::updateMask(Peer *p)
 
   // Listen to writes iff we have data to send.
   unsigned oldmask = p->mask;
-  if (! p->sendq && (p->mask & IOWrite))
+  if (! p->sendq &&(p->mask & IOWrite))
     sel_.setMask(p->socket, p->mask &= ~IOWrite);
 
-  if (p->sendq && ! (p->mask & IOWrite))
+  if (p->sendq && !(p->mask & IOWrite))
     sel_.setMask(p->socket, p->mask |= IOWrite);
 
   if (debug_ && oldmask != p->mask)
@@ -778,16 +778,16 @@ IgNet::updateMask(Peer *p)
 }
 
 //////////////////////////////////////////////////////////////////////
-IgNet::IgNet (const std::string &appname /* = "" */)
-  : debug_ (false),
-    appname_ (appname.empty() ? "IgNet" : appname.c_str()),
-    pid_ (getpid()),
-    server_ (0),
-    version_ (Time::current()),
-    communicate_ ((pthread_t) -1),
-    shutdown_ (0),
-    delay_ (1000),
-    flush_ (false)
+IgNet::IgNet(const std::string &appname /* = "" */)
+  : debug_(false),
+    appname_(appname.empty() ? "IgNet" : appname.c_str()),
+    pid_(getpid()),
+    server_(0),
+    version_(Time::current()),
+    communicate_((pthread_t) -1),
+    shutdown_(0),
+    delay_(1000),
+    flush_(false)
 {
   // Create a pipe for the local apps to tell the communicator
   // thread that local app data has changed and that the peers
@@ -840,13 +840,13 @@ IgNet::startLocalServer(int port)
 
   try
   {
-    server_ = new InetServerSocket(InetAddress (port), 10);
+    server_ = new InetServerSocket(InetAddress(port), 10);
     server_->setopt(lat::SocketConst::OptSockSendBuffer, SOCKET_BUF_SIZE);
     server_->setopt(lat::SocketConst::OptSockReceiveBuffer, SOCKET_BUF_SIZE);
     server_->setBlocking(false);
     sel_.attach(server_, IOAccept, CreateHook(this, &IgNet::onPeerConnect));
   }
-  catch (Error &e)
+  catch(Error &e)
   {
     // FIXME: Do we need to do this when we throw an exception anyway?
     // FIXME: Abort instead?
@@ -855,13 +855,13 @@ IgNet::startLocalServer(int port)
       << e.explain() << std::endl;
 
     throw IgNetError("Failed to start server at port ", e.clone());
-    
+
     // FIXME: Throw something simpler that removes the dependency?
-//     throw cms::Exception("IgNet::startLocalServer")
-//       << "Failed to start server at port " << port << ": "
-//       << e.explain();
+    //     throw cms::Exception("IgNet::startLocalServer")
+    //       << "Failed to start server at port " << port << ": "
+    //       << e.explain();
   }
-  
+
   logme() << "INFO: Shared memory server started at port " << port << std::endl;
 }
 
@@ -908,7 +908,7 @@ void
 IgNet::shutdown(void)
 {
   shutdown_ = 1;
-  if (communicate_ != (pthread_t) -1)
+  if (communicate_ !=(pthread_t) -1)
     pthread_join(communicate_, 0);
 }
 
@@ -930,7 +930,7 @@ static void *communicate(void *obj)
 void
 IgNet::lock(void)
 {
-  if (communicate_ != (pthread_t) -1)
+  if (communicate_ !=(pthread_t) -1)
     pthread_mutex_lock(&lock_);
 }
 
@@ -938,7 +938,7 @@ IgNet::lock(void)
 void
 IgNet::unlock(void)
 {
-  if (communicate_ != (pthread_t) -1)
+  if (communicate_ !=(pthread_t) -1)
     pthread_mutex_unlock(&lock_);
 }
 
@@ -948,7 +948,7 @@ IgNet::unlock(void)
 void
 IgNet::start(void)
 {
-  if (communicate_ != (pthread_t) -1)
+  if (communicate_ !=(pthread_t) -1)
   {
     logme()
       << "ERROR: Shared memory networking thread has already been started\n";
@@ -977,80 +977,80 @@ IgNet::run(void)
       // initiate asynchronous connection creation.  Swallow errors
       // in case the server won't talk to us.
       if (! ap->host.empty()
-	  && ! ap->peer
-	  && (now = Time::current()) > ap->next)
+          && ! ap->peer
+          &&(now = Time::current()) > ap->next)
       {
-	ap->next = now + TimeSpan(0, 0, 0, 15 /* seconds */, 0);
-	InetSocket *s = 0;
-	try
-	{
-	  s = new InetSocket (SocketConst::TypeStream);
-	  s->setBlocking (false);
-	  s->connect(InetAddress (ap->host.c_str(), ap->port));
-	  s->setopt(lat::SocketConst::OptSockSendBuffer, SOCKET_BUF_SIZE);
-	  s->setopt(lat::SocketConst::OptSockReceiveBuffer, SOCKET_BUF_SIZE);
-	}
-	catch (Error &e)
-	{
-	  SystemError *sys = dynamic_cast<SystemError *>(e.next());
-	  if (! sys || sys->portable() != SysErr::ErrOperationInProgress)
-	  {
-	    // "In progress" just means the connection is in progress.
-	    // The connection is ready when the socket is writeable.
-	    // Anything else is a real problem.
-	    if (! ap->warned)
-	    {
-	      logme()
-	        << "NOTE: server at " << ap->host << ":" << ap->port
-		<< " is unavailable.  Connection will be established"
-	        << " automatically on the background once the server"
-		<< " becomes available.  Error from the attempt was: "
-		<< e.explain() << '\n';
-	      ap->warned = true;
-	    }
+        ap->next = now + TimeSpan(0, 0, 0, 15 /* seconds */, 0);
+        InetSocket *s = 0;
+        try
+        {
+          s = new InetSocket(SocketConst::TypeStream);
+          s->setBlocking(false);
+          s->connect(InetAddress(ap->host.c_str(), ap->port));
+          s->setopt(lat::SocketConst::OptSockSendBuffer, SOCKET_BUF_SIZE);
+          s->setopt(lat::SocketConst::OptSockReceiveBuffer, SOCKET_BUF_SIZE);
+        }
+        catch(Error &e)
+        {
+          SystemError *sys = dynamic_cast<SystemError *>(e.next());
+          if (! sys || sys->portable() != SysErr::ErrOperationInProgress)
+          {
+            // "In progress" just means the connection is in progress.
+            // The connection is ready when the socket is writeable.
+            // Anything else is a real problem.
+            if (! ap->warned)
+            {
+              logme()
+                << "NOTE: server at " << ap->host << ":" << ap->port
+                << " is unavailable.  Connection will be established"
+                << " automatically on the background once the server"
+                << " becomes available.  Error from the attempt was: "
+                << e.explain() << '\n';
+              ap->warned = true;
+            }
 
-	    if (s)
-	      s->abort();
-	    delete s;
-	    s = 0;
-	  }
-	}
+            if (s)
+              s->abort();
+            delete s;
+            s = 0;
+          }
+        }
 
-	// Set up with the selector if we were successful.  If this is
-	// the upstream collector, queue a request for updates.
-	if (s)
-	{
-	  lock();
-	  Peer *p = createPeer(s);
-	  ap->peer = p;
-	  ap->warned = false;
-	  unlock();
+        // Set up with the selector if we were successful.  If this is
+        // the upstream collector, queue a request for updates.
+        if (s)
+        {
+          lock();
+          Peer *p = createPeer(s);
+          ap->peer = p;
+          ap->warned = false;
+          unlock();
 
-	  InetAddress peeraddr = ((InetSocket *) s)->peername();
-	  InetAddress myaddr = ((InetSocket *) s)->sockname();
-	  p->peeraddr = StringFormat("%1:%2")
-			.arg(peeraddr.hostname())
-			.arg(peeraddr.port());
-	  p->mask = IORead|IOWrite|IOUrgent;
-	  p->update = ap->update;
-	  p->automatic = ap;
-	  p->socket = s;
-	  sel_.attach(s, p->mask, CreateHook(this, &IgNet::onPeerData, p));
-	  if (ap == &upstream_)
-	  {
-	    uint32_t words[4] = { 2*sizeof(uint32_t), VIS_MSG_LIST_OBJECTS,
-				  2*sizeof(uint32_t), VIS_MSG_UPDATE_ME };
-	    p->sendq = new Bucket;
-	    p->sendq->next = 0;
-	    copydata(p->sendq, words, sizeof(words));
-	  }
+          InetAddress peeraddr = ((InetSocket *) s)->peername();
+          InetAddress myaddr = ((InetSocket *) s)->sockname();
+          p->peeraddr = StringFormat("%1:%2")
+                        .arg(peeraddr.hostname())
+                        .arg(peeraddr.port());
+          p->mask = IORead|IOWrite|IOUrgent;
+          p->update = ap->update;
+          p->automatic = ap;
+          p->socket = s;
+          sel_.attach(s, p->mask, CreateHook(this, &IgNet::onPeerData, p));
+          if (ap == &upstream_)
+          {
+            uint32_t words[4] = { 2*sizeof(uint32_t), VIS_MSG_LIST_OBJECTS,
+                                  2*sizeof(uint32_t), VIS_MSG_UPDATE_ME };
+            p->sendq = new Bucket;
+            p->sendq->next = 0;
+            copydata(p->sendq, words, sizeof(words));
+          }
 
-	  // Report the new connection.
-	  if (debug_)
-	    logme()
-	      << "INFO: now connected to " << p->peeraddr << " from "
-	      << myaddr.hostname() << ":" << myaddr.port() << std::endl;
-	}
+          // Report the new connection.
+          if (debug_)
+            logme()
+              << "INFO: now connected to " << p->peeraddr << " from "
+              << myaddr.hostname() << ":" << myaddr.port() << std::endl;
+        }
       }
     }
 
@@ -1067,7 +1067,7 @@ IgNet::run(void)
 
       lock();
       purgeDeadObjects(now - TimeSpan(0, 0, 2 /* minutes */, 0, 0),
-		       now - TimeSpan(0, 0, 20 /* minutes */, 0, 0));
+                       now - TimeSpan(0, 0, 20 /* minutes */, 0, 0));
       sendObjectListToPeers(true);
       unlock();
     }
@@ -1086,11 +1086,11 @@ IgNet::run(void)
     {
       // If the peer has waited for too long, send something.
       if (i->time < waitold)
-	releaseFromWait(i++, findObject(0, i->name));
+        releaseFromWait(i++, findObject(0, i->name));
 
       // Keep it for now.
       else
-	++i;
+        ++i;
     }
     unlock();
   }
@@ -1133,8 +1133,8 @@ IgNet::findObject(Peer *p, const std::string &name, Peer **owner)
       pos = i->second.objs.find(name);
       if (pos != i->second.objs.end())
       {
-	if (owner) *owner = &i->second;
-	return &pos->second;
+        if (owner) *owner = &i->second;
+        return &pos->second;
       }
     }
     return 0;
@@ -1189,28 +1189,28 @@ IgNet::purgeDeadObjects(lat::Time oldobj, lat::Time deadobj)
 
       // Compact non-scalar objects that are unused.  We send scalar
       // objects to the web server so we keep them around.
-      if (o.lastreq < oldobj && ! o.rawdata.empty() && ! (o.flags & VIS_FLAG_SCALAR))
+      if (o.lastreq < oldobj && ! o.rawdata.empty() && !(o.flags & VIS_FLAG_SCALAR))
       {
-	if (debug_)
-	  logme()
-	    << "DEBUG: compacting idle '" << o.name
-	    << "' from " << pi->second.peeraddr << std::endl;
+        if (debug_)
+          logme()
+            << "DEBUG: compacting idle '" << o.name
+            << "' from " << pi->second.peeraddr << std::endl;
       }
 
       // Remove if dead, old and unused.
       if (o.lastreq < deadobj
-	  && o.version < deadobj
-	  && (o.flags & VIS_FLAG_DEAD))
+          && o.version < deadobj
+          &&(o.flags & VIS_FLAG_DEAD))
       {
-	if (debug_)
-	  logme()
-	    << "DEBUG: removing dead '" << o.name
-	    << "' from " << pi->second.peeraddr << std::endl;
+        if (debug_)
+          logme()
+            << "DEBUG: removing dead '" << o.name
+            << "' from " << pi->second.peeraddr << std::endl;
 
-	pi->second.objs.erase(oi++);
+        pi->second.objs.erase(oi++);
       }
       else
-	++oi;
+        ++oi;
     }
 }
 
@@ -1274,12 +1274,12 @@ IgNet::sendObjectListToPeer(Bucket *msg, bool all, bool clear)
 
   for (pi = peers_.begin(), pe = peers_.end(); pi != pe; ++pi)
     for (oi = pi->second.objs.begin(), oe = pi->second.objs.end(); oi != oe; ++oi)
-      if (all || (oi->second.flags & VIS_FLAG_NEW))
+      if (all ||(oi->second.flags & VIS_FLAG_NEW))
       {
-	sendObjectToPeer(msg, oi->second, false);
-	if (clear)
-	  oi->second.flags &= ~VIS_FLAG_NEW;
-	++nupdates;
+        sendObjectToPeer(msg, oi->second, false);
+        if (clear)
+          oi->second.flags &= ~VIS_FLAG_NEW;
+        ++nupdates;
       }
 
   words[1] = VIS_REPLY_LIST_END;
@@ -1299,7 +1299,7 @@ IgNet::sendObjectListToPeers(bool all)
 
     if (debug_)
       logme()
-	<< "DEBUG: notifying " << p.peeraddr << std::endl;
+        << "DEBUG: notifying " << p.peeraddr << std::endl;
 
     Bucket msg;
     msg.next = 0;
@@ -1309,7 +1309,7 @@ IgNet::sendObjectListToPeers(bool all)
     {
       Bucket **prev = &p.sendq;
       while (*prev)
-	prev = &(*prev)->next;
+        prev = &(*prev)->next;
 
       *prev = new Bucket;
       (*prev)->next = 0;
@@ -1332,7 +1332,7 @@ IgNet::updatePeerMasks(void)
 //////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
 int
-IgNet::receive(void (*callback) (void *arg, uint32_t reason, Object &obj), void *arg)
+IgNet::receive(void(*callback)(void *arg, uint32_t reason, Object &obj), void *arg)
 {
   int updates = 0;
 
@@ -1352,17 +1352,17 @@ IgNet::receive(void (*callback) (void *arg, uint32_t reason, Object &obj), void 
       Object &o = oi->second;
       if (o.flags & VIS_FLAG_DEAD)
       {
-	callback(arg, VIS_FLAG_DEAD, o);
-	p.objs.erase(oi++);
+        callback(arg, VIS_FLAG_DEAD, o);
+        p.objs.erase(oi++);
       }
       else if (o.flags & VIS_FLAG_RECEIVED)
       {
-	callback(arg, VIS_FLAG_RECEIVED, o);
-	o.flags &= ~VIS_FLAG_RECEIVED;
-	++oi;
+        callback(arg, VIS_FLAG_RECEIVED, o);
+        o.flags &= ~VIS_FLAG_RECEIVED;
+        ++oi;
       }
       else
-	++oi;
+        ++oi;
     }
   }
   unlock();

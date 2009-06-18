@@ -11,67 +11,67 @@
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 
-IgNetworkReplyHandler::IgNetworkReplyHandler (QNetworkReply *reply, QIODevice *device)
-    : m_reply (reply),
-      m_device (device)
+IgNetworkReplyHandler::IgNetworkReplyHandler(QNetworkReply *reply, QIODevice *device)
+  : m_reply(reply),
+    m_device(device)
 {
-    Q_CHECK_PTR(m_reply);
-    Q_CHECK_PTR(m_device);
-    connect(m_reply, SIGNAL(readyRead()), this, SLOT(downloadMore()));
-    connect(m_reply, SIGNAL(finished()), this, SLOT(finished()));
-    connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-            this, SLOT(error(QNetworkReply::NetworkError)));
-    m_device->open (QFile::WriteOnly);
+  Q_CHECK_PTR(m_reply);
+  Q_CHECK_PTR(m_device);
+  connect(m_reply, SIGNAL(readyRead()), this, SLOT(downloadMore()));
+  connect(m_reply, SIGNAL(finished()), this, SLOT(finished()));
+  connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+          this, SLOT(error(QNetworkReply::NetworkError)));
+  m_device->open(QFile::WriteOnly);
 }
 
-IgNetworkReplyHandler::~IgNetworkReplyHandler (void)
+IgNetworkReplyHandler::~IgNetworkReplyHandler(void)
 {
-    delete m_device;
-}
-
-void
-IgNetworkReplyHandler::downloadMore (void) 
-{
-    m_device->write (m_reply->readAll ());
+  delete m_device;
 }
 
 void
-IgNetworkReplyHandler::finished (void) 
+IgNetworkReplyHandler::downloadMore(void)
 {
-    m_device->write (m_reply->readAll ());
-    m_device->close ();
-    if (m_reply->error())
-        return;
-    emit done (this);
+  m_device->write(m_reply->readAll());
 }
 
-QIODevice * 
-IgNetworkReplyHandler::device (void)
+void
+IgNetworkReplyHandler::finished(void)
 {
-    return m_device;
+  m_device->write(m_reply->readAll());
+  m_device->close();
+  if (m_reply->error())
+    return;
+  emit done(this);
+}
+
+QIODevice *
+IgNetworkReplyHandler::device(void)
+{
+  return m_device;
 }
 
 QNetworkReply::NetworkError
-IgNetworkReplyHandler::error (void)
+IgNetworkReplyHandler::error(void)
 {
-    return m_reply->error();
+  return m_reply->error();
 }
 
 QNetworkReply *
-IgNetworkReplyHandler::reply (void)
+IgNetworkReplyHandler::reply(void)
 {
-    return m_reply;
+  return m_reply;
 }
 
 void
-IgNetworkReplyHandler::abort (void)
+IgNetworkReplyHandler::abort(void)
 {
-    m_reply->abort();
-    emit downloadAborted(this);
+  m_reply->abort();
+  emit downloadAborted(this);
 }
 
 void
-IgNetworkReplyHandler::error (QNetworkReply::NetworkError)
+IgNetworkReplyHandler::error(QNetworkReply::NetworkError)
 {
-    emit downloadError(this);
+  emit downloadError(this);
 }

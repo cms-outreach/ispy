@@ -31,7 +31,7 @@ class IgSoGridPlaneMap;
 
 class IgSoGridPlane : public SoGroup
 {
-    SO_NODE_HEADER (IgSoGridPlane);
+    SO_NODE_HEADER(IgSoGridPlane);
 public:
 	SoSFBool   on;
 	SoSFPlane  plane;
@@ -43,32 +43,32 @@ public:
 	SoSFColor  color;
 	SoSFColor  labelColor;
 	SoSFBool   manip;
-	
-	static void initClass (void);
-	void        updateScale (void);
-	
-	IgSoGridPlane (void);
+
+	static void initClass(void);
+	void        updateScale(void);
+
+	IgSoGridPlane(void);
 
 protected:
-	~IgSoGridPlane (void);
+	~IgSoGridPlane(void);
 
 private:
-	static void onSensorCB        (void *me, SoSensor *data);
-	static void manipSensorCB     (void *me, SoSensor *data);
-	static void planeSensorCB     (void *me, SoSensor *data);
-	static void mplaneSensorCB    (void *me, SoSensor *data);
-	static void xOriginSensorCB   (void *me, SoSensor *data);
-	static void zOriginSensorCB   (void *me, SoSensor *data);
-	static void xLenSensorCB      (void *me, SoSensor *data);
-	static void zLenSensorCB      (void *me, SoSensor *data);
-	static void spacingSensorCB   (void *me, SoSensor *data);
-	static void colorSensorCB     (void *me, SoSensor *data);
-	static void labelColorSensorCB     (void *me, SoSensor *data);
-	void        attachSensors     (void);
-	void        addScale          (void);
-	void        setLabelMove (SoSeparator* labelGroup, SbVec3f step);
-	void        setLabelText (SoSeparator* labelGroup, float position, bool right = false);
-	
+	static void onSensorCB(void *me, SoSensor *data);
+	static void manipSensorCB(void *me, SoSensor *data);
+	static void planeSensorCB(void *me, SoSensor *data);
+	static void mplaneSensorCB(void *me, SoSensor *data);
+	static void xOriginSensorCB(void *me, SoSensor *data);
+	static void zOriginSensorCB(void *me, SoSensor *data);
+	static void xLenSensorCB(void *me, SoSensor *data);
+	static void zLenSensorCB(void *me, SoSensor *data);
+	static void spacingSensorCB(void *me, SoSensor *data);
+	static void colorSensorCB(void *me, SoSensor *data);
+	static void labelColorSensorCB(void *me, SoSensor *data);
+	void        attachSensors(void);
+	void        addScale(void);
+	void        setLabelMove(SoSeparator* labelGroup, SbVec3f step);
+	void        setLabelText(SoSeparator* labelGroup, float position, bool right = false);
+
 	IgSoGridPlaneMap* m_plane;
 	SoShapeHints*     m_shapeHints;
 	SoFieldSensor*    m_planeSensor;

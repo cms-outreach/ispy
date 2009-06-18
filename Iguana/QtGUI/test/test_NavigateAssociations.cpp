@@ -10,16 +10,16 @@ int
 main()
 {
   IgDataStorage storage;
-  
+
   // Setup the data structure. This is not strictly necessary, as in general it
   // will be read from file, but we do it by hand, to simplify the test.
   // * Create a collection of tracks.
   // * Create a collection for additional measurements.
   // * Create an association set to associate the measurements to the given tracks.
-  // * Add a few tracks and the associated measurements. 
-  //   Each track as a different number of measurements: 
+  // * Add a few tracks and the associated measurements.
+  //   Each track as a different number of measurements:
   //
-  //       * 1st track 0 measurements, 
+  //       * 1st track 0 measurements,
   //       * 2nd track 1 measurement,
   //       * 3rd track 2 measurement
   //
@@ -52,19 +52,19 @@ main()
     t[P_X] = static_cast<double>(i*10);
     t[P_Y] = static_cast<double>(i*10);
     t[P_Z] = static_cast<double>(i*10);
-      for (int j = 0; j < i ; j++)
-      {
-        IgCollectionItem m = measurements.create();
-        m[M_X] = static_cast<double>(j);
-        m[M_Y] = static_cast<double>(j);
-        m[M_Z] = static_cast<double>(j);
-        trackMeasurements.associate(t, m);
-      }
+    for (int j = 0; j < i ; j++)
+    {
+      IgCollectionItem m = measurements.create();
+      m[M_X] = static_cast<double>(j);
+      m[M_Y] = static_cast<double>(j);
+      m[M_Z] = static_cast<double>(j);
+      trackMeasurements.associate(t, m);
+    }
   }
-  
+
   // Debug stuff... print out the result.
   std::cerr << storage << std::endl;
-  
+
   std::vector<double> expectedResults;
   expectedResults.push_back(0);
   expectedResults.push_back(0);
@@ -122,7 +122,7 @@ main()
     IgCollection & myMeasurements = storage.getCollection("Measurements/V1");
     std::vector<double>::iterator eri = expectedResults.begin();
     std::vector<double>::iterator eri2 = expectedResults.begin();
-    
+
     for (IgCollectionIterator t = myTracks.begin();
          t != myTracks.end();
          t++)
@@ -137,14 +137,14 @@ main()
            a != view.end();
            a++)
       {
-         IgCollectionItem m = *a;
-         os1 << "  " << m.get<double>("x")
-             << " " << m.get<double>("y")
-             << " " << m.get<double>("z") << std::endl;
-         assert(*eri == m.get<double>("x"));
-         assert(*eri == m.get<double>("y"));
-         assert(*eri++ == m.get<double>("z"));
-         assert(n++ < 55);
+        IgCollectionItem m = *a;
+        os1 << "  " << m.get<double>("x")
+            << " " << m.get<double>("y")
+            << " " << m.get<double>("z") << std::endl;
+        assert(*eri == m.get<double>("x"));
+        assert(*eri == m.get<double>("y"));
+        assert(*eri++ == m.get<double>("z"));
+        assert(n++ < 55);
       }
 
       for (IgAssociatedSet::Iterator a = view2.begin();
@@ -158,16 +158,16 @@ main()
            a != view3.end();
            a++)
       {
-         IgCollectionItem m = *a;
-         assert(*eri2 == m.get<double>("x"));
-         assert(*eri2 == m.get<double>("y"));
-         assert(*eri2++ == m.get<double>("z"));
+        IgCollectionItem m = *a;
+        assert(*eri2 == m.get<double>("x"));
+        assert(*eri2 == m.get<double>("y"));
+        assert(*eri2++ == m.get<double>("z"));
       }
 
     }
   }
 
-  // Explicit way of doing the navigation, this is here only for reference 
+  // Explicit way of doing the navigation, this is here only for reference
   // while the above way should be preferred.
   {
     int n = 0;
@@ -175,7 +175,7 @@ main()
     IgCollection & myMeasurements = storage.getCollection("Measurements/V1");
     IgAssociationSet & myAssociations = storage.getAssociationSet("TrackMeasurements/V1");
     std::vector<double>::iterator eri = expectedResults.begin();
-    
+
     for (IgCollectionIterator t = myTracks.begin();
          t != myTracks.end();
          t++)
@@ -188,14 +188,14 @@ main()
       {
         if(a->first().objectId() == track.currentRow())
         {
-           IgCollectionItem m(&myMeasurements, a->second().objectId());
-           os2 << "  " << m.get<double>("x")
-               << " " << m.get<double>("y")
-               << " " << m.get<double>("z") << std::endl;
-           assert(*eri == m.get<double>("x"));
-           assert(*eri == m.get<double>("y"));
-           assert(*eri++ == m.get<double>("z"));
-           assert(n++ < 55);
+          IgCollectionItem m(&myMeasurements, a->second().objectId());
+          os2 << "  " << m.get<double>("x")
+              << " " << m.get<double>("y")
+              << " " << m.get<double>("z") << std::endl;
+          assert(*eri == m.get<double>("x"));
+          assert(*eri == m.get<double>("y"));
+          assert(*eri++ == m.get<double>("z"));
+          assert(n++ < 55);
         }
       }
     }

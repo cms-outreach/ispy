@@ -26,7 +26,7 @@ main(int argc, char **argv)
 {
   IgDataStorage storage;
   validateStorage(storage);
-  
+
   // Create a collection of tracks.
   IgCollection &tracks = storage.getCollection("Tracks/V1");
   validateStorage(storage);
@@ -64,7 +64,7 @@ main(int argc, char **argv)
     t[P_Z] = static_cast<double>(i);
   }
   assert(tracks.size() == 10);
-  
+
   // Add a few clusters.
   for (int i = 0; i < 10 ; i++)
   {
@@ -74,9 +74,9 @@ main(int argc, char **argv)
     c[C_Z] = static_cast<double>(i);
     c[C_E] = static_cast<double>(i);
   }
-  
+
   assert(clusters.size() == 10);
-  
+
   // Add a few points
   for (int i = 0; i < 10 ; i++)
   {
@@ -85,15 +85,15 @@ main(int argc, char **argv)
     p[POINT_3D] = IgV3d(1*i, 2*i, 3*i);
     p[POINT_4D] = IgV4d(1*i, 2*i, 3*i, 4*i);
   }
-  
+
   assert(points.size() == 10);
-  
+
   // One to one associations
-  {  
+  {
     IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters/V1");
-    IgCollectionIterator c = clusters.begin(); 
+    IgCollectionIterator c = clusters.begin();
     IgCollectionIterator t = tracks.begin();
-    
+
     while((c != clusters.end()) && (t != tracks.end()))
     {
       trackClusters.associate (*t, *c);
@@ -104,10 +104,10 @@ main(int argc, char **argv)
   // One to many
   {
     IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters2/V1");
-    
-    IgCollectionIterator c = clusters.begin(); 
+
+    IgCollectionIterator c = clusters.begin();
     IgCollectionIterator t = tracks.begin();
-    
+
     while((c != clusters.end()) && (t != tracks.end()))
     {
       trackClusters.associate (*t, *c);
@@ -117,16 +117,16 @@ main(int argc, char **argv)
   // Writing out in Ig JSON based format.
   std::ostringstream os1;
   os1 << storage << std::endl;
-  
+
   // Parse the data in a new storage.
   IgDataStorage storage2;
   IgParser parser(&storage2);
   parser.parse(os1.str().c_str());
-  
+
   // Stream it back.
   std::ostringstream os2;
   os2 << storage2 << std::endl;
-  
+
   // Read again.
   IgDataStorage storage3;
   IgParser parser2(&storage3);
@@ -135,8 +135,8 @@ main(int argc, char **argv)
   // Write it again
   std::ostringstream os3;
   os3 << storage3 << std::endl;
-  
+
   // Check it is always the same.
   assert (os2.str() == os1.str());
-  assert (os3.str() == os1.str());  
+  assert (os3.str() == os1.str());
 }

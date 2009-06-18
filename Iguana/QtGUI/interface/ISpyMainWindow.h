@@ -12,37 +12,37 @@ class ISpyApplication;
 
 class ISpyMainWindow : public QMainWindow, public Ui::IgMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    ISpyMainWindow (ISpyApplication *application, QWidget *parent = 0);
-    ~ISpyMainWindow ();
+  ISpyMainWindow(ISpyApplication *application, QWidget *parent = 0);
+  ~ISpyMainWindow();
 
-    void 		restoreSettings (void);    
-    void 		saveSettings (void);
-    QWidget *		workspace (void);    
-    
+  void          restoreSettings(void);
+  void          saveSettings(void);
+  QWidget *     workspace(void);
+
 public slots:
-    void 		writeSettings (bool value);
-    void 		showSettingsEditor (void);    
-    void 		maximize (void);
-    void 		fullScreen (void);
+  void          writeSettings(bool value);
+  void          showSettingsEditor(void);
+  void          maximize(void);
+  void          fullScreen(void);
 
 signals:
-    void 		open (void);
-    void		autoEvents (void);
-    void		nextEvent (void);
-    void		previousEvent (void);
-    void		rewind (void);
-    void		print (void);
-    void		save (void);
+  void          open(void);
+  void          autoEvents(void);
+  void          nextEvent(void);
+  void          previousEvent(void);
+  void          rewind(void);
+  void          print(void);
+  void          save(void);
 
 protected:
-    void 		setupActions (void);
-    
+  void          setupActions(void);
+
 private:
-    IgSettingsEditor   *m_settingsEditor;
-    ISpyApplication    *m_application;
-    void 		setSettingsObject (QSettings *settings);
+  IgSettingsEditor   *m_settingsEditor;
+  ISpyApplication    *m_application;
+  void          setSettingsObject(QSettings *settings);
 };
 
 #endif // IGGI_IGGI_MAIN_WINDOW_H

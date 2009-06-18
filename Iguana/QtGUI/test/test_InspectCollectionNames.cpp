@@ -15,7 +15,7 @@ main()
 
   IgProperty ID = tracks.addProperty("id" /*label*/, 0 /*default value*/);
   assert (ID.handle().type() == INT_COLUMN);
-  IgProperty NAME = tracks.addProperty("name",std::string()); 
+  IgProperty NAME = tracks.addProperty("name",std::string());
   assert (NAME.handle().type() == STRING_COLUMN);
   IgProperty X = tracks.addProperty("x", 0.0);
   IgProperty Y = tracks.addProperty("y", 0.0);
@@ -33,7 +33,7 @@ main()
   {
     check.push_back(i->first);
   }
-  
+
   // Checking that the names are actually the correct ones.
   assert(check[0] == "id");
   assert(check[1] == "name");

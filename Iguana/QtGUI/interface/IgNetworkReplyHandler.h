@@ -19,31 +19,31 @@ class QIODevice;
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
 class IgNetworkReplyHandler : public QObject
-{ 
-    Q_OBJECT
+{
+  Q_OBJECT
 public:
-    IgNetworkReplyHandler (QNetworkReply *reply, QIODevice *device = 0);
-    // implicit copy constructor
-    // implicit assignment operator
-    // implicit destructor
-    virtual ~IgNetworkReplyHandler (void);
+  IgNetworkReplyHandler(QNetworkReply *reply, QIODevice *device = 0);
+  // implicit copy constructor
+  // implicit assignment operator
+  // implicit destructor
+  virtual ~IgNetworkReplyHandler(void);
 
-    QIODevice *device (void);
-    QNetworkReply::NetworkError error (void);
-    QNetworkReply *reply (void);
+  QIODevice *device(void);
+  QNetworkReply::NetworkError error(void);
+  QNetworkReply *reply(void);
 public slots:
-    void abort(void);
-    void error(QNetworkReply::NetworkError error);
+  void abort(void);
+  void error(QNetworkReply::NetworkError error);
 signals:
-    void        done (IgNetworkReplyHandler *handler);
-    void        downloadAborted (IgNetworkReplyHandler *handler);
-    void        downloadError (IgNetworkReplyHandler *handler);
+  void        done(IgNetworkReplyHandler *handler);
+  void        downloadAborted(IgNetworkReplyHandler *handler);
+  void        downloadError(IgNetworkReplyHandler *handler);
 private slots:
-    void        downloadMore (void);
-    void        finished (void);
+  void        downloadMore(void);
+  void        finished(void);
 private:
-    QNetworkReply   *m_reply;
-    QIODevice       *m_device;
+  QNetworkReply   *m_reply;
+  QIODevice       *m_device;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

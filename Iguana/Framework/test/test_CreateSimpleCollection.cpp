@@ -17,7 +17,7 @@ main()
 
   IgProperty SOMETHING = tracks.addProperty("someInt" /*label*/, 0 /*default value*/);
   assert (SOMETHING.handle().type() == INT_COLUMN);
-  IgProperty SOMESTRING = tracks.addProperty("someString",std::string()); 
+  IgProperty SOMESTRING = tracks.addProperty("someString",std::string());
   assert (SOMESTRING.handle().type() == STRING_COLUMN);
   IgProperty X = tracks.addProperty("x", 0.0);
   IgProperty Y = tracks.addProperty("y", 0.0);
@@ -40,9 +40,9 @@ main()
   t1["px"] = 2.0;
   t1["py"] = 2.0;
   t1["pz"] = 2.0;
-  
-  // Second way of doing it: using the property index to random access the 
-  // setters. 
+
+  // Second way of doing it: using the property index to random access the
+  // setters.
   IgCollectionItem t2 = tracks.create();
   t2[SOMETHING] = 4;
   t2[SOMESTRING] = "foo2";
@@ -52,11 +52,11 @@ main()
   t2[P_X] = 2.0;
   t2[P_Y] = 2.0;
   t2[P_Z] = 2.0;
-  
+
   // Third way of doing it
   IgCollectionItem t3 = tracks.create();
   t3 = 9, std::string("foo4"), 3.0, 3.0, 3.0, 3.0, 3.0, 3.0;
-  
+
   // Yet another way:
   // * Alias X to POS and P_X to P.
   // * Fill POS from a vector.
@@ -71,12 +71,12 @@ main()
   std::vector<double> p(2, 4);
   t4[P] = 5.0, p;
   t4[P] = p, 5.0;
-  
+
   assert(tracks.size() == 4);
-  
+
   // Reading it back and printing everything to screen.
   for (IgCollectionIterator i = tracks.begin();
-       i != tracks.end(); 
+       i != tracks.end();
        i++)
   {
     std::cerr << "someInt" << ":" << (*i).get<int>("someInt") << ","
@@ -86,25 +86,25 @@ main()
               << "Z" << ":" << (*i).get<double>("z") << ","
               << "P_X" << ":" << (*i).get<double>("px") << ","
               << "P_Y" << ":" << (*i).get<double>("py") << ","
-              << "P_Z" << ":" << (*i).get<double>("pz") << "," 
+              << "P_Z" << ":" << (*i).get<double>("pz") << ","
               << std::endl;
   }
-  
+
   //Adding another collection
   IgCollection &clusters= storage->getCollection("Clusters/V1");
   IgProperty C_X = clusters.addProperty("x", 0.0);
   IgProperty C_Y = clusters.addProperty("y", 0.0);
   IgProperty C_Z = clusters.addProperty("z", 0.0);
   IgProperty C_E = clusters.addProperty("e", 0.0);
- 
-  // Checks getProperty / hasProperty API. 
+
+  // Checks getProperty / hasProperty API.
   assert(clusters.hasProperty ("e"));
   assert(!clusters.hasProperty ("foo"));
   assert(clusters.getProperty ("e").handle().data() == C_E.handle().data());
   bool didThrow = false;
   try {
     clusters.getProperty("foo");
-  } 
+  }
   catch (IgSchemaError &e)
   {
     didThrow = true;
@@ -116,15 +116,15 @@ main()
   c1["z"] = 5.3;
   c1["y"] = 5.2;
   c1["x"] = 5.1;
-  
-  
+
+
   // Writing another collection, this time using IgVect3D and IgVect4D
   {
     IgCollection &measurements = storage->getCollection("TestMeasurement/V1");
-    
+
     IgProperty POS = measurements.addProperty("position", IgV3d());
     IgProperty P = measurements.addProperty("quadmomentum", IgV4d());
-    
+
     IgCollectionItem m = measurements.create();
     m[POS] = IgV3d(1,0,0);
     m[P] = IgV4d(1,0,0,0);

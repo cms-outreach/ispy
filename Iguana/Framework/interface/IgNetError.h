@@ -15,17 +15,17 @@
 class IgNetError : public lat::Error
 {
 public:
-    IgNetError (const std::string &reason, lat::Error *next);
-    // implicit copy constructor
-    // implicit assignment operator
-    // implicit destructor
+  IgNetError(const std::string &reason, lat::Error *next);
+  // implicit copy constructor
+  // implicit assignment operator
+  // implicit destructor
 
-    virtual std::string explainSelf (void) const;
-    virtual lat::Error *clone (void) const;
-    virtual void        rethrow (void);
+  virtual std::string explainSelf(void) const;
+  virtual lat::Error *clone(void) const;
+  virtual void        rethrow(void);
 
 private:
-    std::string         m_reason;
+  std::string         m_reason;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

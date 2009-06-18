@@ -21,10 +21,10 @@ class IgSoGridPlane;
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-/** A planar slice (e.g. of volumetric data) drawn as a colour map.  */
+/** A planar slice(e.g. of volumetric data) drawn as a colour map.  */
 class IgSoGridPlaneMap : public SoShape
 {
-	SO_NODE_HEADER (IgSoGridPlaneMap);
+	SO_NODE_HEADER(IgSoGridPlaneMap);
 public:
 	SoSFBool   on;
 	SoSFPlane  plane;
@@ -37,19 +37,19 @@ public:
 	SbVec3f    labelSpot[3];
 	SoSFBool   refreshScale;
 
-	IgSoGridPlaneMap (void);
+	IgSoGridPlaneMap(void);
 	// implicit copy constructor
 	// implicit assignment operator
-	
-	static void initClass (void);
-	void        setCaller (IgSoGridPlane* caller);
+
+	static void initClass(void);
+	void        setCaller(IgSoGridPlane* caller);
 
 protected:
-	virtual ~IgSoGridPlaneMap (void);
-	
-	virtual void computeBBox (SoAction *, SbBox3f &box, SbVec3f &center);
-	virtual void GLRender (SoGLRenderAction *renderAction);
-	virtual void generatePrimitives (SoAction *action);
+	virtual ~IgSoGridPlaneMap(void);
+
+	virtual void computeBBox(SoAction *, SbBox3f &box, SbVec3f &center);
+	virtual void GLRender(SoGLRenderAction *renderAction);
+	virtual void generatePrimitives(SoAction *action);
 
 private:
 	SbVec3f        m_curCorner[3];

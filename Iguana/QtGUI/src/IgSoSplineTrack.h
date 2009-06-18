@@ -27,29 +27,29 @@ class RootFunction;
  *
  *  \author G. Alverson
  *  \date 20 July 1999
- * 
+ *
  */
 class IgSoSplineTrack : public IgSoShapeKit
 {
-    SO_KIT_HEADER (IgSoSplineTrack);
-    SO_KIT_CATALOG_ENTRY_HEADER (coordinates);
-    SO_KIT_CATALOG_ENTRY_HEADER (curve);
+    SO_KIT_HEADER(IgSoSplineTrack);
+    SO_KIT_CATALOG_ENTRY_HEADER(coordinates);
+    SO_KIT_CATALOG_ENTRY_HEADER(curve);
 public:
-    IgSoSplineTrack (void);
-    static void initClass (void);
+    IgSoSplineTrack(void);
+    static void initClass(void);
 
     SoMFVec3f points;		//< the points used for the track
     SoMFVec3f tangents;		//< the tangents at those points
 
 protected:
     // re-implement refresh from base class
-    virtual void refresh (void);
-    
+    virtual void refresh(void);
+
     // meat of the algorithm: given a pair of point/tangents, adds control points for the appropriate locations between the pair
-    virtual void midpoint (const SbVec3f pa, const SbVec3f pb, const SbVec3f ta, const SbVec3f tb,
+    virtual void midpoint(const SbVec3f pa, const SbVec3f pb, const SbVec3f ta, const SbVec3f tb,
 	int &ik, int &ik_count, int &ipo, std::vector<SbVec4f> &controlPoints, std::vector<float> &knotVals);
     // utility function used in determining midpoint: based on {/it Numerical Recipies} routine
-    float findRoot (const RootFunction func, float x1, float x2, float xacc, bool &err);
+    float findRoot(const RootFunction func, float x1, float x2, float xacc, bool &err);
 
 private:
     static const int	NORDER; // order of NurbsCurve

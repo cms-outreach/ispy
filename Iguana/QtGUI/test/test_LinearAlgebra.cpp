@@ -8,7 +8,7 @@
 # endif
 #include <cassert>
 
-int 
+int
 main(int argc, char **argv)
 {
   {

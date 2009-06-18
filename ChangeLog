@@ -1,3 +1,13 @@
+Script to indent sources added to repository.
+
+* Requires Lassi's defaults and emacs.
+
+Fixes all the known indentation and spacing issues.
+
+* 2 spaces rather than 4 for indentation.
+* No tabs.
+* No space between method name and "(...)".
+
 Remove gl2ps and associated code.
 
 Cleans up Iguana/Inventor shapes.

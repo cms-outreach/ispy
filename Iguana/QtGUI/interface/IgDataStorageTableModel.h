@@ -19,24 +19,25 @@ class IgDataStorage;
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
 class IgDataStorageTableModel : public QAbstractTableModel
-{    
-    Q_OBJECT
+{
+  Q_OBJECT
 public:
-    IgDataStorageTableModel (IgDataStorage *collection, const char *label, QObject *parent = 0);
-    // implicit copy constructor
-    // implicit assignment operator
-    // implicit destructor
-    ~IgDataStorageTableModel (void);
+  IgDataStorageTableModel(IgDataStorage *collection, const char *label,
+                          QObject *parent = 0);
+  // implicit copy constructor
+  // implicit assignment operator
+  // implicit destructor
+  ~IgDataStorageTableModel(void);
 
-    const char *        label (void);
-    QVariant 		data (const QModelIndex &index, int role) const;
-    QVariant 		headerData (int section, Qt::Orientation orientation,
-				    int role = Qt::DisplayRole) const;
-    int 		rowCount (const QModelIndex &parent = QModelIndex ()) const;
-    int 		columnCount (const QModelIndex &parent = QModelIndex ()) const;
+  const char *  label(void);
+  QVariant      data(const QModelIndex &index, int role) const;
+  QVariant      headerData(int section, Qt::Orientation orientation,
+                           int role = Qt::DisplayRole) const;
+  int           rowCount(const QModelIndex &parent = QModelIndex()) const;
+  int           columnCount(const QModelIndex &parent = QModelIndex()) const;
 private:
-    IgDataStorage 	*m_storage;
-    std::string 	m_label;
+  IgDataStorage    *m_storage;
+  std::string       m_label;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

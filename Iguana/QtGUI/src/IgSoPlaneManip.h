@@ -26,30 +26,30 @@ class SoFieldSensor;
 
 class IgSoPlaneManip : public SoGroup
 {
-    SO_NODE_HEADER (IgSoPlaneManip);
+    SO_NODE_HEADER(IgSoPlaneManip);
 
 public:
     SoSFPlane plane;
     SoSFBool  manip;
 
-    IgSoPlaneManip (void);
+    IgSoPlaneManip(void);
 
-    static void 	initClass (void);
-    virtual void	write (SoWriteAction *action);
+    static void 	initClass(void);
+    virtual void	write(SoWriteAction *action);
 
     SoDragger *		getDragger(void);
-    void    		getMotionMatrix (SbMatrix &matrix, 
+    void    		getMotionMatrix(SbMatrix &matrix,
                                          bool scaling =true);
-    
+
 protected:
-    ~IgSoPlaneManip (void);
+    ~IgSoPlaneManip(void);
 
 private:
-    bool		hasDragger      (void);
-    static void 	jackChanged     (void *me, SoDragger *dragger);
-    static void		manipChanged    (void *me, SoSensor  *sensor);
-    static void		planeChanged    (void *me, SoSensor  *sensor);
-    
+    bool		hasDragger(void);
+    static void 	jackChanged(void *me, SoDragger *dragger);
+    static void		manipChanged(void *me, SoSensor  *sensor);
+    static void		planeChanged(void *me, SoSensor  *sensor);
+
     SoJackDragger	*m_manip;
     SoFieldSensor	*m_manipSensor;
     SoFieldSensor	*m_planeSensor;
