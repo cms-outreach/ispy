@@ -117,6 +117,7 @@ private:
     SoSwitch                    *node;
     SoSeparator                 *sep;
     int                         visibility;
+    std::string                 collectionName;
   };
 
   struct Event
@@ -129,6 +130,20 @@ private:
   typedef std::vector<CollectionSpec>   CollectionSpecs;
   typedef std::vector<Collection>       Collections;
   typedef std::vector<Event>            Events;
+
+  struct SortBySpecAndName
+  {
+    bool operator()(const Collection &a, const Collection &b)
+    {
+      if (!a.spec && !b.spec)
+        return a.collectionName < b.collectionName;
+      if (!a.spec)
+        return false;
+      if (!b.spec)
+        return true;
+      return a.spec < b.spec;
+    }
+  };
 
   int                   doRun(void);
   void                  defaultSettings(void);

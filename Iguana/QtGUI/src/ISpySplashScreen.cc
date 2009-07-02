@@ -51,7 +51,7 @@ ISpySplashScreen::closeEvent(QCloseEvent *event)
 void
 ISpySplashScreen::showAbout(void)
 {
-  this->tabWidget->setCurrentIndex(3);
+  this->tabWidget->setCurrentIndex(2);
   this->show();
   this->raise();
 }
