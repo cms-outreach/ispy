@@ -7,7 +7,9 @@
 # include <QStringList>
 # include <QTimer>
 # include <QUrl>
+# include <QCheckBox>
 # include <vector>
+# include <map>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -103,6 +105,7 @@ private:
     std::vector<std::string>    requiredFields;
     std::vector<std::string>    otherRequiredFields;
     Make3D                      make3D;
+    int                         visibility;
   };
 
   struct Collection
@@ -135,7 +138,8 @@ private:
                                    const char *collectionSpec,
                                    const char *otherCollectionSpec,
                                    const char *associationSpec,
-                                   Make3D make3D);
+                                   Make3D make3D,
+                                   Qt::CheckState visibility);
   void                  displayCollection(Collection &c);
   void                  updateCollections(void);
   lat::ZipArchive *     loadFile(const QString &fileName);

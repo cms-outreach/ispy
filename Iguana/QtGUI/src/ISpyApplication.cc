@@ -326,8 +326,69 @@ make3DTrackingRecHits(IgCollection **collections, IgAssociationSet **assocs, SoS
   make3DPointSetShapes(collections, assocs, sep, SbColor(0.7, 0.4, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
 }
 
-
-
+static void 
+make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  IgCollection        *tracks   = collections[0];
+  IgCollection        *hits     = collections[1];
+  IgAssociationSet    *assoc    = assocs[0];     
+  SoVertexProperty    *vertices = new SoVertexProperty;
+  SoMarkerSet         *points   = new SoMarkerSet;
+  SoMaterial          *mat      = new SoMaterial;
+  int                 nv        = 0;
+  
+  // FIXME: TM: color determined by particle type
+  // Also, draw photons with IdealTrack?
+  mat->diffuseColor = SbColor(1.0, 1.0, 0.0);
+  sep->addChild(mat);
+  
+  IgProperty PT  = tracks->getProperty("pt");
+  IgProperty POS = hits->getProperty("pos");
+  IgProperty DIR = hits->getProperty("dir");
+  
+  for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
+  {
+    double pt = ci->get<double>(PT);
+     
+    // FIXME: TM: make this configurable
+    if ( pt < 0.5 )
+      continue;
+    
+    // FIXME: TM: eventually move the functionality of this class to here
+    IgSoSplineTrack *trackRep = new IgSoSplineTrack;
+      
+    int nt = 0;
+    
+    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    {
+      if (ai->first().objectId() == ci->currentRow())
+      {
+        IgCollectionItem m(hits, ai->second().objectId());
+        
+        IgV3d p = m->get<IgV3d>(POS);
+        IgV3d d = m->get<IgV3d>(DIR);
+        
+        trackRep->points.set1Value(nt, SbVec3f(p.x(), p.y(), p.z()));
+        trackRep->tangents.set1Value(nt, SbVec3f(d.x(), d.y(), d.z()));
+        
+        ++nt;
+        
+        vertices->vertex.set1Value(++nv, SbVec3f(p.x(),p.y(), p.z()));
+      }
+    }
+    
+    if (nt > 2)
+      sep->addChild(trackRep);
+  }
+  
+  vertices->vertex.setNum(nv);
+  
+  points->markerIndex = SoMarkerSet::CIRCLE_FILLED_5_5;
+  points->vertexProperty = vertices;
+  points->numPoints = nv;
+  
+  sep->addChild(points);
+}
 
 static void
 make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
@@ -1195,217 +1256,256 @@ ISpyApplication::ISpyApplication(void)
              "Tracker_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS ECAL Barrel",
              "EcalBarrel_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS ECAL Endcap",
              "EcalEndcap_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS Preshower",
              "EcalPreshower_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS HCAL Barrel",
              "HcalBarrel_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS HCAL Endcap",
              "HcalEndcap_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS HCAL Outer",
              "HcalOuter_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS HCAL Forward",
              "HcalForward_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS Drift Tubes",
              "DTs_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS Cathode Strip Chambers",
              "CSC_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
   collection("CMS Resistive Plate Chambers",
              "RPC_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DAnyBox);
+             make3DAnyBox,
+             Qt::Unchecked);
 
 
   collection("Event information",
              "Event_V1:time:run:event:ls:orbit:bx",
              0,
              0,
-             make3DEvent);
+             make3DEvent,
+             Qt::Checked);
 
   collection("Pixel Digis",
              "PixelDigis_V1:pos",
              0,
              0,
-             make3DPixelDigis);
+             make3DPixelDigis,
+             Qt::Checked);
 
   collection("Si Pixel Clusters",
              "SiPixelClusters_V1:pos",
              0,
              0,
-             make3DSiPixelClusters);
+             make3DSiPixelClusters,
+             Qt::Checked);
 
   collection("Si Pixel Rec. Hits",
              "SiPixelRecHits_V1:pos",
              0,
              0,
-             make3DSiPixelRecHits);
+             make3DSiPixelRecHits,
+             Qt::Checked);
 
   collection("SiStripCluster",
              "SiStripClusters_V1:pos",
              0,
              0,
-             make3DSiStripClusters);
+             make3DSiStripClusters,
+             Qt::Checked);
 
   collection("Si Strip Digis",
              "SiStripDigis_V1:pos",
              0,
              0,
-             make3DSiStripDigis);
+             make3DSiStripDigis,
+             Qt::Unchecked);
 
   collection("Tracks",
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
-             make3DTracks);
+             make3DTracks,
+             Qt::Checked);
 
   collection("Tracking Rec. Hits",
              "TrackingRecHits_V1:pos",
              0,
              0,
-             make3DTrackingRecHits);
+             make3DTrackingRecHits,
+             Qt::Checked);
 
   collection("ECAL Rec. Hits",
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits);
+             make3DEcalRecHits,
+             Qt::Unchecked);
 
   collection("HB Rec. Hits",
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits);
+             make3DHcalRecHits,
+             Qt::Checked);
 
   collection("HE Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits);
+             make3DHcalRecHits,
+             Qt::Checked);
 
   collection("HF Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits);
+             make3DHcalRecHits,
+             Qt::Checked);
 
   collection("HO Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits);
+             make3DHcalRecHits,
+             Qt::Checked);
 
   collection("Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DCaloTowers);
+             make3DCaloTowers,
+             Qt::Checked);
 
   collection("Jets",
              "Jets_V1:et:theta:phi",
              0,
              0,
-             make3DJets);
+             make3DJets,
+             Qt::Checked);
 
   collection("Et Missing",
              "METs_V1:pt:px:py:phi",
              0,
              0,
-             make3DMET);
+             make3DMET,
+             Qt::Checked);
 
 
   collection("DT Digis",
              "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
              0,
              0,
-             make3DDTDigis);
+             make3DDTDigis,
+             Qt::Checked);
 
   collection("DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
              ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
              0,
              0,
-             make3DDTRecHits);
+             make3DDTRecHits,
+             Qt::Checked);
 
   collection("DT Rec. Segments(4D)",
              "DTRecSegment4D_V1:pos_1:pos_2",
              0,
              0,
-             make3DDTRecSegment4D);
+             make3DDTRecSegment4D,
+             Qt::Checked);
 
   collection("CSC Segments",
              "CSCSegments_V1:pos_1:pos_2",
              0,
              0,
-             make3DCSCSegments);
+             make3DCSCSegments,
+             Qt::Checked);
 
   collection("RPC Rec. Hits",
              "RPCRecHits_V1:u1:u2:v1:v2:w2",
              0,
              0,
-             make3DRPCRecHits);
+             make3DRPCRecHits,
+             Qt::Checked);
 
   collection("Muon Tracks",
              "Muons_V1:pt:charge:rp:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuons);
-
+             make3DMuons,
+             Qt::Checked);
+  
+  collection("Tracking Particles",
+             "TrackingParticles_V1",
+             "PSimHits_V1:pos:dir",
+             "TrackingParticlePSimHits_V1",
+             make3DTrackingParticles,
+             Qt::Checked);
   // Don't draw the following
-
-  collection("Not drawn: Extras_V1","Extras_V1",0,0,NULL);
-  collection("Not drawn: Hits_V1","Hits_V1",0,0,NULL);
-  collection("Not drawn: Points_V1","Points_V1",0,0,NULL);
-  collection("Not drawn: DetIds_V1","DetIds_V1",0,0,NULL);
-
+  collection("Not drawn: Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not drawn: Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not drawn: Points_V1", "Points_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not drawn: DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not drawn: PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
 
   // Default drawing operations if none of the above explicitly matched
 
-  collection(0, ":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4", 0, 0, make3DAnyBox);
-  collection(0, ":pos_1:pos_2", 0, 0, make3DAnyLine);
-  collection(0, ":pos", 0, 0, make3DAnyPoint);
-  collection(0, ":detid", 0, 0, make3DAnyDetId);
+  collection(0, ":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4", 
+             0, 0, make3DAnyBox, Qt::Unchecked);
+  collection(0, ":pos_1:pos_2", 0, 0, make3DAnyLine, Qt::Unchecked);
+  collection(0, ":pos", 0, 0, make3DAnyPoint, Qt::Unchecked);
+  collection(0, ":detid", 0, 0, make3DAnyDetId, Qt::Unchecked);
 }
 
 
@@ -1456,13 +1556,21 @@ ISpyApplication::~ISpyApplication(void)
     @a make3D
 
     Method to invoke to render a collection matching these
-    requirements.  */
+    requirements.  
+ 
+    @the visibility
+ 
+    Either Qt::Checked (i.e. collection visible) or Qt::Unchecked 
+    (i.e. collection invisible). This option controls the 
+    visibility of the collection at startup. It matters only in 
+    the case @a make3D is provided. */
 void
 ISpyApplication::collection(const char *friendlyName,
                             const char *collectionSpec,
                             const char *otherCollectionSpec,
                             const char *associationSpec,
-                            Make3D make3D)
+                            Make3D make3D,
+                            Qt::CheckState visibility)
 {
   ASSERT(collectionSpec);
 
@@ -1471,11 +1579,18 @@ ISpyApplication::collection(const char *friendlyName,
   StringList parts;
 
   if (friendlyName)
+  {
     spec.friendlyName = friendlyName;
-
+    spec.visibility = visibility; 
+  }
+  
   parts = StringOps::split(collectionSpec, ':');
   ASSERT(! parts.empty());
   spec.collection = parts[0];
+  
+  if (!friendlyName && !spec.collection.empty())
+    spec.visibility = visibility; 
+  
   spec.requiredFields.insert(spec.requiredFields.end(),
                              parts.begin()+1, parts.end());
 
@@ -1831,11 +1946,11 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
     Collection &c = m_collections[index];
     ASSERT(c.item == current);
 
-    // Record visibility setting, including to qsettings.
-    QSettings settings;
-    settings.setValue("igtwigs/visibility/" + current->text(0),
-                      c.visibility = current->checkState(2));
-
+    // Record visibility setting.
+    c.visibility = current->checkState(2);
+    if (c.spec)
+      c.spec->visibility = c.visibility;
+    
     // Show the contents in 3D, as appropriate.
     displayCollection(c);
 
@@ -1969,13 +2084,15 @@ ISpyApplication::updateCollections(void)
 
       // Create new items in the tree view and a placeholder content
       // node in the 3D model. The latter will be filled in on first
-      // display, and directly here if the visibility is on.
-      int visibility = settings.value("igtwigs/visibility/" + QString(name.c_str()),
-                                      Qt::Checked).value<int>();
+      // display, and directly here if the visibility is on.      
+      
       QTreeWidgetItem *item = new QTreeWidgetItem(m_treeWidget);
       item->setText(0, name.c_str());
       item->setText(1, QString("%1").arg(coll->size()));
-      item->setCheckState(2, Qt::CheckState(visibility));
+      if (spec && spec->make3D)
+        item->setCheckState(2, Qt::CheckState(spec->visibility));
+      else
+        item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
 
       SoSwitch *sw = new SoSwitch;
       SoSeparator *sep = new SoSeparator;
@@ -2004,7 +2121,7 @@ ISpyApplication::updateCollections(void)
       m_collections[i].item = item;
       m_collections[i].node = sw;
       m_collections[i].sep = sep;
-      m_collections[i].visibility = visibility;
+      m_collections[i].visibility = spec ? Qt::CheckState(spec->visibility) : Qt::Unchecked;
 
       // Set current item. Updates table and 3D views too.
       // If this is not current and visible, show in 3D.

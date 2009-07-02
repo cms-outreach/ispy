@@ -1,3 +1,27 @@
+2009-06-29  Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* ISpyApplication.cc: Misc cosmetic fixes.
+
+	    * Documentation for the visibility option added. 
+	    * NULL changed to 0 everywhere.
+
+	* ISpyApplication.cc: reindentation fixes.
+
+2009-06-29  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Improved visibility handling.
+	  
+	  * Removes dependency on QSettings.
+	  * Adds an option to specify the default visibility for each
+	    collection spec.
+	  * Does not show the checkbox in the case the collection is not to be
+	    drawn in 3D.  
+
+2009-06-29  Thomas McCauley <mccauley@mail.cern.ch>
+
+	* IgSoSplineTrack.cc, ISpyApplication.cc: SimTracks support.
+	  Includes fix for "last dot" from George.
+
 Script to indent sources added to repository.
 
 * Requires Lassi's defaults and emacs.

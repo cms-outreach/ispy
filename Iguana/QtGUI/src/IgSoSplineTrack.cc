@@ -211,6 +211,7 @@ IgSoSplineTrack::midpoint(const SbVec3f pa, const SbVec3f pb, const SbVec3f ta, 
         std::cout << "tb: " << x << ", " << y << ", " << z << std::endl;
 #endif //DEBUG
         controlPoints[ipo++] = midpt4s;
+        knotVals[ik++] = static_cast<float>(ik_count++);
         return;
       }
     }
