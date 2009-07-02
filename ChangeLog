@@ -1,3 +1,7 @@
+2009-07-02  Thomas McCauley <mccauley@mail.cern.ch>
+
+	* ISpyApplication.cc: updated default settings for visibility.
+
 2009-06-29  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* ISpyApplication.cc: Misc cosmetic fixes.

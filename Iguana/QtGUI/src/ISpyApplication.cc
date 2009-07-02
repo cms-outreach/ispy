@@ -377,7 +377,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, S
       }
     }
     
-    if (nt > 2)
+    if (nt >= 2)
       sep->addChild(trackRep);
   }
   
@@ -1337,33 +1337,33 @@ ISpyApplication::ISpyApplication(void)
              make3DEvent,
              Qt::Checked);
 
-  collection("Pixel Digis",
+  collection("Si Pixel Digis",
              "PixelDigis_V1:pos",
              0,
              0,
              make3DPixelDigis,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Si Pixel Clusters",
              "SiPixelClusters_V1:pos",
              0,
              0,
              make3DSiPixelClusters,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Si Pixel Rec. Hits",
              "SiPixelRecHits_V1:pos",
              0,
              0,
              make3DSiPixelRecHits,
-             Qt::Checked);
+             Qt::Unchecked);
 
-  collection("SiStripCluster",
+  collection("Si Strip Clusters",
              "SiStripClusters_V1:pos",
              0,
              0,
              make3DSiStripClusters,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Si Strip Digis",
              "SiStripDigis_V1:pos",
@@ -1391,7 +1391,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DEcalRecHits,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("HB Rec. Hits",
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
@@ -1433,14 +1433,14 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DJets,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Et Missing",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
-             Qt::Checked);
+             Qt::Unchecked);
 
 
   collection("DT Digis",
@@ -1458,7 +1458,7 @@ ISpyApplication::ISpyApplication(void)
              make3DDTRecHits,
              Qt::Checked);
 
-  collection("DT Rec. Segments(4D)",
+  collection("DT Rec. Segments (4D)",
              "DTRecSegment4D_V1:pos_1:pos_2",
              0,
              0,
@@ -1492,6 +1492,22 @@ ISpyApplication::ISpyApplication(void)
              "TrackingParticlePSimHits_V1",
              make3DTrackingParticles,
              Qt::Checked);
+
+  collection("Products found", 
+             "Products_V1", 
+             0, 
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Products not found", 
+             "Errors_V1", 
+             0, 
+             0, 
+             0,
+             Qt::Checked);
+
+
   // Don't draw the following
   collection("Not drawn: Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
   collection("Not drawn: Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
