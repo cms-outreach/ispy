@@ -20,30 +20,30 @@ class IgSettingsTree;
 
 class IgSettingsEditor : public QMainWindow, private Ui::IgSettingsEditorMainWindow
 {
-    Q_OBJECT
+  Q_OBJECT
 public:
-    IgSettingsEditor (QWidget *parent = 0);
-    // implicit copy constructor
-    // implicit assignment operator
-    // implicit destructor
+  IgSettingsEditor(QWidget *parent = 0);
+  // implicit copy constructor
+  // implicit assignment operator
+  // implicit destructor
 
-    void 		setSettingsObject (QSettings *settings);
+  void          setSettingsObject(QSettings *settings);
 
 public slots:
-    void 		about (void);
-    void 		openSettings (void);
-    void 		openIniFile (void);
-    void 		openPropertyList (void);
-    void 		openRegistryPath (void);
-    void 		refresh (void);
-    void 		setAutoRefresh (bool value);
-    void 		setFallbacksEnabled (bool value);
-    
+  void          about(void);
+  void          openSettings(void);
+  void          openIniFile(void);
+  void          openPropertyList(void);
+  void          openRegistryPath(void);
+  void          refresh(void);
+  void          setAutoRefresh(bool value);
+  void          setFallbacksEnabled(bool value);
+
 private:
-    void		setupActions (void);
-    
-    IgSettingsTree 	*m_settingsTree;
-    IgLocationDialog 	*m_locationDialog;
+  void          setupActions(void);
+
+  IgSettingsTree        *m_settingsTree;
+  IgLocationDialog      *m_locationDialog;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

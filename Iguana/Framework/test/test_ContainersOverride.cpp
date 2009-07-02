@@ -2,7 +2,7 @@
 #include <vector>
 #include <cassert>
 
-struct A 
+struct A
 {
   template <class T>
   void foo (T a)

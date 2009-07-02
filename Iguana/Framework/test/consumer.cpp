@@ -56,7 +56,7 @@ public:
 	self->logme()
 	  << "ERROR: unrecognised object update code " << reason << '\n';
     }
-  
+
   virtual bool
   shouldStop(void)
     {

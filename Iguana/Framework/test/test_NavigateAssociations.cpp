@@ -10,16 +10,16 @@ int
 main()
 {
   IgDataStorage storage;
-  
+
   // Setup the data structure. This is not strictly necessary, as in general it
   // will be read from file, but we do it by hand, to simplify the test.
   // * Create a collection of tracks.
   // * Create a collection for additional measurements.
   // * Create an association set to associate the measurements to the given tracks.
-  // * Add a few tracks and the associated measurements. 
-  //   Each track as a different number of measurements: 
+  // * Add a few tracks and the associated measurements.
+  //   Each track as a different number of measurements:
   //
-  //       * 1st track 0 measurements, 
+  //       * 1st track 0 measurements,
   //       * 2nd track 1 measurement,
   //       * 3rd track 2 measurement
   //
@@ -61,10 +61,10 @@ main()
         trackMeasurements.associate(t, m);
       }
   }
-  
+
   // Debug stuff... print out the result.
   std::cerr << storage << std::endl;
-  
+
   std::vector<double> expectedResults;
   expectedResults.push_back(0);
   expectedResults.push_back(0);
@@ -122,7 +122,7 @@ main()
     IgCollection & myMeasurements = storage.getCollection("Measurements/V1");
     std::vector<double>::iterator eri = expectedResults.begin();
     std::vector<double>::iterator eri2 = expectedResults.begin();
-    
+
     for (IgCollectionIterator t = myTracks.begin();
          t != myTracks.end();
          t++)
@@ -167,7 +167,7 @@ main()
     }
   }
 
-  // Explicit way of doing the navigation, this is here only for reference 
+  // Explicit way of doing the navigation, this is here only for reference
   // while the above way should be preferred.
   {
     int n = 0;
@@ -175,7 +175,7 @@ main()
     IgCollection & myMeasurements = storage.getCollection("Measurements/V1");
     IgAssociationSet & myAssociations = storage.getAssociationSet("TrackMeasurements/V1");
     std::vector<double>::iterator eri = expectedResults.begin();
-    
+
     for (IgCollectionIterator t = myTracks.begin();
          t != myTracks.end();
          t++)

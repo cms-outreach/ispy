@@ -34,6 +34,6 @@ template class __default_alloc_template<1, 0>;
 int
 main (int argc, char *argv[])
 {
-    ISpyApplication app;
-    return app.run (argc, argv);
+  ISpyApplication app;
+  return app.run (argc, argv);
 }

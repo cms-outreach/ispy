@@ -1,4 +1,4 @@
-#ifdef PROJECT_NAME 
+#ifdef PROJECT_NAME
 # include <Iguana/Framework/interface/IgCollection.h>
 #else
 # include <IgCollection.h>
@@ -51,18 +51,18 @@ main()
     c[C_Z] = static_cast<double>(i);
     c[C_E] = static_cast<double>(i);
   }
-  
+
   // One to one associations
-  {  
+  {
     IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters/V1");
-    
-    IgCollectionIterator c = clusters.begin(); 
+
+    IgCollectionIterator c = clusters.begin();
     IgCollectionIterator t = tracks.begin();
 
     IgRef tRef = *t;
     assert (tracks.id() == 0);
     assert (tRef.collectionId() == 0);
-    
+
     while((c != clusters.end()) && (t != tracks.end()))
     {
       trackClusters.associate (*t, *c);
@@ -70,14 +70,14 @@ main()
       c++;
     }
     assert(trackClusters.size() == 10);
-  }  
+  }
   // One to many
   {
     IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters2/V1");
-    
-    IgCollectionIterator c = clusters.begin(); 
+
+    IgCollectionIterator c = clusters.begin();
     IgCollectionIterator t = tracks.begin();
-    
+
     while((c != clusters.end()) && (t != tracks.end()))
     {
       trackClusters.associate (*t, *c);

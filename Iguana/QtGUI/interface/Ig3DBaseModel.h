@@ -20,23 +20,23 @@ class SoGroup;
 class Ig3DBaseModel
 {
 public:
-    Ig3DBaseModel (void);
-    ~Ig3DBaseModel (void);
-    
-    SoGroup *		sceneGraph (void) const;
-    SoGroup *		contents (void) const;
-    SoGroup *		selection (void) const;
+  Ig3DBaseModel(void);
+  ~Ig3DBaseModel(void);
 
-    static SbString     encode (const std::string &name);
-    static std::string  decode (const std::string &name);
-    static std::string  decode (const SbName &name);
+  SoGroup *             sceneGraph(void) const;
+  SoGroup *             contents(void) const;
+  SoGroup *             selection(void) const;
+
+  static SbString     encode(const std::string &name);
+  static std::string  decode(const std::string &name);
+  static std::string  decode(const SbName &name);
 
 private:
-    void 		initScene (SoGroup *root);
-    
-    SoGroup		*m_sceneGraph;
-    SoGroup		*m_contents;
-    SoGroup		*m_selection;
+  void          initScene(SoGroup *root);
+
+  SoGroup               *m_sceneGraph;
+  SoGroup               *m_contents;
+  SoGroup               *m_selection;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

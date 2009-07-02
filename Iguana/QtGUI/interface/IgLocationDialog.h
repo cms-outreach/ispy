@@ -22,33 +22,33 @@ class QTableWidget;
 
 class IgLocationDialog : public QDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    IgLocationDialog (QWidget *parent = 0);
-    // implicit copy constructor
-    // implicit assignment operator
-    // implicit destructor
-    QSettings::Format format() const;
-    QSettings::Scope scope() const;
-    QString organization() const;
-    QString application() const;
+  IgLocationDialog(QWidget *parent = 0);
+  // implicit copy constructor
+  // implicit assignment operator
+  // implicit destructor
+  QSettings::Format format() const;
+  QSettings::Scope scope() const;
+  QString organization() const;
+  QString application() const;
 
 private slots:
-    void updateLocationsTable();
+  void updateLocationsTable();
 
 private:
-    QLabel *formatLabel;
-    QLabel *scopeLabel;
-    QLabel *organizationLabel;
-    QLabel *applicationLabel;
-    QComboBox *formatComboBox;
-    QComboBox *scopeComboBox;
-    QComboBox *organizationComboBox;
-    QComboBox *applicationComboBox;
-    QGroupBox *locationsGroupBox;
-    QTableWidget *locationsTable;
-    QDialogButtonBox *buttonBox;
+  QLabel *formatLabel;
+  QLabel *scopeLabel;
+  QLabel *organizationLabel;
+  QLabel *applicationLabel;
+  QComboBox *formatComboBox;
+  QComboBox *scopeComboBox;
+  QComboBox *organizationComboBox;
+  QComboBox *applicationComboBox;
+  QGroupBox *locationsGroupBox;
+  QTableWidget *locationsTable;
+  QDialogButtonBox *buttonBox;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

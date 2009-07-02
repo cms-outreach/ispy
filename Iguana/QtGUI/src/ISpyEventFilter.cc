@@ -15,18 +15,18 @@
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 bool
-ISpyEventFilter::eventFilter (QObject *obj, QEvent *event)
+ISpyEventFilter::eventFilter(QObject *obj, QEvent *event)
 {
-    if (event->type() == QEvent::FileOpen)
-    {	
-	QFileOpenEvent *foe = static_cast<QFileOpenEvent *> (event);
-	open (foe->file());
-	qWarning ("QFileOpenEvent %d", event->type ());
-	return true;
-    }
-    else
-    {
-	// standard event processing
-	return QObject::eventFilter (obj, event);
-    }
+  if (event->type() == QEvent::FileOpen)
+  {
+    QFileOpenEvent *foe = static_cast<QFileOpenEvent *>(event);
+    open(foe->file());
+    qWarning("QFileOpenEvent %d", event->type());
+    return true;
+  }
+  else
+  {
+    // standard event processing
+    return QObject::eventFilter(obj, event);
+  }
 }

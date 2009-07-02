@@ -19,17 +19,17 @@
 /** Draw a Jet object using energy, theta, phi, thrust.  */
 class IgSoJet : public IgSoShapeKit
 {
-    SO_KIT_HEADER (IgSoJet);
-    SO_KIT_CATALOG_ENTRY_HEADER (body);
-    SO_KIT_CATALOG_ENTRY_HEADER (bodyTrans);
-    SO_KIT_CATALOG_ENTRY_HEADER (bodyCone);
-    SO_KIT_CATALOG_ENTRY_HEADER (hat);
-    SO_KIT_CATALOG_ENTRY_HEADER (hatTrans);
-    SO_KIT_CATALOG_ENTRY_HEADER (hatCone);
+    SO_KIT_HEADER(IgSoJet);
+    SO_KIT_CATALOG_ENTRY_HEADER(body);
+    SO_KIT_CATALOG_ENTRY_HEADER(bodyTrans);
+    SO_KIT_CATALOG_ENTRY_HEADER(bodyCone);
+    SO_KIT_CATALOG_ENTRY_HEADER(hat);
+    SO_KIT_CATALOG_ENTRY_HEADER(hatTrans);
+    SO_KIT_CATALOG_ENTRY_HEADER(hatCone);
 
 public:
-    IgSoJet (void);
-    static void initClass (void);
+    IgSoJet(void);
+    static void initClass(void);
 
     SoSFFloat energy;       //< Energy of the jet
     SoSFFloat theta;        //< Theta of the jet axis
@@ -40,10 +40,10 @@ public:
     SoSFFloat maxEnergy;    //< Maximum energy used to scale jet size
 
 protected:
-    virtual void refresh (void);
+    virtual void refresh(void);
 
     // dimensions and angles for various things in the IgSoJet object
-    void setParameters ();
+    void setParameters();
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
