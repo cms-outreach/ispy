@@ -1,3 +1,13 @@
+2009-07-02  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: more fixes in the tree view. In particular
+	  elements are now sorted according the order in which `collection`s
+	  specifications are created. 
+
+2009-07-02  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: Fix the about dialog not appearing correctly.
+
 2009-07-02  Thomas McCauley <mccauley@mail.cern.ch>
 
 	* ISpyApplication.cc: updated default settings for visibility.

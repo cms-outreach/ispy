@@ -1595,18 +1595,12 @@ ISpyApplication::collection(const char *friendlyName,
   StringList parts;
 
   if (friendlyName)
-  {
     spec.friendlyName = friendlyName;
-    spec.visibility = visibility; 
-  }
   
   parts = StringOps::split(collectionSpec, ':');
   ASSERT(! parts.empty());
   spec.collection = parts[0];
-  
-  if (!friendlyName && !spec.collection.empty())
-    spec.visibility = visibility; 
-  
+    
   spec.requiredFields.insert(spec.requiredFields.end(),
                              parts.begin()+1, parts.end());
 
@@ -1627,6 +1621,7 @@ ISpyApplication::collection(const char *friendlyName,
   }
 
   spec.make3D = make3D;
+  spec.visibility = visibility;
 }
 
 /** Begin to exit application.  Clears all internal data structures
@@ -1964,8 +1959,6 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
 
     // Record visibility setting.
     c.visibility = current->checkState(2);
-    if (c.spec)
-      c.spec->visibility = c.visibility;
     
     // Show the contents in 3D, as appropriate.
     displayCollection(c);
@@ -2055,7 +2048,8 @@ ISpyApplication::updateCollections(void)
     StringList &names = m_storages[sti]->collectionNames();
     for (size_t ci = 0, ce = names.size(); ci != ce; ++ci, ++i)
     {
-      std::string       name = names[ci];
+      std::string       collectionName = names[ci];
+      std::string       name = collectionName;
       IgCollection      *coll = m_storages[sti]->getCollectionPtr(ci);
       IgCollection      *other = 0;
       IgAssociationSet  *assoc = 0;
@@ -2100,34 +2094,43 @@ ISpyApplication::updateCollections(void)
 
       // Create new items in the tree view and a placeholder content
       // node in the 3D model. The latter will be filled in on first
-      // display, and directly here if the visibility is on.      
-      
-      QTreeWidgetItem *item = new QTreeWidgetItem(m_treeWidget);
+      // display, and directly here if the visibility is on.
+      // 
+      // Notice taht tree items will be added to the widget only 
+      // later on, once we have sorted the collections by the
+      // associated specs.
+      QTreeWidgetItem *item = new QTreeWidgetItem;
       item->setText(0, name.c_str());
       item->setText(1, QString("%1").arg(coll->size()));
-      if (spec && spec->make3D)
-        item->setCheckState(2, Qt::CheckState(spec->visibility));
-      else
-        item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-
+      
       SoSwitch *sw = new SoSwitch;
       SoSeparator *sep = new SoSeparator;
-      sw->setName(SbName(names[ci].c_str()));
+      sw->setName(SbName(collectionName.c_str()));
       sw->addChild(sep);
-
+      
       // If this is geometry, and we had the same geometry, transfer
       // it over to the new collection to avoid recomputing it.  Note
       // that reading files in deliberately clears the .sep fields so
       // we won't be fooled here to think a new collection is the same
       // as the old one just because it has the same pointer.
-      if (sti == 1)
+      //
+      // In any case bring the visibility settings over from old collection,
+      // if available, otherwise use the default found in spec.
+      // If no spec is present, default to invisible.
+      int visibility = spec ? spec->visibility : Qt::Unchecked;
+      
+      for (size_t oi = 0, oe = oldcollections.size(); oi != oe; ++oi)
       {
-        for (size_t oi = 0, oe = oldcollections.size(); oi != oe; ++oi)
+        if (sti == 1)
           if (oldcollections[oi].data[0] == coll && oldcollections[oi].sep)
             for (int zi = 0, ze = oldcollections[oi].sep->getNumChildren(); zi != ze; ++zi)
               sep->addChild(oldcollections[oi].sep->getChild(zi));
+        if (oldcollections[oi].collectionName == collectionName)
+        {
+          visibility = oldcollections[oi].visibility;
+          break;
+        }
       }
-
       // Fill in the collection item. This needs to be in place before
       // we modify the tree as our slots on tree notifications use it.
       m_collections[i].spec = spec;
@@ -2137,15 +2140,33 @@ ISpyApplication::updateCollections(void)
       m_collections[i].item = item;
       m_collections[i].node = sw;
       m_collections[i].sep = sep;
-      m_collections[i].visibility = spec ? Qt::CheckState(spec->visibility) : Qt::Unchecked;
-
-      // Set current item. Updates table and 3D views too.
-      // If this is not current and visible, show in 3D.
-      if (! selected.isEmpty() && selected == item->text(0))
-        m_treeWidget->setCurrentItem(item);
-      else
-        displayCollection(m_collections[i]);
+      m_collections[i].visibility = visibility;
+      m_collections[i].collectionName = collectionName;
     }
+  }  
+  
+  // Sort the collections by spec so that they are displayed in the 
+  // tree according to the order of the various "collection" calls
+  // rather than in the one they happen to be in the file.
+  std::sort(m_collections.begin(), m_collections.end(), SortBySpecAndName());
+
+  for (size_t i = 0, e = m_collections.size(); i != e; ++i)
+  {
+    Collection &coll = m_collections[i];
+    
+    // Finish setting up the tree items and append them to the tree widget.
+    if (coll.spec && coll.spec->make3D)
+      coll.item->setCheckState(2, Qt::CheckState(coll.visibility));
+    else
+      coll.item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+    m_treeWidget->addTopLevelItem(coll.item);
+    
+    // Set current item. Updates table and 3D views too.
+    // If this is not current and visible, show in 3D.
+    if (! selected.isEmpty() && selected == coll.item->text(0))
+      m_treeWidget->setCurrentItem(coll.item);
+    else
+      displayCollection(coll);
   }
 
   // Clear and re-fill the 3D now that we don't need old data.
