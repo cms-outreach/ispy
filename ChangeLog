@@ -1,3 +1,13 @@
+2009-07-03  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpyApplication.h: support from two level
+	  grouping structure in the tree view. It is now possible to
+	  specify a two level structure by simply passing "Group/Name" to
+	  the "collection" method. Group state (expanded or collapsed) is
+	  preserved across event / file boundaries. Collection specification
+	  without a two level grouping will be added by default to the
+	  "Others" group.
+
 2009-07-02  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: more fixes in the tree view. In particular
