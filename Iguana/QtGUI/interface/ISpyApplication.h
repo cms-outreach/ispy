@@ -84,6 +84,7 @@ private slots:
   void                  cleanSplash(void);
   void                  setCurrentItem(QTreeWidgetItem *current, QTreeWidgetItem *previous);
   void                  itemActivated(QTreeWidgetItem *current, int);
+  void                  handleGroupsClicking(QTreeWidgetItem *current);
   void                  onExit(void);
   void                  exit(void);
   void                  rewind(void);
@@ -118,6 +119,15 @@ private:
     SoSeparator                 *sep;
     int                         visibility;
     std::string                 collectionName;
+    int                         groupIndex;
+  };
+
+  struct Group
+  {
+    std::string                 name;
+    bool                        expanded;
+    std::vector<size_t>         children;
+    QTreeWidgetItem             *item;
   };
 
   struct Event
@@ -130,6 +140,8 @@ private:
   typedef std::vector<CollectionSpec>   CollectionSpecs;
   typedef std::vector<Collection>       Collections;
   typedef std::vector<Event>            Events;
+  typedef std::vector<Group>            Groups;
+  typedef std::vector<size_t>           GroupIndex;
 
   struct SortBySpecAndName
   {
@@ -171,6 +183,8 @@ private:
   IgDataStorage         *m_storages[2];
   CollectionSpecs       m_specs;
   Collections           m_collections;
+  Groups                m_groups;
+  GroupIndex            m_groupIndex;
   Events                m_events;
   size_t                m_eventIndex;
 

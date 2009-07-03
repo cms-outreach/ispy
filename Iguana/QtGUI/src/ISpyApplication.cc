@@ -64,6 +64,7 @@
 #include <QtGui>
 #include <QtNetwork>
 #include <iostream>
+#include <set>
 
 
 using namespace lat;
@@ -1337,35 +1338,35 @@ ISpyApplication::ISpyApplication(void)
              make3DEvent,
              Qt::Checked);
 
-  collection("Si Pixel Digis",
+  collection("Tracker/Si Pixel Digis",
              "PixelDigis_V1:pos",
              0,
              0,
              make3DPixelDigis,
              Qt::Unchecked);
 
-  collection("Si Pixel Clusters",
+  collection("Tracker/Si Pixel Clusters",
              "SiPixelClusters_V1:pos",
              0,
              0,
              make3DSiPixelClusters,
              Qt::Unchecked);
 
-  collection("Si Pixel Rec. Hits",
+  collection("Tracker/Si Pixel Rec. Hits",
              "SiPixelRecHits_V1:pos",
              0,
              0,
              make3DSiPixelRecHits,
              Qt::Unchecked);
 
-  collection("Si Strip Clusters",
+  collection("Tracker/Si Strip Clusters",
              "SiStripClusters_V1:pos",
              0,
              0,
              make3DSiStripClusters,
              Qt::Unchecked);
 
-  collection("Si Strip Digis",
+  collection("Tracker/Si Strip Digis",
              "SiStripDigis_V1:pos",
              0,
              0,
@@ -1386,35 +1387,35 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackingRecHits,
              Qt::Checked);
 
-  collection("ECAL Rec. Hits",
+  collection("ECAL/ECAL Rec. Hits",
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalRecHits,
              Qt::Checked);
 
-  collection("HB Rec. Hits",
+  collection("HCAL/HB Rec. Hits",
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("HE Rec. Hits",
+  collection("HCAL/HE Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("HF Rec. Hits",
+  collection("HCAL/HF Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("HO Rec. Hits",
+  collection("HCAL/HO Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
@@ -1443,14 +1444,14 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 
-  collection("DT Digis",
+  collection("Muon Chambers/DT Digis",
              "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
              0,
              0,
              make3DDTDigis,
              Qt::Checked);
 
-  collection("DT Rec. Hits",
+  collection("Muon Chambers/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
              ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
              0,
@@ -1458,28 +1459,28 @@ ISpyApplication::ISpyApplication(void)
              make3DDTRecHits,
              Qt::Checked);
 
-  collection("DT Rec. Segments (4D)",
+  collection("Muon Chambers/DT Rec. Segments (4D)",
              "DTRecSegment4D_V1:pos_1:pos_2",
              0,
              0,
              make3DDTRecSegment4D,
              Qt::Checked);
 
-  collection("CSC Segments",
+  collection("Muon Chambers/CSC Segments",
              "CSCSegments_V1:pos_1:pos_2",
              0,
              0,
              make3DCSCSegments,
              Qt::Checked);
 
-  collection("RPC Rec. Hits",
+  collection("Muon Chambers/RPC Rec. Hits",
              "RPCRecHits_V1:u1:u2:v1:v2:w2",
              0,
              0,
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon Tracks",
+  collection("Muon Chambers/Muon Tracks",
              "Muons_V1:pt:charge:rp:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
@@ -1622,6 +1623,8 @@ ISpyApplication::collection(const char *friendlyName,
 
   spec.make3D = make3D;
   spec.visibility = visibility;
+  
+  
 }
 
 /** Begin to exit application.  Clears all internal data structures
@@ -1843,6 +1846,10 @@ ISpyApplication::setupMainWindow(void)
                    this, SLOT(itemActivated(QTreeWidgetItem *, int)));
   QObject::connect(m_treeWidget, SIGNAL(itemClicked(QTreeWidgetItem *, int)),
                    this, SLOT(itemActivated(QTreeWidgetItem *, int)));
+  QObject::connect(m_treeWidget, SIGNAL(itemCollapsed(QTreeWidgetItem *)),
+                   this, SLOT(handleGroupsClicking(QTreeWidgetItem *)));
+  QObject::connect(m_treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem *)),
+                   this, SLOT(handleGroupsClicking(QTreeWidgetItem *)));
 }
 
 /** Take the splash screen down.  Called from timer signal. */
@@ -1937,6 +1944,27 @@ ISpyApplication::setCurrentItem(QTreeWidgetItem *current, QTreeWidgetItem *)
   itemActivated(current, 0);
 }
 
+/** Handles clicking on the group items. It simply records the state of the
+    group item in a Group structure, so that we can reuse the information on
+    "updateCollections" to repristinate the full state of the tree.
+*/
+void
+ISpyApplication::handleGroupsClicking(QTreeWidgetItem *current)
+{
+  if (current == m_treeWidget->headerItem() || current->parent() )
+    return;
+
+  int index = m_treeWidget->indexOfTopLevelItem(current);
+  if (index < 0)
+    return;
+  ASSERT(index < m_groupIndex.size());
+  size_t groupIndex = m_groupIndex[index];
+  ASSERT(groupIndex < m_groups.size());
+  Group &group = m_groups[groupIndex];
+  group.expanded = m_treeWidget->isItemExpanded(current);
+}
+
+
 /** Respond to selection changes in the tree view.  This may be due to
     a GUI action such as mouse clicking or using arrow keys, or may
     result indirectly from moving between events or opening a file.
@@ -1948,38 +1976,58 @@ ISpyApplication::setCurrentItem(QTreeWidgetItem *current, QTreeWidgetItem *)
 void
 ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
 {
-  // FIXME: Do we need to do anything if current item was cleared?
-  if (current)
+  if (!current)
+    return;
+  
+  // Handle the case a group was clicked.
+  QTreeWidgetItem *parent = current->parent();
+  if (!parent)
   {
-
-    size_t index = m_treeWidget->indexOfTopLevelItem(current);
-    ASSERT(index < m_collections.size());
-    Collection &c = m_collections[index];
-    ASSERT(c.item == current);
-
-    // Record visibility setting.
-    c.visibility = current->checkState(2);
-    
-    // Show the contents in 3D, as appropriate.
-    displayCollection(c);
-
-    // Show table collection.
-    if (! m_tableModel)
-    {
-      m_tableModel = new IgCollectionTableModel(c.data[0]);
-      m_mainWindow->tableView->setModel(m_tableModel);
-    }
-    else
-      m_tableModel->setCollection(c.data[0]);
-
-#if 0
-    // Clear any past 3D model selection and highlight this collection
-    //(FIXME: do we want this?).
-    m_3DModel->selection()->removeAllChildren();
-    if (c.visibility == Qt::Checked)
-      m_3DModel->selection()->addChild(c->sep);
-#endif
+    delete m_tableModel;
+    m_tableModel = 0;
+    return;
   }
+  // Handle the case a collection was clicked.
+  // * Retrieve the group to which the clicked item belongs to.
+  // * Retrieve the index of the collection in the m_collections.
+  // * Retrieve the collection itself.
+  // FIXME: Do we need to do anything if current item was cleared?
+  int parentIndex = m_treeWidget->indexOfTopLevelItem(parent);
+  if (parentIndex < 0)
+    return;
+  ASSERT(parentIndex < m_groupIndex.size());
+  size_t groupIndex = m_groupIndex[parentIndex];
+  ASSERT(groupIndex < m_groups.size());
+  Group &group = m_groups[groupIndex];
+  int childIndex = parent->indexOfChild(current);
+  ASSERT(childIndex >= 0);
+  ASSERT(childIndex < group.children.size());
+  size_t index = group.children[childIndex];
+  Collection &c = m_collections[index];
+  ASSERT(c.item == current);
+  
+  // Record visibility setting.
+  c.visibility = current->checkState(2);
+  
+  // Show the contents in 3D, as appropriate.
+  displayCollection(c);
+  
+  // Show table collection.
+  if (! m_tableModel)
+  {
+    m_tableModel = new IgCollectionTableModel(c.data[0]);
+    m_mainWindow->tableView->setModel(m_tableModel);
+  }
+  else
+    m_tableModel->setCollection(c.data[0]);
+  
+#if 0
+  // Clear any past 3D model selection and highlight this collection
+  //(FIXME: do we want this?).
+  m_3DModel->selection()->removeAllChildren();
+  if (c.visibility == Qt::Checked)
+    m_3DModel->selection()->addChild(c->sep);
+#endif
 }
 
 /** Control collection display in the 3D window(only).  Toggles the
@@ -2038,6 +2086,10 @@ ISpyApplication::updateCollections(void)
   // Record these in our collections list for later reference.
   Collections oldcollections(m_storages[0]->collectionNames().size() +
                              m_storages[1]->collectionNames().size());
+  Groups oldgroups;
+
+  m_groupIndex.clear();
+  m_groups.swap(oldgroups);
   m_collections.swap(oldcollections);
   for (size_t sti = 0, ste = 2, i = 0; sti < ste; ++sti)
   {
@@ -2091,7 +2143,52 @@ ISpyApplication::updateCollections(void)
           }
         }
       }
-
+      
+      // Handles the collections groups:
+      // * Determine the group name from the spec name.
+      // * Lookup the groups directory by name to see if the group is already 
+      //   there, create it otherwise.
+      // * Save the group index to store it in the Collection.
+      // Actual addition of the children to a group is done later on, so that
+      // we can make sure that the group ordering is the same as the 
+      // one in which the collections where declared.
+      lat::StringList parts = lat::StringOps::split(name, '/');
+      name = parts.back();
+      std::string groupName;
+      if (parts.size() == 2)
+        groupName = parts.front();
+      else
+        groupName = "Others";
+      
+      int groupIdx = -1;
+      for (size_t gi = 0, ge = m_groups.size(); gi != ge; gi++)
+        if(m_groups[gi].name == groupName)
+        {
+          groupIdx = gi;
+          break;
+        }
+        
+      if (groupIdx < 0)
+      {
+        groupIdx = m_groups.size();
+        m_groups.resize(m_groups.size() + 1);
+        Group &group = m_groups.back();
+        group.name = groupName;
+        group.item = new QTreeWidgetItem;
+        group.item->setText(0, groupName.c_str());
+        group.item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
+        // Loop over the old groups and bring over the "expanded" property.
+        bool expanded = true;
+        for (size_t ogi = 0, oge = oldgroups.size(); ogi != oge; ogi++)
+          if (oldgroups[ogi].name == groupName)
+          {
+            expanded = oldgroups[ogi].expanded;
+            break;
+          }
+        group.expanded = expanded;
+      }
+      
+      
       // Create new items in the tree view and a placeholder content
       // node in the 3D model. The latter will be filled in on first
       // display, and directly here if the visibility is on.
@@ -2131,6 +2228,7 @@ ISpyApplication::updateCollections(void)
           break;
         }
       }
+      
       // Fill in the collection item. This needs to be in place before
       // we modify the tree as our slots on tree notifications use it.
       m_collections[i].spec = spec;
@@ -2142,6 +2240,7 @@ ISpyApplication::updateCollections(void)
       m_collections[i].sep = sep;
       m_collections[i].visibility = visibility;
       m_collections[i].collectionName = collectionName;
+      m_collections[i].groupIndex = groupIdx;
     }
   }  
   
@@ -2150,21 +2249,43 @@ ISpyApplication::updateCollections(void)
   // rather than in the one they happen to be in the file.
   std::sort(m_collections.begin(), m_collections.end(), SortBySpecAndName());
 
+  std::set<size_t> createdGroups;
+  m_groupIndex.clear();
   for (size_t i = 0, e = m_collections.size(); i != e; ++i)
   {
     Collection &coll = m_collections[i];
+    // Get the associated group, check if it is already in the tree widget 
+    // (create and add it eventually, with correct expand settings).
+    // Add the children to the group.
+    Group &group = m_groups[coll.groupIndex];
+    
+    if (createdGroups.find(coll.groupIndex) == createdGroups.end())
+    {
+      createdGroups.insert(coll.groupIndex);
+      m_groupIndex.push_back(coll.groupIndex);
+      m_treeWidget->addTopLevelItem(group.item);
+      m_treeWidget->setItemExpanded(group.item, group.expanded);
+    }
+    
+    group.children.push_back(i);
+    group.item->addChild(coll.item);
     
     // Finish setting up the tree items and append them to the tree widget.
     if (coll.spec && coll.spec->make3D)
       coll.item->setCheckState(2, Qt::CheckState(coll.visibility));
     else
       coll.item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
-    m_treeWidget->addTopLevelItem(coll.item);
     
     // Set current item. Updates table and 3D views too.
     // If this is not current and visible, show in 3D.
     if (! selected.isEmpty() && selected == coll.item->text(0))
-      m_treeWidget->setCurrentItem(coll.item);
+    {
+      // FIXME: this is required because otherwise setCurretItem() forces the
+      //        group to be expanded on next event, even if it is not.
+      //        I could not find any better solution.
+      if (m_groups[coll.groupIndex].expanded)
+        m_treeWidget->setCurrentItem(coll.item);
+    }
     else
       displayCollection(coll);
   }
