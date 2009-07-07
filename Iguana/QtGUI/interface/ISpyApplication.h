@@ -22,7 +22,6 @@ class IgDataStorage;
 class IgCollectionTableModel;
 class IgMultiStorageTreeModel;
 class Ig3DBaseModel;
-class QTreeWidget;
 class QTreeWidgetItem;
 class SoSwitch;
 class SoSeparator;
@@ -192,7 +191,6 @@ private:
   Ig3DBaseModel         *m_3DModel;
 
   ISpyMainWindow        *m_mainWindow;
-  QTreeWidget           *m_treeWidget;
   ISpySplashScreen      *m_splash;
 
   bool                  m_autoEvents;
