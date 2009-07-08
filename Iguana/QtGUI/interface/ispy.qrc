@@ -1,7 +1,5 @@
 <RCC>
   <qresource prefix="images" >
-    <file>Play1Normal.png</file>
-    <file>PausePressed.png</file>
     <file>ortho.xpm</file>
     <file>perspective.xpm</file>
     <file>IGUANA_SPLASH.xpm</file>
@@ -21,7 +19,9 @@
     <file>controlcenter.png</file>
     <file>crosshair.png</file>
     <file>next.png</file>
+    <file>pause.png</file>
     <file>previous.png</file>
+    <file>play.png</file>
     <file>print.png</file>
     <file>zoom_in.png</file>
     <file>zoom_out.png</file>
