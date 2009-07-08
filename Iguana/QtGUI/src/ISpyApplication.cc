@@ -1331,7 +1331,7 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 
-  collection("Event information",
+  collection("Event/Event information",
              "Event_V1:time:run:event:ls:orbit:bx",
              0,
              0,
@@ -1373,14 +1373,14 @@ ISpyApplication::ISpyApplication(void)
              make3DSiStripDigis,
              Qt::Unchecked);
 
-  collection("Tracks",
+  collection("Tracking/Tracks",
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
              make3DTracks,
              Qt::Checked);
 
-  collection("Tracking Rec. Hits",
+  collection("Tracking/Tracking Rec. Hits",
              "TrackingRecHits_V1:pos",
              0,
              0,
@@ -1444,14 +1444,14 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 
-  collection("Muon Chambers/DT Digis",
+  collection("Muon/DT Digis",
              "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
              0,
              0,
              make3DDTDigis,
              Qt::Checked);
 
-  collection("Muon Chambers/DT Rec. Hits",
+  collection("Muon/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
              ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
              0,
@@ -1459,49 +1459,49 @@ ISpyApplication::ISpyApplication(void)
              make3DDTRecHits,
              Qt::Checked);
 
-  collection("Muon Chambers/DT Rec. Segments (4D)",
+  collection("Muon/DT Rec. Segments (4D)",
              "DTRecSegment4D_V1:pos_1:pos_2",
              0,
              0,
              make3DDTRecSegment4D,
              Qt::Checked);
 
-  collection("Muon Chambers/CSC Segments",
+  collection("Muon/CSC Segments",
              "CSCSegments_V1:pos_1:pos_2",
              0,
              0,
              make3DCSCSegments,
              Qt::Checked);
 
-  collection("Muon Chambers/RPC Rec. Hits",
+  collection("Muon/RPC Rec. Hits",
              "RPCRecHits_V1:u1:u2:v1:v2:w2",
              0,
              0,
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon Chambers/Muon Tracks",
+  collection("Muon/Muon Tracks",
              "Muons_V1:pt:charge:rp:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
              make3DMuons,
              Qt::Checked);
   
-  collection("Tracking Particles",
+  collection("Tracking/Tracking Particles",
              "TrackingParticles_V1",
              "PSimHits_V1:pos:dir",
              "TrackingParticlePSimHits_V1",
              make3DTrackingParticles,
              Qt::Checked);
 
-  collection("Products found", 
+  collection("Event/Products found", 
              "Products_V1", 
              0, 
              0,
              0,
              Qt::Checked);
 
-  collection("Products not found", 
+  collection("Event/Products not found", 
              "Errors_V1", 
              0, 
              0, 
@@ -2158,7 +2158,7 @@ ISpyApplication::updateCollections(void)
       if (parts.size() == 2)
         groupName = parts.front();
       else
-        groupName = "Others";
+        groupName = "Other";
       
       int groupIdx = -1;
       for (size_t gi = 0, ge = m_groups.size(); gi != ge; gi++)
