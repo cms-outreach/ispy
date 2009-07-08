@@ -1,3 +1,12 @@
+2009-07-09  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpyApplication.h,
+	  ui_IgMainWindow.h, IgMainWindowMDI.1.0.ui: better look 
+	  and feel for the tree viewer.
+	  Besides prettier colors and fonts, it now resizes correctly,
+	  with the number of items and the checkbox remaining anchored
+	  to the right side.
+	
 2009-07-08  Thomas McCauley <mccauley@mail.cern.ch>
 
 	* ISpyApplication.cc: better grouping of collections.

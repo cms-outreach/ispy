@@ -1826,17 +1826,22 @@ ISpyApplication::setupMainWindow(void)
   m_mainWindow->actionAuto->setEnabled(false);
   m_mainWindow->actionNext->setEnabled(false);
   m_mainWindow->actionPrevious->setEnabled(false);
-  m_mainWindow->treeView->hide();
 
   QStringList headers;
   headers << "Collection" << "Items" << "Show";
-  m_treeWidget = new QTreeWidget(m_mainWindow->dockTreeWidgetContents);
+  m_treeWidget = m_mainWindow->treeWidget;
 
   m_treeWidget->setHeaderLabels(headers);
-  m_treeWidget->setColumnWidth(1, 90);
-  m_treeWidget->setColumnWidth(2, 30);
-  m_treeWidget->setAlternatingRowColors(true);
-  m_mainWindow->gridLayout_3->addWidget(m_treeWidget);
+  m_treeWidget->setAlternatingRowColors(false);
+  
+  m_groupFont = new QFont("Helvetica Neue");
+  m_groupFont->setPixelSize(11);
+  m_groupFont->setWeight(QFont::Bold);
+  m_groupFont->setCapitalization(QFont::AllUppercase);
+  
+  //m_groupFont->setStretch(QFont::SemiCondensed);
+  m_itemFont = new QFont("Helvetica Neue");
+  m_itemFont->setPixelSize(11);
 
   m_mainWindow->restoreSettings();
 
@@ -2175,7 +2180,9 @@ ISpyApplication::updateCollections(void)
         Group &group = m_groups.back();
         group.name = groupName;
         group.item = new QTreeWidgetItem;
+        group.item->setFont(0, *m_groupFont);
         group.item->setText(0, groupName.c_str());
+        group.item->setTextColor(0, QColor(93, 110, 129));
         group.item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
         // Loop over the old groups and bring over the "expanded" property.
         bool expanded = true;
@@ -2197,7 +2204,11 @@ ISpyApplication::updateCollections(void)
       // later on, once we have sorted the collections by the
       // associated specs.
       QTreeWidgetItem *item = new QTreeWidgetItem;
+      item->setFont(0, *m_itemFont);
+      item->setFont(1, *m_itemFont);
       item->setText(0, name.c_str());
+      item->setTextAlignment(1, Qt::AlignRight|Qt::AlignVCenter);
+      item->setTextAlignment(2, Qt::AlignCenter);
       item->setText(1, QString("%1").arg(coll->size()));
       
       SoSwitch *sw = new SoSwitch;
@@ -2290,6 +2301,16 @@ ISpyApplication::updateCollections(void)
       displayCollection(coll);
   }
 
+  // Looks like because we called "clear" we need to reset all the 
+  // tree properties to have the QTreeWidget behave correctly.
+  m_treeWidget->header()->setMinimumSectionSize(33);
+  m_treeWidget->header()->setDefaultSectionSize(33);
+  m_treeWidget->header()->setStretchLastSection(false);
+  m_treeWidget->header()->setCascadingSectionResizes(true);
+  m_treeWidget->header()->setResizeMode(0, QHeaderView::Stretch);
+  m_treeWidget->header()->setResizeMode(1, QHeaderView::ResizeToContents);
+  m_treeWidget->header()->setResizeMode(2, QHeaderView::Fixed);
+  
   // Clear and re-fill the 3D now that we don't need old data.
   m_3DModel->contents()->removeAllChildren();
   for (size_t i = 0, e = m_collections.size(); i != e; ++i)
