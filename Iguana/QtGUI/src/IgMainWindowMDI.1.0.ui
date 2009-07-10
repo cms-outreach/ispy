@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -105,14 +105,91 @@
    </attribute>
    <widget class="QWidget" name="dockTreeWidgetContents">
     <layout class="QGridLayout" name="gridLayout_3">
+     <property name="margin">
+      <number>0</number>
+     </property>
      <item row="0" column="0">
-      <widget class="QTreeView" name="treeView">
-       <property name="alternatingRowColors">
-        <bool>true</bool>
+      <widget class="QTreeWidget" name="treeWidget">
+       <property name="styleSheet">
+        <string notr="true">QTreeView {
+background-color: #cfdde6;
+alternate-background-color: #cfdde6;
+}
+
+ QTreeView {
+     show-decoration-selected: 1;
+ }
+
+ QTreeView::item {
+ }
+
+ QTreeView::item:selected {
+     border-top: 1px solid #567dbc;
+     border-bottom: 1px solid #567dbc;
+	 border-left: 0px;
+	 border-right: 0px;
+ }
+
+ QTreeView::item:selected:active{
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+ }
+
+ QTreeView::item:selected:!active {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
+ }
+</string>
        </property>
-       <property name="headerHidden">
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAsNeeded</enum>
+       </property>
+       <property name="autoScroll">
         <bool>false</bool>
        </property>
+       <property name="dragEnabled">
+        <bool>false</bool>
+       </property>
+       <property name="alternatingRowColors">
+        <bool>false</bool>
+       </property>
+       <property name="verticalScrollMode">
+        <enum>QAbstractItemView::ScrollPerPixel</enum>
+       </property>
+       <property name="indentation">
+        <number>10</number>
+       </property>
+       <property name="columnCount">
+        <number>3</number>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerCascadingSectionResizes">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerDefaultSectionSize">
+        <number>22</number>
+       </attribute>
+       <attribute name="headerStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">1</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string notr="true">2</string>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string notr="true">3</string>
+        </property>
+       </column>
       </widget>
      </item>
     </layout>

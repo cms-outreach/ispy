@@ -8,6 +8,7 @@
 # include <QTimer>
 # include <QUrl>
 # include <QCheckBox>
+# include <QHeaderView>
 # include <vector>
 # include <map>
 
@@ -200,6 +201,8 @@ private:
   QTimer                *m_timer;
   QNetworkAccessManager *m_networkManager;
   QProgressDialog       *m_progressDialog;
+  QFont                 *m_groupFont;
+  QFont                 *m_itemFont;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
