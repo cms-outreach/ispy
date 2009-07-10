@@ -374,7 +374,9 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, S
         
         ++nt;
         
-        vertices->vertex.set1Value(++nv, SbVec3f(p.x(),p.y(), p.z()));
+        vertices->vertex.set1Value(nv, SbVec3f(p.x(),p.y(), p.z()));
+
+        ++nv;
       }
     }
     
