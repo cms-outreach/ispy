@@ -1340,35 +1340,35 @@ ISpyApplication::ISpyApplication(void)
              make3DEvent,
              Qt::Checked);
 
-  collection("Tracker/Si Pixel Digis",
+  collection("Tracking/Si Pixel Digis",
              "PixelDigis_V1:pos",
              0,
              0,
              make3DPixelDigis,
              Qt::Unchecked);
 
-  collection("Tracker/Si Pixel Clusters",
+  collection("Tracking/Si Pixel Clusters",
              "SiPixelClusters_V1:pos",
              0,
              0,
              make3DSiPixelClusters,
              Qt::Unchecked);
 
-  collection("Tracker/Si Pixel Rec. Hits",
+  collection("Tracking/Si Pixel Rec. Hits",
              "SiPixelRecHits_V1:pos",
              0,
              0,
              make3DSiPixelRecHits,
              Qt::Unchecked);
 
-  collection("Tracker/Si Strip Clusters",
+  collection("Tracking/Si Strip Clusters",
              "SiStripClusters_V1:pos",
              0,
              0,
              make3DSiStripClusters,
              Qt::Unchecked);
 
-  collection("Tracker/Si Strip Digis",
+  collection("Tracking/Si Strip Digis",
              "SiStripDigis_V1:pos",
              0,
              0,
@@ -1389,56 +1389,77 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackingRecHits,
              Qt::Checked);
 
-  collection("ECAL/ECAL Rec. Hits",
+  collection("Calorimetry/ECAL Rec. Hits",
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalRecHits,
              Qt::Checked);
 
-  collection("HCAL/HB Rec. Hits",
+  collection("Calorimetry/EB Rec. Hits",
+             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+
+  collection("Calorimetry/EE Rec. Hits",
+             "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+  
+  collection("Calorimetry/ES Rec. Hits",
+             "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+
+  collection("Calorimetry/HB Rec. Hits",
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("HCAL/HE Rec. Hits",
+  collection("Calorimetry/HE Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("HCAL/HF Rec. Hits",
+  collection("Calorimetry/HF Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("HCAL/HO Rec. Hits",
+  collection("Calorimetry/HO Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("Calorimeter Energy Towers",
+  collection("Calorimetry/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DCaloTowers,
              Qt::Checked);
 
-  collection("Jets",
+  collection("Calorimetry/Jets",
              "Jets_V1:et:theta:phi",
              0,
              0,
              make3DJets,
              Qt::Unchecked);
 
-  collection("Et Missing",
+  collection("Calorimetry/Et Missing",
              "METs_V1:pt:px:py:phi",
              0,
              0,
@@ -1509,14 +1530,21 @@ ISpyApplication::ISpyApplication(void)
              0, 
              0,
              Qt::Checked);
+  
+  collection("Trigger/L1 Trigger",
+             "L1GtTrigger_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
 
 
   // Don't draw the following
-  collection("Not drawn: Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not drawn: Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not drawn: Points_V1", "Points_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not drawn: DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not drawn: PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/Points_V1", "Points_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
 
   // Default drawing operations if none of the above explicitly matched
 
