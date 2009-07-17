@@ -1,4 +1,10 @@
 2009-07-17  Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* stylesheet-branch-open.png, ispy.qrc, ui_IgMainWindow.h
+	  ISpyApplication.cc, IgMainWindowMDI.1.0.ui, qrc_ispy.cc:
+	  improved look and feel of the combo box controlling
+	  which view is selected. Among other things works around
+	  the bug in mouse-wheel handling in Qt.
 
 	* ISpy3DView.h, ISpyApplication.h, Ig3DBaseModel.h,
 	  ISpy3DView.cc, ISpyApplication.cc, Ig3DBaseModel.cc:

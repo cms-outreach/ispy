@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="images" >
+    <file>stylesheet-branch-open.png</file>
     <file>ortho.xpm</file>
     <file>perspective.xpm</file>
     <file>IGUANA_SPLASH.xpm</file>
