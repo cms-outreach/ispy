@@ -394,8 +394,12 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, S
   sep->addChild(points);
 }
 
-static void
-make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+static 
+void make3DTracks(IgCollection **collections, 
+                  IgAssociationSet **assocs, 
+                  SoSeparator *sep,
+                  SbColor colour,
+                  int kind)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *extras = collections[1];
@@ -415,7 +419,7 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   SoMarkerSet           *mpoints = new SoMarkerSet;
   int                   nv = 0;
 
-  mat->diffuseColor = SbColor(0.8, 0.8, 0.5);
+  mat->diffuseColor = colour;
   sty->style = SoDrawStyle::LINES;
   sty->lineWidth = 2;
 
@@ -423,7 +427,7 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   sep->addChild(sty);
   sep->addChild(vsep);
 
-  vmat->diffuseColor = SbColor(0.9, 1.0, 0.3);
+  vmat->diffuseColor = colour;
   vsep->addChild(mat);
 
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
@@ -468,7 +472,7 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
     }
 
     tvertices->vertex.setNum(nVtx);
-    tpoints->markerIndex = SoMarkerSet::SQUARE_LINE_5_5;
+    tpoints->markerIndex = kind;
     tpoints->vertexProperty = tvertices;
     tpoints->numPoints.setValue(nVtx);
 
@@ -481,6 +485,20 @@ make3DTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   mpoints->vertexProperty.setValue(vertices);
   mpoints->numPoints.setValue(nv);
   vsep->addChild(mpoints);
+
+}
+
+static void
+make3DGsfTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTracks(collections, assocs, sep, SbColor(1.0, 0.9, 0.0), SoMarkerSet::SQUARE_FILLED_5_5);
+}
+
+
+static void
+make3DRecoTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTracks(collections, assocs, sep, SbColor(0.8, 0.8, 0.5), SoMarkerSet::SQUARE_LINE_5_5);
 }
 
 
@@ -1387,7 +1405,7 @@ ISpyApplication::ISpyApplication(void)
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
-             make3DTracks,
+             make3DRecoTracks,
              Qt::Checked);
 
   collection("Tracking/Tracking Rec. Hits",
@@ -1396,6 +1414,13 @@ ISpyApplication::ISpyApplication(void)
              0,
              make3DTrackingRecHits,
              Qt::Checked);
+
+  collection("Tracking/GSF Tracks",
+             "GsfTracks_V1:pt:pos:dir",
+             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfTrackExtras_V1",
+             make3DGsfTracks,
+             Qt::Unchecked);
 
   collection("Calorimetry/ECAL Rec. Hits",
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
@@ -1564,7 +1589,7 @@ ISpyApplication::ISpyApplication(void)
              "GsfTracks_V1:pt:pos:dir",
              "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfTrackExtras_V1",
-             make3DTracks,
+             make3DGsfTracks,
              Qt::Unchecked);
 
   // Don't draw the following
@@ -1626,7 +1651,7 @@ ISpyApplication::ISpyApplication(void)
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
-             make3DTracks,
+             make3DRecoTracks,
              Qt::Checked);
 
   collection("Tracking/Tracking Rec. Hits",
