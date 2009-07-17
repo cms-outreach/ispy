@@ -98,15 +98,26 @@
   </widget>
   <widget class="QDockWidget" name="dockTreeWidget">
    <property name="features">
-    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+    <set>QDockWidget::DockWidgetMovable</set>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockTreeWidgetContents">
+    <property name="styleSheet">
+     <string notr="true">#dockTreeWidgetContents {
+background-color: #cfdde6;
+margin: 0px;
+padding: 0px;
+spacing: 0px;
+}</string>
+    </property>
     <layout class="QGridLayout" name="gridLayout_3">
      <property name="margin">
       <number>0</number>
+     </property>
+     <property name="spacing">
+      <number>-1</number>
      </property>
      <item row="1" column="0">
       <widget class="QTreeWidget" name="treeWidget">
@@ -115,6 +126,7 @@
 background-color: #cfdde6;
 alternate-background-color: #cfdde6;
 	margin: 0px;
+    border: 0px;
 }
 
  QTreeView {
@@ -140,10 +152,22 @@ alternate-background-color: #cfdde6;
  }
 </string>
        </property>
+       <property name="frameShape">
+        <enum>QFrame::NoFrame</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Plain</enum>
+       </property>
+       <property name="lineWidth">
+        <number>0</number>
+       </property>
        <property name="horizontalScrollBarPolicy">
         <enum>Qt::ScrollBarAsNeeded</enum>
        </property>
        <property name="autoScroll">
+        <bool>false</bool>
+       </property>
+       <property name="showDropIndicator" stdset="0">
         <bool>false</bool>
        </property>
        <property name="dragEnabled">
@@ -192,58 +216,123 @@ alternate-background-color: #cfdde6;
      </item>
      <item row="0" column="0">
       <widget class="QComboBox" name="viewSelector">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="focusPolicy">
+        <enum>Qt::ClickFocus</enum>
+       </property>
        <property name="styleSheet">
-        <string notr="true"> QComboBox {
+        <string notr="true">QComboBox {
      border-bottom: 1px solid gray;
      border-radius: 0px;
-     padding: 1px 18px 1px 3px;
-     min-width: 6em;
+     padding: 1px 18px 1px 4px;
  }
 
- QComboBox:editable {
-     background: white;
+QComboBox::drop-down {
+  subcontrol-origin: padding;
+  subcontrol-position: top right;
+  width: 15px;
+  border-width: 0px;
+}
+
+QComboBox::down-arrow {
+  image: url(:/images/stylesheet-branch-open.png);
+  width: 8px;
+}
+/*
+ QComboBox:!editable, QComboBox::drop-down:editable {
+      background-color : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #FDFDFD, stop: 0.5 #FFFFFF,
+                                  stop: 0.5 #ECECEC, stop: 1.0 #F7F7F7);
+ }
+
+ QComboBox:!editable {
+     background-color: black;
  }
 
  QComboBox:!editable, QComboBox::drop-down:editable {
-      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,
-                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);
+      background-color : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                  stop: 0 #FDFDFD, stop: 0.5 #FFFFFF,
+                                  stop: 0.5 #ECECEC, stop: 1.0 #F7F7F7);
  }
 
- /* QComboBox gets the &quot;on&quot; state when the popup is open */
- QComboBox:!editable:on, QComboBox::drop-down:editable:on {
-     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+ QComboBox:!editable:on {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                  stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,
                                  stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);
- }
+}
 
- QComboBox:on { /* shift the text when the popup opens */
-     padding-top: 3px;
-     padding-left: 4px;
- }
+QComboBox:!editable:on QAbstractItemView:hover {
+    background-color: #FDFDFD;
+	color: #000000;
+selection-background-color: #000000;
+}
 
- QComboBox::drop-down {
-     subcontrol-origin: padding;
-     subcontrol-position: top right;
-     width: 15px;
+QComboBox::drop-down:editable:on {
+  color: black;
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                 stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,
+                                 stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);
 
-     border-left-width: 1px;
-     border-left-color: darkgray;
-     border-left-style: solid; /* just a single line */
-     border-top-right-radius: 3px; /* same radius as the QComboBox */
-     border-bottom-right-radius: 3px;
- }
+}
 
- QComboBox::down-arrow {
-     image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);
- }
+QComboBox:on { 
+  padding-top: 3px;
+  padding-left: 4px;
+}
 
- QComboBox::down-arrow:on { /* shift the arrow when popup is open */
-     top: 1px;
-     left: 1px;
- }
-</string>
+QComboBox::drop-down {
+  subcontrol-origin: padding;
+  subcontrol-position: top right;
+  width: 15px;
+  border-width: 0px;
+}
+
+QComboBox::down-arrow {
+  image: url(:/images/stylesheet-branch-open.png);
+  width: 8px;
+}
+
+QComboBox::down-arrow:on { 
+  top: 1px;
+  left: 1px;
+}
+
+QComboBox QListView { 
+     color: blue;
+     background-color: white;
+     selection-color: gray;
+     selection-background-color: cyan;
+}
+
+QComboBox QAbstractItemView 
+{
+  selection-background-color: #00ff00;
+  selection-color: #000000;
+  background-color:  #FDFDFD;
+}
+
+ QComboBox QAbstractItemView:hover {
+    selection-background-color: #00ff00;
+    background-color:  #FD0000;
+ }*/</string>
        </property>
+       <item>
+        <property name="text">
+         <string>New Item</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>New Item</string>
+        </property>
+       </item>
+       <item>
+        <property name="text">
+         <string>New Item</string>
+        </property>
+       </item>
       </widget>
      </item>
     </layout>

@@ -228,10 +228,17 @@ public:
         IgMainWindow->addToolBar(Qt::TopToolBarArea, toolBarEvent);
         dockTreeWidget = new QDockWidget(IgMainWindow);
         dockTreeWidget->setObjectName(QString::fromUtf8("dockTreeWidget"));
-        dockTreeWidget->setFeatures(QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable);
+        dockTreeWidget->setFeatures(QDockWidget::DockWidgetMovable);
         dockTreeWidgetContents = new QWidget();
         dockTreeWidgetContents->setObjectName(QString::fromUtf8("dockTreeWidgetContents"));
+        dockTreeWidgetContents->setStyleSheet(QString::fromUtf8("#dockTreeWidgetContents {\n"
+"background-color: #cfdde6;\n"
+"margin: 0px;\n"
+"padding: 0px;\n"
+"spacing: 0px;\n"
+"}"));
         gridLayout_3 = new QGridLayout(dockTreeWidgetContents);
+        gridLayout_3->setSpacing(-1);
         gridLayout_3->setMargin(0);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         treeWidget = new QTreeWidget(dockTreeWidgetContents);
@@ -245,6 +252,7 @@ public:
 "background-color: #cfdde6;\n"
 "alternate-background-color: #cfdde6;\n"
 "	margin: 0px;\n"
+"    border: 0px;\n"
 "}\n"
 "\n"
 " QTreeView {\n"
@@ -269,8 +277,12 @@ public:
 "     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);\n"
 " }\n"
 ""));
+        treeWidget->setFrameShape(QFrame::NoFrame);
+        treeWidget->setFrameShadow(QFrame::Plain);
+        treeWidget->setLineWidth(0);
         treeWidget->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
         treeWidget->setAutoScroll(false);
+        treeWidget->setProperty("showDropIndicator", QVariant(false));
         treeWidget->setDragEnabled(false);
         treeWidget->setAlternatingRowColors(false);
         treeWidget->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
@@ -285,57 +297,104 @@ public:
 
         viewSelector = new QComboBox(dockTreeWidgetContents);
         viewSelector->setObjectName(QString::fromUtf8("viewSelector"));
-        viewSelector->setStyleSheet(QString::fromUtf8(" QComboBox {\n"
+        viewSelector->setEnabled(true);
+        viewSelector->setFocusPolicy(Qt::ClickFocus);
+        viewSelector->setStyleSheet(QString::fromUtf8("QComboBox {\n"
 "     border-bottom: 1px solid gray;\n"
 "     border-radius: 0px;\n"
-"     padding: 1px 18px 1px 3px;\n"
-"     min-width: 6em;\n"
+"     padding: 1px 18px 1px 4px;\n"
 " }\n"
 "\n"
-" QComboBox:editable {\n"
-"     background: white;\n"
+"QComboBox::drop-down {\n"
+"  subcontrol-origin: padding;\n"
+"  subcontrol-position: top right;\n"
+"  width: 15px;\n"
+"  border-width: 0px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"  image: url(:/images/stylesheet-branch-open.png);\n"
+"  width: 8px;\n"
+"}\n"
+"/*\n"
+" QComboBox:!editable, QComboBox::drop-down:editable {\n"
+"      background-color : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                  stop: 0 #FDFDFD, stop: 0.5 #FFFFFF,\n"
+"                                  stop: 0.5 #ECECEC, stop: 1.0 #F7F7F7);\n"
+" }\n"
+"\n"
+" QComboBox:!editable {\n"
+"     background-color: black;\n"
 " }\n"
 "\n"
 " QComboBox:!editable, QComboBox::drop-down:editable {\n"
-"      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
-"                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+"      background-color : qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                  stop: 0 #FDFDFD, stop: 0.5 #FFFFFF,\n"
+"                                  stop: 0.5 #ECECEC,"
+                        " stop: 1.0 #F7F7F7);\n"
 " }\n"
 "\n"
-" /* QComboBox gets the \"on\" state when the popup is open */\n"
-" QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
-"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+" QComboBox:!editable:on {\n"
+"    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                 stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
 "                                 stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
-" }\n"
+"}\n"
 "\n"
-" QComboBox:on { /* shift the text when the popup opens */\n"
-"     padding-top: 3px;\n"
-"     padding-left: 4px;\n"
-" }\n"
+"QComboBox:!editable:on QAbstractItemView:hover {\n"
+"    background-color: #FDFDFD;\n"
+"	color: #000000;\n"
+"selection-background-color: #000000;\n"
+"}\n"
 "\n"
-" QComboBox::drop-down {\n"
-""
-                        "     subcontrol-origin: padding;\n"
-"     subcontrol-position: top right;\n"
-"     width: 15px;\n"
+"QComboBox::drop-down:editable:on {\n"
+"  color: black;\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                 stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
+"                                 stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
 "\n"
-"     border-left-width: 1px;\n"
-"     border-left-color: darkgray;\n"
-"     border-left-style: solid; /* just a single line */\n"
-"     border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
-"     border-bottom-right-radius: 3px;\n"
-" }\n"
+"}\n"
 "\n"
-" QComboBox::down-arrow {\n"
-"     image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);\n"
-" }\n"
+"QComboBox:on { \n"
+"  padding-top: 3px;\n"
+"  padding-left: 4px;\n"
+"}\n"
 "\n"
-" QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
-"     top: 1px;\n"
-"     left: 1px;\n"
-" }\n"
-""));
+"QComboBox::drop-down {\n"
+"  subcontrol-origin: padding;\n"
+"  subcontrol-position: top right;\n"
+"  width: 15px;\n"
+"  border-width: 0px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"  image: url("
+                        ":/images/stylesheet-branch-open.png);\n"
+"  width: 8px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow:on { \n"
+"  top: 1px;\n"
+"  left: 1px;\n"
+"}\n"
+"\n"
+"QComboBox QListView { \n"
+"     color: blue;\n"
+"     background-color: white;\n"
+"     selection-color: gray;\n"
+"     selection-background-color: cyan;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView \n"
+"{\n"
+"  selection-background-color: #00ff00;\n"
+"  selection-color: #000000;\n"
+"  background-color:  #FDFDFD;\n"
+"}\n"
+"\n"
+" QComboBox QAbstractItemView:hover {\n"
+"    selection-background-color: #00ff00;\n"
+"    background-color:  #FD0000;\n"
+" }*/"));
 
         gridLayout_3->addWidget(viewSelector, 0, 0, 1, 1);
 
@@ -443,6 +502,12 @@ public:
         menuOptions->setTitle(QApplication::translate("IgMainWindow", "&Tools", 0, QApplication::UnicodeUTF8));
         menuExpert_Debug_Tools->setTitle(QApplication::translate("IgMainWindow", "Expert Debug Tools...", 0, QApplication::UnicodeUTF8));
         toolBarEvent->setWindowTitle(QApplication::translate("IgMainWindow", "toolBar", 0, QApplication::UnicodeUTF8));
+        viewSelector->clear();
+        viewSelector->insertItems(0, QStringList()
+         << QApplication::translate("IgMainWindow", "New Item", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("IgMainWindow", "New Item", 0, QApplication::UnicodeUTF8)
+         << QApplication::translate("IgMainWindow", "New Item", 0, QApplication::UnicodeUTF8)
+        );
     } // retranslateUi
 
 };

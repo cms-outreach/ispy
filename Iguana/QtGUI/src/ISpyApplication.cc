@@ -2183,7 +2183,9 @@ ISpyApplication::setupMainWindow(void)
   QStringList headers;
   headers << "Collection" << "Items" << "Show";
   m_treeWidget = m_mainWindow->treeWidget;
-
+#ifdef Q_WS_MAC
+  m_treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
+#endif
   m_treeWidget->setHeaderLabels(headers);
   m_treeWidget->setAlternatingRowColors(false);
   
