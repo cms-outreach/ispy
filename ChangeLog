@@ -1,3 +1,14 @@
+2009-07-17  Thomas McCauley <mccauley@mail.cern.ch>
+
+	* ISpyApplication.cc: more clean-ups to the GSF and normal tracks.
+
+2009-07-17  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc, IgDrawTowerHelpers.cc, IgDrawTowerHelpers.h:
+	  fixes overlapping contributions to the calo towers.
+
+	* IgDrawTowerHelpers.cc, IgDrawTowerHelpers.h: few cosmetic fixes.
+
 2009-07-17  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* stylesheet-branch-open.png, ispy.qrc, ui_IgMainWindow.h
