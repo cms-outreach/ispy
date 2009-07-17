@@ -6,6 +6,7 @@
 #include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoSeparator.h>
+#include <Inventor/actions/SoSearchAction.h>
 #include <classlib/utils/DebugAids.h>
 
 Ig3DBaseModel::Ig3DBaseModel(void)
@@ -90,6 +91,37 @@ Ig3DBaseModel::encode(const std::string &name)
     }
 
   return result.c_str();
+}
+
+/** Sets the camera to be used for the main scene. In case no previos camera is
+    found, the camera gets added as first node of the scenegraph, otherwise 
+    it replaces the one that is already there.
+    
+    @the camera
+    
+    the camera to be used.
+ */
+void
+Ig3DBaseModel::setCamera(SoCamera *camera)
+{
+  SoSearchAction *cameraAction = new SoSearchAction;
+  cameraAction->setType(SoCamera::getClassTypeId(), true);
+  cameraAction->setInterest(SoSearchAction::FIRST);
+  cameraAction->apply(m_sceneGraph);
+  if (!cameraAction->isFound())
+  {
+    m_sceneGraph->insertChild(camera, 0);
+    return;
+  }
+  SoPath *path = cameraAction->getPath();
+  SoCamera *currentCamera = dynamic_cast<SoCamera *>(path->getTail());
+  ASSERT(currentCamera);
+  if (camera != currentCamera)
+  {
+    SoGroup *group = dynamic_cast<SoGroup*>(path->getNodeFromTail(1));
+    ASSERT(group);
+    group->replaceChild(currentCamera, camera);
+  }
 }
 
 std::string

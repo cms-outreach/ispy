@@ -10,7 +10,6 @@
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
-class QToolBar;
 class QWidget;
 class Ig3DBaseModel;
 class SoFieldSensor;
@@ -33,8 +32,6 @@ public:
 
   virtual Ig3DBaseModel *       model(void) const;
   virtual QWidget *             parent(void) const;
-  virtual QToolBar *            toolBar(void) const;
-  virtual void                  initCamera(void);
 
   virtual void   printBitmap(QString file, float ppi,
                              float dpi, QString format);
@@ -43,6 +40,7 @@ public:
                           QWidget *parent = 0, const char* file = 0);
   static bool    writeNode(SoNode *node, const QString& file, bool binary,
                            QWidget *parent = 0);
+  void           setCamera(SoCamera *camera);
 
 public slots:
   void         save(void);
@@ -83,11 +81,9 @@ private:
   static void           nearDistanceSensorCB(void *me, SoSensor *sensor);
 
   virtual void          drawGrid(const bool enable);
-  void                  setupActions(void);
   SoNode *              findGroup(SoNode *node, const char* name);
 
   QWidget              *m_parent;
-  QToolBar             *m_toolBar;
   Ig3DBaseModel        *m_model;
   bool                  m_whatsThisPicking;
   bool                  m_grid;

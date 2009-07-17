@@ -43,6 +43,7 @@
 #include <Inventor/nodes/SoMaterialBinding.h>
 #include <Inventor/nodes/SoNodes.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
+#include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/nodes/SoPolygonOffset.h>
 #include <Inventor/nodes/SoSeparator.h>
@@ -1225,6 +1226,7 @@ ISpyApplication::ISpyApplication(void)
     m_argv(0),
     m_appname(0),
     m_eventIndex(0),
+    m_currentViewIndex(0),
     m_tableModel(0),
     m_3DModel(0),
     m_mainWindow(0),
@@ -1234,7 +1236,10 @@ ISpyApplication::ISpyApplication(void)
     m_exiting(false),
     m_timer(new QTimer(this)),
     m_networkManager(new QNetworkAccessManager),
-    m_progressDialog(0)
+    m_progressDialog(0),
+    m_3DToolBar(0),
+    m_actionCameraPerspective(0),
+    m_actionCameraOrthographic(0)
 {
   m_archives[0] = m_archives[1] = 0;
   m_storages[0] = new IgDataStorage;
@@ -1254,7 +1259,10 @@ ISpyApplication::ISpyApplication(void)
 
   // For now, draw the detector with the default "make3DAnyBox" code but explicit state
   // this in each case so lables in visibility widget a nice than default ones
-
+  float position1[3] = {0, 0, 1};
+  float pointAt1[3] = {0, 0, 0};
+  camera(position1, pointAt1, 5.5, true);
+  view("Standard 3D View", false);
   collection("CMS Tracker",
              "Tracker_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -1574,8 +1582,104 @@ ISpyApplication::ISpyApplication(void)
   collection(0, ":pos_1:pos_2", 0, 0, make3DAnyLine, Qt::Unchecked);
   collection(0, ":pos", 0, 0, make3DAnyPoint, Qt::Unchecked);
   collection(0, ":detid", 0, 0, make3DAnyDetId, Qt::Unchecked);
-}
 
+  float position2[] = {1, 1, 1};
+  float pointAt2[] = {0, 0, 0};
+  camera(position2, pointAt2, 5.5, true);
+  view("Tracker specific view", true);
+  collection("Si Pixel/Digis",
+             "PixelDigis_V1:pos",
+             0,
+             0,
+             make3DPixelDigis,
+             Qt::Unchecked);
+
+  collection("Si Pixel/Clusters",
+             "SiPixelClusters_V1:pos",
+             0,
+             0,
+             make3DSiPixelClusters,
+             Qt::Unchecked);
+
+  collection("Si Pixel/Rec. Hits",
+             "SiPixelRecHits_V1:pos",
+             0,
+             0,
+             make3DSiPixelRecHits,
+             Qt::Unchecked);
+
+  collection("Si Strip/Clusters",
+             "SiStripClusters_V1:pos",
+             0,
+             0,
+             make3DSiStripClusters,
+             Qt::Unchecked);
+
+  collection("Si Strip/Digis",
+             "SiStripDigis_V1:pos",
+             0,
+             0,
+             make3DSiStripDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Tracks",
+             "Tracks_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "TrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
+  collection("Tracking/Tracking Rec. Hits",
+             "TrackingRecHits_V1:pos",
+             0,
+             0,
+             make3DTrackingRecHits,
+             Qt::Checked);
+
+  view("Muon specific view", true);
+  collection("DT/Digis",
+             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
+             0,
+             0,
+             make3DDTDigis,
+             Qt::Checked);
+
+  collection("DT/Rec. Hits",
+             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
+             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
+             0,
+             0,
+             make3DDTRecHits,
+             Qt::Checked);
+
+  collection("DT/Rec. Segments (4D)",
+             "DTRecSegment4D_V1:pos_1:pos_2",
+             0,
+             0,
+             make3DDTRecSegment4D,
+             Qt::Checked);
+
+  collection("CSC/Segments",
+             "CSCSegments_V1:pos_1:pos_2",
+             0,
+             0,
+             make3DCSCSegments,
+             Qt::Checked);
+
+  collection("RPC/Rec. Hits",
+             "RPCRecHits_V1:u1:u2:v1:v2:w2",
+             0,
+             0,
+             make3DRPCRecHits,
+             Qt::Checked);
+
+  collection("Tracking/Tracks",
+             "Muons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+}
 
 /** Destroy the application.  A no-op since everything is done on exit. */
 ISpyApplication::~ISpyApplication(void)
@@ -1675,7 +1779,76 @@ ISpyApplication::collection(const char *friendlyName,
   spec.make3D = make3D;
   spec.visibility = visibility;
   
-  
+  // Update the view to include one more CollectionSpec.
+  ASSERT(!m_viewSpecs.empty());
+  ViewSpec &view = m_viewSpecs.back();
+  view.endCollIndex++;
+}
+
+/** Begins the definition of a new view. 
+    A view is simply a set of CollectionSpecs, as defined by the 
+    ISpyApplication::collection() method.
+
+    @a prettyName
+    
+    the pretty name of the view.
+    
+    @specialized.
+    
+    if true the view will not show in "Other" the collections that do
+    not match any CollectionSpec.
+*/
+void
+ISpyApplication::view(const char *prettyName, bool specialized)
+{
+  m_viewSpecs.resize(m_viewSpecs.size() + 1);
+  ViewSpec &view = m_viewSpecs.back();
+  view.name = prettyName;
+  ASSERT(!m_cameraSpecs.empty());
+  view.specialized = specialized;
+  view.cameraIndex = m_cameraSpecs.size() - 1;
+  view.startCollIndex = view.endCollIndex = m_specs.size();
+}
+
+/** Defines a camera to be used by all the subsequent views, defined via the
+    view method, until a new call to "camera" is done. The camera is shared 
+    among the views.
+    
+    @the position
+    
+    the default (startup) position of the camera.
+    
+    @the pointAt
+    
+    the default point (startup) to which the camera points at. 
+    Notice that the focalDistance will be calculated so that it also works 
+    as point of rotation.
+    
+    @the scale
+    
+    the default (startup) zoom factor used by the camera. This means
+    heightAngle in the case of a perspective camera, scaleHeight in the case
+    of an orthographic one.
+    
+    @orthographic
+    
+    whether the camera is orthographic or not (i.e. perspective) at startup.
+ */
+void
+ISpyApplication::camera(float *position,
+                        float *pointAt,
+                        float scale,
+                        bool orthographic)
+{
+  m_cameraSpecs.resize(m_cameraSpecs.size() + 1);
+  CameraSpec &camera = m_cameraSpecs.back();
+  for (size_t i = 0, e = 3; i < e; i++)
+  {
+    camera.position[i] = position[i];
+    camera.pointAt[i] = pointAt[i];
+  }  
+  camera.scale = scale;
+  camera.orthographic = orthographic;
 }
 
 /** Begin to exit application.  Clears all internal data structures
@@ -1690,6 +1863,9 @@ ISpyApplication::onExit(void)
   m_events.clear();
   m_collections.clear();
   m_specs.clear();
+  m_views.clear();
+  m_cameraSpecs.clear();
+  
   for (int i = 0; i < 2; ++i)
   {
     delete m_storages[i];
@@ -1859,6 +2035,132 @@ ISpyApplication::restoreSettings(void)
   }
 }
 
+/** */
+void
+ISpyApplication::setupActions(void)
+{
+  QAction *actionZoomIn = new QAction(parent());
+  actionZoomIn->setObjectName(QString::fromUtf8("actionZoomIn"));
+  QIcon icon3;
+  icon3.addPixmap(QPixmap(QString::fromUtf8(":/images/zoom_in.png")), QIcon::Normal, QIcon::Off);
+  actionZoomIn->setIcon(icon3);
+  actionZoomIn->setText(QApplication::translate("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
+  actionZoomIn->setShortcut(QApplication::translate("ISpy3DView", "Ctrl++", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+  actionZoomIn->setToolTip(QApplication::translate("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  QAction *actionZoomOut = new QAction(parent());
+  actionZoomOut->setObjectName(QString::fromUtf8("actionZoomOut"));
+  QIcon icon4;
+  icon4.addPixmap(QPixmap(QString::fromUtf8(":/images/zoom_out.png")), QIcon::Normal, QIcon::Off);
+  actionZoomOut->setIcon(icon4);
+  actionZoomOut->setText(QApplication::translate("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
+  actionZoomOut->setShortcut(QApplication::translate("ISpy3DView", "Ctrl+-", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+  actionZoomOut->setToolTip(QApplication::translate("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  QAction *actionHome = new QAction(parent());
+  actionHome->setObjectName(QString::fromUtf8("actionHome"));
+  QIcon icon2;
+  icon2.addPixmap(QPixmap(QString::fromUtf8(":/images/home.xpm")), QIcon::Normal, QIcon::Off);
+  actionHome->setIcon(icon2);
+  actionHome->setText(QApplication::translate("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+  actionHome->setToolTip(QApplication::translate("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  QAction *actionViewPlaneX = new QAction(parent());
+  actionViewPlaneX->setObjectName(QString::fromUtf8("actionViewPlaneX"));
+  QIcon icon5;
+  icon5.addPixmap(QPixmap(QString::fromUtf8(":/images/yz_small.xpm")), QIcon::Normal, QIcon::Off);
+  actionViewPlaneX->setIcon(icon5);
+  actionViewPlaneX->setText(QApplication::translate("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+  actionViewPlaneX->setToolTip(QApplication::translate("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  QAction *actionViewPlaneY = new QAction(parent());
+  actionViewPlaneY->setObjectName(QString::fromUtf8("actionViewPlaneY"));
+  QIcon icon6;
+  icon6.addPixmap(QPixmap(QString::fromUtf8(":/images/xz_small.xpm")), QIcon::Normal, QIcon::Off);
+  actionViewPlaneY->setIcon(icon6);
+  actionViewPlaneY->setText(QApplication::translate("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+  actionViewPlaneY->setToolTip(QApplication::translate("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  QAction *actionViewPlaneZ = new QAction(parent());
+  actionViewPlaneZ->setObjectName(QString::fromUtf8("actionViewPlaneZ"));
+  QIcon icon7;
+  icon7.addPixmap(QPixmap(QString::fromUtf8(":/images/yx_small.xpm")), QIcon::Normal, QIcon::Off);
+  actionViewPlaneZ->setIcon(icon7);
+  actionViewPlaneZ->setText(QApplication::translate("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
+#ifndef QT_NO_TOOLTIP
+  actionViewPlaneZ->setToolTip(QApplication::translate("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  QActionGroup *viewModeGroup = new QActionGroup(parent());
+  viewModeGroup->setExclusive(true);
+
+  m_actionCameraPerspective = new QAction(parent());
+  m_actionCameraPerspective->setObjectName(QString::fromUtf8("actionCameraToggle"));
+  QIcon icon8;
+  icon8.addPixmap(QPixmap(QString::fromUtf8(":/images/perspective.xpm")), QIcon::Normal, QIcon::Off);
+  m_actionCameraPerspective->setIcon(icon8);
+  m_actionCameraPerspective->setCheckable(true);
+  m_actionCameraPerspective->setText(QApplication::translate("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
+
+#ifndef QT_NO_TOOLTIP
+  m_actionCameraPerspective->setToolTip(QApplication::translate("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  m_actionCameraOrthographic = new QAction(parent());
+  m_actionCameraOrthographic->setObjectName(QString::fromUtf8("actionCameraToggle"));
+  QIcon icon9;
+  icon9.addPixmap(QPixmap(QString::fromUtf8(":/images/ortho.xpm")), QIcon::Normal, QIcon::On);
+  m_actionCameraOrthographic->setIcon(icon9);
+  m_actionCameraOrthographic->setText(QApplication::translate("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
+  m_actionCameraOrthographic->setCheckable(true);
+  m_actionCameraOrthographic->setChecked(true);
+#ifndef QT_NO_TOOLTIP
+  m_actionCameraOrthographic->setToolTip(QApplication::translate("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
+#endif // QT_NO_TOOLTIP
+
+  viewModeGroup->addAction(m_actionCameraPerspective);
+  viewModeGroup->addAction(m_actionCameraOrthographic);
+
+  QObject::connect(actionHome, SIGNAL(triggered()), 
+                   m_viewer, SLOT(resetToHomePosition()));
+  QObject::connect(actionZoomIn, SIGNAL(triggered()), 
+                   m_viewer, SLOT(zoomIn()));
+  QObject::connect(actionZoomOut, SIGNAL(triggered()), 
+                   m_viewer, SLOT(zoomOut()));
+  QObject::connect(actionViewPlaneX, SIGNAL(triggered()), 
+                   m_viewer, SLOT(viewPlaneX()));
+  QObject::connect(actionViewPlaneY, SIGNAL(triggered()), 
+                   m_viewer, SLOT(viewPlaneY()));
+  QObject::connect(actionViewPlaneZ, SIGNAL(triggered()), 
+                   m_viewer, SLOT(viewPlaneZ()));
+  QObject::connect(viewModeGroup, SIGNAL(selected(QAction*)), 
+                   m_viewer, SLOT(setCameraType(QAction*)));
+
+  m_3DToolBar = new QToolBar(m_mainWindow);
+  m_3DToolBar->setObjectName(QString::fromUtf8("ISpy3DView::toolBar"));
+  m_3DToolBar->addAction(actionHome);
+  m_3DToolBar->addAction(actionZoomIn);
+  m_3DToolBar->addAction(actionZoomOut);
+  m_3DToolBar->addAction(actionViewPlaneZ);
+  m_3DToolBar->addAction(actionViewPlaneY);
+  m_3DToolBar->addAction(actionViewPlaneX);
+  m_3DToolBar->addAction(m_actionCameraPerspective);
+  m_3DToolBar->addAction(m_actionCameraOrthographic);
+
+  m_3DToolBar->setWindowTitle(QApplication::translate("ISpy3DView", 
+                              "toolBar", 0, QApplication::UnicodeUTF8));
+}
+
 /** Set up the main window. */
 void
 ISpyApplication::setupMainWindow(void)
@@ -1896,6 +2198,61 @@ ISpyApplication::setupMainWindow(void)
 
   m_mainWindow->restoreSettings();
 
+  // Create the various cameras as defined by the various CameraSpecs.
+  // We use an extra Camera struct to maintain this information, because
+  // we want to be able to reset different cameras to their original values,
+  // not to some generic default value.
+  // The focal distance is always given by the distance between the camera 
+  // position pos and the pointAt point.
+  // We don't set the far and near planes and for the moment we rely on the
+  // auto adjustment to work correctly.
+  // Notice that we need to ref() the cameras otherwise they will get lost
+  // once removed from the scenegraph, on a view change.
+  for (size_t csi = 0, cse = m_cameraSpecs.size(); csi != cse; ++csi)
+  {
+    m_cameras.resize(m_cameras.size() + 1);
+    CameraSpec *spec = &(m_cameraSpecs[csi]);
+    Camera &camera = m_cameras.back();
+    camera.spec = spec;
+    SbVec3f position(spec->position);
+    SbVec3f pointAt(spec->pointAt);
+    if (spec->orthographic)
+    {
+      SoOrthographicCamera *socamera = new SoOrthographicCamera;
+      socamera->scaleHeight(spec->scale);
+      camera.node = socamera;
+    }
+    else
+    {
+      SoPerspectiveCamera *socamera = new SoPerspectiveCamera;
+      socamera->heightAngle = spec->scale;
+      camera.node = socamera;
+    }
+    camera.node->position = position;
+    camera.node->pointAt(pointAt);
+    camera.node->focalDistance = (position-pointAt).length();
+    camera.node->ref();
+  }
+
+  // Create the various views, associating each one of them with their camera.
+  for (size_t vsi = 0, vse = m_viewSpecs.size(); vsi != vse; ++vsi)
+  {
+    ViewSpec *spec = &(m_viewSpecs[vsi]);
+    m_views.resize(m_views.size() + 1);
+    View &view = m_views.back();
+    view.spec = spec;
+    view.camera = &(m_cameras[spec->cameraIndex]);
+  }
+
+  // Setup the combo box with the possible views.
+  m_mainWindow->viewSelector->clear();
+  for (size_t vi = 0, ve = m_views.size(); vi != ve; ++vi)
+    m_mainWindow->viewSelector->addItem(m_views[vi].spec->name.c_str());
+  
+  m_mainWindow->viewSelector->setCurrentIndex(m_currentViewIndex);
+  m_mainWindow->viewSelector->setFocusPolicy(Qt::ClickFocus);
+
+
   QObject::connect(m_treeWidget, SIGNAL(currentItemChanged(QTreeWidgetItem *, QTreeWidgetItem *)),
                    this, SLOT(setCurrentItem(QTreeWidgetItem *, QTreeWidgetItem *)));
   QObject::connect(m_treeWidget, SIGNAL(itemActivated(QTreeWidgetItem *, int)),
@@ -1906,6 +2263,8 @@ ISpyApplication::setupMainWindow(void)
                    this, SLOT(handleGroupsClicking(QTreeWidgetItem *)));
   QObject::connect(m_treeWidget, SIGNAL(itemExpanded(QTreeWidgetItem *)),
                    this, SLOT(handleGroupsClicking(QTreeWidgetItem *)));
+  QObject::connect(m_mainWindow->viewSelector, SIGNAL(currentIndexChanged(int)),
+                   this, SLOT(switchView(int)));
 }
 
 /** Take the splash screen down.  Called from timer signal. */
@@ -1941,12 +2300,15 @@ ISpyApplication::doRun(void)
   initShapes();
 
   m_3DModel = new Ig3DBaseModel;
-  ISpy3DView *view = new ISpy3DView(m_3DModel, m_mainWindow->workspace());
-  view->setFeedbackVisibility(true);
-  m_mainWindow->addToolBar(Qt::TopToolBarArea, view->toolBar());
+  m_viewer = new ISpy3DView(m_3DModel, m_mainWindow->workspace());
+  m_viewer->setFeedbackVisibility(true);
+  setupActions();
+  m_mainWindow->addToolBar(Qt::TopToolBarArea, m_3DToolBar);
 
-  QObject::connect(this, SIGNAL(save()), view, SLOT(save()));
-  QObject::connect(this, SIGNAL(print()), view, SLOT(print()));
+  QObject::connect(this, SIGNAL(save()), m_viewer, SLOT(save()));
+  QObject::connect(this, SIGNAL(print()), m_viewer, SLOT(print()));
+  QObject::connect(m_viewer, SIGNAL(cameraToggled()), 
+                   this, SLOT(cameraToggled()));
   QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
   QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(onExit()));
   QObject::connect(this, SIGNAL(showMessage(const QString &)), m_mainWindow->statusBar(), SLOT(showMessage(const QString &)));
@@ -1983,7 +2345,7 @@ ISpyApplication::doRun(void)
 
   // Now run.
   SoQt::mainLoop();
-  delete view;
+  delete m_viewer;
   return 0;
 }
 
@@ -2020,6 +2382,38 @@ ISpyApplication::handleGroupsClicking(QTreeWidgetItem *current)
   group.expanded = m_treeWidget->isItemExpanded(current);
 }
 
+/** Return the Collection index in m_collection associated to the
+    QTreeWidgetItem @item. Returns -1 in case the item is not a collection.
+ */
+int
+ISpyApplication::getCollectionIndex(QTreeWidgetItem *item)
+{
+  if (!item)
+    return -1;
+  QTreeWidgetItem *parent = item->parent();
+  if (!parent)
+    return -1;
+
+  // Handle the case a collection was clicked.
+  // * Retrieve the group to which the clicked item belongs to.
+  // * Retrieve the index of the collection in the m_collections.
+  // * Retrieve the collection itself.
+  // FIXME: Do we need to do anything if current item was cleared?
+  int parentIndex = m_treeWidget->indexOfTopLevelItem(parent);
+  if (parentIndex < 0)
+    return -1;
+  ASSERT(parentIndex < m_groupIndex.size());
+  size_t groupIndex = m_groupIndex[parentIndex];
+  ASSERT(groupIndex < m_groups.size());
+  Group &group = m_groups[groupIndex];
+  int childIndex = parent->indexOfChild(item);
+  ASSERT(childIndex >= 0);
+  ASSERT(childIndex < group.children.size());
+  size_t index = group.children[childIndex];
+  Collection &c = m_collections[index];
+  ASSERT(c.item == item);
+  return index;
+}
 
 /** Respond to selection changes in the tree view.  This may be due to
     a GUI action such as mouse clicking or using arrow keys, or may
@@ -2032,33 +2426,9 @@ ISpyApplication::handleGroupsClicking(QTreeWidgetItem *current)
 void
 ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
 {
-  if (!current)
+  int index = getCollectionIndex(current);
+  if (index < 0)
     return;
-  
-  // Handle the case a group was clicked.
-  QTreeWidgetItem *parent = current->parent();
-  if (!parent)
-  {
-    delete m_tableModel;
-    m_tableModel = 0;
-    return;
-  }
-  // Handle the case a collection was clicked.
-  // * Retrieve the group to which the clicked item belongs to.
-  // * Retrieve the index of the collection in the m_collections.
-  // * Retrieve the collection itself.
-  // FIXME: Do we need to do anything if current item was cleared?
-  int parentIndex = m_treeWidget->indexOfTopLevelItem(parent);
-  if (parentIndex < 0)
-    return;
-  ASSERT(parentIndex < m_groupIndex.size());
-  size_t groupIndex = m_groupIndex[parentIndex];
-  ASSERT(groupIndex < m_groups.size());
-  Group &group = m_groups[groupIndex];
-  int childIndex = parent->indexOfChild(current);
-  ASSERT(childIndex >= 0);
-  ASSERT(childIndex < group.children.size());
-  size_t index = group.children[childIndex];
   Collection &c = m_collections[index];
   ASSERT(c.item == current);
   
@@ -2128,10 +2498,13 @@ ISpyApplication::updateCollections(void)
 {
   // Remember currently selected collection.
   QSettings settings;
-  QString selected;
+  std::string selectedCollection;
   QTreeWidgetItem *current = m_treeWidget->currentItem();
-  if (current) selected = current->text(0);
+  int currentIndex = getCollectionIndex(current);
 
+  if (currentIndex != -1) 
+    selectedCollection = m_collections[currentIndex].collectionName;
+  
   // Clear tree and table views. We clear 3D view at the end.
   delete m_tableModel;
   m_tableModel = 0;
@@ -2147,6 +2520,8 @@ ISpyApplication::updateCollections(void)
   m_groupIndex.clear();
   m_groups.swap(oldgroups);
   m_collections.swap(oldcollections);
+  View &view = m_views[m_currentViewIndex];
+
   for (size_t sti = 0, ste = 2, i = 0; sti < ste; ++sti)
   {
     // Try to locate a matching collection spec.  Accept the spec only
@@ -2163,7 +2538,13 @@ ISpyApplication::updateCollections(void)
       IgAssociationSet  *assoc = 0;
       CollectionSpec    *spec = 0;
 
-      for (size_t spi = 0, spe = m_specs.size(); spi != spe && !spec; ++spi)
+      // Get the current view and iterate on all the specs found there.
+      // FIXME: pick up something different from the first one.
+      ASSERT(m_currentViewIndex < m_views.size());
+
+      for (size_t spi = view.spec->startCollIndex, spe = view.spec->endCollIndex; 
+           spi != spe && !spec;
+           ++spi)
       {
         CollectionSpec &cand = m_specs[spi];
         if (cand.collection.empty() || cand.collection == name)
@@ -2316,6 +2697,8 @@ ISpyApplication::updateCollections(void)
   for (size_t i = 0, e = m_collections.size(); i != e; ++i)
   {
     Collection &coll = m_collections[i];
+    if (!coll.spec && view.spec->specialized)
+      continue;
     // Get the associated group, check if it is already in the tree widget 
     // (create and add it eventually, with correct expand settings).
     // Add the children to the group.
@@ -2340,7 +2723,7 @@ ISpyApplication::updateCollections(void)
     
     // Set current item. Updates table and 3D views too.
     // If this is not current and visible, show in 3D.
-    if (! selected.isEmpty() && selected == coll.item->text(0))
+    if (! selectedCollection.empty() && selectedCollection == coll.collectionName)
     {
       // FIXME: this is required because otherwise setCurretItem() forces the
       //        group to be expanded on next event, even if it is not.
@@ -2363,7 +2746,16 @@ ISpyApplication::updateCollections(void)
   m_treeWidget->header()->setResizeMode(2, QHeaderView::Fixed);
   
   // Clear and re-fill the 3D now that we don't need old data.
+  // Update the camera.
   m_3DModel->contents()->removeAllChildren();
+  if (view.camera->node)
+  {
+    m_viewer->setCamera(view.camera->node);
+    if (view.camera->node->getTypeId() == SoPerspectiveCamera::getClassTypeId())
+      m_actionCameraPerspective->setChecked(true);
+    else
+      m_actionCameraOrthographic->setChecked(true);
+  }
   for (size_t i = 0, e = m_collections.size(); i != e; ++i)
     m_3DModel->contents()->addChild(m_collections[i].node);
 
@@ -2826,4 +3218,32 @@ ISpyApplication::rewind(void)
     showMessage(m_events[m_eventIndex].contents->name().name());
     newEvent();
   }
+}
+
+/** SLOT to make sure we update the camera when we toggle perspective / 
+    orthographic mode. This is required since toggling actually replaces
+    the camera with a new one.
+  */
+void
+ISpyApplication::cameraToggled(void)
+{
+  SoCamera *socamera = m_viewer->getCamera();
+  if (!socamera)
+    return;
+  Camera *camera = m_views[m_currentViewIndex].camera;
+  SoCamera *oldcamera = camera->node;
+  camera->node = socamera;
+  camera->node->ref();
+  oldcamera->unref();
+}
+
+/** Switch view. */
+void
+ISpyApplication::switchView(int viewIndex)
+{
+  m_currentViewIndex = viewIndex;
+  updateCollections();
+  m_mainWindow->viewSelector->clearFocus();
+  m_treeWidget->setFocus(Qt::MouseFocusReason);
+  m_mainWindow->viewSelector->setFocusPolicy(Qt::ClickFocus);
 }
