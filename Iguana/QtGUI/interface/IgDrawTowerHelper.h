@@ -60,6 +60,16 @@ public:
                 float heightScale);
 
   /**
+      Add a single tower whose floor is offset(heightOffset) from the front face
+      and whose height scales according to
+      some scalar variable(heightContent) and an overall scale(heightScale)
+  */
+  void addTower(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
+                IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+                float heightContent, float heightOffset,
+                float heightScale);
+
+  /**
       Add a single box centred on the original box but scaled linearly by scaleFraction
   */
   void addScaledBox(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,

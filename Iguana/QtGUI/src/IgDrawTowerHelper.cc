@@ -1,19 +1,4 @@
-
-
-//<<<<<< INCLUDES                                                       >>>>>>
-
 #include "Iguana/QtGUI/interface/IgDrawTowerHelper.h"
-
-//<<<<<< PRIVATE DEFINES                                                >>>>>>
-//<<<<<< PRIVATE CONSTANTS                                              >>>>>>
-//<<<<<< PRIVATE TYPES                                                  >>>>>>
-//<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
-//<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
-//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
-
 
 IgDrawTowerHelper::IgDrawTowerHelper(SoGroup *group)
   :m_c(0),
@@ -33,10 +18,8 @@ IgDrawTowerHelper::IgDrawTowerHelper(SoGroup *group)
   m_group->addChild(m_faceSet);
 }
 
-
 IgDrawTowerHelper::~IgDrawTowerHelper()
 {}
-
 
 void
 IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
@@ -45,21 +28,19 @@ IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
   // FIXME LT: the following is horribly clunky
   // FIXME LT: somebody clever can reduce the following to a couple of lines
 
-  SbVec3f sf1(static_cast<double>(f1.x()),static_cast<double>(f1.y()),static_cast<double>(f1.z()));
-  SbVec3f sf2(static_cast<double>(f2.x()),static_cast<double>(f2.y()),static_cast<double>(f2.z()));
-  SbVec3f sf3(static_cast<double>(f3.x()),static_cast<double>(f3.y()),static_cast<double>(f3.z()));
-  SbVec3f sf4(static_cast<double>(f4.x()),static_cast<double>(f4.y()),static_cast<double>(f4.z()));
-
-  SbVec3f sb1(static_cast<double>(b1.x()),static_cast<double>(b1.y()),static_cast<double>(b1.z()));
-  SbVec3f sb2(static_cast<double>(b2.x()),static_cast<double>(b2.y()),static_cast<double>(b2.z()));
-  SbVec3f sb3(static_cast<double>(b3.x()),static_cast<double>(b3.y()),static_cast<double>(b3.z()));
-  SbVec3f sb4(static_cast<double>(b4.x()),static_cast<double>(b4.y()),static_cast<double>(b4.z()));
+  SbVec3f sf1(f1.x(), f1.y(), f1.z());
+  SbVec3f sf2(f2.x(), f2.y(), f2.z());
+  SbVec3f sf3(f3.x(), f3.y(), f3.z());
+  SbVec3f sf4(f4.x(), f4.y(), f4.z());
+ 
+  SbVec3f sb1(b1.x(), b1.y(), b1.z());
+  SbVec3f sb2(b2.x(), b2.y(), b2.z());
+  SbVec3f sb3(b3.x(), b3.y(), b3.z());
+  SbVec3f sb4(b4.x(), b4.y(), b4.z());
 
   drawTower(sf1, sf2, sf3, sf4,
             sb1, sb2, sb3, sb4);
 }
-
-
 
 void
 IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
@@ -72,15 +53,15 @@ IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
   // FIXME LT: the following is horribly clunky
   // FIXME LT: somebody clever can reduce the following to a couple of lines
 
-  SbVec3f sf1(static_cast<double>(f1.x()),static_cast<double>(f1.y()),static_cast<double>(f1.z()));
-  SbVec3f sf2(static_cast<double>(f2.x()),static_cast<double>(f2.y()),static_cast<double>(f2.z()));
-  SbVec3f sf3(static_cast<double>(f3.x()),static_cast<double>(f3.y()),static_cast<double>(f3.z()));
-  SbVec3f sf4(static_cast<double>(f4.x()),static_cast<double>(f4.y()),static_cast<double>(f4.z()));
+  SbVec3f sf1(f1.x(), f1.y(), f1.z());
+  SbVec3f sf2(f2.x(), f2.y(), f2.z());
+  SbVec3f sf3(f3.x(), f3.y(), f3.z());
+  SbVec3f sf4(f4.x(), f4.y(), f4.z());
 
-  SbVec3f sb1(static_cast<double>(b1.x()),static_cast<double>(b1.y()),static_cast<double>(b1.z()));
-  SbVec3f sb2(static_cast<double>(b2.x()),static_cast<double>(b2.y()),static_cast<double>(b2.z()));
-  SbVec3f sb3(static_cast<double>(b3.x()),static_cast<double>(b3.y()),static_cast<double>(b3.z()));
-  SbVec3f sb4(static_cast<double>(b4.x()),static_cast<double>(b4.y()),static_cast<double>(b4.z()));
+  SbVec3f sb1(b1.x(), b1.y(), b1.z());
+  SbVec3f sb2(b2.x(), b2.y(), b2.z());
+  SbVec3f sb3(b3.x(), b3.y(), b3.z());
+  SbVec3f sb4(b4.x(), b4.y(), b4.z());
 
   // FIXME LT: I tried compressing this in the obvious mathematical way
   // FIXME LT: but got in a bizarre mess with types and signatures
@@ -107,16 +88,62 @@ IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
 
   drawTower(   sf1,    sf2,    sf3,    sf4,
                sc_sb1, sc_sb2, sc_sb3, sc_sb4);
-
 }
 
+void
+IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
+                            IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4,
+                            float heightContent = 1, float heightOffset = 1,
+                            float heightScale = 1)
+{
+  float scaleContent = (heightContent+heightOffset) * heightScale;
+  float scaleOffset = heightOffset * heightScale;
+
+  // FIXME LT: the following is horribly clunky
+  // FIXME LT: somebody clever can reduce the following to a couple of lines
+
+  SbVec3f sf1(f1.x(), f1.y(), f1.z());
+  SbVec3f sf2(f2.x(), f2.y(), f2.z());
+  SbVec3f sf3(f3.x(), f3.y(), f3.z());
+  SbVec3f sf4(f4.x(), f4.y(), f4.z());
+
+  SbVec3f sb1(b1.x(), b1.y(), b1.z());
+  SbVec3f sb2(b2.x(), b2.y(), b2.z());
+  SbVec3f sb3(b3.x(), b3.y(), b3.z());
+  SbVec3f sb4(b4.x(), b4.y(), b4.z());
+
+  // FIXME LT: I tried compressing this in the obvious mathematical way
+  // FIXME LT: but got in a bizarre mess with types and signatures
+
+  SbVec3f diff1 = sb1-sf1;
+  SbVec3f diff2 = sb2-sf2;
+  SbVec3f diff3 = sb3-sf3;
+  SbVec3f diff4 = sb4-sf4;
+
+  diff1.normalize();
+  diff2.normalize();
+  diff3.normalize();
+  diff4.normalize();
+
+  SbVec3f sc_sf1 = sf1 + diff1*scaleOffset;
+  SbVec3f sc_sf2 = sf2 + diff2*scaleOffset;
+  SbVec3f sc_sf3 = sf3 + diff3*scaleOffset;
+  SbVec3f sc_sf4 = sf4 + diff4*scaleOffset;
+
+  SbVec3f sc_sb1 = sc_sf1 + diff1*scaleContent;
+  SbVec3f sc_sb2 = sc_sf2 + diff2*scaleContent;
+  SbVec3f sc_sb3 = sc_sf3 + diff3*scaleContent;
+  SbVec3f sc_sb4 = sc_sf4 + diff4*scaleContent;
+
+  drawTower(sc_sf1, sc_sf2, sc_sf3, sc_sf4,
+	    sc_sb1, sc_sb2, sc_sb3, sc_sb4);
+}
 
 void
 IgDrawTowerHelper::addScaledBox( IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
                                  IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
                                  float scaleFraction)
 {
-
   // FIXME LT: the following is horribly clunky
   // FIXME LT: somebody clever can reduce the following to a couple of lines
 
@@ -137,7 +164,6 @@ IgDrawTowerHelper::addScaledBox( IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
 
   // Coordinates for a scaled version of the original box
 
-
   SbVec3f sc_sf1 = centre + (sf1-centre)*scaleFraction ;
   SbVec3f sc_sf2 = centre + (sf2-centre)*scaleFraction ;
   SbVec3f sc_sf3 = centre + (sf3-centre)*scaleFraction ;
@@ -150,10 +176,7 @@ IgDrawTowerHelper::addScaledBox( IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
 
   drawTower(sc_sf1, sc_sf2, sc_sf3, sc_sf4,
             sc_sb1, sc_sb2, sc_sb3, sc_sb4);
-
 }
-
-
 
 void
 IgDrawTowerHelper::drawTower(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &sf4,
@@ -189,7 +212,6 @@ IgDrawTowerHelper::drawTower(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &
   m_c += 8;
 }
 
-
 void
 IgDrawTowerHelper::setLineIndices(int p1, int p2, int p3, int p4, int p5)
 {
@@ -221,4 +243,3 @@ IgDrawTowerHelper::setFaceIndices(int p1, int p2, int p3, int p4)
   m_faceSet->coordIndex.set1Value(m_f++, m_c + p4);
   m_faceSet->coordIndex.set1Value(m_f++, SO_END_LINE_INDEX);
 }
-

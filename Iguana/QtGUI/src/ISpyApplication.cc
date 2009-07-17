@@ -622,9 +622,10 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("emEnergy") + ci->get<double>("hadEnergy");
+    double emEnergy = ci->get<double>("emEnergy");
+    double hadEnergy = ci->get<double>("hadEnergy");
 
-    if (energy > minimumEnergy)
+    if (hadEnergy > minimumEnergy)
     {
       IgV3d f1  = ci->get<IgV3d>("front_1");
       IgV3d f2  = ci->get<IgV3d>("front_2");
@@ -638,12 +639,11 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
 
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
-                               energy,
+                               hadEnergy, (emEnergy>minimumEnergy?emEnergy:0),
                                energyScaleFactor);
     }
   }
 }
-
 
 static void
 make3DEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
