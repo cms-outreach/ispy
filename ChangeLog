@@ -1,3 +1,7 @@
+2009-07-16  Thomas McCauley <mccauley@mail.cern.ch>
+
+	* ISpyApplication.cc: support for GSF tracks and L1 triggers.
+
 2009-07-14  Thomas McCauley <mccauley@mail.cern.ch>
 	
 	* ISpyApplication.cc: renaming / regrouping of collections.
