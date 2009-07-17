@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'IgMainWindowMDI.1.0.ui'
 **
-** Created: Wed Jul 8 18:01:36 2009
+** Created: Fri Jul 17 13:41:56 2009
 **      by: Qt User Interface Compiler version 4.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -14,6 +14,7 @@
 #include <QtGui/QAction>
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
+#include <QtGui/QComboBox>
 #include <QtGui/QDockWidget>
 #include <QtGui/QGridLayout>
 #include <QtGui/QHeaderView>
@@ -77,6 +78,7 @@ public:
     QWidget *dockTreeWidgetContents;
     QGridLayout *gridLayout_3;
     QTreeWidget *treeWidget;
+    QComboBox *viewSelector;
     QDockWidget *dockTableWidget;
     QWidget *dockTableWidgetContents;
     QGridLayout *gridLayout_4;
@@ -242,6 +244,7 @@ public:
         treeWidget->setStyleSheet(QString::fromUtf8("QTreeView {\n"
 "background-color: #cfdde6;\n"
 "alternate-background-color: #cfdde6;\n"
+"	margin: 0px;\n"
 "}\n"
 "\n"
 " QTreeView {\n"
@@ -278,7 +281,63 @@ public:
         treeWidget->header()->setDefaultSectionSize(22);
         treeWidget->header()->setStretchLastSection(false);
 
-        gridLayout_3->addWidget(treeWidget, 0, 0, 1, 1);
+        gridLayout_3->addWidget(treeWidget, 1, 0, 1, 1);
+
+        viewSelector = new QComboBox(dockTreeWidgetContents);
+        viewSelector->setObjectName(QString::fromUtf8("viewSelector"));
+        viewSelector->setStyleSheet(QString::fromUtf8(" QComboBox {\n"
+"     border-bottom: 1px solid gray;\n"
+"     border-radius: 0px;\n"
+"     padding: 1px 18px 1px 3px;\n"
+"     min-width: 6em;\n"
+" }\n"
+"\n"
+" QComboBox:editable {\n"
+"     background: white;\n"
+" }\n"
+"\n"
+" QComboBox:!editable, QComboBox::drop-down:editable {\n"
+"      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                  stop: 0 #E1E1E1, stop: 0.4 #DDDDDD,\n"
+"                                  stop: 0.5 #D8D8D8, stop: 1.0 #D3D3D3);\n"
+" }\n"
+"\n"
+" /* QComboBox gets the \"on\" state when the popup is open */\n"
+" QComboBox:!editable:on, QComboBox::drop-down:editable:on {\n"
+"     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                 stop: 0 #D3D3D3, stop: 0.4 #D8D8D8,\n"
+"                                 stop: 0.5 #DDDDDD, stop: 1.0 #E1E1E1);\n"
+" }\n"
+"\n"
+" QComboBox:on { /* shift the text when the popup opens */\n"
+"     padding-top: 3px;\n"
+"     padding-left: 4px;\n"
+" }\n"
+"\n"
+" QComboBox::drop-down {\n"
+""
+                        "     subcontrol-origin: padding;\n"
+"     subcontrol-position: top right;\n"
+"     width: 15px;\n"
+"\n"
+"     border-left-width: 1px;\n"
+"     border-left-color: darkgray;\n"
+"     border-left-style: solid; /* just a single line */\n"
+"     border-top-right-radius: 3px; /* same radius as the QComboBox */\n"
+"     border-bottom-right-radius: 3px;\n"
+" }\n"
+"\n"
+" QComboBox::down-arrow {\n"
+"     image: url(/usr/share/icons/crystalsvg/16x16/actions/1downarrow.png);\n"
+" }\n"
+"\n"
+" QComboBox::down-arrow:on { /* shift the arrow when popup is open */\n"
+"     top: 1px;\n"
+"     left: 1px;\n"
+" }\n"
+""));
+
+        gridLayout_3->addWidget(viewSelector, 0, 0, 1, 1);
 
         dockTreeWidget->setWidget(dockTreeWidgetContents);
         IgMainWindow->addDockWidget(static_cast<Qt::DockWidgetArea>(1), dockTreeWidget);

@@ -84,194 +84,18 @@ ISpy3DView::initWidget(void)
 {
   setGLRenderAction(new SoLineHighlightRenderAction);
   setEventCallback(eventCallback, this);
-  initCamera();
   setSceneGraph(model()->sceneGraph());
   getSceneManager()->getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
   setAutoClippingStrategy(CONSTANT_NEAR_PLANE, 0.9, fixedDistanceClipPlanesCB, this);
   setDecoration(false);
-  setupActions();
   parent()->setMinimumSize(300, 200);
 }
 
 void
-ISpy3DView::setupActions(void)
+ISpy3DView::setCamera(SoCamera *camera)
 {
-  //     QAction *actionViewAll = new QAction(parent());
-  //     actionViewAll->setObjectName(QString::fromUtf8("actionViewAll"));
-  //     QIcon icon1;
-  //     icon1.addPixmap(QPixmap(QString::fromUtf8(":/images/view_all.xpm")), QIcon::Normal, QIcon::Off);
-  //     actionViewAll->setIcon(icon1);
-  //     actionViewAll->setText(QApplication::translate("ISpy3DView", "ViewAll", 0, QApplication::UnicodeUTF8));
-  // #ifndef QT_NO_TOOLTIP
-  //     actionViewAll->setToolTip(QApplication::translate("ISpy3DView", "View All", 0, QApplication::UnicodeUTF8));
-  // #endif // QT_NO_TOOLTIP
-
-  QAction *actionZoomIn = new QAction(parent());
-  actionZoomIn->setObjectName(QString::fromUtf8("actionZoomIn"));
-  QIcon icon3;
-  icon3.addPixmap(QPixmap(QString::fromUtf8(":/images/zoom_in.png")), QIcon::Normal, QIcon::Off);
-  actionZoomIn->setIcon(icon3);
-  actionZoomIn->setText(QApplication::translate("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
-  actionZoomIn->setShortcut(QApplication::translate("ISpy3DView", "Ctrl++", 0, QApplication::UnicodeUTF8));
-#ifndef QT_NO_TOOLTIP
-  actionZoomIn->setToolTip(QApplication::translate("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  QAction *actionZoomOut = new QAction(parent());
-  actionZoomOut->setObjectName(QString::fromUtf8("actionZoomOut"));
-  QIcon icon4;
-  icon4.addPixmap(QPixmap(QString::fromUtf8(":/images/zoom_out.png")), QIcon::Normal, QIcon::Off);
-  actionZoomOut->setIcon(icon4);
-  actionZoomOut->setText(QApplication::translate("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
-  actionZoomOut->setShortcut(QApplication::translate("ISpy3DView", "Ctrl+-", 0, QApplication::UnicodeUTF8));
-#ifndef QT_NO_TOOLTIP
-  actionZoomOut->setToolTip(QApplication::translate("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  QAction *actionHome = new QAction(parent());
-  actionHome->setObjectName(QString::fromUtf8("actionHome"));
-  QIcon icon2;
-  icon2.addPixmap(QPixmap(QString::fromUtf8(":/images/home.xpm")), QIcon::Normal, QIcon::Off);
-  actionHome->setIcon(icon2);
-  actionHome->setText(QApplication::translate("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
-#ifndef QT_NO_TOOLTIP
-  actionHome->setToolTip(QApplication::translate("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  QAction *actionViewPlaneX = new QAction(parent());
-  actionViewPlaneX->setObjectName(QString::fromUtf8("actionViewPlaneX"));
-  QIcon icon5;
-  icon5.addPixmap(QPixmap(QString::fromUtf8(":/images/yz_small.xpm")), QIcon::Normal, QIcon::Off);
-  actionViewPlaneX->setIcon(icon5);
-  actionViewPlaneX->setText(QApplication::translate("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
-#ifndef QT_NO_TOOLTIP
-  actionViewPlaneX->setToolTip(QApplication::translate("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  QAction *actionViewPlaneY = new QAction(parent());
-  actionViewPlaneY->setObjectName(QString::fromUtf8("actionViewPlaneY"));
-  QIcon icon6;
-  icon6.addPixmap(QPixmap(QString::fromUtf8(":/images/xz_small.xpm")), QIcon::Normal, QIcon::Off);
-  actionViewPlaneY->setIcon(icon6);
-  actionViewPlaneY->setText(QApplication::translate("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
-#ifndef QT_NO_TOOLTIP
-  actionViewPlaneY->setToolTip(QApplication::translate("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  QAction *actionViewPlaneZ = new QAction(parent());
-  actionViewPlaneZ->setObjectName(QString::fromUtf8("actionViewPlaneZ"));
-  QIcon icon7;
-  icon7.addPixmap(QPixmap(QString::fromUtf8(":/images/yx_small.xpm")), QIcon::Normal, QIcon::Off);
-  actionViewPlaneZ->setIcon(icon7);
-  actionViewPlaneZ->setText(QApplication::translate("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
-#ifndef QT_NO_TOOLTIP
-  actionViewPlaneZ->setToolTip(QApplication::translate("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  QActionGroup *viewModeGroup = new QActionGroup(parent());
-  viewModeGroup->setExclusive(true);
-
-  QAction *actionCameraPerspective = new QAction(parent());
-  actionCameraPerspective->setObjectName(QString::fromUtf8("actionCameraToggle"));
-  QIcon icon8;
-  icon8.addPixmap(QPixmap(QString::fromUtf8(":/images/perspective.xpm")), QIcon::Normal, QIcon::Off);
-  actionCameraPerspective->setIcon(icon8);
-  actionCameraPerspective->setCheckable(true);
-  actionCameraPerspective->setText(QApplication::translate("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
-
-#ifndef QT_NO_TOOLTIP
-  actionCameraPerspective->setToolTip(QApplication::translate("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  QAction *actionCameraOrthographic = new QAction(parent());
-  actionCameraOrthographic->setObjectName(QString::fromUtf8("actionCameraToggle"));
-  QIcon icon9;
-  icon9.addPixmap(QPixmap(QString::fromUtf8(":/images/ortho.xpm")), QIcon::Normal, QIcon::On);
-  actionCameraOrthographic->setIcon(icon9);
-  actionCameraOrthographic->setText(QApplication::translate("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
-  actionCameraOrthographic->setCheckable(true);
-  actionCameraOrthographic->setChecked(true);
-#ifndef QT_NO_TOOLTIP
-  actionCameraOrthographic->setToolTip(QApplication::translate("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
-#endif // QT_NO_TOOLTIP
-
-  viewModeGroup->addAction(actionCameraPerspective);
-  viewModeGroup->addAction(actionCameraOrthographic);
-
-
-  //     QObject::connect(actionViewAll, SIGNAL(triggered()), this, SLOT(viewAll()));
-  QObject::connect(actionHome, SIGNAL(triggered()), this, SLOT(resetToHomePosition()));
-  QObject::connect(actionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
-  QObject::connect(actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
-  QObject::connect(actionViewPlaneX, SIGNAL(triggered()), this, SLOT(viewPlaneX()));
-  QObject::connect(actionViewPlaneY, SIGNAL(triggered()), this, SLOT(viewPlaneY()));
-  QObject::connect(actionViewPlaneZ, SIGNAL(triggered()), this, SLOT(viewPlaneZ()));
-  //    QObject::connect(actionCameraOrthographic, SIGNAL(triggered()), this, SLOT(toggleCameraType()));
-  //    QObject::connect(actionCameraOrthographic, SIGNAL(triggered()), this, SLOT(toggleCameraType()));
-  QObject::connect(viewModeGroup, SIGNAL(selected(QAction*)), this, SLOT(setCameraType(QAction*)));
-
-  m_toolBar = new QToolBar(parent());
-  m_toolBar->setObjectName(QString::fromUtf8("ISpy3DView::toolBar"));
-  m_toolBar->addAction(actionHome);
-  //     m_toolBar->addAction(actionViewAll);
-  m_toolBar->addAction(actionZoomIn);
-  m_toolBar->addAction(actionZoomOut);
-  m_toolBar->addAction(actionViewPlaneZ);
-  m_toolBar->addAction(actionViewPlaneY);
-  m_toolBar->addAction(actionViewPlaneX);
-  m_toolBar->addAction(actionCameraPerspective);
-  m_toolBar->addAction(actionCameraOrthographic);
-
-  m_toolBar->setWindowTitle(QApplication::translate("ISpy3DView", "toolBar", 0, QApplication::UnicodeUTF8));
-}
-
-void
-ISpy3DView::initCamera(void)
-{
-  SoOrthographicCamera *camera = new SoOrthographicCamera;
-  camera->nearDistance = 1;
-  camera->farDistance = 10;
-  camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
-  camera->scaleHeight(5.5f);
-  camera->focalDistance = 1;
-  model()->sceneGraph()->insertChild(camera, 0);
-
-  //     camera->position.setValue(-18.1, 8.6, 14.0);
-  //     camera->orientation.setValue(-0.3, -0.93, -0.2, 1.1);
-  //     camera->nearDistance  = 0.1;
-  //     camera->farDistance  = 32767;
-
-  //     camera->focalDistance = 19.6;
-  //     camera->pointAt(org);
-
-  //     SoLight *headLight = getHeadlight();
-  //     SoSeparator *root = dynamic_cast<SoSeparator *>(getSceneManager()->getSceneGraph());
-
-  //     SoPointLight *light_2 = new SoPointLight;
-  //     light_2->on = true;
-  //     light_2->intensity = 0.6;
-  //     light_2->color.setValue(1, 1, 1);
-  //     light_2->location.setValue(6.7, 41.67, 9.64);
-  //     root->addChild(light_2);
-
-  //     SoPointLight *light_3 = new SoPointLight;
-  //     light_3->on = true;
-  //     light_3->intensity = 0.5;
-  //     light_3->color.setValue(1, 1, 1);
-  //     light_3->location.setValue(-21.83, -8.81, 13.0);
-  //     root->addChild(light_3);
-
-  //     SoDirectionalLight *light_1 = new SoDirectionalLight;
-  //     light_1->on = true;
-  //     light_1->intensity = 0.85;
-  //     light_1->color.setValue(1, 1, 1);
-  //     light_1->direction.setValue(0.49, -0.41, -0.77);
-  //     root->addChild(light_1);
-
-  //     SoNode *node = model->attachPoint()->findMagic(
-  //         Ig3DBaseModel::encode("Default Grid Group"));
-  //     if (node && dynamic_cast<SoGroup*>(node)->getNumChildren())
-  //         m_grid = true;
+  model()->setCamera(camera);
+  SoQtExaminerViewer::setCamera(camera);
 }
 
 ISpy3DView::~ISpy3DView(void)
@@ -280,10 +104,6 @@ ISpy3DView::~ISpy3DView(void)
 QWidget *
 ISpy3DView::parent(void) const
 { return m_parent; }
-
-QToolBar *
-ISpy3DView::toolBar(void) const
-{ return m_toolBar; }
 
 Ig3DBaseModel *
 ISpy3DView::model(void) const

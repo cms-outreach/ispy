@@ -12,6 +12,7 @@
 class SbString;
 class SbName;
 class SoGroup;
+class SoCamera;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
@@ -26,6 +27,8 @@ public:
   SoGroup *             sceneGraph(void) const;
   SoGroup *             contents(void) const;
   SoGroup *             selection(void) const;
+  
+  void                  setCamera(SoCamera *camera);
 
   static SbString     encode(const std::string &name);
   static std::string  decode(const std::string &name);
