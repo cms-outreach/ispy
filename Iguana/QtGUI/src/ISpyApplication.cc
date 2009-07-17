@@ -1531,13 +1531,33 @@ ISpyApplication::ISpyApplication(void)
              0,
              Qt::Checked);
   
-  collection("Trigger/L1 Trigger",
+  collection("Trigger/L1 Triggers",
              "L1GtTrigger_V1",
              0,
              0,
              0,
              Qt::Unchecked);
 
+  collection("Trigger/HLT Trigger Paths",
+             "TriggerPaths_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Trigger/Trigger Objects",
+             "TriggerObjects_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Tracking/GSF Tracks",
+             "GsfTracks_V1:pt:pos:dir",
+             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfTrackExtras_V1",
+             make3DTracks,
+             Qt::Unchecked);
 
   // Don't draw the following
   collection("Not Drawn/Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
@@ -1545,6 +1565,7 @@ ISpyApplication::ISpyApplication(void)
   collection("Not Drawn/Points_V1", "Points_V1", 0, 0, 0, Qt::Unchecked);
   collection("Not Drawn/DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
   collection("Not Drawn/PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/GsfExtras_V1", "GsfExtras_V1", 0, 0, 0, Qt::Unchecked);
 
   // Default drawing operations if none of the above explicitly matched
 
