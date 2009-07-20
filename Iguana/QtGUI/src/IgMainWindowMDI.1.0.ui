@@ -42,8 +42,6 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="actionFileOpen"/>
-    <addaction name="actionOpenUrl"/>
     <addaction name="actionOpenWizard"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
@@ -368,21 +366,6 @@ QComboBox QAbstractItemView
     <string>Ctrl+Q</string>
    </property>
   </action>
-  <action name="actionFileOpen">
-   <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
-     <normaloff>:/images/fileopen.png</normaloff>:/images/fileopen.png</iconset>
-   </property>
-   <property name="text">
-    <string>Open...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
-   </property>
-   <property name="iconVisibleInMenu">
-    <bool>false</bool>
-   </property>
-  </action>
   <action name="actionAbout">
    <property name="enabled">
     <bool>true</bool>
@@ -418,56 +401,20 @@ QComboBox QAbstractItemView
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionGo_to">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>&amp;Go to...</string>
-   </property>
-  </action>
-  <action name="actionSkip">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Skip...</string>
-   </property>
-  </action>
   <action name="actionAuto">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../interface/ispy.qrc">
-     <normaloff>:/images/play.png</normaloff>
-     <normalon>:/images/pause.png</normalon>:/images/play.png</iconset>
+     <normaloff>:/images/Play1Normal.png</normaloff>
+     <normalon>:/images/PausePressed.png</normalon>:/images/Play1Normal.png</iconset>
    </property>
    <property name="text">
     <string>Play</string>
    </property>
    <property name="toolTip">
     <string>Play Events</string>
-   </property>
-  </action>
-  <action name="action3D">
-   <property name="text">
-    <string>3D</string>
-   </property>
-  </action>
-  <action name="actionRPhi">
-   <property name="text">
-    <string>RPhi</string>
-   </property>
-  </action>
-  <action name="actionRZ">
-   <property name="text">
-    <string>RZ</string>
-   </property>
-  </action>
-  <action name="actionLego">
-   <property name="text">
-    <string>Lego</string>
    </property>
   </action>
   <action name="actionPrint">
@@ -480,17 +427,6 @@ QComboBox QAbstractItemView
    </property>
    <property name="text">
     <string>Print...</string>
-   </property>
-  </action>
-  <action name="actionClose">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Close</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+W</string>
    </property>
   </action>
   <action name="actionSave">
@@ -506,30 +442,6 @@ QComboBox QAbstractItemView
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionSave_as">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Save as...</string>
-   </property>
-  </action>
-  <action name="actionSave_Image">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Save Image...</string>
-   </property>
-  </action>
-  <action name="actionRewind">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
-   <property name="text">
-    <string>Rewind</string>
    </property>
   </action>
   <action name="actionTwig_Explorer">
@@ -580,61 +492,12 @@ QComboBox QAbstractItemView
     <string>Full screen</string>
    </property>
   </action>
-  <action name="actionTile">
-   <property name="text">
-    <string>Tile</string>
-   </property>
-  </action>
-  <action name="actionCascade">
-   <property name="text">
-    <string>Cascade</string>
-   </property>
-  </action>
-  <action name="actionGive_Feedback">
-   <property name="text">
-    <string>Give Feedback...</string>
-   </property>
-  </action>
-  <action name="actionISpy_Help">
-   <property name="text">
-    <string>iSpy Help</string>
-   </property>
-  </action>
-  <action name="actionFile_Toolbar">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>File Toolbar</string>
-   </property>
-  </action>
-  <action name="actionEvent_Toolbar">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Event Toolbar</string>
-   </property>
-  </action>
-  <action name="action3D_Window">
-   <property name="text">
-    <string>3D Window</string>
-   </property>
-  </action>
   <action name="actionOpenWizard">
    <property name="text">
-    <string>Show Wizard...</string>
+    <string>Open...</string>
    </property>
-  </action>
-  <action name="actionOpenUrl">
-   <property name="text">
-    <string>Open Url...</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+O</string>
+   <property name="toolTip">
+    <string>Get data to display</string>
    </property>
   </action>
  </widget>
@@ -767,22 +630,6 @@ QComboBox QAbstractItemView
     <hint type="destinationlabel">
      <x>-1</x>
      <y>-1</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>actionEvent_Toolbar</sender>
-   <signal>toggled(bool)</signal>
-   <receiver>toolBarEvent</receiver>
-   <slot>setVisible(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>-1</x>
-     <y>-1</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>601</x>
-     <y>41</y>
     </hint>
    </hints>
   </connection>

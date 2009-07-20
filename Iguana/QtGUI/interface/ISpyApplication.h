@@ -12,6 +12,8 @@
 # include <vector>
 # include <map>
 
+# include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
+
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
@@ -69,6 +71,7 @@ public slots:
   void                  nextEvent(void);
   void                  previousEvent(void);
   void                  showAbout(void);
+  void                  newEvent(void);
 
 signals:
   void                  showMessage(const QString &fileName);
@@ -77,6 +80,7 @@ signals:
   void                  splashDone(void);
   void                  save(void);
   void                  print(void);
+  void			resetCounter(void);
 
 protected:
   int                   usage(void);
@@ -200,6 +204,7 @@ private:
   int                   doRun(void);
   void                  defaultSettings(void);
   void                  restoreSettings(void);
+  void			onlineConfig(std::string server);
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
   void                  collection(const char *friendlyName,
@@ -222,7 +227,6 @@ private:
   void                  readData(IgDataStorage *to,
                                  lat::ZipArchive *archive,
                                  lat::ZipMember *source);
-  void                  newEvent(void);
   void                  downloadFile(const QUrl &url);
   void                  setupActions(void);
   
@@ -250,6 +254,9 @@ private:
   QTreeWidget           *m_treeWidget;
   ISpySplashScreen      *m_splash;
 
+  ISpyConsumerThread 	m_consumer;
+  
+  bool			m_online;
   bool                  m_autoEvents;
   bool                  m_exiting;
   QTimer                *m_timer;

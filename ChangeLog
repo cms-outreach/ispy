@@ -1,3 +1,29 @@
+2009-07-19  Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* ui_IgMainWindow.h, ISpyMainWindow.cc, IgMainWindowMDI.1.0.ui:
+	  Three "File > Open XXX" menus merged into one single "Open..." 
+	  which only shows the wizard.
+
+2009-07-18  Ianna Osborne <ianna.osborne@cern.ch>
+	
+	* ui_IgMainWindow.h IgMainWindowMDI.1.0.ui, ISpyApplication.cc
+	  ISpyMainWindow.cc: unneeded actions removed.
+
+	* ispy.qrc, ui_IgMainWindow.h IgMainWindowMDI.1.0.ui, 
+	  qrc_ispy.cc: improved icons for autoplay and pause.
+
+2009-07-17  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc, ISpyConsumerThread.cc, IgNet.cc
+	  ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h
+	  ISpyDigitalClock.h, ISpyApplication.cc, ISpyDigitalClock.cc:
+	  support for online. Specifying --online host:port on the 
+	  command line, ispy will connect a DQM like producer
+	  of events. In this mode iSpy starts in "auto play" mode
+	  and will fetch a new event every 15 seconds.
+
+	* ISpyApplication.cc: clean up of QSettings for online.
+
 2009-07-17  Thomas McCauley <mccauley@mail.cern.ch>
 
 	* ISpyApplication.cc: more clean-ups to the GSF and normal tracks.

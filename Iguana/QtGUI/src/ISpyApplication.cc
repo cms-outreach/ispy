@@ -2,6 +2,8 @@
 #define QT_NO_EMIT
 #include "Iguana/QtGUI/interface/ISpyApplication.h"
 #include "Iguana/QtGUI/interface/ISpy3DView.h"
+#include "Iguana/QtGUI/interface/ISpyDigitalClock.h"
+#include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 #include "Iguana/QtGUI/interface/ISpyEventFilter.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
@@ -1250,6 +1252,7 @@ ISpyApplication::ISpyApplication(void)
     m_mainWindow(0),
     m_treeWidget(0),
     m_splash(0),
+    m_online (false),
     m_autoEvents(false),
     m_exiting(false),
     m_timer(new QTimer(this)),
@@ -1881,6 +1884,12 @@ ISpyApplication::camera(float *position,
 void
 ISpyApplication::onExit(void)
 {
+  if (m_consumer.isRunning ())
+  {
+    m_consumer.finalize();
+    m_consumer.quit();
+  }
+  
   m_exiting = true;
   delete m_tableModel;
   m_tableModel = 0;
@@ -1943,7 +1952,8 @@ ISpyApplication::usage(void)
   const char *app = appname();
   std::cerr << "Usage: " << app << " [OPTION-OR-FILENAME]...\n"
             << "   or: " << app << " --help\n"
-            << "   or: " << app << " --version\n";
+            << "   or: " << app << " --version\n"
+	    << "   or: " << app << " --online HOST[:PORT]\n";
 
   return EXIT_FAILURE;
 }
@@ -1967,19 +1977,50 @@ ISpyApplication::run(int argc, char *argv[])
   m_appname = argv [0];
   m_argc = argc;
   m_argv = argv;
-
+  int i = 1;
+  
   while (*++argv)
   {
     if (!strcmp(*argv, "--help"))
       return usage();
     else if (!strcmp(*argv, "--version"))
       return version();
+    else if (!strcmp(*argv, "--online"))
+    {      
+#ifdef Q_WS_MAC
+      std::cerr << "Option --online is not currently supported on MacOSX.\n" << std::endl;
+      return EXIT_FAILURE;
+#endif
+      if (! *++argv)
+      {
+	std::cerr << "--online requires an argument\n";
+	return usage();
+      }
+      else
+      {
+	m_online = true;
+	m_autoEvents = true;
+	onlineConfig(*argv);
+	*++argv;
+	// Remove the command line option so that
+	// it would not be treated as a filename.
+	m_argv[i][0] = '\0'; m_argv[i+1][0] = '\0';
+      }
+    }
+    i++;
   }
 
   return doRun();
 }
 
-/** DOCUMENT ME */
+/** Default application settings will be set to
+    default values if a user has not saved them
+    yet.
+
+    Users normally expect an application to remember
+    its settings (window sizes and positions, options,
+    etc.) across sessions. We (FIXME: should) give them a
+    possibility to choose. */
 void
 ISpyApplication::defaultSettings(void)
 {
@@ -1987,64 +2028,6 @@ ISpyApplication::defaultSettings(void)
 
   if (settings.isWritable())
   {
-    //
-    // Open file dialog settings
-    //
-    if (! settings.contains("igfiles/home"))
-    {
-      QUrl url("file:/afs/cern.ch/user/i/iguana/www/ispy/igfiles/");
-      settings.setValue("igfiles/home", url);
-    }
-
-    //
-    // Network connection configuration
-    //
-    if (! settings.contains("igsource/host"))
-    {
-      QString hostName("localhost");
-      settings.setValue("igsource/host", hostName);
-    }
-    if (! settings.contains("igsource/port"))
-    {
-      int port = 9000;
-      settings.setValue("igsource/port", port);
-    }
-    if (! settings.contains("igsource/debug"))
-    {
-      settings.setValue("igsource/debug", false);
-    }
-    if (! settings.contains("igevents/auto"))
-    {
-      settings.setValue("igevents/auto", false);
-    }
-    if (! settings.contains("igevents/timeout"))
-    {
-      int timeout = 15000;
-      settings.setValue("igevents/timeout", timeout);
-    }
-    //
-    // Main window configuration
-    //
-    if (! settings.contains("mainwindow/configuration/save"))
-    {
-      settings.setValue("mainwindow/configuration/save", false);
-    }
-    if (! settings.contains("mainwindow/treeview/shown"))
-    {
-      settings.setValue("mainwindow/treeview/shown", true);
-    }
-    if (! settings.contains("mainwindow/treeview/floating"))
-    {
-      settings.setValue("mainwindow/treeview/floating", false);
-    }
-    if (! settings.contains("mainwindow/tableview/shown"))
-    {
-      settings.setValue("mainwindow/tableview/shown", true);
-    }
-    if (! settings.contains("mainwindow/tableview/floating"))
-    {
-      settings.setValue("mainwindow/tableview/floating", false);
-    }
   }
 }
 
@@ -2053,11 +2036,6 @@ void
 ISpyApplication::restoreSettings(void)
 {
   QSettings settings;
-  if (settings.contains("igevents/auto"))
-  {
-    m_autoEvents = settings.value("igevents/auto").value<bool>();
-    autoEvents();
-  }
 }
 
 /** */
@@ -2184,6 +2162,29 @@ ISpyApplication::setupActions(void)
 
   m_3DToolBar->setWindowTitle(QApplication::translate("ISpy3DView", 
                               "toolBar", 0, QApplication::UnicodeUTF8));
+}
+
+/** Configure the online consumer. */
+void
+ISpyApplication::onlineConfig(std::string server) 
+{
+  QString str(server.c_str());
+  QStringList opts = str.split(":");
+  
+  QSettings settings;
+  settings.beginGroup("igsource");
+  std::string host = settings.value("host", QString("localhost")).value<QString>().toStdString();
+  int port = settings.value("port", 9000).value<int>();
+  settings.endGroup();
+  
+  if (opts.size() >= 1)
+    host = opts.at(0).toStdString();
+  if (opts.size() == 2)
+    port = opts.at(1).toInt ();
+  
+  m_consumer.listenTo(false, host, port);
+  ASSERT (m_storages[0]);
+  m_consumer.nextEvent(m_storages[0]);
 }
 
 /** Set up the main window. */
@@ -2337,7 +2338,6 @@ ISpyApplication::doRun(void)
   QObject::connect(m_viewer, SIGNAL(cameraToggled()), 
                    this, SLOT(cameraToggled()));
   QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
-  QObject::connect(m_mainWindow->actionClose, SIGNAL(triggered()), this, SLOT(onExit()));
   QObject::connect(this, SIGNAL(showMessage(const QString &)), m_mainWindow->statusBar(), SLOT(showMessage(const QString &)));
   QObject::connect(&filter, SIGNAL(open(const QString &)),this, SLOT(open(const QString &)));
   app.installEventFilter(&filter);
@@ -2365,11 +2365,27 @@ ISpyApplication::doRun(void)
   QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()),
                    m_splash, SLOT(showWizard()));
 
-  if (! m_archives[0] && ! m_archives[1])
+  if (!m_online && ! m_archives[0] && ! m_archives[1])
     m_splash->showWizard();
   else
     m_mainWindow->show();
 
+  // Add a timer which indicates how long it has been since the last online event
+  // FIXME: put it in a more approprate place
+  if (m_online)
+  {
+    m_mainWindow->actionAuto->setEnabled(true);
+    m_mainWindow->actionNext->setEnabled(true);
+    m_mainWindow->actionAuto->setChecked(true);
+    autoEvents();
+    QObject::connect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(newEvent()));
+
+    ISpyDigitalClock *clock = new ISpyDigitalClock(m_mainWindow->toolBarEvent);
+    m_mainWindow->toolBarEvent->addWidget (clock);
+    QObject::connect(this, SIGNAL(resetCounter()), clock, SLOT(resetTime()));
+    clock->show();
+  }
+  
   // Now run.
   SoQt::mainLoop();
   delete m_viewer;
@@ -2786,15 +2802,26 @@ ISpyApplication::updateCollections(void)
   for (size_t i = 0, e = m_collections.size(); i != e; ++i)
     m_3DModel->contents()->addChild(m_collections[i].node);
 
-  // Finally adjust buttons to what can be done here.
-  m_mainWindow->actionAuto->setEnabled(! m_events.empty());
-  m_mainWindow->actionNext->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
-  m_mainWindow->actionPrevious->setEnabled(m_eventIndex > 0);
-  if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
+  // For now keep all controls enabled for online
+  if (m_online)
   {
-    m_timer->stop();
-    m_timer->disconnect();
-    m_mainWindow->actionAuto->setChecked(false);
+    m_mainWindow->actionAuto->setEnabled(true);
+    m_mainWindow->actionNext->setEnabled(true);
+    m_mainWindow->actionPrevious->setEnabled(true);
+  }
+  else
+  {   
+    // Finally adjust buttons to what can be done here.
+    m_mainWindow->actionAuto->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
+    m_mainWindow->actionNext->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
+    m_mainWindow->actionPrevious->setEnabled(m_eventIndex > 0);
+  
+    if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
+    {
+      m_timer->stop();
+      m_timer->disconnect();
+      m_mainWindow->actionAuto->setChecked(false);
+    }
   }
 }
 
@@ -2802,11 +2829,21 @@ ISpyApplication::updateCollections(void)
 void
 ISpyApplication::newEvent(void)
 {
-  ASSERT(m_eventIndex < m_events.size());
   delete m_storages[0];
-  readData(m_storages[0] = new IgDataStorage,
-           m_events[m_eventIndex].archive,
-           m_events[m_eventIndex].contents);
+  if (m_online)
+  {
+    m_consumer.nextEvent(m_storages[0] = new IgDataStorage);
+    if (! m_storages[0]->empty())
+      resetCounter();
+  }
+  else
+  {    
+    ASSERT(m_eventIndex < m_events.size());
+    readData(m_storages[0] = new IgDataStorage,
+	     m_events[m_eventIndex].archive,
+	     m_events[m_eventIndex].contents);
+  }
+  
   updateCollections();
 }
 
@@ -3194,12 +3231,25 @@ ISpyApplication::openUrlDialog(void)
 void
 ISpyApplication::autoEvents(void)
 {
-  int timeout = QSettings().value("igevents/timeout", 15000).value<int>();
+  QSettings settings;
+  settings.beginGroup("igevents");
+  int timeout = settings.value("timeout", 15000).value<int>();
+  settings.endGroup();
   m_autoEvents = m_mainWindow->actionAuto->isChecked();
 
   if (m_autoEvents)
   {
-    QObject::connect(m_timer, SIGNAL(timeout()), SLOT(nextEvent()));
+    if(m_online)
+    {
+      QObject::connect(m_timer, SIGNAL(timeout()), SLOT(newEvent()));
+      newEvent();
+    }
+    else
+    { 
+      QObject::connect(m_timer, SIGNAL(timeout()), SLOT(nextEvent()));
+      nextEvent();
+    }
+    
     m_timer->start(timeout);
   }
   else

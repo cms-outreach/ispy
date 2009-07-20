@@ -37,12 +37,9 @@ ISpyMainWindow::setupActions(void)
   settings->sync();
   m_settingsEditor->setSettingsObject(settings);
 
-  QObject::connect(actionFileOpen, SIGNAL(triggered()), this, SIGNAL(open()));
-  QObject::connect(actionOpenUrl, SIGNAL(triggered()), m_application, SLOT(openUrlDialog()));
   QObject::connect(actionAuto, SIGNAL(triggered()), this, SIGNAL(autoEvents()));
   QObject::connect(actionNext, SIGNAL(triggered()), this, SIGNAL(nextEvent()));
   QObject::connect(actionPrevious, SIGNAL(triggered()), this, SIGNAL(previousEvent()));
-  QObject::connect(actionRewind, SIGNAL(triggered()), this, SIGNAL(rewind()));
   QObject::connect(actionPrint, SIGNAL(triggered()), this, SIGNAL(print()));
   QObject::connect(actionSave, SIGNAL(triggered()), this, SIGNAL(save()));
   QObject::connect(actionMaximize, SIGNAL(triggered()), this, SLOT(maximize()));
