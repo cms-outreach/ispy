@@ -82,9 +82,7 @@ public:
 	    data.insert(data.end(), o.rawdata.begin(), o.rawdata.end());
 	    data.push_back(0);
 
-	    std::stringstream oss;
-	    oss << &data[0];
-	    output->write(oss.str().c_str(), oss.str().length());
+	    output->write(&data[0], data.size()-1);
 	    output->close();
 	    delete output;
 	    archive->close();
@@ -95,7 +93,7 @@ public:
 	      self->m_events.pop_front();
 	    }
 	    x << self->m_events.size();
-	    self->m_events.push_back(oss.str());
+	    self->m_events.push_back(&data[0]);
 	    //FIXME: x << "; text: '" << &data[0]
 	    x << "'\n";
 	  }

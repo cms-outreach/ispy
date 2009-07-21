@@ -204,7 +204,7 @@ private:
   int                   doRun(void);
   void                  defaultSettings(void);
   void                  restoreSettings(void);
-  void			onlineConfig(std::string server);
+  void			onlineConfig(const char* server);
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
   void                  collection(const char *friendlyName,
