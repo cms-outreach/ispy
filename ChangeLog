@@ -1,3 +1,50 @@
+2009-07-21 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: Fixes a bug in the geometry caching logic.
+	  There was a bug when caching geometry across view changes which is
+	  due to the fact that multiple views could generate shapes using
+	  different make3D functions (or, like in this case, some of the views
+	  could even not have a make3D). The second patch makes sure that
+	  everything is consistent. This pretty much disables the caching
+	  across view changes. At some point we should add some better caching
+	  logic so that the cache takes the make3D used into account. Not for
+	  now.
+
+	* ISpyApplication.cc, ISpyApplication.h: Implements visibility groups.
+	  A visibility group is a set of collections among which all those
+	  referring to the same IgCollection (label) share the same visibility
+	  settings. A visibility group is defined by doing:
+
+	  visibilityGroup()
+
+	  in the definition of the views. All subsequent collection()
+	  statement will belong to the previous visibility group. This can be
+	  used to track visibility separately across views by having one
+	  visibility group per view. E.g.:
+
+	  ..
+	  visibilityGroup();
+	  view("Some View");
+	  collection("A1", "A_V1");
+	  collection("B1", "B_V1");
+	  view("Some other view");
+	  collection("A2", "A_V1");
+	  visibilityGroup();
+	  view("Some third view");
+	  collection("A3", "A_V1");
+	  ..
+
+	  in the above example, A1 and A2 share the same visibility settings
+	  (because they belong to the same visibility view). B1 is independent
+	  from A1,A2,A3 (because it refers to a different collection). A3 is
+	  independent from A1 and A2, because it is in another visibility
+	  group.
+	            
+	  Notice that while not currently implemented (because we don't have
+	  any GUI for handling it), it is trivial to add the possibility to
+	  link and unlink the visibility settings of views at run time.
+	  Something cool to have once we get the subviews working.
+
 2009-07-21  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* Remove unnecessary conversion to std::string
