@@ -1805,7 +1805,22 @@ ISpyApplication::collection(const char *friendlyName,
   }
 
   spec.make3D = make3D;
-  spec.visibility = visibility;
+  spec.defaultVisibility = visibility;
+  
+  // Assign the visibility place-holder for this collection.
+  // Within a same visibility group, CollectionSpec referring to the same
+  // collection use the same visibility settings.
+  VisibilityGroupMap::iterator i = m_visibilityGroupMap.find(spec.collection);
+  if (i != m_visibilityGroupMap.end())
+    spec.visibilityIndex = i->second;
+  else
+  {
+    size_t size = m_visibility.size();
+    m_visibilityGroupMap.insert(std::make_pair(spec.collection, size));
+    spec.visibilityIndex = size;
+    m_visibility.resize(size + 1);
+    m_visibility.back() = visibility;
+  }
   
   // Update the view to include one more CollectionSpec.
   ASSERT(!m_viewSpecs.empty());
@@ -1877,6 +1892,21 @@ ISpyApplication::camera(float *position,
   }  
   camera.scale = scale;
   camera.orthographic = orthographic;
+}
+
+/** Defines a visibility group. A visibility group is a set of Collections 
+    which share the same visibility state, if the associated IgCollection is
+    the same. Every collection specification defined via the `collection()` 
+    method belong to the visibility group defined by the previous call to 
+    visibilityGroup().
+    
+    The main use for this is to separate to separare the visibility settings 
+    of the same IgCollection in different views.
+  */
+void
+ISpyApplication::visibilityGroup(void)
+{
+  m_visibilityGroupMap.clear();
 }
 
 /** Begin to exit application.  Clears all internal data structures
@@ -2475,8 +2505,12 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
   Collection &c = m_collections[index];
   ASSERT(c.item == current);
   
-  // Record visibility setting.
-  c.visibility = current->checkState(2);
+  // Record visibility state in the assigned position in the m_visibility
+  // vector. 
+  // Notice that in case there is no spec, there is no 3D 
+  // representation as well, hence we do not update the state.
+  if (c.spec)
+    m_visibility[c.spec->visibilityIndex] = current->checkState(2);
   
   // Show the contents in 3D, as appropriate.
   displayCollection(c);
@@ -2511,12 +2545,14 @@ ISpyApplication::displayCollection(Collection &c)
   ASSERT(c.sep);
 
   // Show or hide 3D as appropriate.
-  if (c.visibility == Qt::Unchecked)
+  // If the spec is not there, we simply skip this bit.
+  if (! c.spec)
+    return;
+  else if (m_visibility[c.spec->visibilityIndex] == Qt::Unchecked)
     c.node->whichChild = SO_SWITCH_NONE;
   else
   {
-    if (c.spec
-        && ! c.sep->getNumChildren()
+    if (! c.sep->getNumChildren()
         && c.data[0]->size() > 0
         && c.spec->make3D)
       (*c.spec->make3D)(c.data, &c.assoc, c.sep);
@@ -2692,27 +2728,21 @@ ISpyApplication::updateCollections(void)
       sw->addChild(sep);
       
       // If this is geometry, and we had the same geometry, transfer
-      // it over to the new collection to avoid recomputing it.  Note
-      // that reading files in deliberately clears the .sep fields so
+      // it over to the new collection to avoid recomputing it, but
+      // just in the case in the new view the make3D method is the same.
+      // Note that reading files in deliberately clears the .sep fields so
       // we won't be fooled here to think a new collection is the same
       // as the old one just because it has the same pointer.
-      //
-      // In any case bring the visibility settings over from old collection,
-      // if available, otherwise use the default found in spec.
-      // If no spec is present, default to invisible.
-      int visibility = spec ? spec->visibility : Qt::Unchecked;
       
       for (size_t oi = 0, oe = oldcollections.size(); oi != oe; ++oi)
       {
         if (sti == 1)
-          if (oldcollections[oi].data[0] == coll && oldcollections[oi].sep)
+          if ((oldcollections[oi].data[0] == coll && oldcollections[oi].sep)
+              && (spec 
+                  && oldcollections[oi].spec 
+                  && oldcollections[oi].spec->make3D == spec->make3D))
             for (int zi = 0, ze = oldcollections[oi].sep->getNumChildren(); zi != ze; ++zi)
               sep->addChild(oldcollections[oi].sep->getChild(zi));
-        if (oldcollections[oi].collectionName == collectionName)
-        {
-          visibility = oldcollections[oi].visibility;
-          break;
-        }
       }
       
       // Fill in the collection item. This needs to be in place before
@@ -2724,7 +2754,6 @@ ISpyApplication::updateCollections(void)
       m_collections[i].item = item;
       m_collections[i].node = sw;
       m_collections[i].sep = sep;
-      m_collections[i].visibility = visibility;
       m_collections[i].collectionName = collectionName;
       m_collections[i].groupIndex = groupIdx;
     }
@@ -2760,7 +2789,7 @@ ISpyApplication::updateCollections(void)
     
     // Finish setting up the tree items and append them to the tree widget.
     if (coll.spec && coll.spec->make3D)
-      coll.item->setCheckState(2, Qt::CheckState(coll.visibility));
+      coll.item->setCheckState(2, m_visibility[coll.spec->visibilityIndex]);
     else
       coll.item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
     

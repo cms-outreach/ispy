@@ -116,7 +116,8 @@ private:
     std::vector<std::string>    requiredFields;
     std::vector<std::string>    otherRequiredFields;
     Make3D                      make3D;
-    int                         visibility;
+    int                         defaultVisibility;
+    size_t                      visibilityIndex;
   };
 
   struct CameraSpec
@@ -157,7 +158,6 @@ private:
     QTreeWidgetItem             *item;
     SoSwitch                    *node;
     SoSeparator                 *sep;
-    int                         visibility;
     std::string                 collectionName;
     int                         groupIndex;
   };
@@ -186,7 +186,9 @@ private:
   typedef std::vector<Event>            Events;
   typedef std::vector<Group>            Groups;
   typedef std::vector<size_t>           GroupIndex;
-  
+  typedef std::vector<Qt::CheckState>   Visibilities;
+  typedef std::map<std::string, size_t> VisibilityGroupMap;
+
   struct SortBySpecAndName
   {
     bool operator()(const Collection &a, const Collection &b)
@@ -221,6 +223,8 @@ private:
                                float scale,
                                bool orthographic);
 
+  void                  visibilityGroup(void);
+
   void                  displayCollection(Collection &c);
   void                  updateCollections(void);
   lat::ZipArchive *     loadFile(const QString &fileName);
@@ -244,6 +248,8 @@ private:
   Groups                m_groups;
   GroupIndex            m_groupIndex;
   Events                m_events;
+  Visibilities          m_visibility;
+  VisibilityGroupMap    m_visibilityGroupMap;
   size_t                m_eventIndex;
   size_t                m_currentViewIndex;
 
