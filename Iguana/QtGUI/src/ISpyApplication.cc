@@ -2166,9 +2166,9 @@ ISpyApplication::setupActions(void)
 
 /** Configure the online consumer. */
 void
-ISpyApplication::onlineConfig(std::string server) 
+ISpyApplication::onlineConfig(const char* server) 
 {
-  QString str(server.c_str());
+  QString str(server);
   QStringList opts = str.split(":");
   
   QSettings settings;

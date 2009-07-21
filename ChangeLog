@@ -1,3 +1,8 @@
+2009-07-21  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* Remove unnecessary conversion to std::string
+	* Remove unnecessary copy to std::stringstream
+
 2009-07-19  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* ui_IgMainWindow.h, ISpyMainWindow.cc, IgMainWindowMDI.1.0.ui:
