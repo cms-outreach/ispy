@@ -49,6 +49,11 @@ public:
   void addTower(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
                 IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
 
+  /**
+      Add a single tower outline whose height does not scale(i.e. tower floor is front face, roof is back face)
+  */
+  void addTowerOutline(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
+		       IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
 
   /**
       Add a single tower whose floor is the front face and whose height scales according to
@@ -95,7 +100,8 @@ private:
   void setFaceIndices(int p1, int p2, int p3, int p4);
   void drawTower(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &sf4,
                  SbVec3f &sb1, SbVec3f &sb2, SbVec3f &sb3, SbVec3f &sb4);
-
+  void drawTowerOutline(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &sf4,
+			SbVec3f &sb1, SbVec3f &sb2, SbVec3f &sb3, SbVec3f &sb4);
 };
 
 
