@@ -43,6 +43,27 @@ IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
 }
 
 void
+IgDrawTowerHelper::addTowerOutline(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
+				   IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4)
+{
+  // FIXME LT: the following is horribly clunky
+  // FIXME LT: somebody clever can reduce the following to a couple of lines
+
+  SbVec3f sf1(f1.x(), f1.y(), f1.z());
+  SbVec3f sf2(f2.x(), f2.y(), f2.z());
+  SbVec3f sf3(f3.x(), f3.y(), f3.z());
+  SbVec3f sf4(f4.x(), f4.y(), f4.z());
+ 
+  SbVec3f sb1(b1.x(), b1.y(), b1.z());
+  SbVec3f sb2(b2.x(), b2.y(), b2.z());
+  SbVec3f sb3(b3.x(), b3.y(), b3.z());
+  SbVec3f sb4(b4.x(), b4.y(), b4.z());
+
+  drawTowerOutline(sf1, sf2, sf3, sf4,
+		   sb1, sb2, sb3, sb4);
+}
+
+void
 IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
                             IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4,
                             float heightContent = 1.0,
@@ -208,6 +229,32 @@ IgDrawTowerHelper::drawTower(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &
   setFaceIndices(2, 3, 7, 6);
   setFaceIndices(7, 3, 0, 4);
   setFaceIndices(1, 5, 4, 0);
+
+  m_c += 8;
+}
+
+void
+IgDrawTowerHelper::drawTowerOutline(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &sf4,
+				    SbVec3f &sb1, SbVec3f &sb2, SbVec3f &sb3, SbVec3f &sb4)
+{
+  m_vertices->vertex.setNum(m_c + 8); // increase vector length to accomodate next 8 vertices
+
+  m_vertices->vertex.set1Value(m_c,   sf1);
+  m_vertices->vertex.set1Value(m_c+1, sf2);
+  m_vertices->vertex.set1Value(m_c+2, sf3);
+  m_vertices->vertex.set1Value(m_c+3, sf4);
+
+  m_vertices->vertex.set1Value(m_c+4, sb1);
+  m_vertices->vertex.set1Value(m_c+5, sb2);
+  m_vertices->vertex.set1Value(m_c+6, sb3);
+  m_vertices->vertex.set1Value(m_c+7, sb4);
+
+  setLineIndices(0, 1, 2, 3, 0); // front face
+  setLineIndices(4, 5, 6, 7, 4); // back face
+  setLineIndices(0, 4);          // edge linking front and back face
+  setLineIndices(1, 5);          // edge linking front and back face
+  setLineIndices(2, 6);          // edge linking front and back face
+  setLineIndices(3, 7);          // edge linking front and back face
 
   m_c += 8;
 }
