@@ -37,14 +37,16 @@
 /ISpyMainWindow.h/1.12/Tue Jul  7 16:21:38 2009//
 /PausePressed.png/1.1/Wed Jul  8 12:46:35 2009//
 /Play1Normal.png/1.1/Wed Jul  8 12:46:35 2009//
-/ISpy3DView.h/1.10/Fri Jul 17 12:16:37 2009//
 /Ig3DBaseModel.h/1.6/Fri Jul 17 12:16:37 2009//
 /stylesheet-branch-open.png/1.1/Fri Jul 17 12:44:01 2009//
 /ISpyConsumerThread.h/1.4/Mon Jul 20 15:55:06 2009//
 /ISpyDigitalClock.h/1.1/Mon Jul 20 15:55:06 2009//
-/IgDrawTowerHelper.h/1.6/Tue Jul 21 07:07:32 2009//
 /ispy.qrc/1.6/Mon Jul 20 15:55:06 2009//
 /ui_IgMainWindow.h/1.26/Mon Jul 20 15:55:06 2009//
-/ISpyConsumer.h/1.5/Tue Jul 21 07:08:35 2009//
-/ISpyApplication.h/1.35/Tue Jul 21 15:02:41 2009//
+/ISpyConsumer.h/1.5/Tue Jul 21 08:02:49 2009//
+/IgDrawTowerHelper.h/1.6/Wed Jul 22 06:58:13 2009//
+/ISpy3DView.h/1.11/Wed Jul 22 08:17:28 2009//
+/ISpyApplication.h/1.36/Wed Jul 22 08:17:28 2009//
+/ISpyRestartPlayDialog.h/1.1/Wed Jul 22 08:17:28 2009//
+/ui_ISpyRestartPlayDialog.h/1.1/Wed Jul 22 08:17:28 2009//
 D

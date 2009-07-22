@@ -1,3 +1,16 @@
+2009-07-22 Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyRestartPlayDialog.cc, ISpyApplication.h, ISpyApplication.cc
+	  ui_ISpyRestartPlayDialog.h, ISpyRestartPlayDialog.ui: support
+	  for iteration over different views in autoplay mode. When paused
+	  it will pop up an "idle" dialog after a while. Notice this
+	  is not the correct behavior as the "idle" timer should start
+	  when user interaction ends and should be reset when ever there is
+	  some more interaction.
+
+	* ISpy3DView.h, ISpy3DView.cc: resetToHomePosition method removed,
+	  since it is now responsibility of the ISpyApplication class.
+
 2009-07-21 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: Fixes a bug in the geometry caching logic.

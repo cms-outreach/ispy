@@ -68,6 +68,7 @@ public slots:
   void                  open(const QString &fileName);
   void                  connect(void);
   void                  autoEvents(void);
+  void                  animateViews(void);
   void                  nextEvent(void);
   void                  previousEvent(void);
   void                  showAbout(void);
@@ -80,7 +81,7 @@ signals:
   void                  splashDone(void);
   void                  save(void);
   void                  print(void);
-  void			resetCounter(void);
+  void                  resetCounter(void);
 
 protected:
   int                   usage(void);
@@ -103,6 +104,8 @@ private slots:
   void                  handleDownloadError(IgNetworkReplyHandler *handler);
   void                  switchView(int i);
   void                  cameraToggled(void);
+  void                  resetToHomePosition(void);
+  void                  restartPlay(void);
 
 private:
   typedef void(*Make3D)(IgCollection **, IgAssociationSet **, SoSeparator *);
@@ -206,7 +209,7 @@ private:
   int                   doRun(void);
   void                  defaultSettings(void);
   void                  restoreSettings(void);
-  void			onlineConfig(const char* server);
+  void                  onlineConfig(const char* server);
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
   void                  collection(const char *friendlyName,
@@ -233,6 +236,7 @@ private:
                                  lat::ZipMember *source);
   void                  downloadFile(const QUrl &url);
   void                  setupActions(void);
+  void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
   
   int                   m_argc;
   char                  **m_argv;
@@ -260,12 +264,14 @@ private:
   QTreeWidget           *m_treeWidget;
   ISpySplashScreen      *m_splash;
 
-  ISpyConsumerThread 	m_consumer;
+  ISpyConsumerThread    m_consumer;
   
-  bool			m_online;
+  bool                  m_online;
   bool                  m_autoEvents;
   bool                  m_exiting;
+  QTimer                *m_animationTimer;
   QTimer                *m_timer;
+  QTimer                *m_idleTimer;
   QNetworkAccessManager *m_networkManager;
   QProgressDialog       *m_progressDialog;
   QToolBar              *m_3DToolBar;

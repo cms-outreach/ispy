@@ -48,7 +48,6 @@ public slots:
   void         zoomIn(void);
   void         zoomOut(void);
   void         zoom(const float diffvalue);
-  void         resetToHomePosition(void);
   void         saveHomePosition(void);
   void         setCameraType(QAction *action);
   void         viewAll(void);

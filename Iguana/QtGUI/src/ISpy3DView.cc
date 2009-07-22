@@ -410,32 +410,6 @@ ISpy3DView::zoom(const float diffvalue)
 }
 
 void
-ISpy3DView::resetToHomePosition(void)
-{
-  if (isAnimating())
-    stopAnimating();
-  SoCamera *camera = this->getCamera();
-  if (!camera)
-  {
-    return;
-  }
-  if (camera->getTypeId().isDerivedFrom(SoPerspectiveCamera::getClassTypeId()))
-  {
-    camera->position = SbVec3f(0,0,20);
-    camera->focalDistance = 20;
-    ((SoPerspectiveCamera *)camera)->heightAngle = 0.785398163;
-  }
-  else
-  {
-    camera->position = SbVec3f(0,0,1);
-    camera->focalDistance = 1;
-    ((SoOrthographicCamera *)camera)->height = 11;
-  }
-
-  camera->orientation = SbRotation::identity();
-}
-
-void
 ISpy3DView::saveHomePosition(void)
 {
   SoQtViewer::saveHomePosition();
