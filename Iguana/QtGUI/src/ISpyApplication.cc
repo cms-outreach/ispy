@@ -6,6 +6,7 @@
 #include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 #include "Iguana/QtGUI/interface/ISpyEventFilter.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
+#include "Iguana/QtGUI/interface/ISpyRestartPlayDialog.h"
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
 #include "Iguana/QtGUI/interface/IgCollectionTableModel.h"
@@ -1255,7 +1256,9 @@ ISpyApplication::ISpyApplication(void)
     m_online (false),
     m_autoEvents(false),
     m_exiting(false),
+    m_animationTimer(new QTimer(this)),
     m_timer(new QTimer(this)),
+    m_idleTimer(new QTimer(this)),
     m_networkManager(new QNetworkAccessManager),
     m_progressDialog(0),
     m_3DToolBar(0),
@@ -2165,7 +2168,7 @@ ISpyApplication::setupActions(void)
   viewModeGroup->addAction(m_actionCameraOrthographic);
 
   QObject::connect(actionHome, SIGNAL(triggered()), 
-                   m_viewer, SLOT(resetToHomePosition()));
+                   this, SLOT(resetToHomePosition()));
   QObject::connect(actionZoomIn, SIGNAL(triggered()), 
                    m_viewer, SLOT(zoomIn()));
   QObject::connect(actionZoomOut, SIGNAL(triggered()), 
@@ -2215,6 +2218,54 @@ ISpyApplication::onlineConfig(const char* server)
   m_consumer.listenTo(false, host, port);
   ASSERT (m_storages[0]);
   m_consumer.nextEvent(m_storages[0]);
+}
+
+/** Fills in the camera object with the specifications found in the spec.
+    Useful to reset camera's to their default or to fill them in the first
+    place. 
+    
+    The focal distance is always given by the distance between the camera 
+    position pos and the pointAt point.
+    We don't set the far and near planes and for the moment we rely on the
+    auto adjustment to work correctly.
+    
+    Notice that we need to ref() the cameras otherwise they will get lost
+    once removed from the scenegraph, on a view change.
+    
+    Notice that this method does not handle what to do with the old 
+    SoCamera in Camera.node, if present. It is therefore responsibility of 
+    the caller to make sure the object is not leaked.
+
+    @the spec
+    
+    the specification with the default parameter for the camera.
+    
+    @the camera
+    
+    a reference to the "Camera" object to be updated.
+  */
+void
+ISpyApplication::restoreCameraFromSpec(CameraSpec *spec, Camera &camera)
+{
+  camera.spec = spec;
+  SbVec3f position(spec->position);
+  SbVec3f pointAt(spec->pointAt);
+  if (spec->orthographic)
+  {
+    SoOrthographicCamera *socamera = new SoOrthographicCamera;
+    socamera->scaleHeight(spec->scale);
+    camera.node = socamera;
+  }
+  else
+  {
+    SoPerspectiveCamera *socamera = new SoPerspectiveCamera;
+    socamera->heightAngle = spec->scale;
+    camera.node = socamera;
+  }
+  camera.node->position = position;
+  camera.node->pointAt(pointAt);
+  camera.node->focalDistance = (position-pointAt).length();
+  camera.node->ref();
 }
 
 /** Set up the main window. */
@@ -2269,27 +2320,7 @@ ISpyApplication::setupMainWindow(void)
   for (size_t csi = 0, cse = m_cameraSpecs.size(); csi != cse; ++csi)
   {
     m_cameras.resize(m_cameras.size() + 1);
-    CameraSpec *spec = &(m_cameraSpecs[csi]);
-    Camera &camera = m_cameras.back();
-    camera.spec = spec;
-    SbVec3f position(spec->position);
-    SbVec3f pointAt(spec->pointAt);
-    if (spec->orthographic)
-    {
-      SoOrthographicCamera *socamera = new SoOrthographicCamera;
-      socamera->scaleHeight(spec->scale);
-      camera.node = socamera;
-    }
-    else
-    {
-      SoPerspectiveCamera *socamera = new SoPerspectiveCamera;
-      socamera->heightAngle = spec->scale;
-      camera.node = socamera;
-    }
-    camera.node->position = position;
-    camera.node->pointAt(pointAt);
-    camera.node->focalDistance = (position-pointAt).length();
-    camera.node->ref();
+    restoreCameraFromSpec(&(m_cameraSpecs[csi]), m_cameras.back());
   }
 
   // Create the various views, associating each one of them with their camera.
@@ -2847,6 +2878,10 @@ ISpyApplication::updateCollections(void)
   
     if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
     {
+      m_idleTimer->stop();
+      m_idleTimer->disconnect();
+      m_animationTimer->stop();
+      m_animationTimer->disconnect();
       m_timer->stop();
       m_timer->disconnect();
       m_mainWindow->actionAuto->setChecked(false);
@@ -3262,12 +3297,33 @@ ISpyApplication::autoEvents(void)
 {
   QSettings settings;
   settings.beginGroup("igevents");
+  int animationTimeout = settings.value("animation", 5000).value<int>();
   int timeout = settings.value("timeout", 15000).value<int>();
+  int idleTimeout = settings.value("idle", 20000).value<int>();
   settings.endGroup();
   m_autoEvents = m_mainWindow->actionAuto->isChecked();
 
   if (m_autoEvents)
   {
+    // Stops animation and restores all the camera.
+    if (m_viewer->isAnimating())
+      m_viewer->stopAnimating();
+
+    for(size_t i = 0, e = m_cameras.size(); i < e; ++i)
+      restoreCameraFromSpec(m_cameras[i].spec, m_cameras[i]);    
+    
+    QObject::connect(m_animationTimer, SIGNAL(timeout()), SLOT(animateViews()));
+
+    // Keep an eye on idle application
+    // Auto-play should automatically restart if iSpy is idle for some time
+    if(! m_idleTimer->isActive())
+    {      
+      m_idleTimer->stop();
+      m_idleTimer->disconnect();
+      QObject::connect(m_idleTimer, SIGNAL(timeout()), SLOT(restartPlay()));
+      m_idleTimer->start(idleTimeout);
+    }
+    
     if(m_online)
     {
       QObject::connect(m_timer, SIGNAL(timeout()), SLOT(newEvent()));
@@ -3279,13 +3335,25 @@ ISpyApplication::autoEvents(void)
       nextEvent();
     }
     
+    m_animationTimer->start(animationTimeout);
     m_timer->start(timeout);
   }
   else
   {
+    m_animationTimer->stop();
+    m_animationTimer->disconnect();
     m_timer->stop();
     m_timer->disconnect();
   }
+}
+
+/** Poor mans animation: auto-switching between the views */
+void
+ISpyApplication::animateViews(void) 
+{
+  int next = (m_currentViewIndex + 1) % m_mainWindow->viewSelector->count();
+  m_mainWindow->viewSelector->setCurrentIndex (next);
+  switchView(next);
 }
 
 /** Go to the next event. */
@@ -3341,6 +3409,43 @@ ISpyApplication::cameraToggled(void)
   camera->node = socamera;
   camera->node->ref();
   oldcamera->unref();
+}
+
+/** SLOT to reset the camera of a current view to Home and update the view */
+void
+ISpyApplication::resetToHomePosition(void) 
+{
+  if (m_viewer->isAnimating())
+    m_viewer->stopAnimating();
+
+  View &view = m_views[m_currentViewIndex];
+  SoCamera *oldcamera = view.camera->node;
+  restoreCameraFromSpec(view.camera->spec, *(view.camera));
+  if (oldcamera)
+    oldcamera->unref();
+  
+  // FIXME: Need to find a faster way to update the view 
+  switchView(m_currentViewIndex);
+}
+
+/** SLOT to restart play if the play has been paused for a long time */
+void
+ISpyApplication::restartPlay (void)
+{
+  if (! m_autoEvents)
+  {
+    ISpyRestartPlayDialog dialog(m_mainWindow->centralWidget());
+    if (dialog.exec() == QDialog::Accepted)
+    {
+      m_mainWindow->actionAuto->setChecked(true);
+      autoEvents();
+    }
+    else 
+    {
+      m_idleTimer->stop();
+      m_idleTimer->disconnect();
+    }
+  }
 }
 
 /** Switch view. */
