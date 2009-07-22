@@ -1,4 +1,9 @@
 2009-07-22 Ianna Osborne <ianna.osborne@cern.ch>
+	
+	* IgDrawTowerHelper.h, ISpyApplication.cc, IgDrawTowerHelper.cc:
+	  Proper views for 3D, R-phi, R-Z, including correct geometry and
+	  nice event products selection. Geometry is also now drawn in 
+	  wireframe.
 
 	* ISpyRestartPlayDialog.cc, ISpyApplication.h, ISpyApplication.cc
 	  ui_ISpyRestartPlayDialog.h, ISpyRestartPlayDialog.ui: support
