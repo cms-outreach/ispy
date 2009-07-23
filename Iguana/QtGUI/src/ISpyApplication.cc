@@ -2934,18 +2934,15 @@ ISpyApplication::doRun(void)
   QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()),
                    m_splash, SLOT(showWizard()));
 
-  if (!m_online && ! m_archives[0] && ! m_archives[1])
-    m_splash->showWizard();
-  else
-    m_mainWindow->show();
-
   // Add a timer which indicates how long it has been since the last online event
+  // Run in maximized mode for online
   // FIXME: put it in a more approprate place
   if (m_online)
   {
     m_mainWindow->actionAuto->setEnabled(true);
     m_mainWindow->actionNext->setEnabled(true);
     m_mainWindow->actionAuto->setChecked(true);
+    m_mainWindow->showMaximized();
     autoEvents();
     QObject::connect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(newEvent()));
 
@@ -2954,7 +2951,15 @@ ISpyApplication::doRun(void)
     QObject::connect(this, SIGNAL(resetCounter()), clock, SLOT(resetTime()));
     clock->show();
   }
-  
+  else if (! m_archives[0] && ! m_archives[1])
+  {
+    m_splash->showWizard();
+  }
+  else
+  {
+    m_mainWindow->show();
+  }
+
   // Now run.
   SoQt::mainLoop();
   delete m_viewer;

@@ -1,4 +1,7 @@
 2009-07-22 Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: when using `--online` the application starts
+	  up maximized.
 	
 	* IgDrawTowerHelper.h, ISpyApplication.cc, IgDrawTowerHelper.cc:
 	  Proper views for 3D, R-phi, R-Z, including correct geometry and
