@@ -24,6 +24,13 @@ class ISpy3DView : public QObject,
 {
   Q_OBJECT
 public:
+  
+  enum Mode {
+    LOCKED = 0,
+    ROTATION_MODE,
+    PAN_MODE
+  };
+  
   ISpy3DView(Ig3DBaseModel *model, QWidget *parent);
   // implicit copy constructor
   // implicit assignment operator
@@ -41,6 +48,7 @@ public:
   static bool    writeNode(SoNode *node, const QString& file, bool binary,
                            QWidget *parent = 0);
   void           setCamera(SoCamera *camera);
+  void           setViewMode(enum Mode mode);
 
 public slots:
   void         save(void);
@@ -72,6 +80,8 @@ protected:
   virtual void    initWidget(void);
 
   static SbBool   eventCallback(void *closure, QEvent *event);
+  static SbBool   eventCallbackPanMode(void *closure, QEvent *event);
+  static SbBool   eventCallbackRotationMode(void *closure, QEvent *event);
 
 private:
   //FIXME: remove these Callback method once the SoQt fixes the continuous
@@ -88,7 +98,8 @@ private:
   bool                  m_grid;
   bool                  m_oldView;
   bool                  m_oldSeek;
-
+  enum Mode             m_viewMode;
+  
   // undefined semantics
   ISpy3DView(const ISpy3DView &);
   ISpy3DView &operator=(const ISpy3DView &);

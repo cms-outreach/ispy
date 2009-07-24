@@ -29,6 +29,7 @@ class ISpy3DView;
 class QTreeWidget;
 class QTreeWidgetItem;
 class QToolBar;
+class QActionGroup;
 class SoSwitch;
 class SoSeparator;
 class ISpySplashScreen;
@@ -224,7 +225,8 @@ private:
   void                  camera(float *pos,
                                float *pointAt,
                                float scale,
-                               bool orthographic);
+                               bool orthographic,
+                               bool rotating);
 
   void                  visibilityGroup(void);
 
@@ -279,6 +281,8 @@ private:
   QAction               *m_actionCameraOrthographic;
   QFont                 *m_groupFont;
   QFont                 *m_itemFont;
+  QActionGroup          *m_viewPlaneGroup;
+  QActionGroup          *m_viewModeGroup;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
