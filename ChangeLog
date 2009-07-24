@@ -1,4 +1,14 @@
+2009-07-24 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpyApplication.h, ISpy3DView.cc, ISpy3DView.h:
+	  adds the possibility to specify whether a given camera can be
+	  rotated or not. This feature is used to make sure R-Phi and R-Z
+	  views cannot be rotated.
+
 2009-07-22 Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: when using `--online` the application starts
+	  up maximized.
 	
 	* IgDrawTowerHelper.h, ISpyApplication.cc, IgDrawTowerHelper.cc:
 	  Proper views for 3D, R-phi, R-Z, including correct geometry and

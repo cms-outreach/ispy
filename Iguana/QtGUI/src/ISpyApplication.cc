@@ -1283,7 +1283,7 @@ ISpyApplication::ISpyApplication(void)
   // this in each case so lables in visibility widget a nice than default ones
   float position1[3] = {-18.1, 8.6, 14.0};
   float pointAt1[3] = {0, 0, 0};
-  camera(position1, pointAt1, 10.6, true);
+  camera(position1, pointAt1, 10.6, true, true);
   visibilityGroup();
   view("Standard 3D View", true);
   collection("Geometry/CMS Tracker",
@@ -1740,7 +1740,7 @@ ISpyApplication::ISpyApplication(void)
 
   float position2[] = {0, 0, 1};
   float pointAt2[] = {0, 0, 0};
-  camera(position2, pointAt2, 8.5, true);
+  camera(position2, pointAt2, 8.5, true, false);
   visibilityGroup();
   view("Standard R-Phi View", true);
   collection("Geometry/CMS Tracker",
@@ -1949,7 +1949,7 @@ ISpyApplication::ISpyApplication(void)
   
   float positionRZ[3] = {-1, 0, 0};
   float pointAtRZ[3] = {0, 0, 0};
-  camera(positionRZ, pointAtRZ, 8.5, true);
+  camera(positionRZ, pointAtRZ, 8.5, true, false);
   visibilityGroup();
   view("Standard R-Z View", true);
   collection("Geometry/CMS Tracker",
@@ -2387,12 +2387,17 @@ ISpyApplication::view(const char *prettyName, bool specialized)
     @orthographic
     
     whether the camera is orthographic or not (i.e. perspective) at startup.
+    
+    @rotating
+    
+    whether or not the camera is allowed to rotate.
  */
 void
 ISpyApplication::camera(float *position,
                         float *pointAt,
                         float scale,
-                        bool orthographic)
+                        bool orthographic,
+                        bool rotating)
 {
   m_cameraSpecs.resize(m_cameraSpecs.size() + 1);
   CameraSpec &camera = m_cameraSpecs.back();
@@ -2403,6 +2408,7 @@ ISpyApplication::camera(float *position,
   }  
   camera.scale = scale;
   camera.orthographic = orthographic;
+  camera.rotating = rotating;
 }
 
 /** Defines a visibility group. A visibility group is a set of Collections 
@@ -2645,8 +2651,14 @@ ISpyApplication::setupActions(void)
   actionViewPlaneZ->setToolTip(QApplication::translate("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
 
-  QActionGroup *viewModeGroup = new QActionGroup(parent());
-  viewModeGroup->setExclusive(true);
+  m_viewPlaneGroup = new QActionGroup(parent());
+  m_viewPlaneGroup->setExclusive(false);
+  m_viewPlaneGroup->addAction(actionViewPlaneX);
+  m_viewPlaneGroup->addAction(actionViewPlaneY);
+  m_viewPlaneGroup->addAction(actionViewPlaneZ);
+
+  m_viewModeGroup = new QActionGroup(parent());
+  m_viewModeGroup->setExclusive(true);
 
   m_actionCameraPerspective = new QAction(parent());
   m_actionCameraPerspective->setObjectName(QString::fromUtf8("actionCameraToggle"));
@@ -2672,8 +2684,8 @@ ISpyApplication::setupActions(void)
   m_actionCameraOrthographic->setToolTip(QApplication::translate("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
 #endif // QT_NO_TOOLTIP
 
-  viewModeGroup->addAction(m_actionCameraPerspective);
-  viewModeGroup->addAction(m_actionCameraOrthographic);
+  m_viewModeGroup->addAction(m_actionCameraPerspective);
+  m_viewModeGroup->addAction(m_actionCameraOrthographic);
 
   QObject::connect(actionHome, SIGNAL(triggered()), 
                    this, SLOT(resetToHomePosition()));
@@ -2687,7 +2699,7 @@ ISpyApplication::setupActions(void)
                    m_viewer, SLOT(viewPlaneY()));
   QObject::connect(actionViewPlaneZ, SIGNAL(triggered()), 
                    m_viewer, SLOT(viewPlaneZ()));
-  QObject::connect(viewModeGroup, SIGNAL(selected(QAction*)), 
+  QObject::connect(m_viewModeGroup, SIGNAL(selected(QAction*)), 
                    m_viewer, SLOT(setCameraType(QAction*)));
 
   m_3DToolBar = new QToolBar(m_mainWindow);
@@ -2934,18 +2946,15 @@ ISpyApplication::doRun(void)
   QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()),
                    m_splash, SLOT(showWizard()));
 
-  if (!m_online && ! m_archives[0] && ! m_archives[1])
-    m_splash->showWizard();
-  else
-    m_mainWindow->show();
-
   // Add a timer which indicates how long it has been since the last online event
+  // Run in maximized mode for online
   // FIXME: put it in a more approprate place
   if (m_online)
   {
     m_mainWindow->actionAuto->setEnabled(true);
     m_mainWindow->actionNext->setEnabled(true);
     m_mainWindow->actionAuto->setChecked(true);
+    m_mainWindow->showMaximized();
     autoEvents();
     QObject::connect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(newEvent()));
 
@@ -2954,7 +2963,15 @@ ISpyApplication::doRun(void)
     QObject::connect(this, SIGNAL(resetCounter()), clock, SLOT(resetTime()));
     clock->show();
   }
-  
+  else if (! m_archives[0] && ! m_archives[1])
+  {
+    m_splash->showWizard();
+  }
+  else
+  {
+    m_mainWindow->show();
+  }
+
   // Now run.
   SoQt::mainLoop();
   delete m_viewer;
@@ -3362,6 +3379,19 @@ ISpyApplication::updateCollections(void)
   if (view.camera->node)
   {
     m_viewer->setCamera(view.camera->node);
+    if (view.camera->spec && view.camera->spec->rotating)
+    {
+      m_viewer->setViewMode(ISpy3DView::ROTATION_MODE);
+      m_viewPlaneGroup->setEnabled(true);
+      m_viewModeGroup->setEnabled(true);
+    }
+    else
+    {
+      m_viewer->setViewMode(ISpy3DView::PAN_MODE);
+      m_viewPlaneGroup->setEnabled(false);
+      m_viewModeGroup->setEnabled(false);
+    }
+    
     if (view.camera->node->getTypeId() == SoPerspectiveCamera::getClassTypeId())
       m_actionCameraPerspective->setChecked(true);
     else
@@ -3960,6 +3990,9 @@ ISpyApplication::restartPlay (void)
 void
 ISpyApplication::switchView(int viewIndex)
 {
+  if (m_viewer->isAnimating())
+    m_viewer->stopAnimating();
+  
   m_currentViewIndex = viewIndex;
   updateCollections();
   m_mainWindow->viewSelector->clearFocus();

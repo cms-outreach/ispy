@@ -28,7 +28,8 @@ ISpy3DView::ISpy3DView(Ig3DBaseModel *model, QWidget *parent)
     m_whatsThisPicking(false),
     m_grid(false),
     m_oldView(true),
-    m_oldSeek(false)
+    m_oldSeek(false),
+    m_viewMode(ROTATION_MODE)
 {
   initWidget();
 }
@@ -666,8 +667,52 @@ ISpy3DView::setWhatsThisPicking(bool enable /* = true */)
   }
 }
 
+/** Sets the view mode for this view. Contrary to what we had before, there is
+    only one view (was browser) which display models and its behavior is 
+    controlled by the viewMode. While this is a quick solution to avoid having 
+    R-Phi and R-Z view rotating it will also simplify, in the future, the 
+    ability to construct views with multiple subviews or to have different
+    behaviors for the same view according to its state.
+    E.g. a 3D view could be put in "panning mode" by clicking on some button
+    and until the "3D" mode is not clicked again, it will pan on mouse drag,
+    rather than rotating.
+    
+    See also ISpy3DView::eventCallback documentation.
+  */
+void
+ISpy3DView::setViewMode(enum Mode mode)
+{
+  m_viewMode = mode;
+}
+
+/** Overrides SoQtExaminerViewr event Callback which is used to handle user 
+    interaction. 
+    Handling of events actually depends on the view mode we are currently in
+    and those depend, for the moment, on the kind of views we are displaying.
+    For 3D views we rotate on mouse drags, for 2D views we pan and in case 
+    the viewMode is actually LOCKED, we simply ignore user interaction with 
+    the view. 
+  */
 SbBool
 ISpy3DView::eventCallback(void *closure, QEvent *event)
+{
+  ISpy3DView *self = static_cast<ISpy3DView *>(closure);
+  switch (self->m_viewMode)
+  {
+    case PAN_MODE:
+      return eventCallbackPanMode(closure, event);
+    case ROTATION_MODE:
+      return eventCallbackRotationMode(closure, event);
+    //TODO: add a "ZOOM_MODE" which basically mimics mouse wheel and allows 
+    //      you to zoom in and out, without the usage of the mouse wheel.
+    case LOCKED:
+      return false;
+  }
+}
+
+/** Callback that rotates the camera position following a mouse drag */
+SbBool
+ISpy3DView::eventCallbackRotationMode(void *closure, QEvent *event)
 {
   ISpy3DView *self = static_cast<ISpy3DView *>(closure);
   if (!self->getParentWidget()->testAttribute(Qt::WA_UnderMouse) ||
@@ -679,6 +724,15 @@ ISpy3DView::eventCallback(void *closure, QEvent *event)
     self->zoom(0.1 * (wheelEvent->delta() > 0 ? 1:-1));
     return true;
   }
+  else if (QHoverEvent *hEvent = dynamic_cast<QHoverEvent *>(event))
+  {
+    if (hEvent->type() == QEvent::HoverEnter)
+    {
+      self->setComponentCursor(SoQtCursor::getRotateCursor());      
+      return true;
+    }
+    return false;
+  }
   else if (QMouseEvent *mEvent = dynamic_cast<QMouseEvent *>(event))
   {
     if (mEvent->button() == Qt::LeftButton
@@ -689,6 +743,90 @@ ISpy3DView::eventCallback(void *closure, QEvent *event)
       return true;
     }
     return false;
+  }
+  return false;  
+}
+
+/** Callback that pans the camera position following a mouse drag.
+    Notice that we always return true on mouse drags, because we don't want 
+    the SoQtExaminerViewer to handle them, as it would interpret those
+    as request to rotate.
+ */
+SbBool
+ISpy3DView::eventCallbackPanMode(void *closure, QEvent *event)
+{
+  static bool firstEvent = true;    
+  static float oldX = 0.;
+  static float oldY = 0.;
+  ISpy3DView *self = static_cast<ISpy3DView *>(closure);
+  if (!self->getParentWidget()->testAttribute(Qt::WA_UnderMouse) ||
+      !self->isViewing())
+    return false;
+  
+  if (QWheelEvent *wheelEvent = dynamic_cast<QWheelEvent *>(event))
+  {
+    self->zoom(0.1 * (wheelEvent->delta() > 0 ? 1:-1));
+    return true;
+  }
+  else if (QHoverEvent *hEvent = dynamic_cast<QHoverEvent *>(event))
+  {
+    if (hEvent->type() == QEvent::HoverEnter)
+    {
+      self->setComponentCursor(SoQtCursor::getPanCursor());      
+      return true;
+    }
+    return false;
+  }
+  else if (QMouseEvent *mEvent = dynamic_cast<QMouseEvent *>(event))
+  {
+        
+    if (!(mEvent->buttons() & Qt::LeftButton))
+      return false;
+
+    if (mEvent->type() == QEvent::MouseButtonPress)
+    {
+      self->setComponentCursor(SoQtCursor::getPanCursor());
+      firstEvent = false;
+      oldX = mEvent->x();
+      oldY = mEvent->y();
+      return true;
+    }
+    else if (mEvent->type() == QEvent::MouseButtonRelease)
+    {
+      firstEvent = true;
+      return true;
+    }
+    else if (mEvent->type() == QEvent::MouseMove)
+    {
+      float deltaX = mEvent->x() - oldX;
+      float deltaY = oldY - mEvent->y();
+      SoCamera *camera = self->getCamera();
+
+      // We need to adjust the amount we translate of to the actual
+      // zoom factor.
+      // FIXME: do the same thing for perspective views.
+      float scaleFactor = 100;
+      
+      if (camera->isOfType(SoOrthographicCamera::getClassTypeId()))
+      {
+        SoOrthographicCamera *oc = (SoOrthographicCamera *) camera;
+        scaleFactor *= 1 / oc->height.getValue();
+      }
+
+      // We need to pan according to the camera orientation, not for absolute 
+      // X and Y axis!
+      SbVec3f oldPosition = camera->position.getValue();
+      SbRotation cameraOrientation = camera->orientation.getValue();
+      SbVec3f newPosition;
+      cameraOrientation.multVec(SbVec3f(deltaX/scaleFactor, 
+                                        deltaY/scaleFactor, 
+                                        0),
+                                 newPosition);
+      camera->position = oldPosition - newPosition;
+      oldX = mEvent->x();
+      oldY = mEvent->y();
+      return true;
+    }
   }
   return false;
 }
