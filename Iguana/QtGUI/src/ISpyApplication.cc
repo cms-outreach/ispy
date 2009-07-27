@@ -1272,7 +1272,7 @@ ISpyApplication::ISpyApplication(void)
 #else
   QCoreApplication::setApplicationName("iSpy");
 #endif
-  QCoreApplication::setApplicationVersion("1.1");
+  QCoreApplication::setApplicationVersion("1.2");
   QCoreApplication::setOrganizationDomain("iguana");
   QCoreApplication::setOrganizationName("iguana");
 
@@ -2793,6 +2793,7 @@ void
 ISpyApplication::setupMainWindow(void)
 {
   m_mainWindow = new ISpyMainWindow(this);
+  m_mainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
   QObject::connect(m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
   QObject::connect(m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
@@ -3764,7 +3765,7 @@ ISpyApplication::getUrl(const QUrl &url)
 {
   QNetworkRequest request;
   request.setUrl(url);
-  request.setRawHeader("User-Agent", "iSpy 1.1");
+  request.setRawHeader("User-Agent", "iSpy 1.2");
   return m_networkManager->get(request);
 }
 
