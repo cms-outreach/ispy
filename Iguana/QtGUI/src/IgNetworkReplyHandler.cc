@@ -13,7 +13,8 @@
 
 IgNetworkReplyHandler::IgNetworkReplyHandler(QNetworkReply *reply, QIODevice *device)
   : m_reply(reply),
-    m_device(device)
+    m_device(device),
+    m_aborted(false)
 {
   Q_CHECK_PTR(m_reply);
   Q_CHECK_PTR(m_device);
@@ -21,11 +22,14 @@ IgNetworkReplyHandler::IgNetworkReplyHandler(QNetworkReply *reply, QIODevice *de
   connect(m_reply, SIGNAL(finished()), this, SLOT(finished()));
   connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
           this, SLOT(error(QNetworkReply::NetworkError)));
+  connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
+          this, SLOT(error(QNetworkReply::NetworkError)));
   m_device->open(QFile::WriteOnly);
 }
 
 IgNetworkReplyHandler::~IgNetworkReplyHandler(void)
 {
+  m_device->disconnect();
   delete m_device;
 }
 
@@ -63,11 +67,27 @@ IgNetworkReplyHandler::reply(void)
   return m_reply;
 }
 
+/** Aborts the current download and marks this object as aborted.
+    Notice that `m_reply->abort()` will emit 
+    
+        QNetworkReply::error(QNetworkReply::NetworkError)
+        
+    and therefore it will call 
+    
+        IgNetworkReplyHandler::downloadError() 
+    
+  */
 void
 IgNetworkReplyHandler::abort(void)
 {
+  m_aborted = true;
   m_reply->abort();
-  emit downloadAborted(this);
+}
+
+bool
+IgNetworkReplyHandler::aborted(void)
+{
+  return m_aborted;
 }
 
 void

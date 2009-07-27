@@ -1,3 +1,15 @@
+2009-07-26 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.h, IgNetworkReplyHandler.h, ISpyApplication.cc
+	  IgNetworkReplyHandler.cc: improves the behavior of the download
+	  dialog and simplifies some of its internal logic.
+
+2009-07-26 Lucas Taylor <lucas.taylor@cern.ch>
+
+	* ISpyApplication.cc: increased delays between switching from 
+	  a view to another. Increase event fetching period for Auto-Play
+	  mode.
+
 2009-07-26 Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc: visibility settings as requested by online.
