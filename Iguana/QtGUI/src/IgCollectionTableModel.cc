@@ -132,3 +132,12 @@ IgCollectionTableModel::columnCount(const QModelIndex &parent) const
 
   return m_collection->properties().size();
 }
+
+void
+IgCollectionTableModel::clear(void)
+{
+  beginRemoveRows(QModelIndex(), 0, rowCount());
+  m_collection = 0;
+  endRemoveRows();
+  reset();
+}

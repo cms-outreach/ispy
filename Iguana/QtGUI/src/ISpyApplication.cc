@@ -2942,7 +2942,7 @@ ISpyApplication::doRun(void)
   // window. If we opened files above just make the "About iSpy" splash
   // screen visible for a few seconds, show the main window and proceed
   // immediatly to the main app event loop.
-  m_splash = new ISpySplashScreen(this);
+  m_splash = new ISpySplashScreen(this, 0);
   QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()),
                    m_splash, SLOT(showWizard()));
 
@@ -3141,8 +3141,8 @@ ISpyApplication::updateCollections(void)
     selectedCollection = m_collections[currentIndex].collectionName;
   
   // Clear tree and table views. We clear 3D view at the end.
-  delete m_tableModel;
-  m_tableModel = 0;
+  if (m_tableModel)
+    m_tableModel->clear();
   m_treeWidget->clear();
 
   // Rebuild the collections. Loop over collections in the order they

@@ -1,3 +1,17 @@
+2009-07-26 Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* IgNet.cc: increases the MESSAGE_SIZE_LIMIT to 8MB. This
+	  works around the "Message too big" errors when connecting to the
+	  online producers.
+
+	* ISpySplashScreen.cc, ISpyApplication.cc: adds a close button
+	  to the splash screen dialog also on mac.
+
+	* ISpyApplication.cc, IgCollectionTableModel.cc,
+	  IgCollectionTableModel.h: adds a clear method to the
+	  IgCollectionTableModel and uses it to clear the model on 
+	  updateCollection, rather deleting it.
+
 2009-07-24 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, ISpyApplication.h, ISpy3DView.cc, ISpy3DView.h:
