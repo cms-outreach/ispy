@@ -1375,28 +1375,28 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DPixelDigis,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Pixel Clusters",
              "SiPixelClusters_V1:pos",
              0,
              0,
              make3DSiPixelClusters,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Pixel Rec. Hits",
              "SiPixelRecHits_V1:pos",
              0,
              0,
              make3DSiPixelRecHits,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Strip Clusters",
              "SiStripClusters_V1:pos",
              0,
              0,
              make3DSiStripClusters,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Strip Digis",
              "SiStripDigis_V1:pos",
@@ -1797,28 +1797,28 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DPixelDigis,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Pixel Clusters",
              "SiPixelClusters_V1:pos",
              0,
              0,
              make3DSiPixelClusters,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Pixel Rec. Hits",
              "SiPixelRecHits_V1:pos",
              0,
              0,
              make3DSiPixelRecHits,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Strip Clusters",
              "SiStripClusters_V1:pos",
              0,
              0,
              make3DSiStripClusters,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Strip Digis",
              "SiStripDigis_V1:pos",
@@ -2041,28 +2041,28 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DPixelDigis,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Pixel Clusters",
              "SiPixelClusters_V1:pos",
              0,
              0,
              make3DSiPixelClusters,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Pixel Rec. Hits",
              "SiPixelRecHits_V1:pos",
              0,
              0,
              make3DSiPixelRecHits,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Strip Clusters",
              "SiStripClusters_V1:pos",
              0,
              0,
              make3DSiStripClusters,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Tracking/Si Strip Digis",
              "SiStripDigis_V1:pos",
@@ -2212,6 +2212,27 @@ ISpyApplication::ISpyApplication(void)
              make3DMuons,
              Qt::Checked);
   
+  collection("Trigger/L1 Triggers",
+             "L1GtTrigger_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Trigger/HLT Trigger Paths",
+             "TriggerPaths_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Trigger/Trigger Objects",
+             "TriggerObjects_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
   collection("Tracking/Tracking Particles",
              "TrackingParticles_V1",
              "PSimHits_V1:pos:dir",
