@@ -16,7 +16,7 @@
 #include <iostream>
 #include <cassert>
 
-#define MESSAGE_SIZE_LIMIT (2*1024*1024)
+#define MESSAGE_SIZE_LIMIT (8*1024*1024)
 #define SOCKET_BUF_SIZE (8*1024*1024)
 #define SOCKET_READ_SIZE (SOCKET_BUF_SIZE/8)
 #define SOCKET_READ_GROWTH (SOCKET_BUF_SIZE)

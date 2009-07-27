@@ -33,6 +33,7 @@ public:
   int           rowCount(const QModelIndex &parent = QModelIndex()) const;
   int           columnCount(const QModelIndex &parent = QModelIndex()) const;
   void          setCollection(IgCollection *collection);
+  void          clear(void);
 private:
   IgCollection *m_collection;
 };

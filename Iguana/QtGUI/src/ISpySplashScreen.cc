@@ -4,7 +4,7 @@
 #include <QtGui>
 
 ISpySplashScreen::ISpySplashScreen(ISpyApplication *application, QWidget *parent)
-  : QWidget(parent),
+  : QWidget(parent, Qt::Window|Qt::WindowSystemMenuHint|Qt::CustomizeWindowHint|Qt::WindowTitleHint),
     m_application(application)
 {
   setupUi(this);
