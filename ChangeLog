@@ -1,5 +1,10 @@
 2009-07-26 Giulio Eulisse <giulio.eulisse@cern.ch>
 	
+	* ISpyApplication.cc: toolbar on mac uses "unified" look.
+	
+	* ISpySplashScreen.ui, ui_ISpySplashScreen.h, ISpyApplication.cc:
+	  version string updated to 1.2.
+
 	* IgNet.cc: increases the MESSAGE_SIZE_LIMIT to 8MB. This
 	  works around the "Message too big" errors when connecting to the
 	  online producers.
