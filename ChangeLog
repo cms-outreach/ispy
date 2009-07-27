@@ -1,3 +1,7 @@
+2009-07-26 Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: visibility settings as requested by online.
+
 2009-07-26 Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* ISpyApplication.cc: toolbar on mac uses "unified" look.
