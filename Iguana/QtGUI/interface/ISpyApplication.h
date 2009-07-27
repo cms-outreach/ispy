@@ -100,7 +100,6 @@ private slots:
   void                  rewind(void);
   void                  handleWizardLinks(const QUrl &link);
   void                  fileDownloaded(IgNetworkReplyHandler *handler);
-  void                  handleAbortedDownload(IgNetworkReplyHandler *handler);
   void                  setProgress(qint64 current, qint64 final);
   void                  handleDownloadError(IgNetworkReplyHandler *handler);
   void                  switchView(int i);

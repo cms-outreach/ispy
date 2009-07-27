@@ -3759,8 +3759,6 @@ ISpyApplication::downloadFile(const QUrl &link)
                    this, SLOT(setProgress(qint64,qint64)));
   QObject::connect(m_progressDialog, SIGNAL(canceled()),
                    handler, SLOT(abort()));
-  QObject::connect(handler, SIGNAL(downloadAborted(IgNetworkReplyHandler *)),
-                   this, SLOT(handleAbortedDownload(IgNetworkReplyHandler *)));
   QObject::connect(handler, SIGNAL(downloadError(IgNetworkReplyHandler *)),
                    this, SLOT(handleDownloadError(IgNetworkReplyHandler *)));
 }
@@ -3808,32 +3806,29 @@ ISpyApplication::fileDownloaded(IgNetworkReplyHandler *handler)
   }
 }
 
-/** Handles when a user clicks on the cancel button in the download dialog*/
+/** Handles various kinds of failures when downloading a file*/
 void
-ISpyApplication::handleAbortedDownload(IgNetworkReplyHandler *handler)
+ISpyApplication::handleDownloadError(IgNetworkReplyHandler *handler)
 {
+  m_progressDialog->disconnect();
   handler->reply()->disconnect();
   handler->disconnect();
   m_progressDialog->reset();
   m_progressDialog->hide();
   showMessage("");
-  if (handler->reply()->error())
+  if (handler->aborted())
   {
     QFile *file = static_cast<QFile *>(handler->device());
-    QMessageBox::critical(m_mainWindow, "Error while downloading file.",
-                          "Cannot download file" + file->fileName());
+    QMessageBox::critical(m_mainWindow->centralWidget(), "Download canceled.",
+                          "Download cancelled for file " + file->fileName() + ".");    
   }
-  delete handler;
-}
-
-void
-ISpyApplication::handleDownloadError(IgNetworkReplyHandler *handler)
-{
-  m_progressDialog->reset();
-  m_progressDialog->hide();
-  showMessage("");
-  QMessageBox::critical(m_mainWindow, "Error while downloading file.",
-                        "Cannot download from url:" + handler->reply()->request().url().toString());
+  else
+    QMessageBox::critical(m_mainWindow->centralWidget(), "Error while downloading file.",
+                          "Cannot download file from url: "
+                          + handler->reply()->request().url().toString());
+  // FIXME: if we actually delete it, it sometimes crashes. But this clearly 
+  //        leaks...
+  //delete handler;
 }
 
 /** Handles the open url action */
@@ -3857,9 +3852,9 @@ ISpyApplication::autoEvents(void)
 {
   QSettings settings;
   settings.beginGroup("igevents");
-  int animationTimeout = settings.value("animation", 5000).value<int>();
-  int timeout = settings.value("timeout", 15000).value<int>();
-  int idleTimeout = settings.value("idle", 20000).value<int>();
+  int animationTimeout = settings.value("animation", 20000).value<int>();
+  int timeout = settings.value("timeout", 60000).value<int>();
+  int idleTimeout = settings.value("idle", 15*60000).value<int>();
   settings.endGroup();
   m_autoEvents = m_mainWindow->actionAuto->isChecked();
 
