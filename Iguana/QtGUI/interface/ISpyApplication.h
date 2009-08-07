@@ -61,7 +61,7 @@ public:
   int                   argc(void) const;
   char **               argv(void) const;
   const char *          appname(void) const;
-  QNetworkReply *       getUrl(const QUrl &link);
+  QNetworkReply *	getUrl(const QUrl &link);
 
 public slots:
   void                  openFileDialog(void);
@@ -79,7 +79,6 @@ signals:
   void                  showMessage(const QString &fileName);
   void                  firstEvent(void);
   void                  lastEvent(void);
-  void                  splashDone(void);
   void                  save(void);
   void                  print(void);
   void                  resetCounter(void);
@@ -91,7 +90,6 @@ protected:
   void                  setupSplashScreen(void);
 
 private slots:
-  void                  cleanSplash(void);
   void                  setCurrentItem(QTreeWidgetItem *current, QTreeWidgetItem *previous);
   void                  itemActivated(QTreeWidgetItem *current, int);
   void                  handleGroupsClicking(QTreeWidgetItem *current);

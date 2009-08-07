@@ -3,32 +3,18 @@
 #include "Iguana/QtGUI/interface/IgNetworkReplyHandler.h"
 #include <QtGui>
 
-ISpySplashScreen::ISpySplashScreen(ISpyApplication *application, QWidget *parent)
-  : QWidget(parent, Qt::Window|Qt::WindowSystemMenuHint|Qt::CustomizeWindowHint|Qt::WindowTitleHint),
-    m_application(application)
+// Qt::WindowCloseButtonHint adds a close button. On some platforms this
+// implies Qt::WindowSystemMenuHint for it to work.
+// It is more portable to use then Qt::WindowSystemMenuHint if you need
+// to hide or show a close button.
+ISpySplashScreen::ISpySplashScreen(QWidget *parent)
+  : QWidget(parent, Qt::Window|Qt::WindowCloseButtonHint|Qt::CustomizeWindowHint|Qt::WindowTitleHint)
 {
   setupUi(this);
   // Completely handle clicking in the GUI.
   this->wizardView->setOpenLinks(false);
   this->webView->setOpenLinks(false);
   this->ispyDescription->setOpenLinks(false);
-  QObject::connect(this->wizardView,SIGNAL(anchorClicked(const QUrl&)),
-                   application,SLOT(handleWizardLinks(const QUrl &)));
-  QObject::connect(this->webView,SIGNAL(anchorClicked(const QUrl&)),
-                   application,SLOT(handleWizardLinks(const QUrl &)));
-  QObject::connect(this->ispyDescription,SIGNAL(anchorClicked(const QUrl&)),
-                   application,SLOT(handleWizardLinks(const QUrl &)));
-
-  // Get the news from http://iguana.web.cern.ch/iguana/ispy/ispy-news.htm
-  // and update the news view accordingly once fetching is complete.
-  QUrl newsUrl("http://iguana.web.cern.ch/iguana/ispy/ispy-news.htm");
-  QNetworkReply *newsReply = m_application->getUrl(newsUrl);
-  IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(newsReply,
-                                                             new QBuffer);
-  QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),
-                   this, SLOT(newsDownloaded(IgNetworkReplyHandler *)));
-  QObject::connect(newsReply, SIGNAL(error(QNetworkReply::NetworkError)),
-                   this, SLOT(newsDownloadError(QNetworkReply::NetworkError)));
 }
 
 ISpySplashScreen::~ISpySplashScreen(void)
@@ -36,15 +22,35 @@ ISpySplashScreen::~ISpySplashScreen(void)
   if (! isHidden())
   {
     hide();
-    splashDone();
   }
+}
+
+void
+ISpySplashScreen::initActions(ISpyApplication *app)
+{
+  m_application = app;
+  // Get the news from http://iguana.web.cern.ch/iguana/ispy/ispy-news.htm
+  // and update the news view accordingly once fetching is complete.
+  QUrl newsUrl("http://iguana.web.cern.ch/iguana/ispy/ispy-news.htm");
+  QNetworkReply *newsReply = app->getUrl(newsUrl);
+  IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(newsReply,
+                                                             new QBuffer);
+  QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),
+                   this, SLOT(newsDownloaded(IgNetworkReplyHandler *)));
+  QObject::connect(newsReply, SIGNAL(error(QNetworkReply::NetworkError)),
+                   this, SLOT(newsDownloadError(QNetworkReply::NetworkError)));
+  QObject::connect(this->wizardView,SIGNAL(anchorClicked(const QUrl&)),
+                   app,SLOT(handleWizardLinks(const QUrl &)));
+  QObject::connect(this->webView,SIGNAL(anchorClicked(const QUrl&)),
+                   app,SLOT(handleWizardLinks(const QUrl &)));
+  QObject::connect(this->ispyDescription,SIGNAL(anchorClicked(const QUrl&)),
+                   app,SLOT(handleWizardLinks(const QUrl &)));
 }
 
 void
 ISpySplashScreen::closeEvent(QCloseEvent *event)
 {
   hide();
-  splashDone();
   event->accept();
 }
 
@@ -80,7 +86,7 @@ ISpySplashScreen::setRightPage(const QUrl &url)
 {
   m_rightPage = url;
   IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(m_application->getUrl(url),
-                                                             new QBuffer);
+							     new QBuffer);
   QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)), this, SLOT(updateRight(IgNetworkReplyHandler *)));
 }
 

@@ -8,13 +8,12 @@ class IgLocationDialog;
 class IgSettingsEditor;
 class QSettings;
 class QMdiArea;
-class ISpyApplication;
 
 class ISpyMainWindow : public QMainWindow, public Ui::IgMainWindow
 {
   Q_OBJECT
 public:
-  ISpyMainWindow(ISpyApplication *application, QWidget *parent = 0);
+  ISpyMainWindow(QWidget *parent = 0);
   ~ISpyMainWindow();
 
   void          restoreSettings(void);
@@ -35,13 +34,13 @@ signals:
   void          rewind(void);
   void          print(void);
   void          save(void);
+  void		showAbout(void);
 
 protected:
   void          setupActions(void);
 
 private:
   IgSettingsEditor   *m_settingsEditor;
-  ISpyApplication    *m_application;
   void          setSettingsObject(QSettings *settings);
 };
 

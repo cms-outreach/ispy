@@ -33,6 +33,7 @@
 
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
+#include <Inventor/fields/SoSFVec2f.h>
 #include <Inventor/nodes/SoAnnotation.h>
 #include <Inventor/nodes/SoBaseColor.h>
 #include <Inventor/nodes/SoCone.h>
@@ -277,10 +278,232 @@ make3DAnyDetId(IgCollection **, IgAssociationSet **, SoSeparator *)
 {
 }
 
+static void
+makeLegoGrid(IgCollection **, IgAssociationSet **, SoSeparator *gridSep)
+{
+  float scale  = 1.0;
 
+  // HF
+  float etaHFBins [43] = { 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609,
+			   0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305,
+			   1.392, 1.479, 1.566, 1.653, 1.74, 1.83, 1.93, 2.043,
+			   2.172, 2.322, 2.5, 2.65, 3,
+			   2.853, 2.964, 3.139, 3.314, // HF
+			   3.486, 3.664, 3.839, 4.013, 
+			   4.191, 4.363, 4.538, 4.716, 
+			   4.889, 5.191};
+    
+  SoVertexProperty *vtx = new SoVertexProperty;
+  SoIndexedLineSet *grid = new SoIndexedLineSet;
+  SoMFInt32 coords;
+  int vertex = 6;
+  int coord = 0;
+  int tick = 0;
+    
+  float x = float (2 * M_PI);
+  float z = 5.191;
+    
+  vtx->vertex.set1Value (0, SbVec3f (0, 0, -z));
+  vtx->vertex.set1Value (1, SbVec3f (0, 0,  z));
+  vtx->vertex.set1Value (2, SbVec3f (x, 0,  z));
+  vtx->vertex.set1Value (3, SbVec3f (x, 0, -z));
+  vtx->vertex.set1Value (4, SbVec3f (0, 0, -z));
+  vtx->vertex.set1Value (5, SbVec3f (0, 1, -z));
+    
+  for (coord = 0; coord < vertex; coord++)
+    coords.set1Value (coord, coord);
+  coords.set1Value (coord++, SO_END_LINE_INDEX);
+    
+  for (tick = 0; tick < 43; tick++)
+  {
+    vtx->vertex.set1Value (vertex, SbVec3f (0, 0, etaHFBins [tick]));       
+    coords.set1Value (coord++, vertex++);
+    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, etaHFBins [tick]));
+    coords.set1Value (coord++, vertex++);
+    coords.set1Value (coord++, SO_END_LINE_INDEX);
+	
+    vtx->vertex.set1Value (vertex, SbVec3f (0, 0, -etaHFBins [tick]));
+    coords.set1Value (coord++, vertex++);
+    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, -etaHFBins [tick]));
+    coords.set1Value (coord++, vertex++);
+    coords.set1Value (coord++, SO_END_LINE_INDEX);
+  }
+    
+  int ticks = 36;
+  x = 0;
+    
+  for (tick = 0; tick < ticks; tick++)
+  {
+    x = tick * M_PI / 18.0;
+    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, -z));
+    coords.set1Value (coord++, vertex++);
+    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, z));
+    coords.set1Value (coord++, vertex++);
+    coords.set1Value (coord++, SO_END_LINE_INDEX);
+	
+    for (int ttow = 1; ttow < 2; ttow++)
+    {
+      vtx->vertex.set1Value (vertex, SbVec3f (x + ttow * 0.087, 0, -1.74));
+      coords.set1Value (coord++, vertex++);
+      vtx->vertex.set1Value (vertex, SbVec3f (x + ttow * 0.087, 0, 1.74));
+      coords.set1Value (coord++, vertex++);
+      coords.set1Value (coord++, SO_END_LINE_INDEX);
+    }
+  }
+    
+  //
+  float ztick = 5;
+  float ytick = 0.1;
+  float xtick = M_PI / 4;
+    
+  for (int etaTicks = 0; etaTicks < 11; etaTicks++, ztick--)
+  {
+    vtx->vertex.set1Value (vertex, SbVec3f (0, ytick, ztick));
+    coords.set1Value (coord++, vertex++);
+    vtx->vertex.set1Value (vertex, SbVec3f (0, 0, ztick));
+    coords.set1Value (coord++, vertex++);
+    vtx->vertex.set1Value (vertex, SbVec3f (-ytick, 0, ztick));
+    coords.set1Value (coord++, vertex++);
+    coords.set1Value (coord++, SO_END_LINE_INDEX);
+  }
+  for (int phiTicks = 0; phiTicks < 8; phiTicks++)
+  {
+    vtx->vertex.set1Value (vertex, SbVec3f (xtick, ytick, -z));
+    coords.set1Value (coord++, vertex++);
+    vtx->vertex.set1Value (vertex, SbVec3f (xtick, 0, -z));
+    coords.set1Value (coord++, vertex++);
+    vtx->vertex.set1Value (vertex, SbVec3f (xtick, 0, -z - ytick));
+    coords.set1Value (coord++, vertex++);
+    coords.set1Value (coord++, SO_END_LINE_INDEX);
+    xtick += M_PI / 4;
+  }
+  //
 
+  grid->vertexProperty = vtx;
+  grid->coordIndex = coords;
+    
+  gridSep->addChild (grid);
+    
+  SoSeparator         *phiLabels = new SoSeparator;
+  SoText2             *text;
+  SoText2             *phiLabelText [8];
+  SoTranslation       *phiStart = new SoTranslation;
+  SoTranslation       *phiTranslation = new SoTranslation;
+    
+  z = 5.191;
+    
+  phiStart->translation = SbVec3f (M_PI / 4, 0, -z - 0.6);
+  phiTranslation->translation = SbVec3f (M_PI / 4, 0, 0);
+  phiLabels->addChild (phiStart);
+    
+  for (tick = 0; tick < 8; tick ++) 
+  {
+    text = phiLabelText [tick] = new SoText2;
+    phiLabels->addChild (text);
+    phiLabels->addChild (phiTranslation);
+  }
+    
+  phiLabelText [0]->string = "PI/4";
+  phiLabelText [1]->string = "PI/2";
+  phiLabelText [2]->string = "3PI/4";
+  phiLabelText [3]->string = "PI";
+  phiLabelText [4]->string = "5PI/4";
+  phiLabelText [5]->string = "3PI/2";
+  phiLabelText [6]->string = "7PI/4";
+  phiLabelText [7]->string = "2PI";
+    
+  gridSep->addChild (phiLabels);
+    
+  z = -5.191;
+    
+  // scale
+  SoSeparator         *labelScale = new SoSeparator;
+  SoText2             *labelScaleText = new SoText2;
+  SoTranslation       *labelScaleOffset = new SoTranslation;
+  char scaleChars [12] = "1.0 GeV";
+  sprintf (scaleChars, "%.2G GeV", scale);
+  labelScaleText->string = scaleChars;
+  labelScaleOffset->translation
+    = SbVec3f (-0.6, 1, z - 0.6);
+  labelScale->addChild (labelScaleOffset);
+  labelScale->addChild (labelScaleText);
+  gridSep->addChild (labelScale);
+    
+  SoSeparator         *etaLabels = new SoSeparator;
+  SoTranslation       *etaStart = new SoTranslation;
+  SoTranslation       *etaTranslation = new SoTranslation;
+    
+  etaStart->translation = SbVec3f (-0.6, 0, -5.0);
+  etaTranslation->translation = SbVec3f (0, 0, 1);
+  etaLabels->addChild (etaStart);
+    
+  for (tick = 0; tick < 11; tick++, z++)
+  {
+    text = new SoText2;
+    char textLabel [5];
+    sprintf (textLabel, "%.0f", z);
+    text->string = textLabel;
+    etaLabels->addChild (text);
+    etaLabels->addChild (etaTranslation);
+  }
+  gridSep->addChild (etaLabels);
+}
 
+static float
+phi4eta (float eta)
+{
+  float phi = 0.087;
+  float etaBins [29] = { 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609,
+			 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305,
+			 1.392, 1.479, 1.566, 1.653, 1.74, 1.83, 1.93, 2.043,
+			 2.172, 2.322, 2.5, 2.65, 3};
+    
+  float etaHFBins [14] = {2.853, 2.964, 3.139, 3.314, // HF
+			  3.486, 3.664, 3.839, 4.013, 
+			  4.191, 4.363, 4.538, 4.716, 
+			  4.889, 5.191};
+  if (eta > 2.853) 
+    for (int i = 0; i < 13; i++) 
+    {
+      if ((eta > etaHFBins [i]) && (eta < etaHFBins [i + 1])) 
+	phi =  etaHFBins [i + 1] - etaHFBins [i];
+    }
+  else  
+    for (int i = 0; i < 28; i++) 
+    {
+      if ((eta > etaBins [i]) && (eta < etaBins [i + 1])) 
+	phi =  etaBins [i + 1] - etaBins [i];
+    }
+  return phi;
+}
 
+static void
+makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  IgCollection          *c = collections[0];
+  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
+  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
+
+  IgDrawTowerHelper drawTowerHelper(sep);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    double emEnergy = ci->get<double>("emEnergy");
+    double et = ci->get<double>("et");
+    double emFraction = emEnergy / et;
+ 
+    if (et > minimumEnergy)
+    {
+      double eta  = ci->get<double>("eta");
+      double phi  = ci->get<double>("phi");
+      if (phi < 0) phi += 2 * M_PI;
+      
+      drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, (emFraction > 0 ? emFraction : 0),
+				   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+				   phi4eta (fabs (eta)));
+    }
+  }
+}
 
 // ------------------------------------------------------
 // Draw Tracker data
@@ -495,6 +718,57 @@ make3DGsfTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparat
   make3DTracks(collections, assocs, sep, SbColor(1.0, 0.9, 0.0), SoMarkerSet::SQUARE_FILLED_5_5);
 }
 
+static void
+make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  IgCollection          *c = collections[0];
+  SoMaterial            *mat = new SoMaterial;
+  SoMarkerSet           *points = new SoMarkerSet;
+  SoVertexProperty      *vertices = new SoVertexProperty;
+  int                   n = 0;
+
+  mat->diffuseColor = SbColor(1.0, 0.1, 0.5);
+  sep->addChild(mat);
+
+  IgDrawTowerHelper drawTowerHelper(sep);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    IgV3d f1  = ci->get<IgV3d>("front_1");
+    IgV3d f2  = ci->get<IgV3d>("front_2");
+    IgV3d f3  = ci->get<IgV3d>("front_3");
+    IgV3d f4  = ci->get<IgV3d>("front_4");
+
+    IgV3d b1  = ci->get<IgV3d>("back_1");
+    IgV3d b2  = ci->get<IgV3d>("back_2");
+    IgV3d b3  = ci->get<IgV3d>("back_3");
+    IgV3d b4  = ci->get<IgV3d>("back_4");
+    drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
+
+    double x = f1.x();
+    double y = f1.y();
+    double z = f1.z();
+    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
+    x = f2.x();
+    y = f2.y();
+    z = f2.z();
+    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
+    x = f3.x();
+    y = f3.y();
+    z = f3.z();
+    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
+    x = f4.x();
+    y = f4.y();
+    z = f4.z();
+    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
+  }
+  vertices->vertex.setNum(n);
+
+  points->markerIndex = SoMarkerSet::PLUS_5_5;
+  points->vertexProperty = vertices;
+  points->numPoints = n;
+  sep->addChild(points);
+}
 
 static void
 make3DRecoTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
@@ -558,7 +832,6 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, SoSeparator *
     }
   }
 }
-
 
 static void
 make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
@@ -671,6 +944,15 @@ make3DEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSepar
   mat->diffuseColor.setValue(1.0, 0.2, 0.7);
   sep->addChild(mat);
   make3DEnergyTowers(collections, assocs, sep);
+}
+
+static void
+make3DEcalPreshowerRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial *mat = new SoMaterial;
+  mat->diffuseColor.setValue(1.0, 0.2, 0.7);
+  sep->addChild(mat);
+  make3DPreshowerTowers(collections, assocs, sep);
 }
 
 static void
@@ -1451,7 +1733,7 @@ ISpyApplication::ISpyApplication(void)
              "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEcalPreshowerRecHits,
              Qt::Checked);
 
   collection("Calorimetry/HB Rec. Hits",
@@ -2117,7 +2399,7 @@ ISpyApplication::ISpyApplication(void)
              "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEcalPreshowerRecHits,
              Qt::Checked);
 
   collection("Calorimetry/HB Rec. Hits",
@@ -2238,6 +2520,25 @@ ISpyApplication::ISpyApplication(void)
              "PSimHits_V1:pos:dir",
              "TrackingParticlePSimHits_V1",
              make3DTrackingParticles,
+             Qt::Checked);
+
+  float position4[3] = {-18.1, 8.6, 14.0};
+  float pointAt4[3] = {0, 0, 0};
+  camera(position4, pointAt4, 10.6, true, true);
+  visibilityGroup();
+  view("Standard LEGO View", true);
+  collection("Geometry/CMS Eta-Phi Grid",
+             "CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             makeLegoGrid,
+             Qt::Checked);
+
+  collection("Calorimetry/Calorimeter Energy Towers",
+             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             makeLegoCaloTowers,
              Qt::Checked);
 }
 
@@ -2813,7 +3114,7 @@ ISpyApplication::restoreCameraFromSpec(CameraSpec *spec, Camera &camera)
 void
 ISpyApplication::setupMainWindow(void)
 {
-  m_mainWindow = new ISpyMainWindow(this);
+  m_mainWindow = new ISpyMainWindow;
   m_mainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
   QObject::connect(m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
@@ -2823,6 +3124,7 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(rewind()),        this, SLOT(rewind()));
   QObject::connect(m_mainWindow, SIGNAL(print()),         this, SIGNAL(print()));
   QObject::connect(m_mainWindow, SIGNAL(save()),          this, SIGNAL(save()));
+  QObject::connect(m_mainWindow, SIGNAL(showAbout()),     this, SLOT(showAbout()));
 
   m_mainWindow->actionAuto->setChecked(false);
   m_mainWindow->actionAuto->setEnabled(false);
@@ -2898,14 +3200,6 @@ ISpyApplication::setupMainWindow(void)
                    this, SLOT(switchView(int)));
 }
 
-/** Take the splash screen down.  Called from timer signal. */
-void
-ISpyApplication::cleanSplash(void)
-{
-  ASSERT(m_splash);
-  delete m_splash;
-}
-
 void
 ISpyApplication::showAbout(void)
 {
@@ -2964,7 +3258,8 @@ ISpyApplication::doRun(void)
   // window. If we opened files above just make the "About iSpy" splash
   // screen visible for a few seconds, show the main window and proceed
   // immediatly to the main app event loop.
-  m_splash = new ISpySplashScreen(this, 0);
+  m_splash = new ISpySplashScreen;
+  m_splash->initActions(this);
   QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()),
                    m_splash, SLOT(showWizard()));
 
@@ -2996,7 +3291,10 @@ ISpyApplication::doRun(void)
 
   // Now run.
   SoQt::mainLoop();
+  
+  std::cout << "Thank you for using iSpy!" << std::endl;
   delete m_viewer;
+  delete m_splash;
   return 0;
 }
 

@@ -1,7 +1,6 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
-#include "Iguana/QtGUI/interface/ISpyApplication.h"
 #include "Iguana/QtGUI/interface/IgLocationDialog.h"
 #include "Iguana/QtGUI/interface/IgSettingsEditor.h"
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
@@ -19,10 +18,9 @@
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
-ISpyMainWindow::ISpyMainWindow(ISpyApplication *application, QWidget *parent)
+ISpyMainWindow::ISpyMainWindow(QWidget *parent)
   : QMainWindow(parent),
-    m_settingsEditor(new IgSettingsEditor(parent)),
-    m_application(application)
+    m_settingsEditor(new IgSettingsEditor(parent))
 {
   setupUi(this);
   setupActions();
@@ -44,7 +42,7 @@ ISpyMainWindow::setupActions(void)
   QObject::connect(actionSave, SIGNAL(triggered()), this, SIGNAL(save()));
   QObject::connect(actionMaximize, SIGNAL(triggered()), this, SLOT(maximize()));
   QObject::connect(actionFull_screen, SIGNAL(triggered()), this, SLOT(fullScreen()));
-  QObject::connect(actionAbout, SIGNAL(triggered()), m_application, SLOT(showAbout()));
+  QObject::connect(actionAbout, SIGNAL(triggered()), this, SIGNAL(showAbout()));
   actionFull_screen->setEnabled(false);
   restoreSettings();
 }
