@@ -81,6 +81,7 @@ void
 IgNetworkReplyHandler::abort(void)
 {
   m_aborted = true;
+  m_reply->close();
   m_reply->abort();
 }
 

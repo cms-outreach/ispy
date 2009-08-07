@@ -1,3 +1,29 @@
+2009-08-06  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* IgDrawTowerHelper.h, IgDrawTowerHelper.cc: Displays calo towers
+	in lego. 
+	* ISpyApplication.cc: Introduces Lego view. Displays lego grid.
+	* IgNetworkReplyHandler.cc: Closes the device before aborting.
+
+	* ISpyApplication.cc: Display preshower rechits in 3D abd RZ
+	views. 
+
+2009-08-03  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Remove circular
+	dependencies between ISpyMainWindow and ISpyApplication. Remove
+	circular dependencies between ISpySplashScreen and
+	ISpyApplication. Remove unused member functions for cleaning up
+	the splash screen. Clean up the splash at the end with a thank you
+	message.
+	* ISpyMainWindow.h, ISpyMainWindow.cc: Remove circular
+	dependencies between ISpyMainWindow and ISpyApplication. 
+	* ISpySplashScreen.h, ISpySplashScreen.cc: Remove circular
+	dependencies between ISpySplashScreen and ISpyApplication. Clean
+	up unused but emitted signals from the splash screen. Use more
+	portable window settings to add a close button on the splash
+	screen which also works on Linux. 
+
 2009-07-26 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.h, IgNetworkReplyHandler.h, ISpyApplication.cc

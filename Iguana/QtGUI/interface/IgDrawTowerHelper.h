@@ -73,7 +73,11 @@ public:
                 IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
                 float heightContent, float heightOffset,
                 float heightScale);
-
+  /**
+     Add a single lego tower with two energy fractions 
+   */
+  void addLegoTower(SbVec2f position, float energy, float emFraction, float scaleFactor,
+		    float etaWidth, float phiWidth);
   /**
       Add a single box centred on the original box but scaled linearly by scaleFraction
   */
