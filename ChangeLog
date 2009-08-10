@@ -1,3 +1,25 @@
+2009-08-10  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpySplashScreen.ui, ui_ISpySplashScreen.h: 
+	  Misc fixes for 1.2.1. Version number bumped to 1.2.1.
+	  Hypernews forum used on feedback dialog.
+
+2009-08-10  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: improved display option for DT and 
+	  SiStrip.
+
+2009-08-10  Lucas Taylor <lucas.taylor@cern.ch>
+
+	* ISpyApplication.cc: uses a different rel val file as default
+	  one for the "open url" dialog. The new one contains examples
+	  of the sim tracks and other new objects available since 1.2.
+
+2009-08-10  Thomas McCauley <mccauley@mail.cern.ch>
+
+	* ISpyApplication.h: Displays L1 Trigger information in the 
+	  3D view.
+
 2009-08-06  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* IgDrawTowerHelper.h, IgDrawTowerHelper.cc: Displays calo towers
