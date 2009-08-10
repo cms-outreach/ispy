@@ -150,6 +150,48 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 }
 
 
+static void
+make3DL1Trigger(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+{
+  char                   buf[128];
+  IgCollection           *c = collections[0];
+  SoMaterial             *mat = new SoMaterial;
+  SoAnnotation           *overlay = new SoAnnotation;
+  SoOrthographicCamera   *camera = new SoOrthographicCamera;
+  SoFont                 *labelFont = new SoFont;
+  SoTranslation          *textStartTranslation = new SoTranslation;
+  SoTranslation          *nextLineTranslation  = new SoTranslation;
+   
+  camera->nearDistance = 1;
+  camera->farDistance = 10;
+  camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
+  camera->scaleHeight(5.5f);
+  camera->focalDistance = 1;
+  overlay->addChild(camera);
+
+  mat->diffuseColor = SbColor(1.0, 1.0, 1.0);
+  overlay->addChild(mat);
+
+  labelFont->size = 13.0;
+  labelFont->name = "Courier";
+  overlay->addChild(labelFont);
+
+  textStartTranslation->translation = SbVec3f(4.5,  5.0,  0.0);
+  nextLineTranslation ->translation = SbVec3f(0.0, -0.25, 0.0);
+  createTextLine (overlay, textStartTranslation, "L1 Triggers:");
+  createTextLine (overlay, nextLineTranslation,  "------------");
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    if (ci->get<int>("result") == 1)
+    {   
+      sprintf(buf, "%.100s", ci->get<std::string>("algorithm").c_str());
+      createTextLine(overlay, nextLineTranslation, buf);
+    }
+  }
+ 
+  sep->addChild (overlay);
+}
 
 // ------------------------------------------------------
 // Draw Generic shapes
@@ -535,7 +577,7 @@ make3DSiPixelClusters(IgCollection **collections, IgAssociationSet **assocs, SoS
 static void
 make3DSiStripClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DPointSetShapes(collections, assocs, sep, SbColor(0.4, 0.2, 0.0), SoMarkerSet::CROSS_5_5);
+  make3DPointSetShapes(collections, assocs, sep, SbColor(0.9, 0.2, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
 }
 
 
@@ -1261,8 +1303,6 @@ make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   IgProperty            CELL_L = c->getProperty("cellLength");
   IgProperty            CELL_W = c->getProperty("cellWidth");
   IgProperty            CELL_H = c->getProperty("cellHeight");
-  SoVertexProperty      *vertices = new SoVertexProperty;
-  SoMarkerSet           *points = new SoMarkerSet;
   SoMaterial            *mat = new SoMaterial;
   int                   n = 0;
 
@@ -1273,16 +1313,11 @@ make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   {
     IgV3d pos = ci->get<IgV3d>(POS);
 
-    double x = pos.x();
-    double y = pos.y();
-    double z = pos.z();
-    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
-
     IgV3d axis = ci->get<IgV3d>(AXIS);
     double angle = ci->get<double>(ANGLE);
 
     SoTransform *transform = new SoTransform;
-    transform->translation.setValue(x,y,z);
+    transform->translation.setValue(pos.x(), pos.y(), pos.z());
     transform->rotation.setValue(SbVec3f(axis.x(),axis.y(),axis.z()), angle);
 
     SoCube *cube = new SoCube;
@@ -1295,12 +1330,6 @@ make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
     separator->addChild(cube);
     sep->addChild(separator);
   }
-
-  vertices->vertex.setNum(n);
-  points->markerIndex = SoMarkerSet::SQUARE_LINE_5_5;
-  points->vertexProperty = vertices;
-  points->numPoints = n;
-  sep->addChild(points);
 }
 
 static void
@@ -1554,7 +1583,7 @@ ISpyApplication::ISpyApplication(void)
 #else
   QCoreApplication::setApplicationName("iSpy");
 #endif
-  QCoreApplication::setApplicationVersion("1.2");
+  QCoreApplication::setApplicationVersion("1.2.1");
   QCoreApplication::setOrganizationDomain("iguana");
   QCoreApplication::setOrganizationName("iguana");
 
@@ -1853,8 +1882,8 @@ ISpyApplication::ISpyApplication(void)
              "L1GtTrigger_V1",
              0,
              0,
-             0,
-             Qt::Unchecked);
+             make3DL1Trigger,
+             Qt::Checked);
 
   collection("Trigger/HLT Trigger Paths",
              "TriggerPaths_V1",
@@ -2212,8 +2241,8 @@ ISpyApplication::ISpyApplication(void)
              "L1GtTrigger_V1",
              0,
              0,
-             0,
-             Qt::Unchecked);
+             make3DL1Trigger,
+             Qt::Checked);
 
   collection("Trigger/HLT Trigger Paths",
              "TriggerPaths_V1",
@@ -2498,8 +2527,8 @@ ISpyApplication::ISpyApplication(void)
              "L1GtTrigger_V1",
              0,
              0,
-             0,
-             Qt::Unchecked);
+             make3DL1Trigger,
+             Qt::Checked);
 
   collection("Trigger/HLT Trigger Paths",
              "TriggerPaths_V1",
@@ -4082,7 +4111,7 @@ ISpyApplication::getUrl(const QUrl &url)
 {
   QNetworkRequest request;
   request.setUrl(url);
-  request.setRawHeader("User-Agent", "iSpy 1.2");
+  request.setRawHeader("User-Agent", "iSpy 1.2.1");
   return m_networkManager->get(request);
 }
 
@@ -4135,7 +4164,7 @@ ISpyApplication::openUrlDialog(void)
 {
   QInputDialog dialog;
   dialog.setLabelText("Specify an ig-file url:");
-  dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/mc/electroweak/RelValWjet.ig");
+  dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/mc/electroweak/RelValZEE-1-2.ig");
   dialog.resize(430,72);
   // FIXME: use the latest file downloaded as default.
   if (!dialog.exec())
