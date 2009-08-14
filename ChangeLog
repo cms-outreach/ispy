@@ -1,3 +1,7 @@
+2009-08-14  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyConsumer.h: Cleanup unused production of latest ig file.
+
 2009-08-13  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyConsumerThread.cc, ISpyConsumerThread.h, ISpyConsumer.h:

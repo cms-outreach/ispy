@@ -5,14 +5,7 @@
 # include <deque>
 # include <sstream>
 
-# include "classlib/iobase/IOFlags.h"
-# include "classlib/iobase/File.h"
-# include "classlib/iobase/Filename.h"
-# include "classlib/iotools/OutputStream.h"
-# include "classlib/utils/ShellEnvironment.h"
 # include "classlib/utils/TimeInfo.h"
-# include "classlib/zip/ZipArchive.h"
-# include "classlib/zip/ZipMember.h"
 
 using namespace lat;
 
@@ -69,7 +62,6 @@ public:
   report(void *arg, uint32_t reason, Object &o)
     {
       ISpyConsumer *self = static_cast<ISpyConsumer *>(arg);
-      lat::ZipArchive *archive = 0;
       if (reason == VIS_FLAG_RECEIVED)
       {
 	if (o.flags & VIS_FLAG_NEW)
@@ -81,42 +73,14 @@ public:
 	    << std::hex << o.flags << std::dec;
 	  if (o.flags & VIS_FLAG_SCALAR)
 	  {
-	    // Save latest event in a file.
-	    // FIXME: N events?
-	    Filename zipOutputFile(Filename("latest.ig").substitute(ShellEnvironment()));
-	    if (zipOutputFile.exists())
-	      std::rename(zipOutputFile.name(), "latest-old.ig");
-	    
-	    archive = new ZipArchive(zipOutputFile, IOFlags::OpenWrite
-				     | IOFlags::OpenCreate | IOFlags::OpenTruncate);
-	    
-	    lat::ZipMember *current = new ZipMember(o.name);
-	    current->isDirectory(false);
-	    current->time(Time::current());
-	    current->method(ZConstants::DEFLATED);
-	    current->level(ZConstants::BEST_COMPRESSION);
-
-	    lat::OutputStream *output = archive->output(current);
-	    
-	    std::vector<char> data;
-	    data.reserve(o.rawdata.size() + 1);
-	    data.insert(data.end(), o.rawdata.begin(), o.rawdata.end());
-	    data.push_back(0);
-
-	    output->write(&data[0], data.size()-1);
-	    output->close();
-	    delete output;
-	    archive->close();
-	    delete archive;
-
 	    if (self->m_events.size() > MAX_EVENT_BUFFER)
 	    {
 	      self->m_events.pop_front();
 	    }
 	    x << self->m_events.size();
 	    self->m_events.push_back(o);
-	    //FIXME: x << "; text: '" << &data[0]
-	    x << "'\n";
+
+	    x << "\n";
 	  }
 	  else
 	    x << '\n';
