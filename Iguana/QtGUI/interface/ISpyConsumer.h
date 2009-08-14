@@ -10,6 +10,7 @@
 # include "classlib/iobase/Filename.h"
 # include "classlib/iotools/OutputStream.h"
 # include "classlib/utils/ShellEnvironment.h"
+# include "classlib/utils/TimeInfo.h"
 # include "classlib/zip/ZipArchive.h"
 # include "classlib/zip/ZipMember.h"
 
@@ -29,18 +30,39 @@ public:
 
   ISpyConsumer(bool verbose, const std::string &host, int port)
     : IgNet("ispy-consumer"),
-      m_events(MAX_EVENT_BUFFER, "")
+      m_eventIndex(0)
     {
       logme() << "INFO: listening for data from " << host << ':' << port << '\n';
       debug(verbose);
       listenToSource(host, port);
     }
 
-  std::string
+  bool
+  hasEvents(void)
+    {
+      return ! m_events.empty ();
+    }
+  
+  IgNet::Object&
   newEvent(void)
     {
-      std::string event(m_events.back());
-      return event;
+      bool newEvent = false;
+      
+      if(m_events.back().lastreq == 0)
+      {
+	m_eventIndex = m_events.size()-1;
+	newEvent = true;
+      }
+      else if (++m_eventIndex > m_events.size()-1)
+      {
+	m_eventIndex = 0;
+      }
+      m_events[m_eventIndex].lastreq = Time::current();
+
+      if(! newEvent)
+	m_events[m_eventIndex].name.append("*");
+	  
+      return m_events[m_eventIndex];
     }
   
   static void
@@ -92,7 +114,7 @@ public:
 	      self->m_events.pop_front();
 	    }
 	    x << self->m_events.size();
-	    self->m_events.push_back(&data[0]);
+	    self->m_events.push_back(o);
 	    //FIXME: x << "; text: '" << &data[0]
 	    x << "'\n";
 	  }
@@ -116,7 +138,8 @@ public:
       return s_stop != 0;
     }
 private:
-  std::deque<std::string> m_events;
+  size_t			m_eventIndex;
+  std::deque<IgNet::Object>	m_events;
 };
 
 #endif // QT_GUI_ISPY_CONSUMER_H

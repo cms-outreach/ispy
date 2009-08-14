@@ -35,7 +35,9 @@ private:
   std::string 		m_host;
   int 			m_port;
   unsigned int		m_bufferSize;	    
-  std::deque<std::string> m_events;
+  bool			m_newEvent;
+  size_t		m_eventIndex;
+  std::deque<IgNet::Object> m_events;
 };
 
 #endif // QT_GUI_ISPY_CONSUMER_THREAD_H

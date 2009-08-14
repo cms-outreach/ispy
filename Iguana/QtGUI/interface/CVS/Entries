@@ -1,6 +1,5 @@
 /IGUANA_SPLASH.xpm/1.2/Fri May  8 07:44:44 2009//
 /ISpy3DView.h/1.12/Fri Aug  7 12:09:20 2009//
-/ISpyConsumerThread.h/1.4/Mon Jul 20 15:55:06 2009//
 /ISpyDigitalClock.h/1.1/Mon Jul 20 15:55:06 2009//
 /ISpyEventFilter.h/1.3/Mon Jul 27 07:41:03 2009//
 /ISpyMainWindow.h/1.13/Mon Aug 10 08:22:14 2009//
@@ -48,5 +47,6 @@
 /zoom_in.png/1.1/Fri Mar 13 11:20:15 2009//
 /zoom_out.png/1.1/Fri Mar 13 11:20:15 2009//
 /ISpyApplication.h/1.39/Thu Aug 13 15:34:02 2009//
-/ISpyConsumer.h/1.6/Thu Aug 13 15:35:01 2009//
+/ISpyConsumer.h/1.7/Fri Aug 14 09:07:34 2009//
+/ISpyConsumerThread.h/1.5/Fri Aug 14 09:07:34 2009//
 D

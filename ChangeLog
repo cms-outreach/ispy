@@ -1,3 +1,8 @@
+2009-08-13  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyConsumerThread.cc, ISpyConsumerThread.h, ISpyConsumer.h:
+	Change passing string to IgNet::Objects.
+
 2009-08-13  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyConsumer.h: reverts I/O interval to default value as it
