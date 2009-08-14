@@ -1,3 +1,9 @@
+2009-08-13  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyConsumer.h: reverts I/O interval to default value as it
+	  was erroneously changed in the first place. This improves
+	  performance of the "online" infrastructure.
+
 2009-08-10  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, ISpySplashScreen.ui, ui_ISpySplashScreen.h: 

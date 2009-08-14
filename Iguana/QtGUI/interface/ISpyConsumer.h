@@ -33,7 +33,6 @@ public:
     {
       logme() << "INFO: listening for data from " << host << ':' << port << '\n';
       debug(verbose);
-      delay(100);
       listenToSource(host, port);
     }
 
