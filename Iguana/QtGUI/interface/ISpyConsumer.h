@@ -5,13 +5,7 @@
 # include <deque>
 # include <sstream>
 
-# include "classlib/iobase/IOFlags.h"
-# include "classlib/iobase/File.h"
-# include "classlib/iobase/Filename.h"
-# include "classlib/iotools/OutputStream.h"
-# include "classlib/utils/ShellEnvironment.h"
-# include "classlib/zip/ZipArchive.h"
-# include "classlib/zip/ZipMember.h"
+# include "classlib/utils/TimeInfo.h"
 
 using namespace lat;
 
@@ -29,26 +23,45 @@ public:
 
   ISpyConsumer(bool verbose, const std::string &host, int port)
     : IgNet("ispy-consumer"),
-      m_events(MAX_EVENT_BUFFER, "")
+      m_eventIndex(0)
     {
       logme() << "INFO: listening for data from " << host << ':' << port << '\n';
       debug(verbose);
-      delay(100);
       listenToSource(host, port);
     }
 
-  std::string
+  bool
+  hasEvents(void)
+    {
+      return ! m_events.empty ();
+    }
+  
+  IgNet::Object&
   newEvent(void)
     {
-      std::string event(m_events.back());
-      return event;
+      bool newEvent = false;
+      
+      if(m_events.back().lastreq == 0)
+      {
+	m_eventIndex = m_events.size()-1;
+	newEvent = true;
+      }
+      else if (++m_eventIndex > m_events.size()-1)
+      {
+	m_eventIndex = 0;
+      }
+      m_events[m_eventIndex].lastreq = Time::current();
+
+      if(! newEvent)
+	m_events[m_eventIndex].name.append("*");
+	  
+      return m_events[m_eventIndex];
     }
   
   static void
   report(void *arg, uint32_t reason, Object &o)
     {
       ISpyConsumer *self = static_cast<ISpyConsumer *>(arg);
-      lat::ZipArchive *archive = 0;
       if (reason == VIS_FLAG_RECEIVED)
       {
 	if (o.flags & VIS_FLAG_NEW)
@@ -60,42 +73,14 @@ public:
 	    << std::hex << o.flags << std::dec;
 	  if (o.flags & VIS_FLAG_SCALAR)
 	  {
-	    // Save latest event in a file.
-	    // FIXME: N events?
-	    Filename zipOutputFile(Filename("latest.ig").substitute(ShellEnvironment()));
-	    if (zipOutputFile.exists())
-	      std::rename(zipOutputFile.name(), "latest-old.ig");
-	    
-	    archive = new ZipArchive(zipOutputFile, IOFlags::OpenWrite
-				     | IOFlags::OpenCreate | IOFlags::OpenTruncate);
-	    
-	    lat::ZipMember *current = new ZipMember(o.name);
-	    current->isDirectory(false);
-	    current->time(Time::current());
-	    current->method(ZConstants::DEFLATED);
-	    current->level(ZConstants::BEST_COMPRESSION);
-
-	    lat::OutputStream *output = archive->output(current);
-	    
-	    std::vector<char> data;
-	    data.reserve(o.rawdata.size() + 1);
-	    data.insert(data.end(), o.rawdata.begin(), o.rawdata.end());
-	    data.push_back(0);
-
-	    output->write(&data[0], data.size()-1);
-	    output->close();
-	    delete output;
-	    archive->close();
-	    delete archive;
-
 	    if (self->m_events.size() > MAX_EVENT_BUFFER)
 	    {
 	      self->m_events.pop_front();
 	    }
 	    x << self->m_events.size();
-	    self->m_events.push_back(&data[0]);
-	    //FIXME: x << "; text: '" << &data[0]
-	    x << "'\n";
+	    self->m_events.push_back(o);
+
+	    x << "\n";
 	  }
 	  else
 	    x << '\n';
@@ -117,7 +102,8 @@ public:
       return s_stop != 0;
     }
 private:
-  std::deque<std::string> m_events;
+  size_t			m_eventIndex;
+  std::deque<IgNet::Object>	m_events;
 };
 
 #endif // QT_GUI_ISPY_CONSUMER_H
