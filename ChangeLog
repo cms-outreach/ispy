@@ -1,3 +1,8 @@
+2009-08-14 Thomas McCauley  <mccauley@mail.cern.ch>
+
+	* ISpyApplication.cc: yet another renaming for the default "Open url"
+	  file.
+
 2009-08-14  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyConsumer.h: Cleanup unused production of latest ig file.

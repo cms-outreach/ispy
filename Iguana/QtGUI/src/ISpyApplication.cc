@@ -4164,7 +4164,7 @@ ISpyApplication::openUrlDialog(void)
 {
   QInputDialog dialog;
   dialog.setLabelText("Specify an ig-file url:");
-  dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/mc/electroweak/RelValZEE-1-2.ig");
+  dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/mc/electroweak/RelValZEE.ig");
   dialog.resize(430,72);
   // FIXME: use the latest file downloaded as default.
   if (!dialog.exec())
