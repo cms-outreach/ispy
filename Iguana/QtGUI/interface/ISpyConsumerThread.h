@@ -19,8 +19,9 @@ public:
   ~ISpyConsumerThread(void);
 
   void  listenTo(bool verbose, const std::string &host, int port);
-  void	nextEvent(IgDataStorage *storage);
-  void	finalize(void);
+  std::string nextEvent(IgDataStorage *storage);
+  std::string previousEvent(IgDataStorage *storage);
+  void finalize(void);
 
 protected:
   void 	run(void);

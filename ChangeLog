@@ -1,3 +1,12 @@
+2009-08-17  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyConsumerThread.h, ISpyConsumerThread.cc, ISpyApplication.cc:
+	  Implementation of online event navigation. The new events are
+	  taken from an online buffer. Previously viewed events are
+	  stored in a viewed buffer. If the producer goes down, the events 
+	  from the online buffer are still served, but marked as staled.
+	  Previously viewed events displayed with such message.
+
 2009-08-14 Thomas McCauley  <mccauley@mail.cern.ch>
 
 	* ISpyApplication.cc: yet another renaming for the default "Open url"

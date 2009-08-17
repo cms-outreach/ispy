@@ -7,7 +7,9 @@ ISpyConsumerThread::ISpyConsumerThread(QObject * /*parent*/)
   : m_consumer(0),
     m_restart(false),
     m_abort(false),
-    m_bufferSize(10)
+    m_bufferSize(10),
+    m_newEvent(false),
+    m_eventIndex(0)
 {}
 
 ISpyConsumerThread::~ISpyConsumerThread(void)
@@ -30,7 +32,7 @@ ISpyConsumerThread::listenTo(bool verbose, const std::string &host, int port)
   m_mutex.unlock();
 }
 
-void
+std::string
 ISpyConsumerThread::nextEvent(IgDataStorage *storage) 
 {
   QMutexLocker locker(&m_mutex);
@@ -95,6 +97,47 @@ ISpyConsumerThread::nextEvent(IgDataStorage *storage)
     m_restart = true;
     m_condition.wakeOne();
   }
+  return oName;
+}
+
+std::string
+ISpyConsumerThread::previousEvent(IgDataStorage *storage) 
+{
+  QMutexLocker locker(&m_mutex);
+  std::string oName;
+  
+  if(! m_events.empty())
+  {
+    (m_eventIndex > 0 && --m_eventIndex < m_events.size()) ? m_eventIndex : m_eventIndex = 0;
+    
+    ASSERT(m_eventIndex < m_events.size());
+    IgNet::Object o = m_events[m_eventIndex];
+       
+    if (! o.name.empty ())
+    {
+      o.lastreq = Time::current();
+      std::vector<char> data;	
+      data.reserve(o.rawdata.size() + 1);
+      data.insert(data.end(), o.rawdata.begin(), o.rawdata.end());
+      data.push_back(0);
+ 
+      IgParser parser(storage);
+      parser.parse(&data[0]);
+      oName = o.name;
+      oName.append (" (already viewed)");
+    }
+  }
+   
+  if(! isRunning()) 
+  {
+    start(LowPriority);
+  } 
+  else 
+  {
+    m_restart = true;
+    m_condition.wakeOne();
+  }
+  return oName;
 }
 
 void
