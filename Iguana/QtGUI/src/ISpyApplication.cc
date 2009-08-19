@@ -2551,9 +2551,9 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackingParticles,
              Qt::Checked);
 
-  float position4[3] = {-18.1, 8.6, 14.0};
+  float position4[3] = {7.2, 4.5, 2.5};
   float pointAt4[3] = {0, 0, 0};
-  camera(position4, pointAt4, 10.6, true, true);
+  camera(position4, pointAt4, 6.5, true, true);
   visibilityGroup();
   view("Standard LEGO View", true);
   collection("Geometry/CMS Eta-Phi Grid",
