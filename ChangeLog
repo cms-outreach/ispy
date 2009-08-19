@@ -1,5 +1,7 @@
 2009-08-19  Ianna Osborne  <ianna.osborne@cern.ch>
 
+	* ISpyApplication.cc: Add Event and L1 trigger info in Lego.
+
 	* ISpyApplication.cc: Set a better default camera position for
 	Lego. 
 

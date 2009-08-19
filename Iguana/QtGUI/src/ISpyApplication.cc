@@ -2563,6 +2563,20 @@ ISpyApplication::ISpyApplication(void)
              makeLegoGrid,
              Qt::Checked);
 
+  collection("Event/Event information",
+             "Event_V1:time:run:event:ls:orbit:bx",
+             0,
+             0,
+             make3DEvent,
+             Qt::Checked);
+  
+  collection("Trigger/L1 Triggers",
+             "L1GtTrigger_V1",
+             0,
+             0,
+             make3DL1Trigger,
+             Qt::Checked);
+
   collection("Calorimetry/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
