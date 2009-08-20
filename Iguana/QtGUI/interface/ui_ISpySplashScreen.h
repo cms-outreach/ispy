@@ -248,7 +248,7 @@ public:
   void retranslateUi(QWidget *ISpySplashScreen)
     {
       ISpySplashScreen->setWindowTitle(QApplication::translate("ISpySplashScreen", "IGUANA iSpy", 0, QApplication::UnicodeUTF8));
-      label->setText(QApplication::translate("ISpySplashScreen", "Welcome to iSpy 1.2.1", 0, QApplication::UnicodeUTF8));
+      label->setText(QApplication::translate("ISpySplashScreen", "Welcome to iSpy 1.2.2", 0, QApplication::UnicodeUTF8));
       wizardView->setHtml(QApplication::translate("ISpySplashScreen", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
                                                   "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
                                                   "p, li { white-space: pre-wrap; }\n"
@@ -303,7 +303,7 @@ public:
                                                        "p, li { white-space: pre-wrap; }\n"
                                                        "</style></head><body style=\" font-family:'Lucida Grande'; font-size:13pt; font-weight:400; font-style:normal;\">\n"
                                                        "<p style=\"-qt-paragraph-type:empty; margin-top:100px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></p>\n"
-                                                       "<p style=\" margin-top:100px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Sans Serif'; font-size:14pt; font-weight:600; color:#065602;\">iSpy 1.2.1</span><span style=\" font-family:'Sans Serif'; font-size:12pt;\"> is for displaying physics event data in 3D and 2D, independent of other CMS software. </span></p>\n"
+                                                       "<p style=\" margin-top:100px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Sans Serif'; font-size:14pt; font-weight:600; color:#065602;\">iSpy 1.2.2</span><span style=\" font-family:'Sans Serif'; font-size:12pt;\"> is for displaying physics event data in 3D and 2D, independent of other CMS software. </span></p>\n"
                                                        "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-in"
                                                        "dent:0px; font-family:'Sans Serif'; font-size:12pt;\"></p>\n"
                                                        "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:'Sans Serif'; font-size:12pt;\">Updates and example data files are available on the application web site. </span></p>\n"
