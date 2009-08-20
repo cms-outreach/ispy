@@ -2551,9 +2551,9 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackingParticles,
              Qt::Checked);
 
-  float position4[3] = {-18.1, 8.6, 14.0};
+  float position4[3] = {7.2, 4.5, 2.5};
   float pointAt4[3] = {0, 0, 0};
-  camera(position4, pointAt4, 10.6, true, true);
+  camera(position4, pointAt4, 6.5, true, true);
   visibilityGroup();
   view("Standard LEGO View", true);
   collection("Geometry/CMS Eta-Phi Grid",
@@ -2561,6 +2561,20 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              makeLegoGrid,
+             Qt::Checked);
+
+  collection("Event/Event information",
+             "Event_V1:time:run:event:ls:orbit:bx",
+             0,
+             0,
+             make3DEvent,
+             Qt::Checked);
+  
+  collection("Trigger/L1 Triggers",
+             "L1GtTrigger_V1",
+             0,
+             0,
+             make3DL1Trigger,
              Qt::Checked);
 
   collection("Calorimetry/Calorimeter Energy Towers",
@@ -2782,6 +2796,8 @@ ISpyApplication::visibilityGroup(void)
 void
 ISpyApplication::onExit(void)
 {
+  QObject::disconnect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
+
   if (m_consumer.isRunning ())
   {
     m_consumer.finalize();
@@ -3268,6 +3284,10 @@ ISpyApplication::doRun(void)
   QObject::connect(&filter, SIGNAL(open(const QString &)),this, SLOT(open(const QString &)));
   app.installEventFilter(&filter);
 
+  // Make sure we clean up when QApplication
+  // implicitly quits when this signal is emitted.
+  QObject::connect(&app, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
+
   // Activate but do not show the main window yet. We want to show
   // it only once we know what to do with the splash screen.
   m_mainWindow->actionSave->setEnabled(true);
@@ -3302,6 +3322,7 @@ ISpyApplication::doRun(void)
     m_mainWindow->actionAuto->setChecked(true);
     m_mainWindow->showMaximized();
     autoEvents();
+    QObject::disconnect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(nextEvent()));
     QObject::connect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(newEvent()));
 
     ISpyDigitalClock *clock = new ISpyDigitalClock(m_mainWindow->toolBarEvent);
@@ -3783,7 +3804,7 @@ ISpyApplication::newEvent(void)
   delete m_storages[0];
   if (m_online)
   {
-    m_consumer.nextEvent(m_storages[0] = new IgDataStorage);
+    showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
     if (! m_storages[0]->empty())
       resetCounter();
   }
@@ -4164,7 +4185,7 @@ ISpyApplication::openUrlDialog(void)
 {
   QInputDialog dialog;
   dialog.setLabelText("Specify an ig-file url:");
-  dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/mc/electroweak/RelValZEE-1-2.ig");
+  dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/mc/electroweak/RelValZEE.ig");
   dialog.resize(430,72);
   // FIXME: use the latest file downloaded as default.
   if (!dialog.exec())
@@ -4255,7 +4276,17 @@ ISpyApplication::nextEvent(void)
 void
 ISpyApplication::previousEvent(void)
 {
-  if (m_eventIndex > 0 && --m_eventIndex < m_events.size())
+  if (m_online)
+  {
+    delete m_storages[0];
+
+    showMessage (QString::fromStdString(m_consumer.previousEvent(m_storages[0] = new IgDataStorage)));
+    if (! m_storages[0]->empty())
+      resetCounter();
+
+    updateCollections();
+  }
+  else if (m_eventIndex > 0 && --m_eventIndex < m_events.size())
   {
     showMessage(m_events[m_eventIndex].contents->name().name());
     newEvent();

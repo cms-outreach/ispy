@@ -1,3 +1,30 @@
+2009-08-20 Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: closes the application correctly (by calling
+	  onExit only once) when last window is closed. This fixes the
+	  bug which had the consumer thread hanging on exit in online mode.
+
+2009-08-19  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: Add Event and L1 trigger info in Lego.
+
+	* ISpyApplication.cc: Set a better default camera position for
+	Lego. 
+
+2009-08-17  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyConsumerThread.h, ISpyConsumerThread.cc, ISpyApplication.cc:
+	  Implementation of online event navigation. The new events are
+	  taken from an online buffer. Previously viewed events are
+	  stored in a viewed buffer. If the producer goes down, the events 
+	  from the online buffer are still served, but marked as staled.
+	  Previously viewed events displayed with such message.
+
+2009-08-14 Thomas McCauley  <mccauley@mail.cern.ch>
+
+	* ISpyApplication.cc: yet another renaming for the default "Open url"
+	  file.
+
 2009-08-14  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyConsumer.h: Cleanup unused production of latest ig file.
