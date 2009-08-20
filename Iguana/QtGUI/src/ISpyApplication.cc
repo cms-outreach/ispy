@@ -1857,6 +1857,27 @@ ISpyApplication::ISpyApplication(void)
              make3DMuons,
              Qt::Checked);
   
+  collection("Muon/Tracker Muons",
+             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Global Muons",
+             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
   collection("Tracking/Tracking Particles",
              "TrackingParticles_V1",
              "PSimHits_V1:pos:dir",
@@ -2237,6 +2258,27 @@ ISpyApplication::ISpyApplication(void)
              make3DMuons,
              Qt::Checked);
   
+  collection("Muon/Tracker Muons",
+             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Global Muons",
+             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
   collection("Trigger/L1 Triggers",
              "L1GtTrigger_V1",
              0,
@@ -2523,6 +2565,27 @@ ISpyApplication::ISpyApplication(void)
              make3DMuons,
              Qt::Checked);
   
+  collection("Muon/Tracker Muons",
+             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Global Muons",
+             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
   collection("Trigger/L1 Triggers",
              "L1GtTrigger_V1",
              0,
