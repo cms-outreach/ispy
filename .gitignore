@@ -1,3 +1,6 @@
 .DS_Store
 .#*
 *.xcodeproj
+.stgit-edit.txt
+.stgit-failed.patch
+.stgitmail.txt
