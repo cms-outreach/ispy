@@ -212,7 +212,7 @@ public:
     {
       parseString(m_currentCollectionName);
       m_currentCollection = m_storage->getCollectionPtr(m_currentCollectionName.c_str());
-      m_currentCollection->reserve(200000);
+      m_currentCollection->reserve(100000);
       skipChar(':');
       skipChar('[');
       if (checkChar(']')) return;
