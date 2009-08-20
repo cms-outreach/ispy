@@ -2796,6 +2796,8 @@ ISpyApplication::visibilityGroup(void)
 void
 ISpyApplication::onExit(void)
 {
+  QObject::disconnect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
+
   if (m_consumer.isRunning ())
   {
     m_consumer.finalize();
@@ -3281,6 +3283,10 @@ ISpyApplication::doRun(void)
   QObject::connect(this, SIGNAL(showMessage(const QString &)), m_mainWindow->statusBar(), SLOT(showMessage(const QString &)));
   QObject::connect(&filter, SIGNAL(open(const QString &)),this, SLOT(open(const QString &)));
   app.installEventFilter(&filter);
+
+  // Make sure we clean up when QApplication
+  // implicitly quits when this signal is emitted.
+  QObject::connect(&app, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
 
   // Activate but do not show the main window yet. We want to show
   // it only once we know what to do with the splash screen.
