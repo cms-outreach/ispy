@@ -7,4 +7,4 @@ mv Products 200903191446-ge/src
 cd 200903191446-ge/src
 scram b -v -j5 ispy
 strip ../bin/$SCRAM_ARCH/ispy
-scp ../bin/$SCRAM_ARCH/ispy eulisse@lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy/bin/linux/ispy-next
+scp ../bin/$SCRAM_ARCH/ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy/bin/linux/ispy-next
