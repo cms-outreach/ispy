@@ -6,5 +6,5 @@ mv Iguana 200903191446-ge/src
 mv Products 200903191446-ge/src
 cd 200903191446-ge/src
 scram b -v -j5 ispy
-strip ../bin/$SCRAM_ARCH/bin/ispy
-scp ../bin/$SCRAM_ARCH/bin/ispy eulisse@lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy/bin/linux/ispy-next
+strip ../bin/$SCRAM_ARCH/ispy
+scp ../bin/$SCRAM_ARCH/ispy eulisse@lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy/bin/linux/ispy-next
