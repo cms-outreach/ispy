@@ -1920,13 +1920,6 @@ ISpyApplication::ISpyApplication(void)
              0,
              Qt::Unchecked);
 
-  collection("Tracking/GSF Tracks",
-             "GsfTracks_V1:pt:pos:dir",
-             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfTrackExtras_V1",
-             make3DGsfTracks,
-             Qt::Unchecked);
-
   // Don't draw the following
   collection("Not Drawn/Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
   collection("Not Drawn/Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
@@ -2172,6 +2165,13 @@ ISpyApplication::ISpyApplication(void)
              0,
              make3DTrackingRecHits,
              Qt::Checked);
+
+  collection("Tracking/GSF Tracks",
+             "GsfTracks_V1:pt:pos:dir",
+             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfTrackExtras_V1",
+             make3DGsfTracks,
+             Qt::Unchecked);
 
   collection("Calorimetry/EB Rec. Hits",
              "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
