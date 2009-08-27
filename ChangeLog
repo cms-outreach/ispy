@@ -1,3 +1,7 @@
+2009-08-26  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+        * ispy.cpp: reset locale settings to avoid parsing problems.
+
 2009-08-24 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc: draw GsfTracks in RPhi and remove spurious 

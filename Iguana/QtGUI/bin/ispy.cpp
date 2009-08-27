@@ -2,7 +2,7 @@
 
 #include "Iguana/QtGUI/interface/ISpyApplication.h"
 #include <iostream>
-
+#include <cstdlib>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -34,6 +34,7 @@ template class __default_alloc_template<1, 0>;
 int
 main (int argc, char *argv[])
 {
+  putenv("LANG=C");
   ISpyApplication app;
   return app.run (argc, argv);
 }
