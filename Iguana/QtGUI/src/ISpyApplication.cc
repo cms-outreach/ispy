@@ -1507,22 +1507,25 @@ make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *s
   sep->addChild(lineSet);
 }
 
-
-static void
-make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+static void 
+make3DTrackPoints(IgCollection **collections, 
+                  IgAssociationSet **assocs, 
+                  SoSeparator *sep, 
+                  SbColor colour,
+                  double lineWidth)
 {
-  IgCollection          *muons = collections[0];
+  IgCollection          *tracks = collections[0];
   IgCollection          *points = collections[1];
   IgAssociationSet      *assoc = assocs[0];
   SoMaterial            *mat = new SoMaterial;
 
-  mat->diffuseColor = SbColor(1.0, 0.2, 0.0);
+  mat->diffuseColor = colour;
   sep->addChild(mat);
 
-  for (IgCollectionIterator ci = muons->begin(), ce = muons->end(); ci != ce; ++ci)
+  for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
     IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
-    track->lineWidth = 3.0;
+    track->lineWidth = lineWidth;
 
     int n = 0;
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
@@ -1542,8 +1545,29 @@ make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *
   }
 }
 
+static void 
+make3DPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTrackPoints(collections, assocs, sep, SbColor(0.8, 0.8, 0.5), 2.0);
+}
 
+static void
+make3DGsfPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.9, 0.0), 2.0);
+}
 
+static void
+make3DPFBrems(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 1.0, 0.0), 1.0);
+}
+
+static void
+make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), 3.0);
+}
 
 
 
@@ -1793,6 +1817,20 @@ ISpyApplication::ISpyApplication(void)
              make3DHcalRecHits,
              Qt::Checked);
 
+  collection("Particle flow/PF EB Rec. Hits",
+             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
+  collection("Particle flow/PF EE Rec. Hits",
+             "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
   collection("Calorimetry/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -1920,6 +1958,34 @@ ISpyApplication::ISpyApplication(void)
              0,
              Qt::Unchecked);
 
+  collection("Tracking/GSF Tracks",
+             "GsfTracks_V1:pt:pos:dir",
+             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfTrackExtras_V1",
+             make3DGsfTracks,
+             Qt::Unchecked);
+
+  collection("Particle flow/PF Rec. Tracks",
+             "PFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "PFRecTrackTrajectoryPoints_V1",
+             make3DPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle flow/Gsf PF Rec. Tracks",
+             "GsfPFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "GsfPFRecTrackTrajectoryPoints_V1",
+             make3DGsfPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle flow/PF Brems",
+             "PFBrems_V1:deltaP:sigmadeltaP",
+             "PFTrajectoryPoints_V1:pos",
+             "PFBremTrajectoryPoints_V1",
+             make3DPFBrems,
+             Qt::Unchecked);
+
   // Don't draw the following
   collection("Not Drawn/Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
   collection("Not Drawn/Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
@@ -1927,6 +1993,8 @@ ISpyApplication::ISpyApplication(void)
   collection("Not Drawn/DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
   collection("Not Drawn/PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
   collection("Not Drawn/GsfExtras_V1", "GsfExtras_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/PFTrajectoryPoints_V1", "PFTrajectoryPoints_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Not Drawn/PFRecHitFractions_V1", "PFRecHitFractions_V1", 0, 0, 0, Qt::Unchecked);
 
   // Do not draw the geometries for other views.
   collection("Not Drawn/TrackerRPhi_V1",
@@ -2194,6 +2262,13 @@ ISpyApplication::ISpyApplication(void)
              make3DHcalRecHits,
              Qt::Checked);
 
+  collection("Particle flow/PF EB Rec. Hits",
+             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
   collection("Calorimetry/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -2300,6 +2375,27 @@ ISpyApplication::ISpyApplication(void)
              0,
              Qt::Unchecked);
   
+  collection("Particle flow/PF Rec. Tracks",
+             "PFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "PFRecTrackTrajectoryPoints_V1",
+             make3DPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle flow/Gsf PF Rec. Tracks",
+             "GsfPFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "GsfPFRecTrackTrajectoryPoints_V1",
+             make3DGsfPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle flow/PF Brems",
+             "PFBrems_V1:deltaP:sigmadeltaP",
+             "PFTrajectoryPoints_V1:pos",
+             "PFBremTrajectoryPoints_V1",
+             make3DPFBrems,
+             Qt::Unchecked);
+
   float positionRZ[3] = {-1, 0, 0};
   float pointAtRZ[3] = {0, 0, 0};
   camera(positionRZ, pointAtRZ, 8.5, true, false);
@@ -2501,6 +2597,20 @@ ISpyApplication::ISpyApplication(void)
              make3DHcalRecHits,
              Qt::Checked);
 
+  collection("Particle flow/PF EB Rec. Hits",
+             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
+  collection("Particle flow/PF EE Rec. Hits",
+             "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
   collection("Calorimetry/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -2613,6 +2723,27 @@ ISpyApplication::ISpyApplication(void)
              "TrackingParticlePSimHits_V1",
              make3DTrackingParticles,
              Qt::Checked);
+
+  collection("Particle flow/PF Rec. Tracks",
+             "PFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "PFRecTrackTrajectoryPoints_V1",
+             make3DPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle flow/Gsf PF Rec. Tracks",
+             "GsfPFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "GsfPFRecTrackTrajectoryPoints_V1",
+             make3DGsfPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle flow/PF Brems",
+             "PFBrems_V1:deltaP:sigmadeltaP",
+             "PFTrajectoryPoints_V1:pos",
+             "PFBremTrajectoryPoints_V1",
+             make3DPFBrems,
+             Qt::Unchecked);
 
   float position4[3] = {7.2, 4.5, 2.5};
   float pointAt4[3] = {0, 0, 0};

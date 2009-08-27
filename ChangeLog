@@ -7,6 +7,14 @@
 	* ISpyApplication.cc: draw GsfTracks in RPhi and remove spurious 
 	GsfTrack draw in 3D
 
+2009-08-26 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc: draw GsfPFRecTracks and PFBrems.
+
+2009-08-25 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc: draw PFRecHits and PFRecTracks
+
 2009-08-20 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc: keep older muon drawing code along with new
