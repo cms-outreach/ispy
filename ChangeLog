@@ -1,4 +1,7 @@
 2009-08-26  Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* BuildFile.xml: link libgcc statically so that we don't
+	  have conflicts with CMSSW environment.
 
         * ispy.cpp: reset locale settings to avoid parsing problems.
 
