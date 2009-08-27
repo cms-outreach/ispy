@@ -7,3 +7,4 @@
 <use name="stdcpphack"/>
 <lib name="QtNetwork"/>
 <flags CPPDEFINES="QT_NO_DEBUG_OUTPUT"/>
+<flags LDFLAGS="-static-libgcc"/>
