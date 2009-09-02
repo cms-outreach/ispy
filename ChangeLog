@@ -1,3 +1,9 @@
+2009-09-02  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: clean-up code to always use IgProperties
+	  to retrieve stuff from the collection rather than use
+	  strings.
+
 2009-08-26  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* BuildFile.xml: link libgcc statically so that we don't

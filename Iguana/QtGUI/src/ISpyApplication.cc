@@ -773,36 +773,33 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, SoSeparat
   sep->addChild(mat);
 
   IgDrawTowerHelper drawTowerHelper(sep);
+  IgProperty FRONT_1 = c->getProperty("front_1");
+  IgProperty FRONT_2 = c->getProperty("front_2");
+  IgProperty FRONT_3 = c->getProperty("front_3");
+  IgProperty FRONT_4 = c->getProperty("front_4");
+
+  IgProperty BACK_1 = c->getProperty("back_1");
+  IgProperty BACK_2 = c->getProperty("back_2");
+  IgProperty BACK_3 = c->getProperty("back_3");
+  IgProperty BACK_4 = c->getProperty("back_4");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d f1  = ci->get<IgV3d>("front_1");
-    IgV3d f2  = ci->get<IgV3d>("front_2");
-    IgV3d f3  = ci->get<IgV3d>("front_3");
-    IgV3d f4  = ci->get<IgV3d>("front_4");
+    IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+    IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+    IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+    IgV3d f4  = ci->get<IgV3d>(FRONT_4);
 
-    IgV3d b1  = ci->get<IgV3d>("back_1");
-    IgV3d b2  = ci->get<IgV3d>("back_2");
-    IgV3d b3  = ci->get<IgV3d>("back_3");
-    IgV3d b4  = ci->get<IgV3d>("back_4");
+    IgV3d b1  = ci->get<IgV3d>(BACK_1);
+    IgV3d b2  = ci->get<IgV3d>(BACK_2);
+    IgV3d b3  = ci->get<IgV3d>(BACK_3);
+    IgV3d b4  = ci->get<IgV3d>(BACK_4);
     drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
 
-    double x = f1.x();
-    double y = f1.y();
-    double z = f1.z();
-    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
-    x = f2.x();
-    y = f2.y();
-    z = f2.z();
-    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
-    x = f3.x();
-    y = f3.y();
-    z = f3.z();
-    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
-    x = f4.x();
-    y = f4.y();
-    z = f4.z();
-    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
+    vertices->vertex.set1Value(n++, SbVec3f(f1.x(), f1.y(), f1.z()));
+    vertices->vertex.set1Value(n++, SbVec3f(f2.x(), f2.y(), f2.z()));
+    vertices->vertex.set1Value(n++, SbVec3f(f3.x(), f3.y(), f3.z()));
+    vertices->vertex.set1Value(n++, SbVec3f(f4.x(), f4.y(), f4.z()));
   }
   vertices->vertex.setNum(n);
 
@@ -854,21 +851,31 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, SoSeparator *
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty FRONT_1 = c->getProperty("front_1");
+  IgProperty FRONT_2 = c->getProperty("front_2");
+  IgProperty FRONT_3 = c->getProperty("front_3");
+  IgProperty FRONT_4 = c->getProperty("front_4");
+
+  IgProperty BACK_1 = c->getProperty("back_1");
+  IgProperty BACK_2 = c->getProperty("back_2");
+  IgProperty BACK_3 = c->getProperty("back_3");
+  IgProperty BACK_4 = c->getProperty("back_4");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     double energy = ci->get<double>("energy");
 
     if (energy > minEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>("front_1");
-      IgV3d f2  = ci->get<IgV3d>("front_2");
-      IgV3d f3  = ci->get<IgV3d>("front_3");
-      IgV3d f4  = ci->get<IgV3d>("front_4");
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>("back_1");
-      IgV3d b2  = ci->get<IgV3d>("back_2");
-      IgV3d b3  = ci->get<IgV3d>("back_3");
-      IgV3d b4  = ci->get<IgV3d>("back_4");
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
 
       drawTowerHelper.addScaledBox(f1,f2,f3,f4, b1,b2,b3,b4, energy/maxEnergy);
     }
@@ -884,21 +891,31 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator 
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty FRONT_1 = c->getProperty("front_1");
+  IgProperty FRONT_2 = c->getProperty("front_2");
+  IgProperty FRONT_3 = c->getProperty("front_3");
+  IgProperty FRONT_4 = c->getProperty("front_4");
+
+  IgProperty BACK_1 = c->getProperty("back_1");
+  IgProperty BACK_2 = c->getProperty("back_2");
+  IgProperty BACK_3 = c->getProperty("back_3");
+  IgProperty BACK_4 = c->getProperty("back_4");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     double energy = ci->get<double>("energy");
 
     if (energy > minEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>("front_1");
-      IgV3d f2  = ci->get<IgV3d>("front_2");
-      IgV3d f3  = ci->get<IgV3d>("front_3");
-      IgV3d f4  = ci->get<IgV3d>("front_4");
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>("back_1");
-      IgV3d b2  = ci->get<IgV3d>("back_2");
-      IgV3d b3  = ci->get<IgV3d>("back_3");
-      IgV3d b4  = ci->get<IgV3d>("back_4");
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
 
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
@@ -921,21 +938,33 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSepar
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty FRONT_1 = c->getProperty("front_1");
+  IgProperty FRONT_2 = c->getProperty("front_2");
+  IgProperty FRONT_3 = c->getProperty("front_3");
+  IgProperty FRONT_4 = c->getProperty("front_4");
+
+  IgProperty BACK_1 = c->getProperty("back_1");
+  IgProperty BACK_2 = c->getProperty("back_2");
+  IgProperty BACK_3 = c->getProperty("back_3");
+  IgProperty BACK_4 = c->getProperty("back_4");
+
+  IgProperty ENERGY = c->getProperty("emEnergy");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("emEnergy");
+    double energy = ci->get<double>(ENERGY);
 
     if (energy > minimumEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>("front_1");
-      IgV3d f2  = ci->get<IgV3d>("front_2");
-      IgV3d f3  = ci->get<IgV3d>("front_3");
-      IgV3d f4  = ci->get<IgV3d>("front_4");
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>("back_1");
-      IgV3d b2  = ci->get<IgV3d>("back_2");
-      IgV3d b3  = ci->get<IgV3d>("back_3");
-      IgV3d b4  = ci->get<IgV3d>("back_4");
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
 
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
@@ -954,6 +983,16 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty FRONT_1 = c->getProperty("front_1");
+  IgProperty FRONT_2 = c->getProperty("front_2");
+  IgProperty FRONT_3 = c->getProperty("front_3");
+  IgProperty FRONT_4 = c->getProperty("front_4");
+
+  IgProperty BACK_1 = c->getProperty("back_1");
+  IgProperty BACK_2 = c->getProperty("back_2");
+  IgProperty BACK_3 = c->getProperty("back_3");
+  IgProperty BACK_4 = c->getProperty("back_4");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     double emEnergy = ci->get<double>("emEnergy");
@@ -961,15 +1000,15 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
 
     if (hadEnergy > minimumEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>("front_1");
-      IgV3d f2  = ci->get<IgV3d>("front_2");
-      IgV3d f3  = ci->get<IgV3d>("front_3");
-      IgV3d f4  = ci->get<IgV3d>("front_4");
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>("back_1");
-      IgV3d b2  = ci->get<IgV3d>("back_2");
-      IgV3d b3  = ci->get<IgV3d>("back_3");
-      IgV3d b4  = ci->get<IgV3d>("back_4");
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
 
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
@@ -1115,11 +1154,15 @@ make3DJetShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *se
   IgCollection          *c = collections[0];
   double                ecut = 5.0;  // FIXME LT: get value from some service
 
+  IgProperty ET = c->getProperty("et");
+  IgProperty THETA = c->getProperty("theta");
+  IgProperty PHI = c->getProperty("phi");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double et    = ci->get<double>("et");
-    double theta = ci->get<double>("theta");
-    double phi   = ci->get<double>("phi");
+    double et    = ci->get<double>(ET);
+    double theta = ci->get<double>(THETA);
+    double phi   = ci->get<double>(PHI);
 
     if (et > ecut)
     {
@@ -1181,12 +1224,15 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   SbVec3f direction(0.,0.,0.);
   float etMiss = -999.;
 
+  IgProperty PX = c->getProperty("px");
+  IgProperty PY = c->getProperty("py");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     points.push_back(SbVec3f(0., 0., 0.));
 
-    float px = ci->get<double>("px");
-    float py = ci->get<double>("py");
+    float px = ci->get<double>(PX);
+    float py = ci->get<double>(PY);
     float pz = 0.0;
 
     direction.setValue(px, py, pz);
@@ -1253,10 +1299,13 @@ make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, SoSeparator
   std::vector<SbVec3f>  points;
   int                   i = 0;
 
+  IgProperty POS_1 = c->getProperty("pos_1");
+  IgProperty POS_2 = c->getProperty("pos_2");
+  
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d p1 = ci->get<IgV3d>("pos_1");
-    IgV3d p2 = ci->get<IgV3d>("pos_2");
+    IgV3d p1 = ci->get<IgV3d>(POS_1);
+    IgV3d p2 = ci->get<IgV3d>(POS_2);
 
     points.push_back(SbVec3f(p1.x(), p1.y(), p1.z() ));
     points.push_back(SbVec3f(p2.x(), p2.y(), p2.z() ));
@@ -1467,16 +1516,21 @@ make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *s
   drawStyle->linePattern = 0xffff;    // 0xffff = solid
   sep->addChild(drawStyle);
 
-
+  IgProperty U1 = c->getProperty("u1");
+  IgProperty U2 = c->getProperty("u2");
+  IgProperty V1 = c->getProperty("v1");
+  IgProperty V2 = c->getProperty("v2");
+  IgProperty W1 = c->getProperty("w1");
+  IgProperty W2 = c->getProperty("w2");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d u1 = ci->get<IgV3d>("u1");
-    IgV3d u2 = ci->get<IgV3d>("u2");
-    IgV3d v1 = ci->get<IgV3d>("v1");
-    IgV3d v2 = ci->get<IgV3d>("v2");
-    IgV3d w1 = ci->get<IgV3d>("w1");
-    IgV3d w2 = ci->get<IgV3d>("w2");
+    IgV3d u1 = ci->get<IgV3d>(U1);
+    IgV3d u2 = ci->get<IgV3d>(U2);
+    IgV3d v1 = ci->get<IgV3d>(V1);
+    IgV3d v2 = ci->get<IgV3d>(V2);
+    IgV3d w1 = ci->get<IgV3d>(W1);
+    IgV3d w2 = ci->get<IgV3d>(W2);
 
     points.push_back(SbVec3f( u1.x(), u1.y(), u1.z() ));
     points.push_back(SbVec3f( u2.x(), u2.y(), u2.z() ));
@@ -1522,22 +1576,22 @@ make3DTrackPoints(IgCollection **collections,
   mat->diffuseColor = colour;
   sep->addChild(mat);
 
+  IgProperty POS = points->getProperty("pos");
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
     IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
     track->lineWidth = lineWidth;
 
     int n = 0;
+
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
     {
       if (ai->first().objectId() == ci->currentRow())
       {
         IgCollectionItem hm(points, ai->second().objectId());
-        double x = hm.get<IgV3d>("pos").x();
-        double y = hm.get<IgV3d>("pos").y();
-        double z = hm.get<IgV3d>("pos").z();
-        track->controlPoints.set1Value(n, SbVec3f(x, y, z));
-        track->markerPoints.set1Value(n, SbVec3f(x, y, z));
+        IgV3d pos = hm.get<IgV3d>(POS);
+        track->controlPoints.set1Value(n, SbVec3f(pos.x(), pos.y(), pos.z()));
+        track->markerPoints.set1Value(n, SbVec3f(pos.x(), pos.y(), pos.z()));
         n++;
       }
     }
