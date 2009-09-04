@@ -3870,7 +3870,12 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
   if (! m_tableModel)
   {
     m_tableModel = new IgCollectionTableModel(c.data[0]);
-    m_mainWindow->tableView->setModel(m_tableModel);
+    m_tableProxyModel = new QSortFilterProxyModel(this);
+    m_tableProxyModel->setSourceModel(m_tableModel);
+    
+    m_mainWindow->tableView->setModel(m_tableProxyModel);
+    m_mainWindow->tableView->setSortingEnabled(true);
+    m_mainWindow->tableView->sortByColumn(0, Qt::AscendingOrder);
   }
   else
     m_tableModel->setCollection(c.data[0]);

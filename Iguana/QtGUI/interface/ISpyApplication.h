@@ -38,6 +38,7 @@ class QNetworkAccessManager;
 class IgNetworkReplyHandler;
 class QNetworkReply;
 class QProgressDialog;
+class QSortFilterProxyModel;
 class SoCamera;
 
 namespace lat
@@ -257,6 +258,7 @@ private:
   size_t                m_currentViewIndex;
 
   IgCollectionTableModel *m_tableModel;
+  QSortFilterProxyModel *m_tableProxyModel;
   Ig3DBaseModel         *m_3DModel;
   ISpy3DView            *m_viewer;
   ISpyMainWindow        *m_mainWindow;

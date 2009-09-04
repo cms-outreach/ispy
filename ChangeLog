@@ -1,3 +1,8 @@
+2009-08-04  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc: Enable sorting of in the
+	  table view.
+
 2009-09-04  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* IgCollectionTableModel.cc, IgMainWindowMDI.1.0.ui: make index
