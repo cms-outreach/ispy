@@ -1,3 +1,8 @@
+2009-09-04  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* IgCollectionTableModel.cc, IgMainWindowMDI.1.0.ui: make index
+	  column in table a real column rather than an header.
+
 2009-09-04  Lucas Taylor <lucas.taylor@cern.ch>
 
 	* ISpyApplication.cc: significantly re-organises all the tree
