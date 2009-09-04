@@ -1,3 +1,13 @@
+2009-09-04  Lucas Taylor <lucas.taylor@cern.ch>
+
+	* ISpyApplication.cc: significantly re-organises all the tree
+	  widget collections to:
+	  1) be consistent with the structure of the (Excel) PBS
+	  2) make them mututally consistent (with other views)
+	  3) use more understandable friendly names
+	  4) add some collections missing in some views
+	  5) improve visibility of the track like objects
+
 2009-09-02  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: clean-up code to always use IgProperties

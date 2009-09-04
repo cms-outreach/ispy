@@ -687,7 +687,7 @@ void make3DTracks(IgCollection **collections,
 
   mat->diffuseColor = colour;
   sty->style = SoDrawStyle::LINES;
-  sty->lineWidth = 2;
+  sty->lineWidth = 3;
 
   sep->addChild(mat);
   sep->addChild(sty);
@@ -887,6 +887,7 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator 
 {
   IgCollection          *c = collections[0];
   float energyScaleFactor = 0.03;  // m/GeV    FIXME LT: should get it from some service
+  // float energyScaleFactor = 0.2;  // increase to help PF electrons show up  
   float minEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
@@ -1599,6 +1600,14 @@ make3DTrackPoints(IgCollection **collections,
   }
 }
 
+static void
+make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), 3.0);
+}
+
+
+
 static void 
 make3DPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
@@ -1608,19 +1617,13 @@ make3DPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSepar
 static void
 make3DGsfPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.9, 0.0), 2.0);
+  make3DTrackPoints(collections, assocs, sep, SbColor(0.0, 0.9, 1.0), 4.0);
 }
 
 static void
 make3DPFBrems(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 1.0, 0.0), 1.0);
-}
-
-static void
-make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), 3.0);
+  make3DTrackPoints(collections, assocs, sep, SbColor(0.0, 1.0, 0.0), 2.0);
 }
 
 
@@ -1668,577 +1671,145 @@ ISpyApplication::ISpyApplication(void)
   if (QDir::home().isReadable())
     defaultSettings();
 
-  // For now, draw the detector with the default "make3DAnyBox" code but explicit state
-  // this in each case so lables in visibility widget a nice than default ones
+
+
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+  
   float position1[3] = {-18.1, 8.6, 14.0};
   float pointAt1[3] = {0, 0, 0};
   camera(position1, pointAt1, 10.6, true, true);
   visibilityGroup();
+
   view("Standard 3D View", true);
-  collection("Geometry/CMS Tracker",
-             "Tracker3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS ECAL Barrel",
-             "EcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS ECAL Endcap",
-             "EcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS Preshower",
-             "EcalPreshower3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS HCAL Barrel",
-             "HcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS HCAL Endcap",
-             "HcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS HCAL Outer",
-             "HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS HCAL Forward",
-             "HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS Drift Tubes",
-             "DTs3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS Cathode Strip Chambers",
-             "CSC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS Resistive Plate Chambers",
-             "RPC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Event/Event information",
+  
+  collection("Provenance/Event information",
              "Event_V1:time:run:event:ls:orbit:bx",
              0,
              0,
              make3DEvent,
              Qt::Checked);
 
-  collection("Tracking/Si Pixel Digis",
-             "PixelDigis_V1:pos",
+  collection("Provenance/L1 Triggers",
+             "L1GtTrigger_V1",
              0,
              0,
-             make3DPixelDigis,
+             make3DL1Trigger,
              Qt::Checked);
 
-  collection("Tracking/Si Pixel Clusters",
-             "SiPixelClusters_V1:pos",
+  collection("Provenance/HLT Trigger Paths",
+             "TriggerPaths_V1",
              0,
              0,
-             make3DSiPixelClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Rec. Hits",
-             "SiPixelRecHits_V1:pos",
              0,
-             0,
-             make3DSiPixelRecHits,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Clusters",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DSiStripClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Digis",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DSiStripDigis,
              Qt::Unchecked);
 
-  collection("Tracking/Tracks",
-             "Tracks_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "TrackExtras_V1",
-             make3DRecoTracks,
-             Qt::Checked);
-
-  collection("Tracking/Tracking Rec. Hits",
-             "TrackingRecHits_V1:pos",
+  collection("Provenance/Trigger Objects",
+             "TriggerObjects_V1",
              0,
              0,
-             make3DTrackingRecHits,
-             Qt::Checked);
-
-  collection("Tracking/GSF Tracks",
-             "GsfTracks_V1:pt:pos:dir",
-             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfTrackExtras_V1",
-             make3DGsfTracks,
+             0,
              Qt::Unchecked);
 
-  collection("Calorimetry/ECAL Rec. Hits",
-             "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalRecHits,
-             Qt::Checked);
-
-  collection("Calorimetry/EB Rec. Hits",
-             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalRecHits,
-             Qt::Checked);
-
-  collection("Calorimetry/EE Rec. Hits",
-             "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalRecHits,
-             Qt::Checked);
-  
-  collection("Calorimetry/ES Rec. Hits",
-             "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalPreshowerRecHits,
-             Qt::Checked);
-
-  collection("Calorimetry/HB Rec. Hits",
-             "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DHcalRecHits,
-             Qt::Checked);
-
-  collection("Calorimetry/HE Rec. Hits",
-             "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DHcalRecHits,
-             Qt::Checked);
-
-  collection("Calorimetry/HF Rec. Hits",
-             "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DHcalRecHits,
-             Qt::Checked);
-
-  collection("Calorimetry/HO Rec. Hits",
-             "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DHcalRecHits,
-             Qt::Checked);
-
-  collection("Particle flow/PF EB Rec. Hits",
-             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalRecHits,
-             Qt::Unchecked);
-
-  collection("Particle flow/PF EE Rec. Hits",
-             "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalRecHits,
-             Qt::Unchecked);
-
-  collection("Calorimetry/Calorimeter Energy Towers",
-             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DCaloTowers,
-             Qt::Checked);
-
-  collection("Calorimetry/Jets",
-             "Jets_V1:et:theta:phi",
-             0,
-             0,
-             make3DJets,
-             Qt::Unchecked);
-
-  collection("Calorimetry/Et Missing",
-             "METs_V1:pt:px:py:phi",
-             0,
-             0,
-             make3DMET,
-             Qt::Unchecked);
-
-  collection("Muon/DT Digis",
-             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
-             0,
-             0,
-             make3DDTDigis,
-             Qt::Checked);
-
-  collection("Muon/DT Rec. Hits",
-             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
-             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
-             0,
-             0,
-             make3DDTRecHits,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Segments (4D)",
-             "DTRecSegment4D_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DDTRecSegment4D,
-             Qt::Checked);
-
-  collection("Muon/CSC Segments",
-             "CSCSegments_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DCSCSegments,
-             Qt::Checked);
-
-  collection("Muon/RPC Rec. Hits",
-             "RPCRecHits_V1:u1:u2:v1:v2:w2",
-             0,
-             0,
-             make3DRPCRecHits,
-             Qt::Checked);
-
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DMuons,
-             Qt::Checked);
-  
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DMuons,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DMuons,
-             Qt::Checked);
-
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DMuons,
-             Qt::Checked);
-
-  collection("Tracking/Tracking Particles",
-             "TrackingParticles_V1",
-             "PSimHits_V1:pos:dir",
-             "TrackingParticlePSimHits_V1",
-             make3DTrackingParticles,
-             Qt::Checked);
-
-  collection("Event/Products found", 
+  collection("Provenance/Data Products found", 
              "Products_V1", 
              0, 
              0,
              0,
              Qt::Checked);
 
-  collection("Event/Products not found", 
+  collection("Provenance/Data Products not found", 
              "Errors_V1", 
              0, 
              0, 
              0,
              Qt::Checked);
   
-  collection("Trigger/L1 Triggers",
-             "L1GtTrigger_V1",
-             0,
-             0,
-             make3DL1Trigger,
-             Qt::Checked);
+// -------------------------------------------------------------------------------------
 
-  collection("Trigger/HLT Trigger Paths",
-             "TriggerPaths_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Trigger/Trigger Objects",
-             "TriggerObjects_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Tracking/GSF Tracks",
-             "GsfTracks_V1:pt:pos:dir",
-             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfTrackExtras_V1",
-             make3DGsfTracks,
-             Qt::Unchecked);
-
-  collection("Particle flow/PF Rec. Tracks",
-             "PFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "PFRecTrackTrajectoryPoints_V1",
-             make3DPFRecTracks,
-             Qt::Unchecked);
-
-  collection("Particle flow/Gsf PF Rec. Tracks",
-             "GsfPFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DGsfPFRecTracks,
-             Qt::Unchecked);
-
-  collection("Particle flow/PF Brems",
-             "PFBrems_V1:deltaP:sigmadeltaP",
-             "PFTrajectoryPoints_V1:pos",
-             "PFBremTrajectoryPoints_V1",
-             make3DPFBrems,
-             Qt::Unchecked);
-
-  // Don't draw the following
-  collection("Not Drawn/Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not Drawn/Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not Drawn/Points_V1", "Points_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not Drawn/DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not Drawn/PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
-  collection("Not Drawn/GsfExtras_V1", "GsfExtras_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not Drawn/PFTrajectoryPoints_V1", "PFTrajectoryPoints_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Not Drawn/PFRecHitFractions_V1", "PFRecHitFractions_V1", 0, 0, 0, Qt::Unchecked);
-
-  // Do not draw the geometries for other views.
-  collection("Not Drawn/TrackerRPhi_V1",
-             "TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/TrackerRZ_V1",
-	     "TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/EcalBarrelRPhi_V1",
-	     "EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/EcalBarrelRZ_V1",
-	     "EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/EcalPreshowerRZ_V1",
-	     "EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/EcalEndcapRZ_V1",
-	     "EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/HcalBarrelRPhi_V1",
-	     "HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/HcalBarrelRZ_V1",
-	     "HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/HcalEndcapRZ_V1",
-	     "HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/CaloLego_V1",
-	     "CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/HcalOuterRPhi_V1",
-	     "HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/HcalOuterRZ_V1",
-	     "HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/HcalForwardRZ_V1",
-	     "HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/CSCRZ_V1",
-	     "CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
+  // For now, draw the detector with the default "make3DAnyBox" code but explicit state
+  // this in each case so lables in visibility widget a nice than default ones
   
-  collection("Not Drawn/DTsRPhi_V1",
-	     "DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/DTsRZ_V1",
-	     "DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/RPCRPhi_V1",
-	     "RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Not Drawn/RPCRZ_V1",
-	     "RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  // Default drawing operations if none of the above explicitly matched
-
-  collection(0, ":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4", 
-             0, 0, make3DAnyBox, Qt::Unchecked);
-  collection(0, ":pos_1:pos_2", 0, 0, make3DAnyLine, Qt::Unchecked);
-  collection(0, ":pos", 0, 0, make3DAnyPoint, Qt::Unchecked);
-  collection(0, ":detid", 0, 0, make3DAnyDetId, Qt::Unchecked);
-
-  float position2[] = {0, 0, 1};
-  float pointAt2[] = {0, 0, 0};
-  camera(position2, pointAt2, 8.5, true, false);
-  visibilityGroup();
-  view("Standard R-Phi View", true);
-  collection("Geometry/CMS Tracker",
-             "TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS ECAL Barrel",
-             "EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS HCAL Barrel",
-             "HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS HCAL Outer",
-             "HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+  collection("Detector/Tracker",
+             "Tracker3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DAnyBox,
              Qt::Unchecked);
 
-  collection("Geometry/CMS Drift Tubes",
-             "DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS Resistive Plate Chambers",
-             "RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+  collection("Detector/ECAL Barrel",
+             "EcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DAnyBox,
              Qt::Unchecked);
 
-  collection("Event/Event information",
-             "Event_V1:time:run:event:ls:orbit:bx",
+  collection("Detector/ECAL Endcap",
+             "EcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEvent,
-             Qt::Checked);
+             make3DAnyBox,
+             Qt::Unchecked);
 
+  collection("Detector/Preshower",
+             "EcalPreshower3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/HCAL Barrel",
+             "HcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/HCAL Endcap",
+             "HcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/HCAL Outer",
+             "HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/HCAL Forward",
+             "HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/Drift Tubes",
+             "DTs3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/Cathode Strip Chambers",
+             "CSC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/Resistive Plate Chambers",
+             "RPC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+  
   collection("Tracking/Si Pixel Digis",
              "PixelDigis_V1:pos",
              0,
@@ -2295,396 +1866,545 @@ ISpyApplication::ISpyApplication(void)
              make3DGsfTracks,
              Qt::Unchecked);
 
-  collection("Calorimetry/EB Rec. Hits",
-             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalRecHits,
-             Qt::Checked);
+// -------------------------------------------------------------------------------------
 
-  collection("Calorimetry/HB Rec. Hits",
-             "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DHcalRecHits,
-             Qt::Checked);
-
-  collection("Calorimetry/HO Rec. Hits",
-             "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DHcalRecHits,
-             Qt::Checked);
-
-  collection("Particle flow/PF EB Rec. Hits",
-             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEcalRecHits,
-             Qt::Unchecked);
-
-  collection("Calorimetry/Calorimeter Energy Towers",
-             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DCaloTowers,
-             Qt::Checked);
-
-  collection("Calorimetry/Jets",
-             "Jets_V1:et:theta:phi",
-             0,
-             0,
-             make3DJets,
-             Qt::Unchecked);
-
-  collection("Calorimetry/Et Missing",
-             "METs_V1:pt:px:py:phi",
-             0,
-             0,
-             make3DMET,
-             Qt::Unchecked);
-
-  collection("Muon/DT Digis",
-             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
-             0,
-             0,
-             make3DDTDigis,
-             Qt::Checked);
-
-  collection("Muon/DT Rec. Hits",
-             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
-             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
-             0,
-             0,
-             make3DDTRecHits,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Segments (4D)",
-             "DTRecSegment4D_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DDTRecSegment4D,
-             Qt::Checked);
-
-  collection("Muon/CSC Segments",
-             "CSCSegments_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DCSCSegments,
-             Qt::Checked);
-
-  collection("Muon/RPC Rec. Hits",
-             "RPCRecHits_V1:u1:u2:v1:v2:w2",
-             0,
-             0,
-             make3DRPCRecHits,
-             Qt::Checked);
-
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DMuons,
-             Qt::Checked);
-  
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DMuons,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DMuons,
-             Qt::Checked);
-
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:rp:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DMuons,
-             Qt::Checked);
-
-  collection("Trigger/L1 Triggers",
-             "L1GtTrigger_V1",
-             0,
-             0,
-             make3DL1Trigger,
-             Qt::Checked);
-
-  collection("Trigger/HLT Trigger Paths",
-             "TriggerPaths_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Trigger/Trigger Objects",
-             "TriggerObjects_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-  
-  collection("Particle flow/PF Rec. Tracks",
-             "PFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "PFRecTrackTrajectoryPoints_V1",
-             make3DPFRecTracks,
-             Qt::Unchecked);
-
-  collection("Particle flow/Gsf PF Rec. Tracks",
-             "GsfPFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DGsfPFRecTracks,
-             Qt::Unchecked);
-
-  collection("Particle flow/PF Brems",
-             "PFBrems_V1:deltaP:sigmadeltaP",
-             "PFTrajectoryPoints_V1:pos",
-             "PFBremTrajectoryPoints_V1",
-             make3DPFBrems,
-             Qt::Unchecked);
-
-  float positionRZ[3] = {-1, 0, 0};
-  float pointAtRZ[3] = {0, 0, 0};
-  camera(positionRZ, pointAtRZ, 8.5, true, false);
-  visibilityGroup();
-  view("Standard R-Z View", true);
-  collection("Geometry/CMS Tracker",
-             "TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS ECAL Barrel",
-             "EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS ECAL Endcap",
-             "EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS Preshower",
-             "EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS HCAL Barrel",
-             "HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS HCAL Endcap",
-             "HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS HCAL Outer",
-             "HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Geometry/CMS HCAL Forward",
-             "HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS Drift Tubes",
-             "DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS Cathode Strip Chambers",
-             "CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Geometry/CMS Resistive Plate Chambers",
-             "RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Event/Event information",
-             "Event_V1:time:run:event:ls:orbit:bx",
-             0,
-             0,
-             make3DEvent,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Digis",
-             "PixelDigis_V1:pos",
-             0,
-             0,
-             make3DPixelDigis,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Clusters",
-             "SiPixelClusters_V1:pos",
-             0,
-             0,
-             make3DSiPixelClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Rec. Hits",
-             "SiPixelRecHits_V1:pos",
-             0,
-             0,
-             make3DSiPixelRecHits,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Clusters",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DSiStripClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Digis",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DSiStripDigis,
-             Qt::Unchecked);
-
-  collection("Tracking/Tracks",
-             "Tracks_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "TrackExtras_V1",
-             make3DRecoTracks,
-             Qt::Checked);
-
-  collection("Tracking/Tracking Rec. Hits",
-             "TrackingRecHits_V1:pos",
-             0,
-             0,
-             make3DTrackingRecHits,
-             Qt::Checked);
-
-  collection("Tracking/GSF Tracks",
-             "GsfTracks_V1:pt:pos:dir",
-             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfTrackExtras_V1",
-             make3DGsfTracks,
-             Qt::Unchecked);
-
-  collection("Calorimetry/ECAL Rec. Hits",
+  collection("ECAL/ECAL Rec. Hits",     // pre-Aug 2009 ig files only
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalRecHits,
              Qt::Checked);
 
-  collection("Calorimetry/EB Rec. Hits",
+  collection("ECAL/Barrel Rec. Hits",
              "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalRecHits,
              Qt::Checked);
 
-  collection("Calorimetry/EE Rec. Hits",
+  collection("ECAL/Endcap Rec. Hits",
              "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalRecHits,
              Qt::Checked);
   
-  collection("Calorimetry/ES Rec. Hits",
+  collection("ECAL/Preshower Rec. Hits",
              "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalPreshowerRecHits,
              Qt::Checked);
 
-  collection("Calorimetry/HB Rec. Hits",
+// -------------------------------------------------------------------------------------
+  
+  collection("HCAL/Barrel Rec. Hits",
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("Calorimetry/HE Rec. Hits",
+  collection("HCAL/Endcap Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("Calorimetry/HF Rec. Hits",
+  collection("HCAL/Forward Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("Calorimetry/HO Rec. Hits",
+  collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DHcalRecHits,
              Qt::Checked);
 
-  collection("Particle flow/PF EB Rec. Hits",
+// -------------------------------------------------------------------------------------
+  
+  collection("Muon/DT Digis",
+             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
+             0,
+             0,
+             make3DDTDigis,
+             Qt::Checked);
+
+  collection("Muon/DT Rec. Hits",
+             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
+             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
+             0,
+             0,
+             make3DDTRecHits,
+             Qt::Unchecked);
+
+  collection("Muon/DT Rec. Segments (4D)",
+             "DTRecSegment4D_V1:pos_1:pos_2",
+             0,
+             0,
+             make3DDTRecSegment4D,
+             Qt::Checked);
+
+  collection("Muon/CSC Segments",
+             "CSCSegments_V1:pos_1:pos_2",
+             0,
+             0,
+             make3DCSCSegments,
+             Qt::Checked);
+
+  collection("Muon/RPC Rec. Hits",
+             "RPCRecHits_V1:u1:u2:v1:v2:w2",
+             0,
+             0,
+             make3DRPCRecHits,
+             Qt::Checked);
+
+  collection("Muon/Muon Tracks",              
+             "Muons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+  
+  collection("Muon/Tracker Muons",
+             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Global Muons",
+             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Particle Flow/Rec. Tracks",
+             "PFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "PFRecTrackTrajectoryPoints_V1",
+             make3DPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle Flow/GSF Tracks",
+             "GsfPFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "GsfPFRecTrackTrajectoryPoints_V1",
+             make3DGsfPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle Flow/ECAL Barrel Rec. Hits",
              "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalRecHits,
              Qt::Unchecked);
 
-  collection("Particle flow/PF EE Rec. Hits",
+  collection("Particle Flow/ECAL Endcap Rec. Hits",
              "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DEcalRecHits,
              Qt::Unchecked);
 
-  collection("Calorimetry/Calorimeter Energy Towers",
+  collection("Particle Flow/Bremsstrahlung candidate tangents",
+             "PFBrems_V1:deltaP:sigmadeltaP",
+             "PFTrajectoryPoints_V1:pos",
+             "PFBremTrajectoryPoints_V1",
+             make3DPFBrems,
+             Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+  
+  collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DCaloTowers,
              Qt::Checked);
 
-  collection("Calorimetry/Jets",
+  collection("Physics Objects/Jets",
              "Jets_V1:et:theta:phi",
              0,
              0,
              make3DJets,
              Qt::Unchecked);
 
-  collection("Calorimetry/Et Missing",
+  collection("Physics Objects/Missing Et",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
              Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Monte-Carlo/Sim. tracks with hits",
+             "TrackingParticles_V1",
+             "PSimHits_V1:pos:dir",
+             "TrackingParticlePSimHits_V1",
+             make3DTrackingParticles,
+             Qt::Unchecked);
+
+
+// -------------------------------------------------------------------------------------
+
+// First specify collections that exist that never appear in tree widget 
+  collection("Collections not drawn/Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Collections not drawn/Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Collections not drawn/Points_V1", "Points_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Collections not drawn/DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Collections not drawn/PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
+  collection("Collections not drawn/GsfExtras_V1", "GsfExtras_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Collections not drawn/PFTrajectoryPoints_V1", "PFTrajectoryPoints_V1", 0, 0, 0, Qt::Unchecked);
+  collection("Collections not drawn/PFRecHitFractions_V1", "PFRecHitFractions_V1", 0, 0, 0, Qt::Unchecked);
+
+  // Do not draw the geometries which are only for the other views.
+
+  collection("Collections not drawn/TrackerRPhi_V1",
+             "TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/TrackerRZ_V1",
+	     "TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/EcalBarrelRPhi_V1",
+	     "EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/EcalBarrelRZ_V1",
+	     "EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/EcalPreshowerRZ_V1",
+	     "EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/EcalEndcapRZ_V1",
+	     "EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/HcalBarrelRPhi_V1",
+	     "HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/HcalBarrelRZ_V1",
+	     "HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/HcalEndcapRZ_V1",
+	     "HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/CaloLego_V1",
+	     "CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/HcalOuterRPhi_V1",
+	     "HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/HcalOuterRZ_V1",
+	     "HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/HcalForwardRZ_V1",
+	     "HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/CSCRZ_V1",
+	     "CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+  
+  collection("Collections not drawn/DTsRPhi_V1",
+	     "DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/DTsRZ_V1",
+	     "DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/RPCRPhi_V1",
+	     "RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Collections not drawn/RPCRZ_V1",
+	     "RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             0,
+             Qt::Checked);
+
+
+// ///////////////////////////////////////////////////////////////////////////////
+  
+
+  // Attempt generic default drawing operations if none of the above explicitly matched
+
+  collection(0, ":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4", 0, 0, make3DAnyBox, Qt::Unchecked);
+  collection(0, ":pos_1:pos_2", 0, 0, make3DAnyLine, Qt::Unchecked);
+  collection(0, ":pos", 0, 0, make3DAnyPoint, Qt::Unchecked);
+  collection(0, ":detid", 0, 0, make3DAnyDetId, Qt::Unchecked);
+
+
+
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+
+  float position2[] = {0, 0, 1};
+  float pointAt2[] = {0, 0, 0};
+  camera(position2, pointAt2, 8.5, true, false);
+  visibilityGroup();
+
+  view("Standard R-Phi View", true);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Provenance/Event information",
+             "Event_V1:time:run:event:ls:orbit:bx",
+             0,
+             0,
+             make3DEvent,
+             Qt::Checked);
+
+  collection("Provenance/L1 Triggers",
+             "L1GtTrigger_V1",
+             0,
+             0,
+             make3DL1Trigger,
+             Qt::Checked);
+
+  collection("Provenance/HLT Trigger Paths",
+             "TriggerPaths_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Provenance/Trigger Objects",
+             "TriggerObjects_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Provenance/Data Products found", 
+             "Products_V1", 
+             0, 
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Provenance/Data Products not found", 
+             "Errors_V1", 
+             0, 
+             0, 
+             0,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Detector/Tracker",
+             "TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/ECAL Barrel",
+             "EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/HCAL Barrel",
+             "HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/HCAL Outer",
+             "HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/Drift Tubes",
+             "DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/Resistive Plate Chambers",
+             "RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Tracking/Si Pixel Digis",
+             "PixelDigis_V1:pos",
+             0,
+             0,
+             make3DPixelDigis,
+             Qt::Checked);
+
+  collection("Tracking/Si Pixel Clusters",
+             "SiPixelClusters_V1:pos",
+             0,
+             0,
+             make3DSiPixelClusters,
+             Qt::Checked);
+
+  collection("Tracking/Si Pixel Rec. Hits",
+             "SiPixelRecHits_V1:pos",
+             0,
+             0,
+             make3DSiPixelRecHits,
+             Qt::Checked);
+
+  collection("Tracking/Si Strip Digis",
+             "SiStripDigis_V1:pos",
+             0,
+             0,
+             make3DSiStripDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Si Strip Clusters",
+             "SiStripClusters_V1:pos",
+             0,
+             0,
+             make3DSiStripClusters,
+             Qt::Checked);
+
+  collection("Tracking/Tracking Rec. Hits",
+             "TrackingRecHits_V1:pos",
+             0,
+             0,
+             make3DTrackingRecHits,
+             Qt::Checked);
+
+  collection("Tracking/Tracks",
+             "Tracks_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "TrackExtras_V1",
+             make3DRecoTracks,
+             Qt::Checked);
+
+  collection("Tracking/GSF Tracks",
+             "GsfTracks_V1:pt:pos:dir",
+             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfTrackExtras_V1",
+             make3DGsfTracks,
+             Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("ECAL/ECAL Rec. Hits",   // pre-Aug 2009 ig files only
+             "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+
+  collection("ECAL/Barrel Rec. Hits",
+             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("HCAL/Barrel Rec. Hits",
+             "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DHcalRecHits,
+             Qt::Checked);
+
+  collection("HCAL/Outer Rec. Hits",
+             "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DHcalRecHits,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
 
   collection("Muon/DT Digis",
              "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
@@ -2750,88 +2470,542 @@ ISpyApplication::ISpyApplication(void)
              make3DMuons,
              Qt::Checked);
 
-  collection("Trigger/L1 Triggers",
-             "L1GtTrigger_V1",
-             0,
-             0,
-             make3DL1Trigger,
-             Qt::Checked);
+// -------------------------------------------------------------------------------------
 
-  collection("Trigger/HLT Trigger Paths",
-             "TriggerPaths_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Trigger/Trigger Objects",
-             "TriggerObjects_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Tracking/Tracking Particles",
-             "TrackingParticles_V1",
-             "PSimHits_V1:pos:dir",
-             "TrackingParticlePSimHits_V1",
-             make3DTrackingParticles,
-             Qt::Checked);
-
-  collection("Particle flow/PF Rec. Tracks",
+  collection("Particle Flow/Rec. Tracks",
              "PFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "PFRecTrackTrajectoryPoints_V1",
              make3DPFRecTracks,
              Qt::Unchecked);
 
-  collection("Particle flow/Gsf PF Rec. Tracks",
+  collection("Particle Flow/GSF Tracks",
              "GsfPFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "GsfPFRecTrackTrajectoryPoints_V1",
              make3DGsfPFRecTracks,
              Qt::Unchecked);
 
-  collection("Particle flow/PF Brems",
+  collection("Particle Flow/ECAL barrel Rec. Hits",
+             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
+  collection("Particle Flow/Bremsstrahlung candidate tangents",
              "PFBrems_V1:deltaP:sigmadeltaP",
              "PFTrajectoryPoints_V1:pos",
              "PFBremTrajectoryPoints_V1",
              make3DPFBrems,
              Qt::Unchecked);
 
-  float position4[3] = {7.2, 4.5, 2.5};
-  float pointAt4[3] = {0, 0, 0};
-  camera(position4, pointAt4, 6.5, true, true);
-  visibilityGroup();
-  view("Standard LEGO View", true);
-  collection("Geometry/CMS Eta-Phi Grid",
-             "CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+// -------------------------------------------------------------------------------------
+
+  collection("Physics Objects/Calorimeter Energy Towers",
+             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             makeLegoGrid,
+             make3DCaloTowers,
              Qt::Checked);
 
-  collection("Event/Event information",
+  collection("Physics Objects/Jets",
+             "Jets_V1:et:theta:phi",
+             0,
+             0,
+             make3DJets,
+             Qt::Unchecked);
+
+  collection("Physics Objects/Missing Et",
+             "METs_V1:pt:px:py:phi",
+             0,
+             0,
+             make3DMET,
+             Qt::Unchecked);
+
+  collection("Monte-Carlo/Sim. tracks with hits",
+             "TrackingParticles_V1",
+             "PSimHits_V1:pos:dir",
+             "TrackingParticlePSimHits_V1",
+             make3DTrackingParticles,
+             Qt::Unchecked);
+
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+
+  float positionRZ[3] = {-1, 0, 0};
+  float pointAtRZ[3] = {0, 0, 0};
+  camera(positionRZ, pointAtRZ, 8.5, true, false);
+  visibilityGroup();
+
+  view("Standard R-Z View", true);
+
+
+// -------------------------------------------------------------------------------------
+
+  collection("Provenance/Event information",
              "Event_V1:time:run:event:ls:orbit:bx",
              0,
              0,
              make3DEvent,
              Qt::Checked);
-  
-  collection("Trigger/L1 Triggers",
+
+  collection("Provenance/L1 Triggers",
              "L1GtTrigger_V1",
              0,
              0,
              make3DL1Trigger,
              Qt::Checked);
 
-  collection("Calorimetry/Calorimeter Energy Towers",
+  collection("Provenance/HLT Trigger Paths",
+             "TriggerPaths_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Provenance/Trigger Objects",
+             "TriggerObjects_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Provenance/Data Products found", 
+             "Products_V1", 
+             0, 
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Provenance/Data Products not found", 
+             "Errors_V1", 
+             0, 
+             0, 
+             0,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Detector/Tracker",
+             "TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/ECAL Barrel",
+             "EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/ECAL Endcap",
+             "EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/Preshower",
+             "EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/HCAL Barrel",
+             "HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/HCAL Endcap",
+             "HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/HCAL Outer",
+             "HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+  collection("Detector/HCAL Forward",
+             "HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/Drift Tubes",
+             "DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/Cathode Strip Chambers",
+             "CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Checked);
+
+  collection("Detector/Resistive Plate Chambers",
+             "RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DAnyBox,
+             Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Tracking/Si Pixel Digis",
+             "PixelDigis_V1:pos",
+             0,
+             0,
+             make3DPixelDigis,
+             Qt::Checked);
+
+  collection("Tracking/Si Pixel Clusters",
+             "SiPixelClusters_V1:pos",
+             0,
+             0,
+             make3DSiPixelClusters,
+             Qt::Checked);
+
+  collection("Tracking/Si Pixel Rec. Hits",
+             "SiPixelRecHits_V1:pos",
+             0,
+             0,
+             make3DSiPixelRecHits,
+             Qt::Checked);
+
+  collection("Tracking/Si Strip Clusters",
+             "SiStripClusters_V1:pos",
+             0,
+             0,
+             make3DSiStripClusters,
+             Qt::Checked);
+
+  collection("Tracking/Si Strip Digis",
+             "SiStripDigis_V1:pos",
+             0,
+             0,
+             make3DSiStripDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Tracks",
+             "Tracks_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "TrackExtras_V1",
+             make3DRecoTracks,
+             Qt::Checked);
+
+  collection("Tracking/Tracking Rec. Hits",
+             "TrackingRecHits_V1:pos",
+             0,
+             0,
+             make3DTrackingRecHits,
+             Qt::Checked);
+
+  collection("Tracking/GSF Tracks",
+             "GsfTracks_V1:pt:pos:dir",
+             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfTrackExtras_V1",
+             make3DGsfTracks,
+             Qt::Unchecked);
+// -------------------------------------------------------------------------------------
+
+  collection("ECAL/ECAL Rec. Hits",   // pre-Aug 2009 ig files only
+             "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+
+  collection("ECAL/Barrel Rec. Hits",
+             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+
+  collection("ECAL/Endcap Rec. Hits",
+             "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Checked);
+  
+  collection("ECAL/Preshower Rec. Hits",
+             "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalPreshowerRecHits,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("HCAL/Barrel Rec. Hits",
+             "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DHcalRecHits,
+             Qt::Checked);
+
+  collection("HCAL/Endcap Rec. Hits",
+             "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DHcalRecHits,
+             Qt::Checked);
+
+  collection("HCAL/Forward Rec. Hits",
+             "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DHcalRecHits,
+             Qt::Checked);
+
+  collection("HCAL/Outer Rec. Hits",
+             "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DHcalRecHits,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Muon/DT Digis",
+             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
+             0,
+             0,
+             make3DDTDigis,
+             Qt::Checked);
+
+  collection("Muon/DT Rec. Hits",
+             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
+             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
+             0,
+             0,
+             make3DDTRecHits,
+             Qt::Unchecked);
+
+  collection("Muon/DT Rec. Segments (4D)",
+             "DTRecSegment4D_V1:pos_1:pos_2",
+             0,
+             0,
+             make3DDTRecSegment4D,
+             Qt::Checked);
+
+  collection("Muon/CSC Segments",
+             "CSCSegments_V1:pos_1:pos_2",
+             0,
+             0,
+             make3DCSCSegments,
+             Qt::Checked);
+
+  collection("Muon/RPC Rec. Hits",
+             "RPCRecHits_V1:u1:u2:v1:v2:w2",
+             0,
+             0,
+             make3DRPCRecHits,
+             Qt::Checked);
+
+  collection("Muon/Muon Tracks",
+             "Muons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+  
+  collection("Muon/Tracker Muons",
+             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+  collection("Muon/Global Muons",
+             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DMuons,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Particle Flow/Rec. Tracks",
+             "PFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "PFRecTrackTrajectoryPoints_V1",
+             make3DPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle Flow/GSF Tracks",
+             "GsfPFRecTracks_V1:pt:charge:phi:eta",
+             "PFTrajectoryPoints_V1:pos",
+             "GsfPFRecTrackTrajectoryPoints_V1",
+             make3DGsfPFRecTracks,
+             Qt::Unchecked);
+
+  collection("Particle Flow/ECAL Barrel Rec. Hits",
+             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
+  collection("Particle Flow/ECAL Endcap Rec. Hits",
+             "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DEcalRecHits,
+             Qt::Unchecked);
+
+  collection("Particle Flow/Bremsstrahlung candidate tangents",
+             "PFBrems_V1:deltaP:sigmadeltaP",
+             "PFTrajectoryPoints_V1:pos",
+             "PFBremTrajectoryPoints_V1",
+             make3DPFBrems,
+             Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+
+
+  collection("Physics Objects/Calorimeter Energy Towers",
+             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             make3DCaloTowers,
+             Qt::Checked);
+
+  collection("Physics Objects/Jets",
+             "Jets_V1:et:theta:phi",
+             0,
+             0,
+             make3DJets,
+             Qt::Unchecked);
+
+  collection("Physics Objects/Missing Et",
+             "METs_V1:pt:px:py:phi",
+             0,
+             0,
+             make3DMET,
+             Qt::Unchecked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Monte Carlo/Sim. tracks with hits",
+             "TrackingParticles_V1",
+             "PSimHits_V1:pos:dir",
+             "TrackingParticlePSimHits_V1",
+             make3DTrackingParticles,
+             Qt::Unchecked);
+
+
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+
+  float position4[3] = {7.2, 4.5, 2.5};
+  float pointAt4[3] = {0, 0, 0};
+  camera(position4, pointAt4, 6.5, true, true);
+  visibilityGroup();
+
+
+  view("Standard LEGO View", true);
+
+  collection("Provenance/Event information",
+             "Event_V1:time:run:event:ls:orbit:bx",
+             0,
+             0,
+             make3DEvent,
+             Qt::Checked);
+
+  collection("Provenance/L1 Triggers",
+             "L1GtTrigger_V1",
+             0,
+             0,
+             make3DL1Trigger,
+             Qt::Checked);
+
+  collection("Provenance/HLT Trigger Paths",
+             "TriggerPaths_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Provenance/Trigger Objects",
+             "TriggerObjects_V1",
+             0,
+             0,
+             0,
+             Qt::Unchecked);
+
+  collection("Provenance/Data Products found", 
+             "Products_V1", 
+             0, 
+             0,
+             0,
+             Qt::Checked);
+
+  collection("Provenance/Data Products not found", 
+             "Errors_V1", 
+             0, 
+             0, 
+             0,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Detector/Eta-Phi Grid",
+             "CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             0,
+             0,
+             makeLegoGrid,
+             Qt::Checked);
+
+// -------------------------------------------------------------------------------------
+
+  collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              makeLegoCaloTowers,
              Qt::Checked);
+
+
+
+
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+// ///////////////////////////////////////////////////////////////////////////////
+  
+
+
 }
+
+
+
+
+
 
 /** Destroy the application.  A no-op since everything is done on exit. */
 ISpyApplication::~ISpyApplication(void)
@@ -2951,6 +3125,9 @@ ISpyApplication::collection(const char *friendlyName,
   ViewSpec &view = m_viewSpecs.back();
   view.endCollIndex++;
 }
+
+
+
 
 /** Begins the definition of a new view. 
     A view is simply a set of CollectionSpecs, as defined by the 
