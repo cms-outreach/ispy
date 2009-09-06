@@ -5,7 +5,7 @@
 
 TEMPLATE = app
 mac:TARGET = iSpy
-linux:target = ispy
+unix:target = ispy
 
 mac:CONFIG += x86 ppc
 
@@ -19,7 +19,7 @@ CLASSLIB_BASE=$$ISPY_SDK_BASE
 SIMAGE_BASE=$$ISPY_SDK_BASE
 
 mac:DESTDIR = . 
-linux:DESTDIR = .
+unix:DESTDIR = .
 
 OBJECTS_DIR = tmp
 MOC_DIR = tmp
@@ -47,8 +47,12 @@ LIBS += -L$$UUID_BASE/lib -luuid
 LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
 LIBS += -L$$SIMAGE_BASE/lib -lsimage
 
+unix {
+LIBS += -lXi
+}
+
 QT += network opengl
 
-linux {
+unix {
   message("Now please type make")
 }
