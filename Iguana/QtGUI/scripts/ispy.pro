@@ -16,6 +16,7 @@ SOQT_BASE=$$ISPY_SDK_BASE
 PCRE_BASE=$$ISPY_SDK_BASE
 UUID_BASE=$$ISPY_SDK_BASE
 CLASSLIB_BASE=$$ISPY_SDK_BASE
+SIMAGE_BASE=$$ISPY_SDK_BASE
 
 mac:DESTDIR = . 
 linux:DESTDIR = .
@@ -37,12 +38,15 @@ INCLUDEPATH += Iguana/Framework/interface
 INCLUDEPATH += $$COIN3D_BASE/include
 INCLUDEPATH += $$SOQT_BASE/include
 INCLUDEPATH += $$CLASSLIB_BASE/include
+INCLUDEPATH += $$SIMAGE_BASE/include
 LIBS += -L$$ISPY_SDK/lib 
 LIBS += -L$$SOQT_BASE/lib -lSoQt
 LIBS += -L$$COIN3D_BASE/lib -lcoin
 LIBS += -L$$PCRE_BASE/lib -lpcre
 LIBS += -L$$UUID_BASE/lib -luuid
 LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
+LIBS += -L$$SIMAGE_BASE/lib -lsimage
+
 QT += network opengl
 
 linux {
