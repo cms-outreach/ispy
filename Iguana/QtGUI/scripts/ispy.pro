@@ -53,6 +53,4 @@ LIBS += -lXi
 
 QT += network opengl
 
-unix {
-  message("Now please type make")
-}
+message("Now please type make")
