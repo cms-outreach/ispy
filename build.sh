@@ -3,6 +3,8 @@
 # Make sure that we are picking up the correct uname.
 export PATH=$PREFIX/bin:$PATH
 which qmake
+ln -sf Iguana/QtGUI/scripts/ispy.pro ispy.pro
+
 qmake
 make -j 2
 
