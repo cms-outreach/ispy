@@ -5,7 +5,7 @@
 
 TEMPLATE = app
 mac:TARGET = iSpy
-unix:target = ispy
+unix:TARGET= ispy
 
 mac:CONFIG += x86 ppc
 
@@ -45,7 +45,7 @@ LIBS += -L$$PCRE_BASE/lib -lpcre
 LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
 LIBS += -L$$SIMAGE_BASE/lib -lsimage
 
-unix {
+unix:!mac {
 LIBS += -lXi
 }
 
