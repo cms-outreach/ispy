@@ -43,9 +43,11 @@ LIBS += -L$$ISPY_SDK/lib
 LIBS += -L$$SOQT_BASE/lib -lSoQt
 LIBS += -L$$COIN3D_BASE/lib -lcoin
 LIBS += -L$$PCRE_BASE/lib -lpcre
-LIBS += -L$$UUID_BASE/lib -luuid
 LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
 LIBS += -L$$SIMAGE_BASE/lib -lsimage
+mac {
+LIBS += -framework QuickTime
+}
 
 QT += network opengl
 
