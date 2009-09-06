@@ -21,10 +21,10 @@ fi
 
 case `uname` in
   Linux)
-    scp ./ispy eulisse@lxplus.cern.ch:/afs/cern.ch/user/i/eulisse/www/ispy-next-`uname`-`uname -m`
+    scp ./ispy eulisse@lxplus.cern.ch:/afs/cern.ch/user/e/eulisse/www/ispy-$branchname-`uname`-`uname -m`
     ;;
   Darwin)
     zip ispy.zip `find iSpy.app`
-    scp ./ispy.zip eulisse@lxplus.cern.ch:/afs/cern.ch/user/i/eulisse/www/ispy-next-`uname`
+    scp ./ispy.zip eulisse@lxplus.cern.ch:/afs/cern.ch/user/e/eulisse/www/ispy-$branchname.zip
     ;;
 esac
