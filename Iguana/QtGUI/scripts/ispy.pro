@@ -7,6 +7,8 @@ TEMPLATE = app
 mac:TARGET = iSpy
 linux:target = ispy
 
+mac:CONFIG += x86 ppc
+
 # Change any of these in order to match your externals.
 ISPY_SDK_BASE = /Users/eulisse/tmp/sw
 COIN3D_BASE=$$ISPY_SDK_BASE
@@ -15,7 +17,7 @@ PCRE_BASE=$$ISPY_SDK_BASE
 UUID_BASE=$$ISPY_SDK_BASE
 CLASSLIB_BASE=$$ISPY_SDK_BASE
 
-mac:DESTDIR = /Applications
+mac:DESTDIR = . 
 linux:DESTDIR = .
 
 OBJECTS_DIR = tmp
