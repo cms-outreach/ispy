@@ -44,6 +44,9 @@ LIBS += -L$$COIN3D_BASE/lib -lCoin
 LIBS += -L$$PCRE_BASE/lib -lpcre
 LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
 LIBS += -L$$SIMAGE_BASE/lib -lsimage
+mac {
+LIBS += -framework QuickTime
+}
 
 unix:!mac {
 LIBS += -lXi
