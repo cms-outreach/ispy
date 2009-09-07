@@ -11,20 +11,20 @@ make -j 2
 # In case there is some git repository information
 # we use it to make up a label for the result.
 # Otherwise the branch is always "next"
-branchname=next
-if [ -d .git ]
+branchname=`git symbolic-ref HEAD | sed -e's|refs/heads/||' | tr / -`
+if [ "X$branchname" = X ]
 then
-  branchname=`git symbolic-ref HEAD | sed -e's|refs/heads/||' | tr / -`
+  branchname=next
 fi
 
 
 
 case `uname` in
   Linux)
-    scp ./ispy eulisse@lxplus.cern.ch:/afs/cern.ch/user/e/eulisse/www/ispy-$branchname-`uname`-`uname -m`
+    scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy/bin/linux/ispy-$branchname-`uname`-`uname -m`
     ;;
   Darwin)
     zip ispy.zip `find iSpy.app`
-    scp ./ispy.zip eulisse@lxplus.cern.ch:/afs/cern.ch/user/e/eulisse/www/ispy-$branchname.zip
+    scp ./ispy.zip lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy/osx/ispy-$branchname.zip
     ;;
 esac
