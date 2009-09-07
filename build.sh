@@ -21,6 +21,7 @@ fi
 
 case `uname` in
   Linux)
+    strip ./ispy
     scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy/bin/linux/ispy-$branchname-`uname`-`uname -m`
     ;;
   Darwin)
