@@ -50,7 +50,7 @@ LIBS += -framework QuickTime
 
 unix:!mac {
 # Statically link stdc++ and libgcc.
-LIBS += -Wl,-Dn -lstdc++ -Wl,-Dy -static-libgcc
+LIBS += -Wl,-dn -lstdc++ -Wl,-dy -static-libgcc
 LIBS += -lXi
 }
 
