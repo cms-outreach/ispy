@@ -46,6 +46,7 @@ LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
 LIBS += -L$$SIMAGE_BASE/lib -lsimage
 mac {
 LIBS += -framework QuickTime
+ICON = Iguana/QtGUI/interface/ispy.icns
 }
 
 unix:!mac {
