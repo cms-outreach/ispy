@@ -4,3 +4,5 @@
 .stgit-edit.txt
 .stgit-failed.patch
 .stgitmail.txt
+tmp
+Makefile

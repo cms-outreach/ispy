@@ -44,7 +44,10 @@ IgCollectionTableModel::data(const QModelIndex &index, int role) const
   if (!m_collection)
     return QVariant();
 
-  IgProperty p = m_collection->properties()[index.column()];
+  if ((index.column() - 1) < 0 && role == Qt::DisplayRole)
+    return index.row();
+
+  IgProperty p = m_collection->properties()[index.column() - 1];
 
   IgV2d p2;
   IgV3d p3;
@@ -101,13 +104,16 @@ IgCollectionTableModel::headerData(int section, Qt::Orientation orientation,
   if (orientation == Qt::Vertical)
     return QVariant(section);
 
+  if (section == 0)
+    return "id";
+
   if (section < 0)
     return QVariant();
 
-  if ((unsigned int) section >= m_collection->columnLabels().size())
+  if ((unsigned int) (section - 1) >= m_collection->columnLabels().size())
     return QVariant();
 
-  return QString(m_collection->columnLabels()[section].first);
+  return QString(m_collection->columnLabels()[section - 1].first);
 }
 
 int
@@ -130,7 +136,7 @@ IgCollectionTableModel::columnCount(const QModelIndex &parent) const
   if (! m_collection)
     return 0;
 
-  return m_collection->properties().size();
+  return m_collection->properties().size() + 1;
 }
 
 void
