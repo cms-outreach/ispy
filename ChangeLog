@@ -1,3 +1,10 @@
+2009-09-08  Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* ispy.pro: typo in qmakefile corrected.
+	
+	* Iguana/QtGUI/scripts/ispy.pro: qmakefile to build ispy without
+	  scram.
+
 2009-09-08  Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc: enable V2 of stand-alone muons, thicken reco
