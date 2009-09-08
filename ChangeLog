@@ -1,5 +1,7 @@
 2009-09-08  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
+	* ispy.pro: typo in qmakefile corrected.
+	
 	* Iguana/QtGUI/scripts/ispy.pro: qmakefile to build ispy without
 	  scram.
 
