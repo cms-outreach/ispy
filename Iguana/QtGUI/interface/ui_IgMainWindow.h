@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading ui file 'IgMainWindowMDI.1.0.ui'
 **
-** Created: Sun Jul 19 17:20:49 2009
+** Created: Thu Aug 27 17:03:26 2009
 **      by: Qt User Interface Compiler version 4.5.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling ui file!
@@ -341,6 +341,7 @@ public:
         tableView->setObjectName(QString::fromUtf8("tableView"));
         tableView->setEditTriggers(QAbstractItemView::NoEditTriggers);
         tableView->setAlternatingRowColors(true);
+        tableView->verticalHeader()->setVisible(false);
 
         gridLayout_4->addWidget(tableView, 0, 0, 1, 1);
 

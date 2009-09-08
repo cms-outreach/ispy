@@ -9,11 +9,9 @@
 /ISpySplashScreen.cc/1.8/Thu Aug 20 20:19:15 2009//
 /ISpySplashScreen.ui/1.9/Thu Aug 20 22:59:23 2009//
 /Ig3DBaseModel.cc/1.6/Thu Aug 20 20:19:15 2009//
-/IgCollectionTableModel.cc/1.4/Thu Aug 27 17:25:16 2009//
 /IgDataStorageTableModel.cc/1.4/Thu Aug 20 20:19:15 2009//
 /IgDrawTowerHelper.cc/1.8/Thu Aug 20 20:19:15 2009//
 /IgLocationDialog.cc/1.3/Thu Aug 20 20:19:15 2009//
-/IgMainWindowMDI.1.0.ui/1.12/Thu Aug 27 17:25:16 2009//
 /IgMainWindowMDI.ui/1.7/Thu Aug 20 20:19:15 2009//
 /IgMultiStorageTreeModel.cc/1.2/Thu Aug 20 20:19:15 2009//
 /IgNetworkReplyHandler.cc/1.4/Thu Aug 20 20:19:15 2009//
@@ -36,5 +34,7 @@
 /IgSoSplineTrack.h/1.2/Thu Aug 20 20:19:15 2009//
 /IgVariantDelegate.cc/1.2/Thu Aug 20 20:19:15 2009//
 /qrc_ispy.cc/1.4/Thu Aug 20 20:19:15 2009//
-/ISpyApplication.cc/1.103/Wed Sep  2 08:00:50 2009//
+/IgCollectionTableModel.cc/1.5/Mon Sep  7 08:03:44 2009//
+/IgMainWindowMDI.1.0.ui/1.13/Mon Sep  7 08:03:44 2009//
+/ISpyApplication.cc/1.106/Tue Sep  8 12:51:58 2009//
 D
