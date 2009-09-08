@@ -39,6 +39,7 @@ INCLUDEPATH += $$SOQT_BASE/include
 INCLUDEPATH += $$CLASSLIB_BASE/include
 INCLUDEPATH += $$SIMAGE_BASE/include
 LIBS += -L$$ISPY_SDK/lib 
+LIBS += -L$$ISPY_SDK/lib64
 LIBS += -L$$SOQT_BASE/lib -lSoQt
 LIBS += -L$$COIN3D_BASE/lib -lCoin
 LIBS += -L$$PCRE_BASE/lib -lpcre
