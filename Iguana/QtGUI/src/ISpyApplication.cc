@@ -672,7 +672,6 @@ void make3DTracks(IgCollection **collections,
   IgAssociationSet      *assoc = assocs[0];
   IgProperty            PT  = tracks->getProperty("pt");
   IgProperty            POS = tracks->getProperty("pos");
-  IgProperty            DIR = tracks->getProperty("dir");
   IgProperty            POS1 = extras->getProperty("pos_1");
   IgProperty            DIR1 = extras->getProperty("dir_1");
   IgProperty            POS2 = extras->getProperty("pos_2");
@@ -704,8 +703,8 @@ void make3DTracks(IgCollection **collections,
     int                 nVtx = 0;
 
     IgV3d p = ci->get<IgV3d>(POS);
-    IgV3d d = ci->get<IgV3d>(DIR);
     vertices->vertex.set1Value(nv++, SbVec3f(p.x(), p.y(), p.z()));
+    
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get<double>(PT))
                         .arg(p.x()).arg(p.y()).arg(p.z());
@@ -716,7 +715,7 @@ void make3DTracks(IgCollection **collections,
       {
         IgCollectionItem m(extras, ai->second().objectId());
         p = ci->get<IgV3d>(POS1);
-        d = ci->get<IgV3d>(DIR1);
+        IgV3d d = ci->get<IgV3d>(DIR1);
         SbVec3f diri(d.x(), d.y(), d.z());
         diri.normalize();
 
@@ -1623,9 +1622,20 @@ make3DGsfPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSe
 static void
 make3DPFBrems(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DTrackPoints(collections, assocs, sep, SbColor(0.0, 1.0, 0.0), 2.0);
+  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 1.0, 0.0), 1.0);
 }
 
+static void
+make3DMuonTrackPoints(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), 3.0);
+}
+
+static void 
+make3DMuonTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  make3DTracks(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
+}
 
 
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
@@ -1964,32 +1974,39 @@ ISpyApplication::ISpyApplication(void)
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon/Muon Tracks",              
-             "Muons_V1:pt:charge:rp:phi:eta",
+  collection("Muon/Muon Tracks",
+             "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
-  
+
   collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "TrackerMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
 
   collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonStandalonePoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
 
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DMuonTracks,
+             Qt::Checked);
+  
   collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "GlobalMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonGlobalPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2443,31 +2460,38 @@ ISpyApplication::ISpyApplication(void)
              Qt::Checked);
 
   collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:rp:phi:eta",
+             "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
   
   collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "TrackerMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
 
   collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonStandalonePoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
+             Qt::Checked);
+  
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DMuonTracks,
              Qt::Checked);
 
   collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "GlobalMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonGlobalPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2821,31 +2845,38 @@ ISpyApplication::ISpyApplication(void)
              Qt::Checked);
 
   collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:rp:phi:eta",
+             "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
   
   collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:rp:phi:eta",
+             "TrackerMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
 
   collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:rp:phi:eta",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonStandalonePoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
+             Qt::Checked);
+  
+  collection("Muon/Stand-alone Muons",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DMuonTracks,
              Qt::Checked);
 
   collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:rp:phi:eta",
+             "GlobalMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonGlobalPoints_V1",
-             make3DMuons,
+             make3DMuonTrackPoints,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
