@@ -1,6 +1,7 @@
-2009-09-05 Tom McCauley <thomas.mccauley@cern.ch>
+2009-09-08  Tom McCauley <thomas.mccauley@cern.ch>
 
-	* ISpyApplication.cc: enable V2 of stand-alone muons, thicken reco tracks, and minor clean ups in track draw code
+	* ISpyApplication.cc: enable V2 of stand-alone muons, thicken reco
+	  tracks, and minor clean ups in track draw code
 
 2009-08-04  Ianna Osborne  <ianna.osborne@cern.ch>
 
