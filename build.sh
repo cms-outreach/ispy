@@ -17,12 +17,21 @@ then
   branchname=next
 fi
 
-
-
 case `uname` in
   Linux)
     strip ./ispy
-    scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy-`uname`-`uname -m`
+    
+    # Copy files twice as scp seems to fail once in a while, on first attempt.
+    case `uname -m` in
+      x86_64)
+        scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy-x86_64 || true
+        scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy-x86_64
+        ;;
+      *)
+        scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy || true
+        scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy
+        ;;
+    esac
     ;;
   Darwin)
     zip ispy.zip `find iSpy.app`
