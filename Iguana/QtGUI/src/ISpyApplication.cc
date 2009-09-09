@@ -3832,7 +3832,12 @@ ISpyApplication::doRun(void)
 
   // Open file names given on the command line(unix, windows).
   for (int i = 1; i < m_argc; ++i)
-    open(m_argv[i]);
+    doOpen(m_argv[i], false);
+  
+  // If the geometry is not there after loading all the ig files
+  // passed on command line, get it from the web.
+  if (m_argc != 1 && !m_archives[1])
+    downloadGeometry();
 
   // If we don't have any files open, show the splash screen as a file
   // opening wizard. The file open dialog will eventually show the main
@@ -3871,6 +3876,7 @@ ISpyApplication::doRun(void)
     m_mainWindow->show();
   }
 
+  
   // Now run.
   SoQt::mainLoop();
   
@@ -4378,14 +4384,27 @@ ISpyApplication::openFileDialog(void)
 
 }
 
+/** Slot that simply forwards the signal to doOpen.
+ */
+void 
+ISpyApplication::open(const QString &fileName)
+{
+  doOpen(fileName, true);
+}
+
 /** Open a new file.  Auto-detects file contents to judge what to do
     with the file.  Supports opening a geometry-only file, an
     events-only file, or mixed files.  If the file contains geometry,
     shows it.  If the file contains events, shows the first event.
     Apart from those, only the zip index is read and is used to
-    rebuild the in-memory event list.  */
+    rebuild the in-memory event list.  
+    
+    Additionally if \a autoGeometry is set to true, it will
+    try to get the geometry file from the web if no geometry
+    is present in the file it is trying to open.
+*/
 void
-ISpyApplication::open(const QString &fileName)
+ISpyApplication::doOpen(const QString &fileName, bool autoGeometry)
 {
   if (fileName.isEmpty())
     return;
@@ -4480,6 +4499,26 @@ ISpyApplication::open(const QString &fileName)
     m_mainWindow->show();
     m_splash->hide();
   }
+
+  // If the geometry was not there, initiate the process of getting it silently
+  // from the web.
+  // Notice that this will work only once. If any geometry is actually loaded,
+  // nothing will happen.
+  if (!m_archives[1] && autoGeometry)
+    downloadGeometry();
+}
+
+/** Downloads geometry from a fixed web location if not 
+    available in ig file.
+*/
+void
+ISpyApplication::downloadGeometry(void)
+{
+  QNetworkReply *reply = getUrl(QUrl("http://iguana.web.cern.ch/iguana/ispy/igfiles/other/cms-geometry.ig"));
+  QTemporaryFile *tmpFile = new QTemporaryFile();
+  IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(reply, tmpFile);
+  QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),
+                   this, SLOT(backgroundFileDownloaded(IgNetworkReplyHandler *)));
 }
 
 /** Helper function to load zip archive index contents. */
@@ -4539,7 +4578,7 @@ ISpyApplication::readData(IgDataStorage *to, ZipArchive *archive, ZipMember *sou
     std::cerr << source->name() << ": error: " << e.what() << std::endl;
   }
 
-  showMessage(source->name().name());
+  showMessage("");
 }
 
 /** DOCUMENT ME */
@@ -4678,17 +4717,35 @@ void
 ISpyApplication::fileDownloaded(IgNetworkReplyHandler *handler)
 {
   m_progressDialog->disconnect();
+  bool success = backgroundFileDownloaded(handler);
+  if (!success)
+  {
+    QFile *file = static_cast<QFile *>(handler->device());
+    QMessageBox::critical(m_mainWindow, "Error while downloading file.",
+                          "Unable to open downloaded file: " + file->fileName());
+    delete file;
+    //FIXME: handle various errors and in particula lat::ZError.
+  }
+}
+
+/** Handles the case a file has been downloaded, without interrupting the user
+    in case of failure.
+*/
+bool
+ISpyApplication::backgroundFileDownloaded(IgNetworkReplyHandler *handler)
+{
   QFile *file = static_cast<QFile *>(handler->device());
   try
   {
-    open(file->fileName());
-  }catch(...)
-  {
-    QMessageBox::critical(m_mainWindow, "Error while downloading file.",
-                          "Unable to open downloaded file: " + file->fileName());
-    showMessage("");
-    //FIXME: handle various errors and in particula lat::ZError.
+    doOpen(file->fileName(), true);
   }
+  catch(...)
+  {
+    showMessage("");
+    return false;
+  }
+  delete file;
+  return true;
 }
 
 /** Handles various kinds of failures when downloading a file*/
