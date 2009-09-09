@@ -5,6 +5,8 @@
 	* ISpyApplication.cc: make MET dashed and get rid of spurious code
 	  in drawing method.
 
+	* ISpyApplication.cc: thicken all track lines to 3
+
 2009-09-08  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* ispy.pro: typo in qmakefile corrected.
