@@ -1196,8 +1196,6 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   IgCollection          *c = collections[0];
   SoMaterial            *mat = new SoMaterial;
   SoDrawStyle           *sty = new SoDrawStyle;
-  SoAnnotation          *ann = new SoAnnotation;
-  SoDrawStyle           *dashed = new SoDrawStyle;
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoIndexedLineSet      *lineSet = new SoIndexedLineSet;
   std::vector<int>      lineIndices;
@@ -1211,15 +1209,8 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
   sty->style = SoDrawStyle::LINES;
   sty->lineWidth = 3;
-  dashed->linePattern = 0x0f0f;
+  sty->linePattern = 0x9999;
   sep->addChild(sty);
-
-  sep->addChild(ann);
-
-  dashed->style = SoDrawStyle::LINES;
-  dashed->lineWidth = 3;
-  dashed->linePattern = 0x0f0f;
-  ann->addChild(dashed);
 
   SbVec3f direction(0.,0.,0.);
   float etMiss = -999.;
@@ -1256,7 +1247,6 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
     lineSet->vertexProperty = vertices;
 
     sep->addChild(lineSet);
-    ann->addChild(lineSet);
 
     // Add text label a bit past the end of the line
 
