@@ -1,3 +1,7 @@
+2009-09-10  Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc: CSC wire and strip digis in 3D and RZ.
+
 2009-09-08  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* ispy.pro: typo in qmakefile corrected.
