@@ -7,6 +7,8 @@ TEMPLATE = app
 mac:TARGET = iSpy
 unix:TARGET= ispy
 
+CONFIG += release
+
 mac:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
 mac:CONFIG += x86 ppc
 
