@@ -1,5 +1,7 @@
 2009-09-09 Giulio Eulisse <giulio.eulisse@cern.ch>
 
+	* ispy.pro: MacOSX Tiger (10.4) support.
+
 	* ISpyApplication.cc: made a few terminal only errors
 	  also pop up a error dialog.
 	

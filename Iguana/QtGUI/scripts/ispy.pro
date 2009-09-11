@@ -7,6 +7,7 @@ TEMPLATE = app
 mac:TARGET = iSpy
 unix:TARGET= ispy
 
+mac:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
 mac:CONFIG += x86 ppc
 
 # Change any of these in order to match your externals.
