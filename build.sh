@@ -35,6 +35,7 @@ case `uname` in
     ;;
   Darwin)
     zip ispy.zip `find iSpy.app`
+    scp ./ispy.zip lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/osx/ispy.zip || true
     scp ./ispy.zip lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/osx/ispy.zip
     ;;
 esac
