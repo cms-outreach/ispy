@@ -1341,6 +1341,59 @@ make3DCSCSegments(IgCollection **collections, IgAssociationSet **assocs, SoSepar
   make3DSegmentShapes(collections, assocs, sep);
 }
 
+static void
+make3DCSCDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep,
+               double width, double depth, double rotate)
+{
+  IgCollection  *c = collections[0];
+  IgProperty    POS = c->getProperty("pos");
+  IgProperty    LEN = c->getProperty("length");
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    IgV3d pos = ci->get<IgV3d>(POS);
+
+    SoTranslation* trans = new SoTranslation;
+    trans->translation = SbVec3f(pos.x(),pos.y(),pos.z());
+   
+    SbVec3f axis(0.0, 0.0, 1.0);
+    double angle = -atan2(pos.x(),pos.y()) - rotate;
+
+    SoTransform* xform = new SoTransform;
+    xform->rotation = SbRotation(axis,angle);
+
+    SoCube* hit = new SoCube;
+    hit->width  = width;
+    hit->height = ci->get<double>(LEN);
+    hit->depth  = depth;
+
+    SoSeparator* pulse = new SoSeparator;
+    pulse->addChild(trans);
+    pulse->addChild(xform);
+    pulse->addChild(hit);
+    sep->addChild(pulse);
+  }
+}
+
+static void
+make3DCSCWireDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial    *mat = new SoMaterial;
+  mat->diffuseColor = SbColor(1.0, 0.2, 1.0);
+  sep->addChild(mat);
+  
+  make3DCSCDigis(collections,assocs,sep,0.02,0.01,M_PI*0.5);
+}
+
+static void
+make3DCSCStripDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoMaterial    *mat = new SoMaterial;
+  mat->diffuseColor = SbColor(1.0, 1.0, 0.0);
+  sep->addChild(mat);
+
+  make3DCSCDigis(collections,assocs,sep,0.01,0.01,0.0);
+}
 
 static void
 make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
@@ -1965,6 +2018,20 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DCSCSegments,
+             Qt::Checked);
+
+  collection("Muon/CSC Wire Digis",
+             "CSCWireDigis_V1:pos:length",
+             0,
+             0,
+             make3DCSCWireDigis,
+             Qt::Checked);
+
+  collection("Muon/CSC Strip Digis",
+             "CSCStripDigis_V1:pos:length",
+             0,
+             0,
+             make3DCSCStripDigis,
              Qt::Checked);
 
   collection("Muon/RPC Rec. Hits",
@@ -2835,6 +2902,20 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DCSCSegments,
+             Qt::Checked);
+
+  collection("Muon/CSC Wire Digis",
+             "CSCWireDigis_V1:pos:length",
+             0,
+             0,
+             make3DCSCWireDigis,
+             Qt::Checked);
+
+  collection("Muon/CSC Strip Digis",
+             "CSCStripDigis_V1:pos:length",
+             0,
+             0,
+             make3DCSCStripDigis,
              Qt::Checked);
 
   collection("Muon/RPC Rec. Hits",
