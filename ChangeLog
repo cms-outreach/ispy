@@ -1,4 +1,7 @@
 2009-09-09 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: made a few terminal only errors
+	  also pop up a error dialog.
 	
 	* ISpyApplication.cc: automatically downloads geometry.
 	
