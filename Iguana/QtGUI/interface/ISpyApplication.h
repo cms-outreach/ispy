@@ -67,7 +67,7 @@ public:
 public slots:
   void                  openFileDialog(void);
   void                  openUrlDialog(void);
-  void                  open(const QString &fileName);
+  void                  openWithFallbackGeometry(const QString &fileName);
   void                  connect(void);
   void                  autoEvents(void);
   void                  animateViews(void);
@@ -99,6 +99,7 @@ private slots:
   void                  rewind(void);
   void                  handleWizardLinks(const QUrl &link);
   void                  fileDownloaded(IgNetworkReplyHandler *handler);
+  bool                  backgroundFileDownloaded(IgNetworkReplyHandler *handler);
   void                  setProgress(qint64 current, qint64 final);
   void                  handleDownloadError(IgNetworkReplyHandler *handler);
   void                  switchView(int i);
@@ -235,6 +236,8 @@ private:
                                  lat::ZipArchive *archive,
                                  lat::ZipMember *source);
   void                  downloadFile(const QUrl &url);
+  void                  downloadGeometry(void);
+  void                  simpleOpen(const QString &fileName);
   void                  setupActions(void);
   void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
   
