@@ -1,6 +1,11 @@
-2009-09-10  Tom McCauley <thomas.mccauley@cern.ch>
+2009-09-12  Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc: CSC wire and strip digis in 3D and RZ.
+
+2009-09-11  Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc: make MET dashed and get rid of spurious code
+	  in drawing method.
 
 2009-09-08  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
