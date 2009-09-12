@@ -603,6 +603,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, S
   SoVertexProperty    *vertices = new SoVertexProperty;
   SoMarkerSet         *points   = new SoMarkerSet;
   SoMaterial          *mat      = new SoMaterial;
+  SoDrawStyle         *sty      = new SoDrawStyle;
   int                 nv        = 0;
   
   // FIXME: TM: color determined by particle type
@@ -610,6 +611,10 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, S
   mat->diffuseColor = SbColor(1.0, 1.0, 0.0);
   sep->addChild(mat);
   
+  sty->style = SoDrawStyle::LINES;
+  sty->lineWidth = 3;
+  sep->addChild(sty);
+
   IgProperty PT  = tracks->getProperty("pt");
   IgProperty POS = hits->getProperty("pos");
   IgProperty DIR = hits->getProperty("dir");
@@ -1653,19 +1658,19 @@ make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *
 static void 
 make3DPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DTrackPoints(collections, assocs, sep, SbColor(0.8, 0.8, 0.5), 2.0);
+  make3DTrackPoints(collections, assocs, sep, SbColor(0.8, 0.8, 0.5), 3.0);
 }
 
 static void
 make3DGsfPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DTrackPoints(collections, assocs, sep, SbColor(0.0, 0.9, 1.0), 4.0);
+  make3DTrackPoints(collections, assocs, sep, SbColor(0.0, 0.9, 1.0), 3.0);
 }
 
 static void
 make3DPFBrems(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
 {
-  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 1.0, 0.0), 1.0);
+  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 1.0, 0.0), 3.0);
 }
 
 static void

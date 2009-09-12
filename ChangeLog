@@ -1,6 +1,8 @@
 2009-09-12  Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc: CSC wire and strip digis in 3D and RZ.
+	
+	* ISpyApplication.cc: thicken all track lines to 3
 
 2009-09-11  Tom McCauley <thomas.mccauley@cern.ch>
 
