@@ -70,6 +70,7 @@
 #include <QtNetwork>
 #include <iostream>
 #include <set>
+#include <sstream>
 
 
 using namespace lat;
@@ -4533,6 +4534,11 @@ ISpyApplication::loadFile(const QString &filename)
   }
   catch(lat::Error &e)
   {
+    std::ostringstream str;
+    str << "Unable parse file: " << filename.toStdString() << ".\nMaybe it got truncated?";
+    QMessageBox::critical(m_mainWindow, "Error while opening file.",
+                          str.str().c_str());
+
     std::cerr << (const char *) filename.toAscii()
               << ": error: cannot read: "
               << e.explain() << std::endl;
@@ -4566,14 +4572,28 @@ ISpyApplication::readData(IgDataStorage *to, ZipArchive *archive, ZipMember *sou
   }
   catch(ParseError &e)
   {
-    std::cerr << source->name() << ": parse error at char " << e.position() << std::endl;
+    std::ostringstream str;
+    str << "Unable parse file: " << source->name() << ". Maybe it got truncated?";
+    QMessageBox::critical(m_mainWindow, "Error while opening file.",
+                          str.str().c_str());
   }
   catch(lat::Error &e)
   {
+    std::ostringstream str;
+    str << "Unable parse file: " << source->name() 
+        << ".\nMaybe it got truncated on because disk is full?"
+        << "\nFull debug log:\n" << e.explain();
+    QMessageBox::critical(m_mainWindow, "Error while opening file.",
+                          str.str().c_str());
     std::cerr << source->name() << ": error: " << e.explain() << std::endl;
   }
   catch(std::exception &e)
   {
+    std::ostringstream str;
+    str << "Unable parse file: " << source->name()
+        << ".\nFull debug log:\n" << e.what();
+    QMessageBox::critical(m_mainWindow, "Error while opening file.",
+                          str.str().c_str());
     std::cerr << source->name() << ": error: " << e.what() << std::endl;
   }
 
