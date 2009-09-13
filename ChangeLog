@@ -1,5 +1,8 @@
 2009-09-13  Giulio Eulisse <giulio.eulisse@cern.ch>
 
+	* ispy.pro, Iguana/QtGUI/src/Info.plist, Iguana/QtGUI/src/ispy.icns:
+	  MacOSX version now has a nice icon.
+
 	* ispy.pro: build as "release" by default.
 
 	* ispy.pro: MacOSX Tiger (10.4) support.
