@@ -1,5 +1,7 @@
 2009-09-13  Giulio Eulisse <giulio.eulisse@cern.ch>
 
+	* ispy.pro: build as "release" by default.
+
 	* ispy.pro: MacOSX Tiger (10.4) support.
 
 	* ISpyApplication.cc: made a few terminal only errors
