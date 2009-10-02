@@ -697,6 +697,14 @@ SbBool
 ISpy3DView::eventCallback(void *closure, QEvent *event)
 {
   ISpy3DView *self = static_cast<ISpy3DView *>(closure);
+
+  // Block popping up a non-functional GUI on right mouse click
+  if (QMouseEvent *mEvent = dynamic_cast<QMouseEvent *>(event))
+  {
+    if (mEvent->button() == Qt::RightButton)
+      return true;
+  }
+
   switch (self->m_viewMode)
   {
     case PAN_MODE:
@@ -708,6 +716,7 @@ ISpy3DView::eventCallback(void *closure, QEvent *event)
     case LOCKED:
       return false;
   }
+  return false;
 }
 
 /** Callback that rotates the camera position following a mouse drag */
