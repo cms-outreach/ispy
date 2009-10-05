@@ -18,13 +18,13 @@ public:
   ISpyConsumerThread(QObject *parent = 0);
   ~ISpyConsumerThread(void);
 
-  void  	listenTo(bool verbose, const std::string &host, int port);
-  std::string	nextEvent(IgDataStorage *storage);
-  std::string	previousEvent(IgDataStorage *storage);
-  void		finalize(void);
+  void  listenTo(bool verbose, const std::string &host, int port);
+  std::string nextEvent(IgDataStorage *storage);
+  std::string previousEvent(IgDataStorage *storage);
+  void finalize(void);
 
 protected:
-  void 		run(void);
+  void 	run(void);
 
 private:
   QMutex     		m_mutex;
