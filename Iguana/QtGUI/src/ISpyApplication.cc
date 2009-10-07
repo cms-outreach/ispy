@@ -1906,14 +1906,14 @@ ISpyApplication::ISpyApplication(void)
              0, 
              0,
              0,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Provenance/Data Products not found", 
              "Errors_V1", 
              0, 
              0, 
              0,
-             Qt::Checked);
+             Qt::Unchecked);
   
 // -------------------------------------------------------------------------------------
 
@@ -1998,61 +1998,61 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
-  
-  collection("Tracking/Si Pixel Digis",
-             "PixelDigis_V1:pos",
-             0,
-             0,
-             make3DPixelDigis,
-             Qt::Checked);
 
-  collection("Tracking/Si Pixel Clusters",
-             "SiPixelClusters_V1:pos",
-             0,
-             0,
-             make3DSiPixelClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Rec. Hits",
-             "SiPixelRecHits_V1:pos",
-             0,
-             0,
-             make3DSiPixelRecHits,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Clusters",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DSiStripClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Digis",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DSiStripDigis,
-             Qt::Unchecked);
-
-  collection("Tracking/Tracks",
+  collection("Tracking/Tracks (reco.)",
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
              make3DRecoTracks,
              Qt::Checked);
 
-  collection("Tracking/Tracking Rec. Hits",
-             "TrackingRecHits_V1:pos",
-             0,
-             0,
-             make3DTrackingRecHits,
-             Qt::Checked);
-
-  collection("Tracking/GSF Tracks",
+  collection("Tracking/Tracks (GSF)",
              "GsfTracks_V1:pt:pos:dir",
              "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfTrackExtras_V1",
              make3DGsfTracks,
+             Qt::Unchecked);
+  
+  collection("Tracking/Digis (Si Pixels)",
+             "PixelDigis_V1:pos",
+             0,
+             0,
+             make3DPixelDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Digis (Si Strips)",
+             "SiStripDigis_V1:pos",
+             0,
+             0,
+             make3DSiStripDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Clusters (Si Pixels)",
+             "SiPixelClusters_V1:pos",
+             0,
+             0,
+             make3DSiPixelClusters,
+             Qt::Unchecked);
+
+  collection("Tracking/Clusters (Si Strips)",
+             "SiStripClusters_V1:pos",
+             0,
+             0,
+             make3DSiStripClusters,
+             Qt::Unchecked);
+
+  collection("Tracking/Rec. Hits (Si Pixels)",
+             "SiPixelRecHits_V1:pos",
+             0,
+             0,
+             make3DSiPixelRecHits,
+             Qt::Unchecked);
+
+  collection("Tracking/Rec. Hits (Tracking)",
+             "TrackingRecHits_V1:pos",
+             0,
+             0,
+             make3DTrackingRecHits,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -2253,14 +2253,14 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DJets,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Physics Objects/Missing Et",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
-             Qt::Unchecked);
+             Qt::Checked);
 
 // -------------------------------------------------------------------------------------
 
@@ -2526,60 +2526,60 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
 
-  collection("Tracking/Si Pixel Digis",
-             "PixelDigis_V1:pos",
-             0,
-             0,
-             make3DPixelDigis,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Clusters",
-             "SiPixelClusters_V1:pos",
-             0,
-             0,
-             make3DSiPixelClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Rec. Hits",
-             "SiPixelRecHits_V1:pos",
-             0,
-             0,
-             make3DSiPixelRecHits,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Digis",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DSiStripDigis,
-             Qt::Unchecked);
-
-  collection("Tracking/Si Strip Clusters",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DSiStripClusters,
-             Qt::Checked);
-
-  collection("Tracking/Tracking Rec. Hits",
-             "TrackingRecHits_V1:pos",
-             0,
-             0,
-             make3DTrackingRecHits,
-             Qt::Checked);
-
-  collection("Tracking/Tracks",
+  collection("Tracking/Tracks (reco.)",
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
              make3DRecoTracks,
              Qt::Checked);
 
-  collection("Tracking/GSF Tracks",
+  collection("Tracking/Tracks (GSF)",
              "GsfTracks_V1:pt:pos:dir",
              "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfTrackExtras_V1",
              make3DGsfTracks,
+             Qt::Unchecked);
+  
+  collection("Tracking/Digis (Si Pixels)",
+             "PixelDigis_V1:pos",
+             0,
+             0,
+             make3DPixelDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Digis (Si Strips)",
+             "SiStripDigis_V1:pos",
+             0,
+             0,
+             make3DSiStripDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Clusters (Si Pixels)",
+             "SiPixelClusters_V1:pos",
+             0,
+             0,
+             make3DSiPixelClusters,
+             Qt::Unchecked);
+
+  collection("Tracking/Clusters (Si Strips)",
+             "SiStripClusters_V1:pos",
+             0,
+             0,
+             make3DSiStripClusters,
+             Qt::Unchecked);
+
+  collection("Tracking/Rec. Hits (Si Pixels)",
+             "SiPixelRecHits_V1:pos",
+             0,
+             0,
+             make3DSiPixelRecHits,
+             Qt::Unchecked);
+
+  collection("Tracking/Rec. Hits (Tracking)",
+             "TrackingRecHits_V1:pos",
+             0,
+             0,
+             make3DTrackingRecHits,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -2731,14 +2731,14 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DJets,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Physics Objects/Missing Et",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
-             Qt::Unchecked);
+             Qt::Checked);
 
   collection("Monte-Carlo/Sim. tracks with hits",
              "TrackingParticles_V1",
@@ -2884,61 +2884,63 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
 
-  collection("Tracking/Si Pixel Digis",
-             "PixelDigis_V1:pos",
-             0,
-             0,
-             make3DPixelDigis,
-             Qt::Checked);
 
-  collection("Tracking/Si Pixel Clusters",
-             "SiPixelClusters_V1:pos",
-             0,
-             0,
-             make3DSiPixelClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Pixel Rec. Hits",
-             "SiPixelRecHits_V1:pos",
-             0,
-             0,
-             make3DSiPixelRecHits,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Clusters",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DSiStripClusters,
-             Qt::Checked);
-
-  collection("Tracking/Si Strip Digis",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DSiStripDigis,
-             Qt::Unchecked);
-
-  collection("Tracking/Tracks",
+  collection("Tracking/Tracks (reco.)",
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
              make3DRecoTracks,
              Qt::Checked);
 
-  collection("Tracking/Tracking Rec. Hits",
-             "TrackingRecHits_V1:pos",
-             0,
-             0,
-             make3DTrackingRecHits,
-             Qt::Checked);
-
-  collection("Tracking/GSF Tracks",
+  collection("Tracking/Tracks (GSF)",
              "GsfTracks_V1:pt:pos:dir",
              "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfTrackExtras_V1",
              make3DGsfTracks,
              Qt::Unchecked);
+  
+  collection("Tracking/Digis (Si Pixels)",
+             "PixelDigis_V1:pos",
+             0,
+             0,
+             make3DPixelDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Digis (Si Strips)",
+             "SiStripDigis_V1:pos",
+             0,
+             0,
+             make3DSiStripDigis,
+             Qt::Unchecked);
+
+  collection("Tracking/Clusters (Si Pixels)",
+             "SiPixelClusters_V1:pos",
+             0,
+             0,
+             make3DSiPixelClusters,
+             Qt::Unchecked);
+
+  collection("Tracking/Clusters (Si Strips)",
+             "SiStripClusters_V1:pos",
+             0,
+             0,
+             make3DSiStripClusters,
+             Qt::Unchecked);
+
+  collection("Tracking/Rec. Hits (Si Pixels)",
+             "SiPixelRecHits_V1:pos",
+             0,
+             0,
+             make3DSiPixelRecHits,
+             Qt::Unchecked);
+
+  collection("Tracking/Rec. Hits (Tracking)",
+             "TrackingRecHits_V1:pos",
+             0,
+             0,
+             make3DTrackingRecHits,
+             Qt::Unchecked);
+
 // -------------------------------------------------------------------------------------
 
   collection("ECAL/ECAL Rec. Hits",   // pre-Aug 2009 ig files only

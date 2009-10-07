@@ -1,3 +1,8 @@
+2009-10-07  Lucas Taylor <lucas.taylor@cern.ch>
+
+	* ISpyApplication.cc: more changes to name / visibility of the
+	  collection to match the PBS.
+
 2009-10-07  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc: Add Jets to Lego view. Display as circles.
