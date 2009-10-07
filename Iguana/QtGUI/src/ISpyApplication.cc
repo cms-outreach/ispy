@@ -548,6 +548,81 @@ makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSepa
   }
 }
 
+static void
+makeLegoJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  SoSeparator *top = new SoSeparator;
+  sep->addChild(top);
+  SoMaterial *mat = new SoMaterial;
+  mat->ambientColor = SbColor(1.0, 0.0, 0.0);
+  mat->diffuseColor = SbColor(1.0, 0.0, 0.0);
+  mat->specularColor = SbColor(1.0, 0.0, 0.0);
+  mat->emissiveColor = SbColor(1.0, 0.0, 0.0);
+  top->addChild(mat);
+  SoDrawStyle *sty = new SoDrawStyle;
+  sty->style = SoDrawStyle::LINES;
+  sty->lineWidth = 3;
+  top->addChild(sty);
+  
+  IgCollection          *c = collections[0];
+  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
+  float minimumEnergy     = 5.0;  // GeV      FIXME LT: should get it from some service
+
+  IgProperty ETA = c->getProperty("eta");
+  IgProperty PHI = c->getProperty("phi"); 
+  IgProperty ET = c->getProperty("et");
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    double et = ci->get<double>(ET);
+ 
+    if (et > minimumEnergy)
+    {
+      double eta  = ci->get<double>(ETA);
+      double phi  = ci->get<double>(PHI);
+      if (phi < 0) phi += 2 * M_PI;
+
+      SoVertexProperty    *vtx = new SoVertexProperty;
+      SoLineSet           *line = new SoLineSet;
+      int                 segments = 60;
+      
+      double              segAngle = 2 * M_PI / segments;
+      double              r = 0.3;
+      double              cx = phi;
+      double              cz = eta;
+      int i = 0;
+
+      for (i = 0; i < segments; ++i)
+        vtx->vertex.set1Value (i, SbVec3f (r * cos (i * segAngle) + cx,
+                                           0.01,
+                                           r * sin (i * segAngle) + cz));
+
+      vtx->vertex.set1Value (i, SbVec3f (r * cos (0) + cx,
+                                         0.01,
+                                         r * sin (0) + cz));
+      vtx->normal = SbVec3f (0, 0, 1);
+      vtx->normalBinding = SoVertexProperty::OVERALL;
+      vtx->materialBinding = SoVertexProperty::OVERALL;
+      line->numVertices = segments + 1;
+      line->vertexProperty = vtx;
+
+      SoMFInt32 markerIndex;
+      markerIndex.setValue (SoMarkerSet::CROSS_5_5);
+      
+      SoMarkerSet *marker = new SoMarkerSet;
+      SoVertexProperty *mvtx = new SoVertexProperty;
+      mvtx->vertex.set1Value (0, SbVec3f (cx, 0, cz));
+      marker->vertexProperty = mvtx;
+      marker->markerIndex = markerIndex;
+      marker->numPoints = 1;
+      marker->startIndex = 0;
+      
+      top->addChild(marker);
+      top->addChild(line);
+    }
+  }
+}
+
 // ------------------------------------------------------
 // Draw Tracker data
 // ------------------------------------------------------
@@ -3099,7 +3174,12 @@ ISpyApplication::ISpyApplication(void)
              makeLegoCaloTowers,
              Qt::Checked);
 
-
+  collection("Physics Objects/Jets",
+             "Jets_V1:et:eta:phi",
+             0,
+             0,
+             makeLegoJets,
+             Qt::Checked);
 
 
 // ///////////////////////////////////////////////////////////////////////////////

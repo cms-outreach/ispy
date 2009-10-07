@@ -1,3 +1,8 @@
+2009-10-06  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpy3DView.cc: Do not allow popping up a non-functional GUI on
+	  right mouse click.
+
 2009-10-05  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpy3DView.cc: Do not allow popping up a non-functional GUI on
