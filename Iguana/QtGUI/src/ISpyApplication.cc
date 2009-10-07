@@ -71,6 +71,7 @@
 #include <iostream>
 #include <set>
 #include <sstream>
+#include <string>
 
 
 using namespace lat;
@@ -114,12 +115,20 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   SoTranslation         *textStartTranslation = new SoTranslation;
   SoTranslation         *nextLineTranslation  = new SoTranslation;
   IgCollectionItem      e = *c->begin();
-  std::string           time  = std::string("Data recorded  ") + e.get<std::string>("time");
-  std::string           run   = std::string("Run number     ") + (sprintf(buf, "%d", e.get<int>("run")), buf);
-  std::string           event = std::string("Event number   ") + (sprintf(buf, "%d", e.get<int>("event")), buf);
-  std::string           ls    = std::string("Lumi section   ") + (sprintf(buf, "%d", e.get<int>("ls")), buf);
-  std::string           orbit = std::string("Orbit number   ") + (sprintf(buf, "%d", e.get<int>("orbit")), buf);
-  std::string           bx    = std::string("Beam crossing  ") + (sprintf(buf, "%d", e.get<int>("bx")), buf);
+
+  std::string           timestr;
+  std::string           time  = e.get<std::string>("time");
+  
+  if (time.substr (0,11) == "1970-Jan-01") 
+    timestr = std::string("Simulated (MC) event");
+  else 
+    timestr = std::string("Data_taken ") + time;
+
+  std::string           run     = std::string("Run_no____ ") + (sprintf(buf, "%d", e.get<int>("run")), buf);
+  std::string           event   = std::string("Event_no__ ") + (sprintf(buf, "%d", e.get<int>("event")), buf);
+  std::string           orbit   = std::string("Orbit_____ ") + (sprintf(buf, "%d", e.get<int>("orbit")), buf);
+  std::string           bx      = std::string("Crossing__ ") + (sprintf(buf, "%d", e.get<int>("bx")), buf);
+  std::string           ls      = std::string("Lumi_sec__ ") + (sprintf(buf, "%d", e.get<int>("ls")), buf);
 
   // FIXME LT: make text positioning independent of window resize
   // FIXME LT: make visibilty of each line switchable in the interface(and settings) e.g. as for ig collections
@@ -140,13 +149,17 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
   textStartTranslation->translation = SbVec3f(-5.0,  5.0,  0.0);
   nextLineTranslation ->translation = SbVec3f( 0.0, -0.25, 0.0);
-  createTextLine(overlay, textStartTranslation, "-- iSpy -- http://iguana.cern.ch/ispy");
-  createTextLine(overlay, nextLineTranslation, time);
+
+  createTextLine(overlay, textStartTranslation, "CMS Experiment, CERN");
+  createTextLine(overlay, nextLineTranslation, " ");
+  createTextLine(overlay, nextLineTranslation, timestr);
+  createTextLine(overlay, nextLineTranslation, " ");
   createTextLine(overlay, nextLineTranslation, run);
   createTextLine(overlay, nextLineTranslation, event);
   createTextLine(overlay, nextLineTranslation, ls);
   createTextLine(overlay, nextLineTranslation, orbit);
   createTextLine(overlay, nextLineTranslation, bx);
+  createTextLine(overlay, nextLineTranslation, "http://iguana.cern.ch/ispy");
   sep->addChild(overlay);
 }
 

@@ -3,6 +3,8 @@
 	* ISpyApplication.cc: more changes to name / visibility of the
 	  collection to match the PBS.
 
+	* ISpyApplication.cc: improved event information.
+
 2009-10-07  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc: Add Jets to Lego view. Display as circles.
