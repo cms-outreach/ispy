@@ -4,6 +4,8 @@
 
 	* ISpyApplication.cc: Add and display HCAL rechits to Lego view.
 
+	* ISpyApplication.cc: Add and draw ECAL rec hits in Lego.
+
 2009-10-05  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpy3DView.cc: Do not allow popping up a non-functional GUI on
