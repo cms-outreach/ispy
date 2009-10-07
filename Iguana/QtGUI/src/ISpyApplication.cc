@@ -623,6 +623,34 @@ makeLegoJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   }
 }
 
+static void
+makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+{
+  IgCollection          *c = collections[0];
+  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
+  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
+
+  IgDrawTowerHelper drawTowerHelper(sep);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    double energy = ci->get<double>("energy");
+    double eta  = ci->get<double>("eta");
+    double et = energy * sin(2*atan(exp(-eta)));
+    double emFraction = 0.0;
+ 
+    if (et > minimumEnergy)
+    {
+      double phi  = ci->get<double>("phi");
+      if (phi < 0) phi += 2 * M_PI;
+      
+      drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 0.0,
+				   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+				   phi4eta (fabs (eta)));
+    }
+  }
+}
+
 // ------------------------------------------------------
 // Draw Tracker data
 // ------------------------------------------------------
@@ -3181,6 +3209,33 @@ ISpyApplication::ISpyApplication(void)
              makeLegoJets,
              Qt::Checked);
 
+  collection("HCAL/Barrel Rec. Hits",
+             "HBRecHits_V1:energy:eta:phi",
+             0,
+             0,
+             makeLegoHcalRecHits,
+             Qt::Checked);
+
+  collection("HCAL/Endcap Rec. Hits",
+             "HERecHits_V1:energy:eta:phi",
+             0,
+             0,
+             makeLegoHcalRecHits,
+             Qt::Checked);
+
+  collection("HCAL/Forward Rec. Hits",
+             "HFRecHits_V1:energy:eta:phi",
+             0,
+             0,
+             makeLegoHcalRecHits,
+             Qt::Checked);
+
+  collection("HCAL/Outer Rec. Hits",
+             "HORecHits_V1:energy:eta:phi",
+             0,
+             0,
+             makeLegoHcalRecHits,
+             Qt::Checked);
 
 // ///////////////////////////////////////////////////////////////////////////////
 // ///////////////////////////////////////////////////////////////////////////////
