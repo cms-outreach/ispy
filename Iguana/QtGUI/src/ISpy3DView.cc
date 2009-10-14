@@ -88,6 +88,9 @@ ISpy3DView::initWidget(void)
   setEventCallback(eventCallback, this);
   setSceneGraph(model()->sceneGraph());
   getSceneManager()->getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+
+  // LT FIXME: the following adds GL smoothing (anti-aliasing). It works but seems to make rotations "sticky". Can it be done better? 
+  getSceneManager()->getGLRenderAction()->setSmoothing (TRUE);  // LT FIXME: "Computationally-cheap anti-aliasing" (smooths jagged line and points)
   setAutoClippingStrategy(CONSTANT_NEAR_PLANE, 0.9, fixedDistanceClipPlanesCB, this);
   setDecoration(false);
   parent()->setMinimumSize(300, 200);

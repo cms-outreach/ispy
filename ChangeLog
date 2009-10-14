@@ -1,3 +1,7 @@
+2009-11-25  Lucas Taylor <lucas.taylor@cern.ch>
+
+	* ISpy3DView.cc: enable antialiasing of lines.
+
 2009-11-25  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* default-style.css: improved cuts.
