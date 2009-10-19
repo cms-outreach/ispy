@@ -685,8 +685,8 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSep
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 1.0,
-				   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
-				   phi4eta (fabs (eta)));
+				   energyScaleFactor, 0.0174f,
+				   0.0174f);
     }
   }
 }

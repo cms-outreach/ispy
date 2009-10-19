@@ -1,3 +1,7 @@
+2009-10-19  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: Correct size of ECAL rec hits in Lego.
+
 2009-10-19  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy.pro: track header (.h) files which are kept in src/ .
