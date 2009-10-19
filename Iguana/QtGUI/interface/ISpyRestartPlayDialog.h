@@ -1,7 +1,7 @@
 #ifndef QT_GUI_ISPY_RESTART_PLAY_DIALOG_H
 # define QT_GUI_ISPY_RESTART_PLAY_DIALOG_H
 
-# include "ui_ISpyRestartPlayDialog.h"
+# include "ui/ui_ISpyRestartPlayDialog.h"
 
 class ISpyRestartPlayDialog : public QDialog, private Ui::ISpyRestartPlayDialog
 {
