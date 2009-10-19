@@ -34,6 +34,7 @@ SOURCES += Iguana/Framework/src/*.cc
 SOURCES += Iguana/Inventor/src/*.cc
 SOURCES += Iguana/QtGUI/bin/ispy.cpp
 HEADERS += Iguana/QtGUI/interface/*.h
+HEADERS += Iguana/QtGUI/src/*.h
 HEADERS += Iguana/Framework/interface/*.h
 INCLUDEPATH += $$ISPY_SDK_BASE/include
 INCLUDEPATH += Iguana/Framework/interface

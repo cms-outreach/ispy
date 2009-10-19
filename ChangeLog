@@ -1,3 +1,7 @@
+2009-10-19  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy.pro: track header (.h) files which are kept in src/ .
+
 2009-10-07  Lucas Taylor <lucas.taylor@cern.ch>
 
 	* ISpyApplication.cc: more changes to name / visibility of the
