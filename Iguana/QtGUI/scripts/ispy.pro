@@ -25,6 +25,7 @@ unix:DESTDIR = .
 
 OBJECTS_DIR = tmp
 MOC_DIR = tmp
+RCC_DIR = tmp
 
 # Due to CMSSW requirements, we need to keep the
 # qmake file in a subdirectory, therefore we need 
@@ -36,6 +37,8 @@ SOURCES += Iguana/QtGUI/bin/ispy.cpp
 HEADERS += Iguana/QtGUI/interface/*.h
 HEADERS += Iguana/QtGUI/src/*.h
 HEADERS += Iguana/Framework/interface/*.h
+RESOURCES = Iguana/QtGUI/interface/ispy.qrc
+
 INCLUDEPATH += $$ISPY_SDK_BASE/include
 INCLUDEPATH += Iguana/Framework/interface
 INCLUDEPATH += $$COIN3D_BASE/include

@@ -1,3 +1,8 @@
+2009-10-19  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy.pro: Creates resources using qmake. No need anymore 
+	  for generating `qrc_*.cc` resource files by hand.
+
 2009-10-19  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc: Correct size of ECAL rec hits in Lego.
