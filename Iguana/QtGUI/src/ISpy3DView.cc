@@ -13,6 +13,7 @@
 #include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/Qt/SoQtCursor.h>
+
 #include <QtGui>
 #include "classlib/utils/DebugAids.h"
 #include <iostream>

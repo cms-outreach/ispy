@@ -28,6 +28,7 @@
 #include "classlib/utils/ShellEnvironment.h"
 #include "classlib/utils/StringOps.h"
 #include "classlib/utils/Error.h"
+#include "classlib/utils/Regexp.h"
 #include "classlib/zip/ZipMember.h"
 #include "classlib/zip/ZipArchive.h"
 
@@ -86,8 +87,354 @@ static void initShapes(void)
   IgSoSplineTrack::initClass();
 }
 
+void
+stripWhitespaces(std::string &s)
+{
+  s.erase(remove_if(s.begin(), s.end(), isspace), s.end());
+}
+
+/** Fills in the an array of 3 floats with the default color.
+  */
+void 
+defaultColor(float *colors)
+{
+  colors[0] = .7;
+  colors[1] = .7;
+  colors[2] = .7;  
+}
+
+/** Converts the iSpy specific marker description to an openInventor 
+    SoMarkerSet::MarkerType. This is to facilitate the creation of CSS
+    where only a part of the marker description is provided.
+    
+    @a marker style
+    @a marker size hint
+    @a marler shape
+    
+  */
+SoMarkerSet::MarkerType
+ISpyApplication::getMarkerType(enum ISPY_MARKER_STYLE style,
+                               enum ISPY_MARKER_SIZE size,
+                               enum ISPY_MARKER_SHAPE shape)
+{
+  static SoMarkerSet::MarkerType convert[] = {
+    SoMarkerSet::SQUARE_LINE_5_5, SoMarkerSet::SQUARE_FILLED_5_5, 
+    SoMarkerSet::SQUARE_LINE_7_7, SoMarkerSet::SQUARE_FILLED_7_7, 
+    SoMarkerSet::SQUARE_LINE_9_9, SoMarkerSet::SQUARE_FILLED_9_9,
+    SoMarkerSet::CROSS_5_5, SoMarkerSet::CROSS_5_5,
+    SoMarkerSet::CROSS_7_7, SoMarkerSet::CROSS_7_7,
+    SoMarkerSet::CROSS_9_9, SoMarkerSet::CROSS_9_9,
+    SoMarkerSet::PLUS_5_5, SoMarkerSet::PLUS_5_5, 
+    SoMarkerSet::PLUS_7_7, SoMarkerSet::PLUS_7_7, 
+    SoMarkerSet::PLUS_9_9, SoMarkerSet::PLUS_9_9,
+    SoMarkerSet::CIRCLE_LINE_5_5, SoMarkerSet::CIRCLE_FILLED_5_5, 
+    SoMarkerSet::CIRCLE_LINE_7_7, SoMarkerSet::CIRCLE_FILLED_7_7, 
+    SoMarkerSet::CIRCLE_LINE_9_9, SoMarkerSet::CIRCLE_FILLED_9_9,
+  };
+  
+  return convert[style + size + shape];
+}
 
 
+/** Parse a string in the format
+  
+        #rrggbb
+    
+    or
+      
+        rgb(r, g, b)
+    
+    to a set of 3 float.
+    
+    @a rgb string to convert.
+    
+    @a colors an array of floats containing the red, green and blue components.
+*/
+void
+parseColor(const char *rgb, float *color)
+{  
+  defaultColor(color);
+  if (!rgb || ! rgb[0])
+    return;
+
+  char *endptr;
+  
+  // Case for #RRGGBB like format:
+  //
+  // Check for proper #RRGGBB format and return otherwhise.
+  // Convert each component one by one, to avoid endianness issues.
+  if (rgb[0] == '#')
+  {
+    if (strlen(rgb) != 7)
+      return;  
+
+    unsigned int value = strtol(rgb+1, &endptr, 16);
+    if (*endptr)
+      return;
+    
+    color[0] = ((value >> 16) & 0xff) / 255.;
+    color[1] = ((value >> 8)  & 0xff) / 255.;
+    color[2] = ((value >> 0)  & 0xff) / 255.;
+    
+    return;
+  }
+  
+  // Case for rgb (r, g , b) format.
+  //
+  // Make sure the syntax is correct.
+  // Split string into components and make sure we have 3 of them.
+  // Convert each component one by one, making sure they are normalized.
+  if (strncmp(rgb, "rgb(", 4) == 0)
+  {
+    if (rgb[strlen(rgb)-1] != ')')
+      return;
+    
+    std::string s(rgb, 4, strlen(rgb) - 6);
+    StringList components = StringOps::split(s, ",");
+    if (components.size() != 3)
+      return;
+
+    for (int i = 0, e = 3; i != e; i++)
+    {
+      color[i] = strtod(components[i].c_str(), &endptr);
+      if (*endptr)
+      {
+        defaultColor(color);
+        ASSERT(false && "Unable to parse color.");
+        return;
+      }
+      if (color[i] < 0. || color[i] > 1.0)
+      {
+        defaultColor(color);
+        ASSERT(false && "Color not normalized");
+        return;
+      }
+    }
+  }
+}
+
+/** Defines a new cascading style.
+    
+    @a rule
+
+    the rule to be matched in order to apply the style. For the moment this
+    only means either "*" (matches anything) or the collection name.
+    
+    @a css
+    
+    a set of property definitions in the form:
+    
+    key1:value1;key2:value2;...
+    
+    see ISpyApplication::parseCss for a description of the changeable 
+    properties.
+*/
+void
+ISpyApplication::style(const char *rule, const char *css)
+{
+  m_styleSpecs.resize(m_styleSpecs.size() + 1);
+  StyleSpec &spec = m_styleSpecs.back();
+
+  // Define the defaults.
+  spec.viewName = "*";
+  spec.collectionName = "*";
+  defaultColor(spec.diffuseColor);
+  spec.transparency = 0.0;
+  spec.lineWidth = 1.0;
+  spec.linePattern = 0xffff;
+  spec.fontSize = 12;
+  spec.fontName = "Helvetica";
+  spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
+  spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
+  spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
+  spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
+  
+  // Parse the rule.
+  StringList ruleParts = StringOps::split(rule, "::");
+  if (ruleParts.size() == 1)
+    spec.collectionName = ruleParts[0];
+  else if (!ruleParts.size() || ruleParts.size() > 2)
+    ASSERT(false && "Wrong syntax for rule!");
+  else
+  {
+    spec.viewName = ruleParts[0];
+    spec.collectionName = ruleParts[1];
+  }
+
+  // Copy over properties from previously matching specs.
+  for (size_t ssi = 0, sse = m_styleSpecs.size() - 1; ssi != sse; ++ssi)
+  {
+    StyleSpec &previous = m_styleSpecs[ssi];
+
+    if (previous.viewName != "*"
+        && previous.viewName != spec.viewName)
+      continue;
+     
+    if (previous.collectionName != "*" &&
+        previous.collectionName != spec.collectionName)
+      continue;
+
+    memcpy(spec.diffuseColor, previous.diffuseColor, 3*sizeof(float));
+    spec.transparency = previous.transparency;
+    spec.lineWidth = previous.lineWidth;
+    spec.linePattern = previous.linePattern;
+    spec.fontSize = previous.fontSize;
+    spec.fontName = previous.fontName;
+    spec.drawStyle = previous.drawStyle;
+    spec.markerShape = previous.markerShape;
+    spec.markerSize = previous.markerSize;
+    spec.markerStyle = previous.markerStyle;
+  }
+
+  // Parse the property declarations and deposit new value on top of those
+  // coming from previous declarations.
+  // Remove trailing spaces
+  //
+  // FIXME: converting to a string is lame, but effective...
+  // FIXME: move bracket parsing one level up.
+  std::string cssString = css;
+  stripWhitespaces(cssString);
+  
+  StringList properties = StringOps::split(cssString.c_str(), ";", StringOps::TrimEmpty);
+  
+  std::string key, value;
+
+  for (size_t pi = 0, pe = properties.size(); pi != pe; pi++)
+  {
+    std::string &property = properties[pi];
+    StringList pairs = StringOps::split(property, ":");
+    
+    ASSERT(pairs.size() == 2);
+    
+    key = pairs[0];
+    value = pairs[1];
+
+    char *endptr;
+    
+    if (key == "diffuse-color")
+      parseColor(value.c_str(), spec.diffuseColor);
+    else if (key == "transparency")
+    {
+      spec.transparency = strtod(value.c_str(), &endptr);
+      ASSERT(! (*endptr) && "Error while parsing transparency value");
+    }
+    else if (key == "line-width")
+    {
+      spec.lineWidth = strtod(value.c_str(), &endptr);
+      ASSERT(! (*endptr) && "Error while parsing line-width value");
+    }
+    else if (key == "line-pattern")
+    {
+      spec.linePattern = strtol(value.c_str(), &endptr, 16);
+      ASSERT(! (*endptr) && "Error while parsing line-pattern value");
+    }
+    else if (key == "font-size")
+    {
+      spec.fontSize = strtod(value.c_str(), &endptr);
+      ASSERT(! (*endptr) && "Error while parsing font-size value");
+    }
+    else if (key == "font-name")
+      spec.fontName = value;
+    else if (key == "draw-style" && value == "solid")
+      spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
+    else if (key == "draw-style" && value == "lines")
+      spec.drawStyle = ISPY_LINES_DRAW_STYLE;
+    else if (key == "draw-style" && value == "points")
+      spec.drawStyle = ISPY_POINTS_DRAW_STYLE;
+    else if (key == "draw-style")
+      ASSERT(false && "Syntax error while defining draw-style");    
+    else if (key == "marker-shape" && value == "square")
+      spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
+    else if (key == "marker-shape" && value == "cross")
+      spec.markerShape = ISPY_CROSS_MARKER_SHAPE;
+    else if (key == "marker-shape" && value == "plus")
+      spec.markerShape = ISPY_PLUS_MARKER_SHAPE;
+    else if (key == "marker-shape" && value == "circle")
+      spec.markerShape = ISPY_CIRCLE_MARKER_SHAPE;
+    else if (key == "marker-shape")
+      ASSERT(false && "Syntax error while defining marker-shape");
+    else if (key == "marker-size" && value == "normal")
+      spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
+    else if (key == "marker-size" && value == "big")
+      spec.markerSize = ISPY_BIG_MARKER_SIZE;
+    else if (key == "marker-size" && value == "huge")
+      spec.markerSize = ISPY_HUGE_MARKER_SIZE;
+    else if (key == "marker-style" && value == "filled")
+      spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
+    else if (key == "marker-style" && value == "outline")
+      spec.markerStyle = ISPY_OUTLINE_MARKER_STYLE;
+    else if (key == "marker-style")
+      ASSERT(false && "Syntax error while defining marker-style");
+    else
+    {
+      std::cerr << "Unknown property " << key << std::endl;
+      ASSERT(false && "Unknown property");
+    }
+  }
+}
+
+/** Parses a string contain a CSS to be used for rendering...
+
+    The syntax for the CSS is the following:
+    
+        style-stamement := rule { property-definition; 
+                                  [property-definition; ...] 
+                                }
+    
+    where rule is in the form:
+    
+        rule := [view::][collection-name]
+    
+    where view can either be the name of a view as defined using the 
+    IgCollection::view or "*" to indicate all views. `property-definition`
+    is instead a column separated key - value pair.
+    
+        property := property-key: value-type;
+        
+    For the time being the `property-key` understood are:
+    
+    * diffuse-color: A color in the form of either the usual #RRGGBB, 
+                     or rgb(Rf, Gf, Bf) where Rf, Gf, and Bf are normalized 
+                     color components.
+    * transparency: the transparency level of the main material, in the form
+                    of a normalized float.
+    * line-width: a float corresponding to the line width.
+    * line-pattern: an hex number specifing the bit mask to be used for the 
+                    line, e.g. 0x00ffff for a long dash, dashed line.
+    * font-size: a float indicating the size of the font used.
+    * font-name: an unquoted string indicating the name of the font to be used.
+    * draw-style: either "lines", "solid" or "points".
+    * marker-shape: the style to be used for markers. Either square, plus, cross, circle.
+    * marker-size: the size of the marker. Either "normal", "big" or "huge".
+    * marker-style: either "filled" or "outline".
+    
+    you can also have C and C++ style comments.
+*/
+void 
+ISpyApplication::parseCss(const char *css)
+{
+  // The parsing works by first removing all the comments and spaces,
+  // then it divides up different CSS statements by splitting at the final
+  // } found in every definition and then divides the rule from the
+  // property by splitting at the {. 
+  // FIXME: the parsing is somewhat rudimentary but does its job.
+  //        Write a better one when you have time.
+  // FIXME: remove the ASSERT and have proper error handling, once
+  //        we start having user specified css.
+  std::string cssStr;
+  cssStr = StringOps::remove(css, Regexp("//.*\n"));
+  stripWhitespaces(cssStr);
+  cssStr = StringOps::remove(cssStr, Regexp("/\\*.*?\\*/"));
+  
+  StringList classes = StringOps::split(cssStr, "}", StringOps::TrimEmpty); 
+  
+  for (size_t i = 0, e = classes.size(); i != e; ++i)
+  {
+    StringList parts = StringOps::split(classes[i], "{", StringOps::TrimEmpty);
+    ASSERT(parts.size() == 2);
+    style(parts[0].c_str(), parts[1].c_str());
+  }
+}
 
 // ------------------------------------------------------
 // Draw Text Overlays
@@ -104,14 +451,13 @@ createTextLine(SoGroup *group, SoTranslation *trans, const std::string &text)
 }
 
 static void
-make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DEvent(IgCollection **collections, IgAssociationSet **, 
+            SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   char                  buf [128];
   IgCollection          *c = collections[0];
-  SoMaterial            *mat = new SoMaterial;
   SoAnnotation          *overlay = new SoAnnotation;
   SoOrthographicCamera  *camera = new SoOrthographicCamera;
-  SoFont                *labelFont = new SoFont;
   SoTranslation         *textStartTranslation = new SoTranslation;
   SoTranslation         *nextLineTranslation  = new SoTranslation;
   IgCollectionItem      e = *c->begin();
@@ -140,13 +486,6 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   camera->focalDistance = 1;
   overlay->addChild(camera);
 
-  mat->diffuseColor = SbColor(1.0, 1.0, 1.0);
-  overlay->addChild(mat);
-
-  labelFont->size = 13.0;
-  labelFont->name = "Courier";
-  overlay->addChild(labelFont);
-
   textStartTranslation->translation = SbVec3f(-5.0,  5.0,  0.0);
   nextLineTranslation ->translation = SbVec3f( 0.0, -0.25, 0.0);
 
@@ -165,14 +504,13 @@ make3DEvent(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
 
 static void
-make3DL1Trigger(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DL1Trigger(IgCollection **collections, IgAssociationSet **, 
+                SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   char                   buf[128];
   IgCollection           *c = collections[0];
-  SoMaterial             *mat = new SoMaterial;
   SoAnnotation           *overlay = new SoAnnotation;
   SoOrthographicCamera   *camera = new SoOrthographicCamera;
-  SoFont                 *labelFont = new SoFont;
   SoTranslation          *textStartTranslation = new SoTranslation;
   SoTranslation          *nextLineTranslation  = new SoTranslation;
    
@@ -182,13 +520,6 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **, SoSeparator *se
   camera->scaleHeight(5.5f);
   camera->focalDistance = 1;
   overlay->addChild(camera);
-
-  mat->diffuseColor = SbColor(1.0, 1.0, 1.0);
-  overlay->addChild(mat);
-
-  labelFont->size = 13.0;
-  labelFont->name = "Courier";
-  overlay->addChild(labelFont);
 
   textStartTranslation->translation = SbVec3f(4.5,  5.0,  0.0);
   nextLineTranslation ->translation = SbVec3f(0.0, -0.25, 0.0);
@@ -213,21 +544,14 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **, SoSeparator *se
 
 
 static void
-make3DPointSetShapes(IgCollection **collections,
-                     IgAssociationSet **,
-                     SoSeparator *sep,
-                     SbColor colour,
-                     int kind)
+make3DPointSetShapes(IgCollection **collections, IgAssociationSet **,
+                     SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection          *c = collections[0];
   IgProperty            POS = c->getProperty("pos");
-  SoMaterial            *mat = new SoMaterial;
   SoMarkerSet           *points = new SoMarkerSet;
   SoVertexProperty      *vertices = new SoVertexProperty;
   int                   n = 0;
-
-  mat->diffuseColor = colour;
-  sep->addChild(mat);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -240,16 +564,18 @@ make3DPointSetShapes(IgCollection **collections,
   }
   vertices->vertex.setNum(n);
 
-  points->markerIndex = kind;
+  points->markerIndex = style->markerType;
   points->vertexProperty = vertices;
   points->numPoints = n;
   sep->addChild(points);
 }
 
 static void
-make3DAnyBox(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DAnyBox(IgCollection **collections, IgAssociationSet **, 
+             SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection *c = collections[0];
+
   IgDrawTowerHelper drawTowerHelper(sep);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
@@ -270,7 +596,8 @@ make3DAnyBox(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
 
 static void
-make3DAnyLine(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DAnyLine(IgCollection **collections, IgAssociationSet **, 
+              SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   IgProperty            P1 = c->getProperty("pos_1");
@@ -305,7 +632,8 @@ make3DAnyLine(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
 
 static void
-make3DAnyPoint(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DAnyPoint(IgCollection **collections, IgAssociationSet **, 
+               SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *c = collections[0];
   IgProperty            POS = c->getProperty("pos");
@@ -330,12 +658,14 @@ make3DAnyPoint(IgCollection **collections, IgAssociationSet **, SoSeparator *sep
 }
 
 static void
-make3DAnyDetId(IgCollection **, IgAssociationSet **, SoSeparator *)
+make3DAnyDetId(IgCollection **, IgAssociationSet **, 
+               SoSeparator *, ISpyApplication::Style * /* style */)
 {
 }
 
 static void
-makeLegoGrid(IgCollection **, IgAssociationSet **, SoSeparator *gridSep)
+makeLegoGrid(IgCollection **, IgAssociationSet **, 
+             SoSeparator *gridSep, ISpyApplication::Style * /*style*/)
 {
   float scale  = 1.0;
 
@@ -510,31 +840,32 @@ phi4eta (float eta)
 {
   float phi = 0.087;
   float etaBins [29] = { 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609,
-			 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305,
-			 1.392, 1.479, 1.566, 1.653, 1.74, 1.83, 1.93, 2.043,
-			 2.172, 2.322, 2.5, 2.65, 3};
-    
+                         0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305,
+                         1.392, 1.479, 1.566, 1.653, 1.74, 1.83, 1.93, 2.043,
+                         2.172, 2.322, 2.5, 2.65, 3};
+
   float etaHFBins [14] = {2.853, 2.964, 3.139, 3.314, // HF
-			  3.486, 3.664, 3.839, 4.013, 
-			  4.191, 4.363, 4.538, 4.716, 
-			  4.889, 5.191};
-  if (eta > 2.853) 
-    for (int i = 0; i < 13; i++) 
+                          3.486, 3.664, 3.839, 4.013,
+                          4.191, 4.363, 4.538, 4.716,
+                          4.889, 5.191};
+  if (eta > 2.853)
+    for (int i = 0; i < 13; i++)
     {
-      if ((eta > etaHFBins [i]) && (eta < etaHFBins [i + 1])) 
-	phi =  etaHFBins [i + 1] - etaHFBins [i];
+      if ((eta > etaHFBins [i]) && (eta < etaHFBins [i + 1]))
+        phi =  etaHFBins [i + 1] - etaHFBins [i];
     }
-  else  
-    for (int i = 0; i < 28; i++) 
+  else
+    for (int i = 0; i < 28; i++)
     {
-      if ((eta > etaBins [i]) && (eta < etaBins [i + 1])) 
-	phi =  etaBins [i + 1] - etaBins [i];
+      if ((eta > etaBins [i]) && (eta < etaBins [i + 1]))
+        phi =  etaBins [i + 1] - etaBins [i];
     }
   return phi;
 }
 
 static void
-makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **, 
+                   SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
@@ -555,15 +886,18 @@ makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSepa
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, (emFraction > 0 ? emFraction : 0),
-				   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
-				   phi4eta (fabs (eta)));
+                                   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+                                   phi4eta (fabs (eta)));
     }
   }
 }
 
 static void
-makeLegoJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
+             SoSeparator *sep, ISpyApplication::Style *style)
 {
+  // FIXME: this one will pick up style from the CSS once we implement
+  //        the ability to specify different style in different view.
   SoSeparator *top = new SoSeparator;
   sep->addChild(top);
   SoMaterial *mat = new SoMaterial;
@@ -578,7 +912,7 @@ makeLegoJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
   top->addChild(sty);
   
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
+  //  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
   float minimumEnergy     = 5.0;  // GeV      FIXME LT: should get it from some service
 
   IgProperty ETA = c->getProperty("eta");
@@ -619,14 +953,11 @@ makeLegoJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
       line->numVertices = segments + 1;
       line->vertexProperty = vtx;
 
-      SoMFInt32 markerIndex;
-      markerIndex.setValue (SoMarkerSet::CROSS_5_5);
-      
       SoMarkerSet *marker = new SoMarkerSet;
       SoVertexProperty *mvtx = new SoVertexProperty;
       mvtx->vertex.set1Value (0, SbVec3f (cx, 0, cz));
       marker->vertexProperty = mvtx;
-      marker->markerIndex = markerIndex;
+      marker->markerIndex = style->markerType;
       marker->numPoints = 1;
       marker->startIndex = 0;
       
@@ -637,7 +968,8 @@ makeLegoJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator 
 }
 
 static void
-makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
+                    SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *c = collections[0];
   float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
@@ -650,7 +982,7 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSep
     double energy = ci->get<double>("energy");
     double eta  = ci->get<double>("eta");
     double et = energy * sin(2*atan(exp(-eta)));
-    double emFraction = 0.0;
+    // double emFraction = 0.0;
  
     if (et > minimumEnergy)
     {
@@ -665,7 +997,8 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSep
 }
 
 static void
-makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
@@ -695,69 +1028,18 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSep
 // Draw Tracker data
 // ------------------------------------------------------
 
-// For hits drawn digis, clusters and rechits as different shapes
-// Make them shades of same colour(more populous ones are darker)
-// Do Si Strips one colour and pixels another
-
-// Tons of these, rarely drawn, make very unobtrusive
-static void
-make3DPixelDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep, SbColor(0.2,0.0, 0.0), SoMarkerSet::PLUS_5_5);
-}
-static void
-make3DSiStripDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep, SbColor(0.2, 0.1, 0.0),SoMarkerSet::PLUS_5_5);
-}
-
-
-// Quite a lot of these, not often drawn, make quite unobtrusive
-static void
-make3DSiPixelClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep, SbColor(0.4, 0.0, 0.0), SoMarkerSet::CROSS_5_5);
-}
-static void
-make3DSiStripClusters(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep, SbColor(0.9, 0.2, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
-}
-
-
-// If you draw any tracekr hits its usually these ones so make more visible
-static void
-make3DSiPixelRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep, SbColor(0.7, 0.0, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
-}
-
-static void
-make3DTrackingRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DPointSetShapes(collections, assocs, sep, SbColor(0.7, 0.4, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
-}
+// Hits and digis use generic helper functions make3DPointSetShapes.
 
 static void 
-make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, 
+                        SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection        *tracks   = collections[0];
   IgCollection        *hits     = collections[1];
   IgAssociationSet    *assoc    = assocs[0];     
   SoVertexProperty    *vertices = new SoVertexProperty;
   SoMarkerSet         *points   = new SoMarkerSet;
-  SoMaterial          *mat      = new SoMaterial;
-  SoDrawStyle         *sty      = new SoDrawStyle;
   int                 nv        = 0;
-  
-  // FIXME: TM: color determined by particle type
-  // Also, draw photons with IdealTrack?
-  mat->diffuseColor = SbColor(1.0, 1.0, 0.0);
-  sep->addChild(mat);
-  
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth = 3;
-  sep->addChild(sty);
 
   IgProperty PT  = tracks->getProperty("pt");
   IgProperty POS = hits->getProperty("pos");
@@ -802,7 +1084,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, S
   
   vertices->vertex.setNum(nv);
   
-  points->markerIndex = SoMarkerSet::CIRCLE_FILLED_5_5;
+  points->markerIndex = style->markerType;
   points->vertexProperty = vertices;
   points->numPoints = nv;
   
@@ -810,11 +1092,8 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, S
 }
 
 static 
-void make3DTracks(IgCollection **collections, 
-                  IgAssociationSet **assocs, 
-                  SoSeparator *sep,
-                  SbColor colour,
-                  int kind)
+void make3DTracks(IgCollection **collections, IgAssociationSet **assocs, 
+                  SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *extras = collections[1];
@@ -825,30 +1104,16 @@ void make3DTracks(IgCollection **collections,
   IgProperty            DIR1 = extras->getProperty("dir_1");
   IgProperty            POS2 = extras->getProperty("pos_2");
   IgProperty            DIR2 = extras->getProperty("dir_2");
-  SoMaterial            *mat = new SoMaterial;
-  SoDrawStyle           *sty = new SoDrawStyle;
   SoSeparator           *vsep = new SoSeparator;
-  SoMaterial            *vmat = new SoMaterial;
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoMarkerSet           *mpoints = new SoMarkerSet;
   int                   nv = 0;
-
-  mat->diffuseColor = colour;
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth = 3;
-
-  sep->addChild(mat);
-  sep->addChild(sty);
-  sep->addChild(vsep);
-
-  vmat->diffuseColor = colour;
-  vsep->addChild(mat);
-
+ 
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
-    IgSoSplineTrack     *trackRep = new IgSoSplineTrack;
+    IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
     SoVertexProperty    *tvertices = new SoVertexProperty;
-    SoMarkerSet         *tpoints = new SoMarkerSet;
+    SoMarkerSet         *tpoints   = new SoMarkerSet;
     int                 nVtx = 0;
 
     IgV3d p = ci->get<IgV3d>(POS);
@@ -886,7 +1151,7 @@ void make3DTracks(IgCollection **collections,
     }
 
     tvertices->vertex.setNum(nVtx);
-    tpoints->markerIndex = kind;
+    tpoints->markerIndex = style->markerType;
     tpoints->vertexProperty = tvertices;
     tpoints->numPoints.setValue(nVtx);
 
@@ -895,7 +1160,7 @@ void make3DTracks(IgCollection **collections,
   }
 
   vertices->vertex.setNum(nv);
-  mpoints->markerIndex = SoMarkerSet::CROSS_7_7;
+  mpoints->markerIndex = SoMarkerSet::CROSS_5_5;
   mpoints->vertexProperty.setValue(vertices);
   mpoints->numPoints.setValue(nv);
   vsep->addChild(mpoints);
@@ -903,22 +1168,13 @@ void make3DTracks(IgCollection **collections,
 }
 
 static void
-make3DGsfTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTracks(collections, assocs, sep, SbColor(1.0, 0.9, 0.0), SoMarkerSet::SQUARE_FILLED_5_5);
-}
-
-static void
-make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, 
+                      SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
-  SoMaterial            *mat = new SoMaterial;
   SoMarkerSet           *points = new SoMarkerSet;
   SoVertexProperty      *vertices = new SoVertexProperty;
   int                   n = 0;
-
-  mat->diffuseColor = SbColor(1.0, 0.1, 0.5);
-  sep->addChild(mat);
 
   IgDrawTowerHelper drawTowerHelper(sep);
   IgProperty FRONT_1 = c->getProperty("front_1");
@@ -957,33 +1213,19 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, SoSeparat
   sep->addChild(points);
 }
 
-static void
-make3DRecoTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTracks(collections, assocs, sep, SbColor(0.8, 0.8, 0.5), SoMarkerSet::SQUARE_LINE_5_5);
-}
-
 
 
 // ------------------------------------------------------
 // Draw Calorimeter data
 // ------------------------------------------------------
 
-
-// FIXME LT: can still generalise the following a bit more
-// FIXME LT: make single box 3Dbox draw function with a bunch of switches for
-// FIXME LT: -- render styles: e.g. draw faces, draw outlines, draw both, front face only, etc.
-// FIXME LT: -- shape styles:  e.g. scaled box, scaled tower, stacked tower, no scaling
-// FIXME LT:                   centred box, from centre towards front [/back], etc.
-
-
 static void
-make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, 
+                  SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *c = collections[0];
   float minEnergy     = 0.2;   // GeV  FIXME LT: should get it from some service
   float maxEnergy     = 5.0;  // GeV  Not a cut -- just used to set max box size
-
 
   // FIXME: can compress the following code
 
@@ -995,7 +1237,6 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, SoSeparator *
       maxEnergy = energy;
     }
   }
-
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1030,10 +1271,13 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, SoSeparator *
   }
 }
 
+
 static void
-make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, 
+                   SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *c = collections[0];
+
   float energyScaleFactor = 0.03;  // m/GeV    FIXME LT: should get it from some service
   // float energyScaleFactor = 0.2;  // increase to help PF electrons show up  
   float minEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
@@ -1079,7 +1323,8 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, SoSeparator 
 
 
 static void
-make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
+                        SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *c = collections[0];
   float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
@@ -1124,7 +1369,8 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSepar
 }
 
 static void
-make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
+                               SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
@@ -1168,53 +1414,14 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
 }
 
 static void
-make3DEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, 
+                 SoSeparator *sep, ISpyApplication::Style *style)
 {
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor.setValue(1.0, 0.2, 0.7);
-  sep->addChild(mat);
-  make3DEnergyTowers(collections, assocs, sep);
-}
 
-static void
-make3DEcalPreshowerRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor.setValue(1.0, 0.2, 0.7);
-  sep->addChild(mat);
-  make3DPreshowerTowers(collections, assocs, sep);
-}
+  // FIXME LT: draw ECAL and HCAL parts in different colours
 
-static void
-make3DHcalRecHits(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor = SbColor(0.3, 0.8, 1.0);
-  mat->transparency = 0.0;
-  sep->addChild(mat);
-  make3DEnergyBoxes(collections, assocs, sep);
-}
-
-static void
-make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial    *emat = new SoMaterial;
-  SoMaterial    *hmat = new SoMaterial;
-
-  // FIXME LT: now we draw EM+Had tower first then Em tower after(over the top of first)
-  // FIXME LT: but sides are co-planar so can get funny rendering effects
-  // FIXME LT: fix it by drawing properly 2 stacked towers instead(first Em then Had on top)
-  // FIXME LT: *** think how to render so not confused with rec hits *** e.g. wireframe?
-
-  hmat->diffuseColor.setValue(0.1, 0.5, 0.5);
-  hmat->transparency = 0.5;
-  sep->addChild(hmat);
-  make3DEmPlusHadCaloTowerShapes(collections, assocs, sep);
-
-  emat->diffuseColor.setValue(0.5, 0.1, 0.35);
-  emat->transparency = 0.5;
-  sep->addChild(emat);
-  make3DEmCaloTowerShapes(collections, assocs, sep);
+  make3DEmPlusHadCaloTowerShapes(collections, assocs, sep, style);
+  make3DEmCaloTowerShapes(collections, assocs, sep, style);
 }
 
 static void
@@ -1227,7 +1434,12 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 
   // FIXME LT: this jet drawing is utter crap(both physics and graphics)
 
-  std::cout << "et=" << et << " theta=" << theta << " phi=" << phi << "\n" << std::endl;
+  //  std::cout << "et=" << et << " theta=" << theta << " phi=" << phi << "\n" << std::endl;
+
+  float thrust   = 1.0;
+  float maxZ     = 4.0;               // set these to something more sensible ...
+  float maxR     = 2.0 ;
+  float maxEnergy=100.0 ;
 
   SoSeparator   *body = new SoSeparator;
   SoTransform   *bodyTrans = new SoTransform;
@@ -1235,11 +1447,6 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
   SoSeparator   *hat = new SoSeparator;
   SoTransform   *hatTrans = new SoTransform;
   SoCone        *hatCone = new SoCone;
-
-  float thrust =1.0;
-  float maxZ=      4.0;               // set these to something more sensible ...
-  float maxR=      2.0 ;
-  float maxEnergy=100.0 ;
 
 
   // private data members
@@ -1298,11 +1505,11 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 
 
 static void
-make3DJetShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DJetShapes(IgCollection **collections, IgAssociationSet **, 
+                SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   double                ecut = 5.0;  // FIXME LT: get value from some service
-
   IgProperty ET = c->getProperty("et");
   IgProperty THETA = c->getProperty("theta");
   IgProperty PHI = c->getProperty("phi");
@@ -1329,37 +1536,16 @@ make3DJetShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *se
 
 
 static void
-make3DJets(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial *mat = new SoMaterial;
-  mat->diffuseColor = SbColor(1.0, 1.0, 1.0);
-  mat->transparency = 0.8;
-  sep->addChild(mat);
-  make3DJetShapes(collections, assocs, sep);
-}
-
-
-static void
-make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DMET(IgCollection **collections, IgAssociationSet **, 
+          SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *c = collections[0];
-  SoMaterial            *mat = new SoMaterial;
-  SoDrawStyle           *sty = new SoDrawStyle;
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoIndexedLineSet      *lineSet = new SoIndexedLineSet;
   std::vector<int>      lineIndices;
   std::vector<SbVec3f>  points;
   int                   i = 0;
   float etRadius = 8.0; // radius in x,y, to draw Etmiss vectors --- FIXME: calculate based on scene ???
-
-
-  mat->diffuseColor = SbColor(0.8, 0.8, 0.8);
-  sep->addChild(mat);
-
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth = 3;
-  sty->linePattern = 0x9999;
-  sep->addChild(sty);
 
   SbVec3f direction(0.,0.,0.);
   float etMiss = -999.;
@@ -1397,9 +1583,7 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
     sep->addChild(lineSet);
 
-    // Add text label a bit past the end of the line
-
-    direction *=1.05;
+    direction *=1.05;     // Add text label a bit past the end of the line
 
     SoTranslation *textPos = new SoTranslation;
     textPos->translation = direction;
@@ -1421,6 +1605,7 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
 
 
+
 // ------------------------------------------------------
 // Draw Muon data
 // ------------------------------------------------------
@@ -1429,7 +1614,8 @@ make3DMET(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 
 
 static void
-make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, 
+                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   SoVertexProperty      *vertices = new SoVertexProperty;
@@ -1465,23 +1651,7 @@ make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, SoSeparator
 
 
 static void
-make3DCSCSegments(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial    *mat = new SoMaterial;
-  SoDrawStyle   *sty = new SoDrawStyle;
-
-  mat->diffuseColor = SbColor(0xC0/255., 0, 0);
-  sep->addChild(mat);
-
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth = 3;
-  sep->addChild(sty);
-
-  make3DSegmentShapes(collections, assocs, sep);
-}
-
-static void
-make3DCSCDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep,
+make3DCSCDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep,
                double width, double depth, double rotate)
 {
   IgCollection  *c = collections[0];
@@ -1515,27 +1685,28 @@ make3DCSCDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparato
 }
 
 static void
-make3DCSCWireDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+make3DCSCWireDigis(IgCollection **collections, IgAssociationSet **assocs, 
+                   SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
-  SoMaterial    *mat = new SoMaterial;
-  mat->diffuseColor = SbColor(1.0, 0.2, 1.0);
-  sep->addChild(mat);
-  
+  // FIXME: we should have something similar to the style
+  //        infrastructure also for "cuts", so that the magic numbers here
+  //        can disappear and we can have one make3DCSCDigis.
   make3DCSCDigis(collections,assocs,sep,0.02,0.01,M_PI*0.5);
 }
 
 static void
-make3DCSCStripDigis(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
+make3DCSCStripDigis(IgCollection **collections, IgAssociationSet **assocs, 
+                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
-  SoMaterial    *mat = new SoMaterial;
-  mat->diffuseColor = SbColor(1.0, 1.0, 0.0);
-  sep->addChild(mat);
-
+  // FIXME: we should have something similar to the style
+  //        infrastructure also for "cuts", so that the magic numbers here
+  //        can disappear and we can have one make3DCSCDigis.
   make3DCSCDigis(collections,assocs,sep,0.01,0.01,0.0);
 }
 
 static void
-make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DDTDigis(IgCollection **collections, IgAssociationSet **, 
+              SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   IgProperty            POS = c->getProperty("pos");
@@ -1544,11 +1715,6 @@ make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
   IgProperty            CELL_L = c->getProperty("cellLength");
   IgProperty            CELL_W = c->getProperty("cellWidth");
   IgProperty            CELL_H = c->getProperty("cellHeight");
-  SoMaterial            *mat = new SoMaterial;
-  int                   n = 0;
-
-  mat->diffuseColor = SbColor(0x66/255., 0xff/255., 0x00/255.);
-  sep->addChild(mat);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -1574,7 +1740,8 @@ make3DDTDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
 }
 
 static void
-make3DDTRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DDTRecHits(IgCollection **collections, IgAssociationSet **, 
+                SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *c = collections[0];
   IgProperty            LPLUS_GLOBALPOS = c->getProperty("lPlusGlobalPos");
@@ -1591,15 +1758,7 @@ make3DDTRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *se
   IgProperty            CELL_H = c->getProperty("cellHeight");
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoMarkerSet           *points = new SoMarkerSet;
-  SoDrawStyle           *wdrawStyle = new SoDrawStyle;
   int                   n = 0;
-
-  //  vertices->materialBinding = SoVertexProperty::OVERALL;
-  //  vertices->orderedRGBA = 0x0000FFFF;
-
-  wdrawStyle->style = SoDrawStyle::LINES;
-  wdrawStyle->lineWidth.setValue(2.0);
-  sep->addChild(wdrawStyle);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -1668,45 +1827,17 @@ make3DDTRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *se
   sep->addChild(points);
 }
 
-
 static void
-make3DDTRecSegment4D(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  SoMaterial    *mat = new SoMaterial;
-  SoDrawStyle   *sty = new SoDrawStyle;
-
-  mat->diffuseColor = SbColor(0xC0/255., 0x00/255., 0x00/255.);
-  sep->addChild(mat);
-
-  sty->style = SoDrawStyle::LINES;
-  sty->lineWidth.setValue(3);
-  sep->addChild(sty);
-
-  make3DSegmentShapes(collections, assocs, sep);
-}
-
-
-
-static void
-make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *sep)
+make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, 
+                 SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
 
   IgCollection          *c = collections[0];
-
-  SoDrawStyle           *drawStyle  = new SoDrawStyle;
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoIndexedLineSet      *lineSet = new SoIndexedLineSet;
   std::vector<int>      lineIndices;
   std::vector<SbVec3f>  points;
   int                   i = 0;
-
-  SoMaterial            *mat = new SoMaterial;
-
-  mat->diffuseColor = SbColor(0xff/255., 0xff/255., 0x00/255.);
-  sep->addChild(mat);
-  drawStyle->lineWidth   = 3;
-  drawStyle->linePattern = 0xffff;    // 0xffff = solid
-  sep->addChild(drawStyle);
 
   IgProperty U1 = c->getProperty("u1");
   IgProperty U2 = c->getProperty("u2");
@@ -1754,25 +1885,17 @@ make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, SoSeparator *s
 }
 
 static void 
-make3DTrackPoints(IgCollection **collections, 
-                  IgAssociationSet **assocs, 
-                  SoSeparator *sep, 
-                  SbColor colour,
-                  double lineWidth)
+make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs, 
+                  SoSeparator *sep, ISpyApplication::Style * /* style */)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *points = collections[1];
   IgAssociationSet      *assoc = assocs[0];
-  SoMaterial            *mat = new SoMaterial;
-
-  mat->diffuseColor = colour;
-  sep->addChild(mat);
 
   IgProperty POS = points->getProperty("pos");
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
     IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
-    track->lineWidth = lineWidth;
 
     int n = 0;
 
@@ -1790,45 +1913,6 @@ make3DTrackPoints(IgCollection **collections,
     sep->addChild(track);
   }
 }
-
-static void
-make3DMuons(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), 3.0);
-}
-
-
-
-static void 
-make3DPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTrackPoints(collections, assocs, sep, SbColor(0.8, 0.8, 0.5), 3.0);
-}
-
-static void
-make3DGsfPFRecTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTrackPoints(collections, assocs, sep, SbColor(0.0, 0.9, 1.0), 3.0);
-}
-
-static void
-make3DPFBrems(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 1.0, 0.0), 3.0);
-}
-
-static void
-make3DMuonTrackPoints(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTrackPoints(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), 3.0);
-}
-
-static void 
-make3DMuonTracks(IgCollection **collections, IgAssociationSet **assocs, SoSeparator *sep)
-{
-  make3DTracks(collections, assocs, sep, SbColor(1.0, 0.2, 0.0), SoMarkerSet::SQUARE_LINE_5_5);
-}
-
 
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
@@ -1874,6 +1958,15 @@ ISpyApplication::ISpyApplication(void)
     defaultSettings();
 
 
+  // Create the default style reading the specification from a QT resource.
+  style("*", "");
+  style("Background","diffuse-color: rbg(1.,0,0);");
+  QFile cssFile(":/css/default-style.css");
+  bool ok = cssFile.open(QIODevice::ReadOnly | QIODevice::Text);
+  ASSERT(ok && "Default style not compiled as resource.");
+  QByteArray cssData = cssFile.readAll();
+  ASSERT(cssData.size());
+  parseCss(cssData.data());
 
 // ///////////////////////////////////////////////////////////////////////////////
 // ///////////////////////////////////////////////////////////////////////////////
@@ -2016,56 +2109,56 @@ ISpyApplication::ISpyApplication(void)
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
-             make3DRecoTracks,
+             make3DTracks,
              Qt::Checked);
 
   collection("Tracking/Tracks (GSF)",
              "GsfTracks_V1:pt:pos:dir",
              "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfTrackExtras_V1",
-             make3DGsfTracks,
+             make3DTracks,
              Qt::Unchecked);
   
   collection("Tracking/Digis (Si Pixels)",
              "PixelDigis_V1:pos",
              0,
              0,
-             make3DPixelDigis,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Digis (Si Strips)",
              "SiStripDigis_V1:pos",
              0,
              0,
-             make3DSiStripDigis,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Clusters (Si Pixels)",
              "SiPixelClusters_V1:pos",
              0,
              0,
-             make3DSiPixelClusters,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Clusters (Si Strips)",
              "SiStripClusters_V1:pos",
              0,
              0,
-             make3DSiStripClusters,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Rec. Hits (Si Pixels)",
              "SiPixelRecHits_V1:pos",
              0,
              0,
-             make3DSiPixelRecHits,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Rec. Hits (Tracking)",
              "TrackingRecHits_V1:pos",
              0,
              0,
-             make3DTrackingRecHits,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -2074,28 +2167,28 @@ ISpyApplication::ISpyApplication(void)
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("ECAL/Barrel Rec. Hits",
              "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("ECAL/Endcap Rec. Hits",
              "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
   
   collection("ECAL/Preshower Rec. Hits",
              "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalPreshowerRecHits,
+             make3DPreshowerTowers,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2104,28 +2197,28 @@ ISpyApplication::ISpyApplication(void)
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Endcap Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Forward Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyBoxes,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2149,14 +2242,14 @@ ISpyApplication::ISpyApplication(void)
              "DTRecSegment4D_V1:pos_1:pos_2",
              0,
              0,
-             make3DDTRecSegment4D,
+             make3DSegmentShapes,
              Qt::Checked);
 
   collection("Muon/CSC Segments",
              "CSCSegments_V1:pos_1:pos_2",
              0,
              0,
-             make3DCSCSegments,
+             make3DSegmentShapes,
              Qt::Checked);
 
   collection("Muon/CSC Wire Digis",
@@ -2184,35 +2277,35 @@ ISpyApplication::ISpyApplication(void)
              "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
   collection("Muon/Tracker Muons",
              "TrackerMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
   collection("Muon/Stand-alone Muons",
              "StandaloneMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonStandalonePoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
   collection("Muon/Stand-alone Muons",
              "StandaloneMuons_V2:pt:charge:pos:phi:eta",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "MuonTrackExtras_V1",
-             make3DMuonTracks,
+             make3DTracks,
              Qt::Checked);
   
   collection("Muon/Global Muons",
              "GlobalMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonGlobalPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2221,35 +2314,35 @@ ISpyApplication::ISpyApplication(void)
              "PFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "PFRecTrackTrajectoryPoints_V1",
-             make3DPFRecTracks,
+             make3DTrackPoints,
              Qt::Unchecked);
 
   collection("Particle Flow/GSF Tracks",
              "GsfPFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DGsfPFRecTracks,
+             make3DTrackPoints,
              Qt::Unchecked);
 
   collection("Particle Flow/ECAL Barrel Rec. Hits",
              "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Unchecked);
 
   collection("Particle Flow/ECAL Endcap Rec. Hits",
              "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Unchecked);
 
   collection("Particle Flow/Bremsstrahlung candidate tangents",
              "PFBrems_V1:deltaP:sigmadeltaP",
              "PFTrajectoryPoints_V1:pos",
              "PFBremTrajectoryPoints_V1",
-             make3DPFBrems,
+             make3DTrackPoints,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -2265,7 +2358,7 @@ ISpyApplication::ISpyApplication(void)
              "Jets_V1:et:theta:phi",
              0,
              0,
-             make3DJets,
+             make3DJetShapes,
              Qt::Checked);
 
   collection("Physics Objects/Missing Et",
@@ -2543,56 +2636,56 @@ ISpyApplication::ISpyApplication(void)
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
-             make3DRecoTracks,
+             make3DTracks,
              Qt::Checked);
 
   collection("Tracking/Tracks (GSF)",
              "GsfTracks_V1:pt:pos:dir",
              "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfTrackExtras_V1",
-             make3DGsfTracks,
+             make3DTracks,
              Qt::Unchecked);
   
   collection("Tracking/Digis (Si Pixels)",
              "PixelDigis_V1:pos",
              0,
              0,
-             make3DPixelDigis,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Digis (Si Strips)",
              "SiStripDigis_V1:pos",
              0,
              0,
-             make3DSiStripDigis,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Clusters (Si Pixels)",
              "SiPixelClusters_V1:pos",
              0,
              0,
-             make3DSiPixelClusters,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Clusters (Si Strips)",
              "SiStripClusters_V1:pos",
              0,
              0,
-             make3DSiStripClusters,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Rec. Hits (Si Pixels)",
              "SiPixelRecHits_V1:pos",
              0,
              0,
-             make3DSiPixelRecHits,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Rec. Hits (Tracking)",
              "TrackingRecHits_V1:pos",
              0,
              0,
-             make3DTrackingRecHits,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -2601,14 +2694,14 @@ ISpyApplication::ISpyApplication(void)
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("ECAL/Barrel Rec. Hits",
              "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2617,14 +2710,14 @@ ISpyApplication::ISpyApplication(void)
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2648,14 +2741,14 @@ ISpyApplication::ISpyApplication(void)
              "DTRecSegment4D_V1:pos_1:pos_2",
              0,
              0,
-             make3DDTRecSegment4D,
+             make3DSegmentShapes,
              Qt::Checked);
 
   collection("Muon/CSC Segments",
              "CSCSegments_V1:pos_1:pos_2",
              0,
              0,
-             make3DCSCSegments,
+             make3DSegmentShapes,
              Qt::Checked);
 
   collection("Muon/RPC Rec. Hits",
@@ -2669,35 +2762,35 @@ ISpyApplication::ISpyApplication(void)
              "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
   
   collection("Muon/Tracker Muons",
              "TrackerMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
   collection("Muon/Stand-alone Muons",
              "StandaloneMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonStandalonePoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
   
   collection("Muon/Stand-alone Muons",
              "StandaloneMuons_V2:pt:charge:pos:phi:eta",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "MuonTrackExtras_V1",
-             make3DMuonTracks,
+             make3DTracks,
              Qt::Checked);
 
   collection("Muon/Global Muons",
              "GlobalMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonGlobalPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2706,28 +2799,28 @@ ISpyApplication::ISpyApplication(void)
              "PFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "PFRecTrackTrajectoryPoints_V1",
-             make3DPFRecTracks,
+             make3DTrackPoints,
              Qt::Unchecked);
 
   collection("Particle Flow/GSF Tracks",
              "GsfPFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DGsfPFRecTracks,
+             make3DTrackPoints,
              Qt::Unchecked);
 
   collection("Particle Flow/ECAL barrel Rec. Hits",
              "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Unchecked);
 
   collection("Particle Flow/Bremsstrahlung candidate tangents",
              "PFBrems_V1:deltaP:sigmadeltaP",
              "PFTrajectoryPoints_V1:pos",
              "PFBremTrajectoryPoints_V1",
-             make3DPFBrems,
+             make3DTrackPoints,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -2743,7 +2836,7 @@ ISpyApplication::ISpyApplication(void)
              "Jets_V1:et:theta:phi",
              0,
              0,
-             make3DJets,
+             make3DJetShapes,
              Qt::Checked);
 
   collection("Physics Objects/Missing Et",
@@ -2902,56 +2995,56 @@ ISpyApplication::ISpyApplication(void)
              "Tracks_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "TrackExtras_V1",
-             make3DRecoTracks,
+             make3DTracks,
              Qt::Checked);
 
   collection("Tracking/Tracks (GSF)",
              "GsfTracks_V1:pt:pos:dir",
              "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfTrackExtras_V1",
-             make3DGsfTracks,
+             make3DTracks,
              Qt::Unchecked);
   
   collection("Tracking/Digis (Si Pixels)",
              "PixelDigis_V1:pos",
              0,
              0,
-             make3DPixelDigis,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Digis (Si Strips)",
              "SiStripDigis_V1:pos",
              0,
              0,
-             make3DSiStripDigis,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Clusters (Si Pixels)",
              "SiPixelClusters_V1:pos",
              0,
              0,
-             make3DSiPixelClusters,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Clusters (Si Strips)",
              "SiStripClusters_V1:pos",
              0,
              0,
-             make3DSiStripClusters,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Rec. Hits (Si Pixels)",
              "SiPixelRecHits_V1:pos",
              0,
              0,
-             make3DSiPixelRecHits,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
   collection("Tracking/Rec. Hits (Tracking)",
              "TrackingRecHits_V1:pos",
              0,
              0,
-             make3DTrackingRecHits,
+             make3DPointSetShapes,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -2960,28 +3053,28 @@ ISpyApplication::ISpyApplication(void)
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("ECAL/Barrel Rec. Hits",
              "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("ECAL/Endcap Rec. Hits",
              "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
   
   collection("ECAL/Preshower Rec. Hits",
              "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalPreshowerRecHits,
+             make3DPreshowerTowers,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2990,28 +3083,28 @@ ISpyApplication::ISpyApplication(void)
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("HCAL/Endcap Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("HCAL/Forward Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DHcalRecHits,
+             make3DEnergyTowers,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -3035,14 +3128,14 @@ ISpyApplication::ISpyApplication(void)
              "DTRecSegment4D_V1:pos_1:pos_2",
              0,
              0,
-             make3DDTRecSegment4D,
+             make3DSegmentShapes,
              Qt::Checked);
 
   collection("Muon/CSC Segments",
              "CSCSegments_V1:pos_1:pos_2",
              0,
              0,
-             make3DCSCSegments,
+             make3DSegmentShapes,
              Qt::Checked);
 
   collection("Muon/CSC Wire Digis",
@@ -3070,35 +3163,35 @@ ISpyApplication::ISpyApplication(void)
              "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
   
   collection("Muon/Tracker Muons",
              "TrackerMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonTrackerPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
   collection("Muon/Stand-alone Muons",
              "StandaloneMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonStandalonePoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
   
   collection("Muon/Stand-alone Muons",
              "StandaloneMuons_V2:pt:charge:pos:phi:eta",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "MuonTrackExtras_V1",
-             make3DMuonTracks,
+             make3DTracks,
              Qt::Checked);
 
   collection("Muon/Global Muons",
              "GlobalMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonGlobalPoints_V1",
-             make3DMuonTrackPoints,
+             make3DTrackPoints,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -3107,35 +3200,35 @@ ISpyApplication::ISpyApplication(void)
              "PFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "PFRecTrackTrajectoryPoints_V1",
-             make3DPFRecTracks,
+             make3DTrackPoints,
              Qt::Unchecked);
 
   collection("Particle Flow/GSF Tracks",
              "GsfPFRecTracks_V1:pt:charge:phi:eta",
              "PFTrajectoryPoints_V1:pos",
              "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DGsfPFRecTracks,
+             make3DTrackPoints,
              Qt::Unchecked);
 
   collection("Particle Flow/ECAL Barrel Rec. Hits",
              "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Unchecked);
 
   collection("Particle Flow/ECAL Endcap Rec. Hits",
              "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEcalRecHits,
+             make3DEnergyTowers,
              Qt::Unchecked);
 
   collection("Particle Flow/Bremsstrahlung candidate tangents",
              "PFBrems_V1:deltaP:sigmadeltaP",
              "PFTrajectoryPoints_V1:pos",
              "PFBremTrajectoryPoints_V1",
-             make3DPFBrems,
+             make3DTrackPoints,
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
@@ -3152,7 +3245,7 @@ ISpyApplication::ISpyApplication(void)
              "Jets_V1:et:theta:phi",
              0,
              0,
-             make3DJets,
+             make3DJetShapes,
              Qt::Unchecked);
 
   collection("Physics Objects/Missing Et",
@@ -4224,9 +4317,82 @@ ISpyApplication::displayCollection(Collection &c)
     if (! c.sep->getNumChildren()
         && c.data[0]->size() > 0
         && c.spec->make3D)
-      (*c.spec->make3D)(c.data, &c.assoc, c.sep);
+    {
+      Style *style = &(m_styles[c.style]);
+      ASSERT(style);
+      c.sep->addChild(style->material);
+      c.sep->addChild(style->drawStyle);
+      c.sep->addChild(style->font);
+      (*c.spec->make3D)(c.data, &c.assoc, c.sep, style);
+    }
     c.node->whichChild = SO_SWITCH_ALL;
   }
+}
+
+/** Find the matching style, given a string.
+
+    This looks up backward the list of all defined style, looking for a style 
+    that matches @a pattern.
+    
+    
+*/
+size_t
+ISpyApplication::findStyle(const char *pattern)
+{
+  size_t reverse = m_styleSpecs.size();
+
+  for (size_t ssi = 0, sse = m_styleSpecs.size(); ssi != sse; ++ssi)
+  {
+    size_t i = reverse - ssi - 1;
+    StyleSpec &spec = m_styleSpecs[i];
+    
+    // Ignore if the current spec does not match the collection name.
+    // FIXME: match on the view name as well!!
+    // FIXME: match on selection and other possible attributes as well!!
+    
+    if (spec.collectionName != "*" && spec.collectionName != pattern)
+      continue;
+    
+    // If this StyleSpec was already used, we point to the Style which 
+    // actually uses it.
+    //
+    // If it was not we: 
+    // * create a new Style,
+    // * use the StyleSpec to fill it and associate it to the StyleSpec,
+    //   just in case we wanted to revert to defaults.
+    StylesMap::iterator smi = m_stylesMap.find(i);
+    if (smi != m_stylesMap.end())
+      return smi->second;
+      
+    size_t styleIndex = m_styles.size();
+    m_styles.resize(styleIndex + 1);
+    Style &style = m_styles.back();
+    m_stylesMap.insert(std::make_pair(i, styleIndex));
+    style.spec = i;
+    style.material = new SoMaterial;
+    style.material->diffuseColor = spec.diffuseColor;
+    style.material->transparency = spec.transparency;
+    style.drawStyle = new SoDrawStyle;
+    style.drawStyle->style = spec.drawStyle;
+    style.drawStyle->lineWidth = spec.lineWidth;
+    style.drawStyle->linePattern = spec.linePattern;
+    style.font = new SoFont;
+    style.font->size = spec.fontSize;
+    style.font->name = spec.fontName.c_str();
+    style.markerType = getMarkerType(spec.markerStyle, spec.markerSize, 
+                                     spec.markerShape);
+    // Style nodes do not get deleted  by dropping a given
+    // collection representation.
+    style.material->ref();
+    style.drawStyle->ref();
+    style.font->ref();
+
+    // First matching style interrupts the traversal.
+    return styleIndex;
+  }
+  qDebug() << "Could not find any matching style for " << pattern;
+  ASSERT(false && "Could not find any matching style ");
+  return 0;
 }
 
 /** Update the collection list in the tree view.
@@ -4244,6 +4410,12 @@ ISpyApplication::displayCollection(Collection &c)
 void
 ISpyApplication::updateCollections(void)
 {
+  // Change the background to match the current style.
+  // This will allow to have different backgrounds for different
+  // events, if required.
+  SbColor bgColor = m_styles[findStyle("Background")].material->diffuseColor[0];
+  m_viewer->setBackgroundColor(bgColor);
+
   // Remember currently selected collection.
   QSettings settings;
   std::string selectedCollection;
@@ -4416,6 +4588,8 @@ ISpyApplication::updateCollections(void)
       
       // Fill in the collection item. This needs to be in place before
       // we modify the tree as our slots on tree notifications use it.
+      // We also determine at this point which style needs to be used by 
+      // to render the collection.
       m_collections[i].spec = spec;
       m_collections[i].data[0] = coll;
       m_collections[i].data[1] = other;
@@ -4425,6 +4599,7 @@ ISpyApplication::updateCollections(void)
       m_collections[i].sep = sep;
       m_collections[i].collectionName = collectionName;
       m_collections[i].groupIndex = groupIdx;
+      m_collections[i].style = findStyle(collectionName.c_str());
     }
   }  
   

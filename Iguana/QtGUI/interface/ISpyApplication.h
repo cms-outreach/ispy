@@ -11,6 +11,8 @@
 # include <QHeaderView>
 # include <vector>
 # include <map>
+# include <Inventor/nodes/SoMarkerSet.h>
+# include <Inventor/nodes/SoDrawStyle.h>
 
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 
@@ -40,6 +42,9 @@ class QNetworkReply;
 class QProgressDialog;
 class QSortFilterProxyModel;
 class SoCamera;
+class SoMaterial;
+class SoDrawStyle;
+class SoFont;
 
 namespace lat
 {
@@ -55,6 +60,16 @@ class ISpyApplication : public QObject
 {
   Q_OBJECT
 public:
+
+  struct Style
+  {
+    size_t                      spec;
+    SoMaterial                  *material;
+    SoDrawStyle                 *drawStyle;
+    SoFont                      *font;
+    SoMarkerSet::MarkerType     markerType;
+  };
+
   ISpyApplication(void);
   ~ISpyApplication(void);
 
@@ -108,7 +123,8 @@ private slots:
   void                  restartPlay(void);
 
 private:
-  typedef void(*Make3D)(IgCollection **, IgAssociationSet **, SoSeparator *);
+  typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
+                        SoSeparator *, Style *);
 
   struct CollectionSpec
   {
@@ -152,6 +168,50 @@ private:
     ViewSpec                    *spec;
     Camera                      *camera;
   };
+
+  enum ISPY_DRAW_STYLE {
+    ISPY_SOLID_DRAW_STYLE = SoDrawStyle::FILLED,
+    ISPY_LINES_DRAW_STYLE = SoDrawStyle::LINES,
+    ISPY_POINTS_DRAW_STYLE = SoDrawStyle::POINTS
+  };
+
+  static const size_t ISPY_MARKER_STYLES = 2;
+
+  enum ISPY_MARKER_STYLE {
+    ISPY_OUTLINE_MARKER_STYLE = 0,
+    ISPY_FILLED_MARKER_STYLE  = 1
+  };
+
+  static const size_t ISPY_MARKER_SIZES  = 3;
+
+  enum ISPY_MARKER_SIZE {
+    ISPY_NORMAL_MARKER_SIZE = 0,
+    ISPY_BIG_MARKER_SIZE    = 1 * ISPY_MARKER_STYLES,
+    ISPY_HUGE_MARKER_SIZE   = 2 * ISPY_MARKER_STYLES,
+  };
+
+  enum ISPY_MARKER_SHAPE {
+    ISPY_SQUARE_MARKER_SHAPE = 0 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES),
+    ISPY_CROSS_MARKER_SHAPE  = 1 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES),
+    ISPY_PLUS_MARKER_SHAPE   = 2 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES),
+    ISPY_CIRCLE_MARKER_SHAPE = 3 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES)
+  };
+
+  struct StyleSpec
+  {
+    std::string                 viewName;
+    std::string                 collectionName;
+    float                       diffuseColor[3];
+    float                       transparency;
+    float                       lineWidth;
+    unsigned int                linePattern;
+    float                       fontSize;
+    std::string                 fontName;
+    ISPY_DRAW_STYLE             drawStyle;
+    ISPY_MARKER_SHAPE           markerShape;
+    ISPY_MARKER_SIZE            markerSize;
+    ISPY_MARKER_STYLE           markerStyle;
+  };
   
   struct Collection
   {
@@ -163,6 +223,7 @@ private:
     SoSeparator                 *sep;
     std::string                 collectionName;
     int                         groupIndex;
+    size_t                      style;
   };
 
   struct Group
@@ -240,7 +301,14 @@ private:
   void                  simpleOpen(const QString &fileName);
   void                  setupActions(void);
   void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
-  
+  // Helper methods to handle rendering styles.
+  SoMarkerSet::MarkerType   getMarkerType(enum ISPY_MARKER_STYLE style,
+                                          enum ISPY_MARKER_SIZE size,
+                                          enum ISPY_MARKER_SHAPE shape);
+  void                      style(const char *rule, const char *css);
+  void                      parseCss(const char *css);
+  size_t                    findStyle(const char *pattern);
+
   int                   m_argc;
   char                  **m_argv;
   char                  *m_appname;
@@ -285,6 +353,19 @@ private:
   QFont                 *m_itemFont;
   QActionGroup          *m_viewPlaneGroup;
   QActionGroup          *m_viewModeGroup;
+
+  // Data concerning rendering style handling.
+  typedef std::vector<StyleSpec> StyleSpecs;
+  typedef std::vector<Style>     Styles;
+  typedef std::map<size_t, size_t> StylesMap;
+
+  // Storage for all the available styles.
+  StyleSpecs            m_styleSpecs;
+  // Actually active styles.
+  Styles                m_styles;
+  // Mapping between a StyleSpec and an active style, so that we avoid
+  // creating the latter more than once.
+  StylesMap             m_stylesMap;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

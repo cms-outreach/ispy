@@ -1,0 +1,241 @@
+/*  Lucas preferred style.
+    
+    Colour table at:
+    
+    http://www.december.com/html/spec/colorsafecodes.html
+
+ */
+
+
+// Default style.
+* {
+  diffuse-color: rgb(0.7, 0.7, 0.7);
+  transparency: 0.0;
+  line-width: 1.0;
+  line-pattern: 0xffff;
+  font-size: 12;
+  font-name: Helvetica;
+  draw-style: solid;
+  marker-shape: square;
+  marker-size: normal;
+  marker-style: filled;
+}
+
+Background {
+  diffuse-color: rgb(0.1, 0.0, 0.3);
+}
+
+// Event information.
+Event_V1 {
+  diffuse-color: rgb(1.0, 1.0, 1.0); 
+  font-size: 14.0; 
+}
+
+L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
+TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
+Products_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
+Errors_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
+
+// Default geometry style.
+Tracker3D_V1 { diffuse-color: rgb(0.7, 0.0, 0.0);}
+TrackerRPhi_V1 { diffuse-color: rgb(0.7, 0.0, 0.0);}
+TrackerRZ_V1 {diffuse-color: rgb(0.7, 0.0, 0.0);}
+EcalBarrel3D_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);}
+EcalEndcap3D_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);} 
+EcalBarrelRPhi_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);}
+EcalBarrelRZ_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);}
+EcalEndcapRZ_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);}
+EcalPreshower3D_V1 {diffuse-color: rgb(0.5, 0.5, 0.5);}
+EcalPreshowerRZ_V1 {diffuse-color: rgb(0.5, 0.5, 0.5);}
+HcalBarrel3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);}
+HcalEndcap3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);}
+HcalBarrelRPhi_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);}
+HcalBarrelRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);}
+HcalEndcapRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);}
+HcalOuter3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);}
+HcalOuterRPhi_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);}
+HcalOuterRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);}
+HcalForward3D_V1 {diffuse-color: rgb(0.5, 0.5, 0.9);}
+HcalForwardRZ_V1 {diffuse-color: rgb(0.5, 0.5, 0.9);}
+DTs3D_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);}
+DTsRPhi_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);}
+DTsRZ_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);}
+CSC3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);}
+CSCRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);}
+RPC3D_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);}
+RPCRPhi_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);}
+RPCRZ_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);}
+CaloLego_V1 {diffuse-color: rgb(1.0, 1.0, 1.0);}
+
+// Default event objects style.
+TriggerObjects_V1
+{
+  diffuse-color: rgb(1.0, 0.8, 1.0);
+  font-size: 14;
+  font-name: Helvetica;
+  line-pattern: 0x0fff;
+}
+
+Tracks_V1
+{
+  draw-style: lines; line-width: 2;
+  diffuse-color: rgb(1.0, 0.8, 0.0);
+  marker-style: outline;
+}
+
+PixelDigis_V1
+{
+  diffuse-color: rgb(1.0, 0.6, 0.0);
+  marker-shape: plus;
+}
+
+SiPixelClusters_V1
+{
+  diffuse-color: rgb(1.0, 0.4, 0.0);
+  marker-shape: cross;
+}
+
+SiPixelRecHits_V1
+{
+  diffuse-color: rgb(1.0, 0.2, 0.0);
+  marker-style: outline;
+}
+
+SiStripClusters_V1
+{
+  diffuse-color: rgb(0.8, 0.2, 0.0);
+  marker-shape: cross;
+}
+
+SiStripDigis_V1
+{ 
+  diffuse-color: rgb(0.8, 0.1, 0.0);
+  marker-shape: plus;
+}
+
+TrackingRecHits_V1
+{
+  diffuse-color: rgb(0.8, 0.0, 0.0);
+  marker-shape: cross;
+}
+
+GsfTracks_V1
+{
+  draw-style: lines; 
+  line-width: 2;
+  diffuse-color: rgb(1.0, 0.8, 0.4);
+}
+
+EcalRecHits_V1 { diffuse-color: rgb(1.0, 0.2, 0.0);}
+EBRecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0);}
+EERecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0);}
+ESRecHits_V1 {diffuse-color: rgb(1.0, 0.6, 0.0);}
+HBRecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0);}
+HERecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0);}
+HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0);}
+HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0);}
+DTDigis_V1 {
+  diffuse-color: rgb(0.4, 1.0, 0.4);
+  transparency: 0.2;
+}
+
+DTRecHits_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(0.0, 0.8, 0.0);
+}
+
+DTRecSegment4D_V1 { 
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(0.8, 1.0, 0.8);
+}
+
+CSCSegments_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.8, 1.0);
+}
+
+CSCWireDigis_V1 {diffuse-color: rgb(1.0, 0.6, 1.0);}
+CSCStripDigis_V1 {diffuse-color: rgb(1.0, 0.2, 1.0);}
+
+RPCRecHits_V1 {
+  diffuse-color: rgb(1.0, 1.0, 0.2);
+  line-width: 3;
+}
+
+Muons_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+}
+
+TrackerMuons_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+}
+
+StandaloneMuons_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+}
+
+StandaloneMuons_V2 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+  marker-style: outline;
+}
+
+GlobalMuons_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+}
+
+PFRecTracks_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(0.8, 0.8, 0.5);
+}
+
+GsfPFRecTracks_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(0.0, 0.9, 1.0);
+}
+
+PFEBRecHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}
+PFEERecHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}
+
+PFBrems_V1 { 
+  draw-style: lines; 
+  diffuse-color: rgb(0.5, 1.0, 0.0);
+  line-pattern: 0x9999; 
+  line-width: 1;
+}
+
+CaloTowers_V1 {
+  transparency: 0.75;
+  diffuse-color: rgb(0.1, 1.0, 0.2);
+}
+
+Jets_V1 {
+  transparency: 0.6; 
+  diffuse-color: rgb(1.0, 1.0, 1.0);
+  marker-shape: cross;
+}
+
+METs_V1 { 
+  diffuse-color: rgb(1.0, 1.0, 0.5); 
+  draw-style: lines;
+  line-width: 3;
+  line-pattern: 0x0fff;
+  font-size: 14.0;
+}
+
+PSimHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}
+TrackingParticlePSimHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}

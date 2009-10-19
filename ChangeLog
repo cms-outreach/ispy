@@ -1,5 +1,11 @@
 2009-10-19  Giulio Eulisse <giulio.eulisse@cern.ch>
 
+	* ISpyApplication.cc, Iguana/QtGUI/interface/default-style.css,
+	  ISpyApplication.h, ispy.qrc, ISpy3DView.cc: rendering style
+	  of various collection is now managed in a css like
+	  file which contains all the materials and draw properties.
+	  The default style was actually prepared by Lucas.
+
 	* ispy.pro: Creates resources using qmake. No need anymore 
 	  for generating `qrc_*.cc` resource files by hand.
 

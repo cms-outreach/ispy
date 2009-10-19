@@ -1,4 +1,7 @@
 <RCC>
+  <qresource prefix="css">
+    <file>default-style.css</file>
+  </qresource>
   <qresource prefix="images" >
     <file>Play1Normal.png</file>
     <file>PausePressed.png</file>
