@@ -2,6 +2,8 @@
 
 	* ISpyApplication.cc: GSF electrons support.
 
+	* ISpyApplication.cc: Move muons to physics objects.
+
 2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyMainWindow.h, ISpyRestartPlayDialog.h ISpySplashScreen.h          

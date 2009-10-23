@@ -2273,41 +2273,6 @@ ISpyApplication::ISpyApplication(void)
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
 // -------------------------------------------------------------------------------------
 
   collection("Particle Flow/Rec. Tracks",
@@ -2346,6 +2311,41 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
+
+  collection("Physics Objects/Muons (Reco)",
+             "Muons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (Reco)",
+             "TrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (Reco)",
+             "GlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
   
   collection("Physics Objects/Electrons (GSF)",
              "GsfElectrons_V1:pt:pos:dir",
@@ -2765,41 +2765,6 @@ ISpyApplication::ISpyApplication(void)
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
 // -------------------------------------------------------------------------------------
 
   collection("Particle Flow/Rec. Tracks",
@@ -2837,6 +2802,41 @@ ISpyApplication::ISpyApplication(void)
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfElectronExtras_V1",
              make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Muons (Reco)",
+             "Muons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (Reco)",
+             "TrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (Reco)",
+             "GlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DTrackPoints,
              Qt::Checked);
 
   collection("Physics Objects/Calorimeter Energy Towers",
@@ -3173,41 +3173,6 @@ ISpyApplication::ISpyApplication(void)
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
 // -------------------------------------------------------------------------------------
 
   collection("Particle Flow/Rec. Tracks",
@@ -3252,6 +3217,41 @@ ISpyApplication::ISpyApplication(void)
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "GsfElectronExtras_V1",
              make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Muons (Reco)",
+             "Muons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (Reco)",
+             "TrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (Reco)",
+             "GlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DTrackPoints,
              Qt::Checked);
 
   collection("Physics Objects/Calorimeter Energy Towers",
