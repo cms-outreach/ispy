@@ -2347,6 +2347,13 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
   
+  collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -2825,6 +2832,13 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
 
+  collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -3232,7 +3246,13 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
-
+  
+  collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
 
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
