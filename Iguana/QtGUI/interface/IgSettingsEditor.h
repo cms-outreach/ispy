@@ -3,7 +3,7 @@
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
-# include "ui_IgSettingsEditorMainWindow.h"
+# include "ui/ui_IgSettingsEditorMainWindow.h"
 # include <QObject>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>

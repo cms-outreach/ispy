@@ -1,3 +1,11 @@
+2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyMainWindow.h, ISpyRestartPlayDialog.h ISpySplashScreen.h          
+	  IgSettingsEditor.h, ui_ISpyRestartPlayDialog.h, ui_ISpySplashScreen.h
+	  ui_IgMainWindow.h, ui_IgSettingsEditorMainWindow.h ispy.pro                      
+	  ISpySplashScreen.ui, IgMainWindowMDI.ui: qmake now runs uic. No
+	  need anymore for generating the ui_* files by hand.
+
 2009-10-19  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, Iguana/QtGUI/interface/default-style.css,

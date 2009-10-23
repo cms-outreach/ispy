@@ -3,7 +3,7 @@
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
-# include "ui_ISpySplashScreen.h"
+# include "ui/ui_ISpySplashScreen.h"
 # include <QObject>
 # include <QUrl>
 # include <QtNetwork>
