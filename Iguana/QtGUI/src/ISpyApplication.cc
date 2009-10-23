@@ -2894,14 +2894,14 @@ ISpyApplication::ISpyApplication(void)
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -3316,28 +3316,28 @@ ISpyApplication::ISpyApplication(void)
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Endcap Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Forward Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------

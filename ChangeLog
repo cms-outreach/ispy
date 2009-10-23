@@ -1,4 +1,9 @@
-2009-10-23  Thomas McCauley <thomas.mccauley@cern.ch>
+2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: revert to make3DBoxes for HCAL rec hits
+	  in R-PHI and RZ.
+
+2009-10-28  Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc: GSF electrons support.
 
