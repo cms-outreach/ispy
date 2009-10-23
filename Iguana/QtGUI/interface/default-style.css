@@ -237,6 +237,13 @@ PATGlobalMuons_V1 {
   diffuse-color: rgb(1.0, 0.0, 0.0);
 }
 
+PATElectrons_V1
+{
+  draw-style: lines; 
+  line-width:2;
+  diffuse-color: rgb(0.0, 1.0, 0.5);
+}
+
 CaloTowers_V1 {
   transparency: 0.75;
   diffuse-color: rgb(0.1, 1.0, 0.2);

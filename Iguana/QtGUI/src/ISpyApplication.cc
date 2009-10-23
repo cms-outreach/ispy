@@ -2375,6 +2375,13 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackPoints,
              Qt::Checked);
 
+  collection("Physics Objects/Electrons (PAT)",
+             "PATElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -2881,6 +2888,13 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackPoints,
              Qt::Checked);
 
+  collection("Physics Objects/Electrons (PAT)",
+             "PATElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -3315,6 +3329,13 @@ ISpyApplication::ISpyApplication(void)
              "Points_V1:pos",
              "PATMuonGlobalPoints_V1",
              make3DTrackPoints,
+             Qt::Checked);
+  
+  collection("Physics Objects/Electrons (PAT)",
+             "PATElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATElectronExtras_V1",
+             make3DTracks,
              Qt::Checked);
 
   collection("Physics Objects/Calorimeter Energy Towers",

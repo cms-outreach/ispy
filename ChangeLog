@@ -6,6 +6,8 @@
 
 	* ISpyApplication.cc, default-style.css: PAT muons support.
 
+	* ISpyApplication.cc, default-style.css: PAT electrons support.
+
 2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyMainWindow.h, ISpyRestartPlayDialog.h ISpySplashScreen.h          
