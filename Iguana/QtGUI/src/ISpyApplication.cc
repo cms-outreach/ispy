@@ -538,6 +538,76 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **,
   sep->addChild (overlay);
 }
 
+static void
+make3DTriggerObject(IgCollection **collections, IgAssociationSet **,
+                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
+{
+  IgCollection         *c = collections[0];
+  IgProperty           ID = c->getProperty("VID");
+  IgProperty           PT = c->getProperty("pt");
+  IgProperty           ETA = c->getProperty("eta");
+  IgProperty           PHI = c->getProperty("phi");
+
+  SoVertexProperty     *vertices = new SoVertexProperty;
+  SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
+
+  std::vector<int>     lineIndices;
+  std::vector<SbVec3f> points;
+  int                  i = 0;
+
+  SbVec3f direction(0.0,0.0,0.0);
+
+  for ( IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
+  {    
+    int id = ci->get<int>(ID);
+
+    double eta = ci->get<double>(ETA);
+    double phi = ci->get<double>(PHI);
+
+    double pt = ci->get<double>(PT);
+
+    double px = pt*cos(phi);
+    double py = pt*sin(phi);
+    double pz = pt*sinh(eta);
+
+    direction.setValue(px,py,pz);
+    direction.normalize();
+    direction *= 2.0;
+
+    points.push_back(SbVec3f(0.0,0.0,0.0));
+    points.push_back(direction);
+
+    lineIndices.push_back(i);
+    lineIndices.push_back(i+1);
+    lineIndices.push_back(SO_END_LINE_INDEX);
+    i += 2;
+
+    SoSeparator *annSep = new SoSeparator;
+    SoTranslation *textPos = new SoTranslation;
+    textPos->translation = 1.05*direction;
+
+    SoText2 *label = new SoText2;
+    label->justification.setValue(SoText2::CENTER);
+
+    char buf[128];
+    std::string text = std::string("id = ") + (sprintf(buf, "%i", id), buf);
+    label->string = text.c_str();
+
+    annSep->addChild(textPos);
+    annSep->addChild(label);
+    sep->addChild(annSep);
+  }
+  
+  vertices->vertex.setValues(0, points.size(), &points[0]);
+  vertices->vertex.setNum(points.size());
+
+  lineSet->coordIndex.setValues(0, lineIndices.size(), &lineIndices[0]);
+  lineSet->vertexProperty = vertices;
+
+  sep->addChild(lineSet);
+}
+
+
 // ------------------------------------------------------
 // Draw Generic shapes
 // ------------------------------------------------------
@@ -2001,10 +2071,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 
@@ -2601,10 +2671,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 
@@ -2959,10 +3029,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 
@@ -3403,10 +3473,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 

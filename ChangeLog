@@ -7,6 +7,8 @@
 	* ISpyApplication.cc, default-style.css: PAT muons support.
 
 	* ISpyApplication.cc, default-style.css: PAT electrons support.
+	
+	* ISpyApplication.cc: Trigger objects drawing.
 
 2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
 
