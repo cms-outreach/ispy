@@ -2354,6 +2354,27 @@ ISpyApplication::ISpyApplication(void)
              make3DTracks,
              Qt::Checked);
 
+  collection("Physics Objects/Tracker Muons (PAT)",
+             "PATTrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (PAT)",
+             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATMuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (PAT)",
+             "PATGlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -2839,6 +2860,27 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackPoints,
              Qt::Checked);
 
+  collection("Physics Objects/Tracker Muons (PAT)",
+             "PATTrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (PAT)",
+             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATMuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (PAT)",
+             "PATGlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -2922,7 +2964,7 @@ ISpyApplication::ISpyApplication(void)
              0, 
              0,
              Qt::Checked);
-
+  
 // -------------------------------------------------------------------------------------
 
   collection("Detector/Tracker",
@@ -3251,6 +3293,27 @@ ISpyApplication::ISpyApplication(void)
              "GlobalMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
              "MuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (PAT)",
+             "PATTrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (PAT)",
+             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATMuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (PAT)",
+             "PATGlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonGlobalPoints_V1",
              make3DTrackPoints,
              Qt::Checked);
 
