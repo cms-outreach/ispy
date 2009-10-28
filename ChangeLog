@@ -1,4 +1,9 @@
-2009-10-28 Tom McCauley <thomas.mccauley@cern.ch>
+2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpySplashScreen.ui: version number bumped 
+	  to 1.3.1.
+
+2009-10-28  Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc, default-style.css: add support for
 	  CaloClusters and SuperClusters
