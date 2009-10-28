@@ -1483,6 +1483,62 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
   }
 }
 
+static void 
+make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
+                   SoSeparator *sep, ISpyApplication::Style */*style*/)
+{
+  IgCollection       *clusters = collections[0];
+  IgCollection       *fracs    = collections[1];
+  IgAssociationSet   *assoc    = assocs[0];
+  
+  IgDrawTowerHelper drawTowerHelper(sep);
+
+  IgProperty POS = clusters->getProperty("pos");
+  IgProperty E   = clusters->getProperty("energy");
+
+  IgProperty FRONT_1 = fracs->getProperty("front_1");
+  IgProperty FRONT_2 = fracs->getProperty("front_2");
+  IgProperty FRONT_3 = fracs->getProperty("front_3");
+  IgProperty FRONT_4 = fracs->getProperty("front_4");
+ 
+  for (IgCollectionIterator ci = clusters->begin(), ce = clusters->end(); ci != ce; ++ci)
+  {
+    IgV3d pos = ci->get<IgV3d>(POS);
+
+    double energy = ci->get<double>(E);
+    SoText2* label = new SoText2;
+    label->justification.setValue(SoText2::CENTER);
+
+    SoSeparator *annSep = new SoSeparator;
+    SoTranslation *textPos = new SoTranslation;
+    textPos->translation = SbVec3f(pos.x(), pos.y(), pos.z());
+
+    char buf[128];
+    std::string text = (sprintf(buf, "%0.2f", energy), buf) + std::string(" GeV");
+    label->string = text.c_str();
+
+    annSep->addChild(textPos);
+    annSep->addChild(label);
+    sep->addChild(annSep);
+
+    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    {
+      if (ai->first().objectId() == ci->currentRow())
+      { 
+        IgCollectionItem rh(fracs, ai->second().objectId());
+
+        IgV3d f1  = rh.get<IgV3d>(FRONT_1);
+        IgV3d f2  = rh.get<IgV3d>(FRONT_2);
+        IgV3d f3  = rh.get<IgV3d>(FRONT_3);
+        IgV3d f4  = rh.get<IgV3d>(FRONT_4);
+ 
+        drawTowerHelper.addTowerOutline(f1,f2,f3,f4,f1,f2,f3,f4);
+      }
+    }
+  }
+}
+
+
 static void
 make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, 
                  SoSeparator *sep, ISpyApplication::Style *style)
@@ -2326,6 +2382,20 @@ ISpyApplication::ISpyApplication(void)
              make3DPreshowerTowers,
              Qt::Checked);
 
+  collection("ECAL/CaloClusters",
+             "CaloClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "CaloClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
+  collection("ECAL/SuperClusters",
+             "SuperClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "SuperClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
 // -------------------------------------------------------------------------------------
   
   collection("HCAL/Barrel Rec. Hits",
@@ -2888,6 +2958,20 @@ ISpyApplication::ISpyApplication(void)
              make3DEnergyTowers,
              Qt::Checked);
 
+ collection("ECAL/CaloClusters",
+             "CaloClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "CaloClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
+  collection("ECAL/SuperClusters",
+             "SuperClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "SuperClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
 // -------------------------------------------------------------------------------------
 
   collection("HCAL/Barrel Rec. Hits",
@@ -3308,6 +3392,20 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DPreshowerTowers,
+             Qt::Checked);
+
+   collection("ECAL/CaloClusters",
+             "CaloClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "CaloClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
+  collection("ECAL/SuperClusters",
+             "SuperClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "SuperClusterRecHitFractions_V1",
+             make3DCaloClusters,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
