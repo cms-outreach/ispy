@@ -249,6 +249,18 @@ CaloTowers_V1 {
   diffuse-color: rgb(0.1, 1.0, 0.2);
 }
 
+Photons_V1 { 
+  diffuse-color: rgb(1.0, 1.0, 0.0); 
+  draw-style: lines;
+  line-width: 3;
+}
+
+PATPhotons_V1 { 
+  diffuse-color: rgb(1.0, 1.0, 0.0); 
+  draw-style: lines;
+  line-width: 3;
+}
+
 Jets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 1.0);

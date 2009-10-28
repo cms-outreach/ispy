@@ -10,6 +10,9 @@
 	
 	* ISpyApplication.cc: Trigger objects drawing.
 
+	* ISpyApplication.cc, default-style.css: add support for
+	  PAT and Reco Photons.
+
 2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyMainWindow.h, ISpyRestartPlayDialog.h ISpySplashScreen.h          

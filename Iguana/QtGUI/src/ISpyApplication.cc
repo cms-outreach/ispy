@@ -1572,6 +1572,71 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 
 }
 
+static void
+make3DPhoton(IgCollection **collections, IgAssociationSet **,
+             SoSeparator *sep, ISpyApplication::Style * /*style*/)
+{
+  IgCollection         *c = collections[0];
+  IgProperty           E = c->getProperty("energy");
+  IgProperty           ETA = c->getProperty("eta");
+  IgProperty           PHI = c->getProperty("phi");
+  IgProperty           POS = c->getProperty("pos");
+
+  SoVertexProperty     *vertices = new SoVertexProperty;
+  SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
+
+  std::vector<int>     lineIndices;
+  std::vector<SbVec3f> points;
+  int                  i = 0;
+
+  double lEB = 3.0;  // half-length of the EB (m)
+  double rEB = 1.24; // inner radius of the EB (m)
+
+  for ( IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
+  {    
+    double eta = ci->get<double>(ETA);
+    double phi = ci->get<double>(PHI);
+    
+    double px = cos(phi);
+    double py = sin(phi);
+    double pz = sinh(eta);
+
+    IgV3d p1 = ci->get<IgV3d>(POS);
+
+    double t = 0.0;
+
+    double x0 = p1.x();
+    double y0 = p1.y();
+    double z0 = p1.z();
+
+    if ( fabs(eta) > 1.48 ) // i.e. not in the EB, so propagate to ES
+      t = fabs((lEB - z0)/pz); 
+
+    else // propagate to EB
+    {
+      double a = px*px + py*py;
+      double b = 2*x0*px + 2*y0*py;
+      double c = x0*x0 + y0*y0 - rEB*rEB;
+      t = (-b+sqrt(b*b-4*a*c))/2*a;
+    }
+    
+    points.push_back(SbVec3f(x0, y0, z0));
+    points.push_back(SbVec3f(x0+px*t, y0+py*t, z0+pz*t));
+
+    lineIndices.push_back(i);
+    lineIndices.push_back(i+1);
+    lineIndices.push_back(SO_END_LINE_INDEX);
+    i += 2;
+  }
+  
+  vertices->vertex.setValues(0, points.size(), &points[0]);
+  vertices->vertex.setNum(points.size());
+
+  lineSet->coordIndex.setValues(0, lineIndices.size(), &lineIndices[0]);
+  lineSet->vertexProperty = vertices;
+
+  sep->addChild(lineSet);
+}
 
 
 static void
@@ -2452,6 +2517,20 @@ ISpyApplication::ISpyApplication(void)
              make3DTracks,
              Qt::Checked);
 
+  collection("Physics Objects/Photons (Reco)",
+             "Photons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (PAT)",
+             "PATPhotons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -2965,6 +3044,20 @@ ISpyApplication::ISpyApplication(void)
              make3DTracks,
              Qt::Checked);
 
+  collection("Physics Objects/Photons (Reco)",
+             "Photons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (PAT)",
+             "PATPhotons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
@@ -3406,6 +3499,20 @@ ISpyApplication::ISpyApplication(void)
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",
              "PATElectronExtras_V1",
              make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (Reco)",
+             "Photons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (PAT)",
+             "PATPhotons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
              Qt::Checked);
 
   collection("Physics Objects/Calorimeter Energy Towers",
