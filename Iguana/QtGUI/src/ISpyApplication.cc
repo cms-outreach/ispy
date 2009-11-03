@@ -2432,7 +2432,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DDTDigis,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Muon/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
@@ -2605,21 +2605,21 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DCaloTowers,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Jets",
              "Jets_V1:et:theta:phi",
              0,
              0,
              make3DJetShapes,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Missing Et",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
-             Qt::Checked);
+             Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
 
@@ -2994,7 +2994,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DDTDigis,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Muon/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
@@ -3146,21 +3146,21 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DCaloTowers,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Jets",
              "Jets_V1:et:theta:phi",
              0,
              0,
              make3DJetShapes,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Missing Et",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Monte-Carlo/Sim. tracks with hits",
              "TrackingParticles_V1",
@@ -3444,7 +3444,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DDTDigis,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Muon/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
@@ -3617,7 +3617,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DCaloTowers,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Jets",
              "Jets_V1:et:theta:phi",
