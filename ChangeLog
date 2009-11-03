@@ -8,6 +8,9 @@
 	* ISpyApplication.cc: do not draw calotowers since it does 
 	  not take hadronic contribution into account.
 
+	* IgDrawTowerHelper.cc: make colors of Ecal, Hcal rec hits
+	  the same as the colors in 3D views.
+
 2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, ISpySplashScreen.ui: version number bumped 

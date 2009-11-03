@@ -1052,7 +1052,6 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
     double energy = ci->get<double>("energy");
     double eta  = ci->get<double>("eta");
     double et = energy * sin(2*atan(exp(-eta)));
-    // double emFraction = 0.0;
  
     if (et > minimumEnergy)
     {

@@ -239,20 +239,6 @@ void
 IgDrawTowerHelper::addLegoTower(SbVec2f position, float energy, float emFraction,
 				float scaleFactor, float etaWidth, float phiWidth) 
 {
-  SoMFUInt32 orderedRGBA;	//< materials
-  orderedRGBA.set1Value (0, SbColor (0.622, 0.0, 0.622).getPackedValue ());
-  orderedRGBA.set1Value (1, orderedRGBA [0]);
-  orderedRGBA.set1Value (2, orderedRGBA [0]);
-  orderedRGBA.set1Value (3, orderedRGBA [0]);
-  orderedRGBA.set1Value (4, orderedRGBA [0]);
-  orderedRGBA.set1Value (5, orderedRGBA [0]);
-  orderedRGBA.set1Value (6, SbColor (0.0, 0.0, 1.0).getPackedValue ());
-  orderedRGBA.set1Value (7, orderedRGBA [6]);
-  orderedRGBA.set1Value (8, orderedRGBA [6]);
-  orderedRGBA.set1Value (9, orderedRGBA [6]);
-  orderedRGBA.set1Value (10, orderedRGBA [6]);
-  orderedRGBA.set1Value (11, orderedRGBA [6]);
-
   SoShapeHints *shapeHints = new SoShapeHints;
   SoIndexedFaceSet *faces = new SoIndexedFaceSet;
   SoVertexProperty *vtx = new SoVertexProperty;
@@ -291,19 +277,6 @@ IgDrawTowerHelper::addLegoTower(SbVec2f position, float energy, float emFraction
   if (cMax < 0.0)
   {
     shapeHints->vertexOrdering = SoShapeHints::CLOCKWISE;
-
-    orderedRGBA.set1Value (0, orderedRGBA [0] xor 0xffffff00);
-    orderedRGBA.set1Value (1, orderedRGBA [0]);
-    orderedRGBA.set1Value (2, orderedRGBA [0]);
-    orderedRGBA.set1Value (3, orderedRGBA [0]);
-    orderedRGBA.set1Value (4, orderedRGBA [0]);
-    orderedRGBA.set1Value (5, orderedRGBA [0]);
-    orderedRGBA.set1Value (6, orderedRGBA [6] xor 0xffffff00);
-    orderedRGBA.set1Value (7, orderedRGBA [6]);
-    orderedRGBA.set1Value (8, orderedRGBA [6]);
-    orderedRGBA.set1Value (9, orderedRGBA [6]);
-    orderedRGBA.set1Value (10, orderedRGBA [6]);
-    orderedRGBA.set1Value (11, orderedRGBA [6]);
   }
   else
   {
@@ -392,26 +365,10 @@ IgDrawTowerHelper::addLegoTower(SbVec2f position, float energy, float emFraction
     
   vtx->materialBinding = SoMaterialBinding::PER_FACE;
 
-  if (top && bottom)
+  if (top && (! bottom))
   {
-    vtx->vertex.setValues (0, 16, &vertexData [0]);
-    vtx->orderedRGBA = orderedRGBA;
+    vtx->orderedRGBA = SbColor(0.4,0.8,1.0).getPackedValue();
 
-    faces->vertexProperty = vtx;
-    faces->coordIndex.setValues (0, sizeof (faceIndices) / sizeof (int), faceIndices);
-    m_group->addChild(shapeHints);
-    m_group->addChild(faces);
-  }
-  else if (top && (! bottom))
-  {
-    orderedRGBA.set1Value (0, orderedRGBA [6]);
-    orderedRGBA.set1Value (1, orderedRGBA [6]);
-    orderedRGBA.set1Value (2, orderedRGBA [6]);
-    orderedRGBA.set1Value (3, orderedRGBA [6]);
-    orderedRGBA.set1Value (4, orderedRGBA [6]);
-    orderedRGBA.set1Value (5, orderedRGBA [6]);
-    vtx->orderedRGBA = orderedRGBA;
-	
     vtx->vertex.setValues (0, 8, &vertexData [8]);
     faces->vertexProperty = vtx;
     faces->coordIndex.setValues (0, 6 * 5, faceIndices);
@@ -420,13 +377,7 @@ IgDrawTowerHelper::addLegoTower(SbVec2f position, float energy, float emFraction
   }
   else if ((! top) && bottom)
   {
-    orderedRGBA.set1Value (6, orderedRGBA [0]);
-    orderedRGBA.set1Value (7, orderedRGBA [0]);
-    orderedRGBA.set1Value (8, orderedRGBA [0]);
-    orderedRGBA.set1Value (9, orderedRGBA [0]);
-    orderedRGBA.set1Value (10, orderedRGBA [0]);
-    orderedRGBA.set1Value (11, orderedRGBA [0]);
-    vtx->orderedRGBA = orderedRGBA;
+    vtx->orderedRGBA = SbColor(1.0, 0.2, 0.0).getPackedValue();
 
     vtx->vertex.setValues (0, 8, &vertexData [0]);
     faces->vertexProperty = vtx;
