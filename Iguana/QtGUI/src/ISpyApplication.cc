@@ -2552,13 +2552,6 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackPoints,
              Qt::Checked);
   
-  collection("Physics Objects/Electrons (GSF)",
-             "GsfElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
   collection("Physics Objects/Tracker Muons (PAT)",
              "PATTrackerMuons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
@@ -2578,6 +2571,13 @@ ISpyApplication::ISpyApplication(void)
              "Points_V1:pos",
              "PATMuonGlobalPoints_V1",
              make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
              Qt::Checked);
 
   collection("Physics Objects/Electrons (PAT)",
@@ -3058,13 +3058,6 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
 
-  collection("Physics Objects/Electrons (GSF)",
-             "GsfElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
   collection("Physics Objects/Muons (Reco)",
              "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
@@ -3119,6 +3112,13 @@ ISpyApplication::ISpyApplication(void)
              "Points_V1:pos",
              "PATMuonGlobalPoints_V1",
              make3DTrackPoints,
+             Qt::Checked);
+
+   collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
              Qt::Checked);
 
   collection("Physics Objects/Electrons (PAT)",
@@ -3528,14 +3528,7 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
-  
-  collection("Physics Objects/Electrons (GSF)",
-             "GsfElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
+   
   collection("Physics Objects/Muons (Reco)",
              "Muons_V1:pt:charge:phi:eta",
              "Points_V1:pos",
@@ -3592,6 +3585,13 @@ ISpyApplication::ISpyApplication(void)
              make3DTrackPoints,
              Qt::Checked);
   
+  collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
   collection("Physics Objects/Electrons (PAT)",
              "PATElectrons_V1:pt:pos:dir",
              "Extras_V1:pos_1:dir_1:pos_2:dir_2",

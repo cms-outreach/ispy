@@ -2,6 +2,9 @@
 
 	* default-style.css: better style when rendering GSF electrons.
 
+	* ISpyApplication.cc: reshuffling of items in Physics Objects 
+	  group.
+
 2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, ISpySplashScreen.ui: version number bumped 
