@@ -538,6 +538,76 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **,
   sep->addChild (overlay);
 }
 
+static void
+make3DTriggerObject(IgCollection **collections, IgAssociationSet **,
+                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
+{
+  IgCollection         *c = collections[0];
+  IgProperty           ID = c->getProperty("VID");
+  IgProperty           PT = c->getProperty("pt");
+  IgProperty           ETA = c->getProperty("eta");
+  IgProperty           PHI = c->getProperty("phi");
+
+  SoVertexProperty     *vertices = new SoVertexProperty;
+  SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
+
+  std::vector<int>     lineIndices;
+  std::vector<SbVec3f> points;
+  int                  i = 0;
+
+  SbVec3f direction(0.0,0.0,0.0);
+
+  for ( IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
+  {    
+    int id = ci->get<int>(ID);
+
+    double eta = ci->get<double>(ETA);
+    double phi = ci->get<double>(PHI);
+
+    double pt = ci->get<double>(PT);
+
+    double px = pt*cos(phi);
+    double py = pt*sin(phi);
+    double pz = pt*sinh(eta);
+
+    direction.setValue(px,py,pz);
+    direction.normalize();
+    direction *= 2.0;
+
+    points.push_back(SbVec3f(0.0,0.0,0.0));
+    points.push_back(direction);
+
+    lineIndices.push_back(i);
+    lineIndices.push_back(i+1);
+    lineIndices.push_back(SO_END_LINE_INDEX);
+    i += 2;
+
+    SoSeparator *annSep = new SoSeparator;
+    SoTranslation *textPos = new SoTranslation;
+    textPos->translation = 1.05*direction;
+
+    SoText2 *label = new SoText2;
+    label->justification.setValue(SoText2::CENTER);
+
+    char buf[128];
+    std::string text = std::string("id = ") + (sprintf(buf, "%i", id), buf);
+    label->string = text.c_str();
+
+    annSep->addChild(textPos);
+    annSep->addChild(label);
+    sep->addChild(annSep);
+  }
+  
+  vertices->vertex.setValues(0, points.size(), &points[0]);
+  vertices->vertex.setNum(points.size());
+
+  lineSet->coordIndex.setValues(0, lineIndices.size(), &lineIndices[0]);
+  lineSet->vertexProperty = vertices;
+
+  sep->addChild(lineSet);
+}
+
+
 // ------------------------------------------------------
 // Draw Generic shapes
 // ------------------------------------------------------
@@ -982,7 +1052,6 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
     double energy = ci->get<double>("energy");
     double eta  = ci->get<double>("eta");
     double et = energy * sin(2*atan(exp(-eta)));
-    // double emFraction = 0.0;
  
     if (et > minimumEnergy)
     {
@@ -1413,6 +1482,62 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
   }
 }
 
+static void 
+make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
+                   SoSeparator *sep, ISpyApplication::Style */*style*/)
+{
+  IgCollection       *clusters = collections[0];
+  IgCollection       *fracs    = collections[1];
+  IgAssociationSet   *assoc    = assocs[0];
+  
+  IgDrawTowerHelper drawTowerHelper(sep);
+
+  IgProperty POS = clusters->getProperty("pos");
+  IgProperty E   = clusters->getProperty("energy");
+
+  IgProperty FRONT_1 = fracs->getProperty("front_1");
+  IgProperty FRONT_2 = fracs->getProperty("front_2");
+  IgProperty FRONT_3 = fracs->getProperty("front_3");
+  IgProperty FRONT_4 = fracs->getProperty("front_4");
+ 
+  for (IgCollectionIterator ci = clusters->begin(), ce = clusters->end(); ci != ce; ++ci)
+  {
+    IgV3d pos = ci->get<IgV3d>(POS);
+
+    double energy = ci->get<double>(E);
+    SoText2* label = new SoText2;
+    label->justification.setValue(SoText2::CENTER);
+
+    SoSeparator *annSep = new SoSeparator;
+    SoTranslation *textPos = new SoTranslation;
+    textPos->translation = SbVec3f(pos.x(), pos.y(), pos.z());
+
+    char buf[128];
+    std::string text = (sprintf(buf, "%0.2f", energy), buf) + std::string(" GeV");
+    label->string = text.c_str();
+
+    annSep->addChild(textPos);
+    annSep->addChild(label);
+    sep->addChild(annSep);
+
+    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    {
+      if (ai->first().objectId() == ci->currentRow())
+      { 
+        IgCollectionItem rh(fracs, ai->second().objectId());
+
+        IgV3d f1  = rh.get<IgV3d>(FRONT_1);
+        IgV3d f2  = rh.get<IgV3d>(FRONT_2);
+        IgV3d f3  = rh.get<IgV3d>(FRONT_3);
+        IgV3d f4  = rh.get<IgV3d>(FRONT_4);
+ 
+        drawTowerHelper.addTowerOutline(f1,f2,f3,f4,f1,f2,f3,f4);
+      }
+    }
+  }
+}
+
+
 static void
 make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, 
                  SoSeparator *sep, ISpyApplication::Style *style)
@@ -1502,6 +1627,71 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 
 }
 
+static void
+make3DPhoton(IgCollection **collections, IgAssociationSet **,
+             SoSeparator *sep, ISpyApplication::Style * /*style*/)
+{
+  IgCollection         *c = collections[0];
+  IgProperty           E = c->getProperty("energy");
+  IgProperty           ETA = c->getProperty("eta");
+  IgProperty           PHI = c->getProperty("phi");
+  IgProperty           POS = c->getProperty("pos");
+
+  SoVertexProperty     *vertices = new SoVertexProperty;
+  SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
+
+  std::vector<int>     lineIndices;
+  std::vector<SbVec3f> points;
+  int                  i = 0;
+
+  double lEB = 3.0;  // half-length of the EB (m)
+  double rEB = 1.24; // inner radius of the EB (m)
+
+  for ( IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
+  {    
+    double eta = ci->get<double>(ETA);
+    double phi = ci->get<double>(PHI);
+    
+    double px = cos(phi);
+    double py = sin(phi);
+    double pz = sinh(eta);
+
+    IgV3d p1 = ci->get<IgV3d>(POS);
+
+    double t = 0.0;
+
+    double x0 = p1.x();
+    double y0 = p1.y();
+    double z0 = p1.z();
+
+    if ( fabs(eta) > 1.48 ) // i.e. not in the EB, so propagate to ES
+      t = fabs((lEB - z0)/pz); 
+
+    else // propagate to EB
+    {
+      double a = px*px + py*py;
+      double b = 2*x0*px + 2*y0*py;
+      double c = x0*x0 + y0*y0 - rEB*rEB;
+      t = (-b+sqrt(b*b-4*a*c))/2*a;
+    }
+    
+    points.push_back(SbVec3f(x0, y0, z0));
+    points.push_back(SbVec3f(x0+px*t, y0+py*t, z0+pz*t));
+
+    lineIndices.push_back(i);
+    lineIndices.push_back(i+1);
+    lineIndices.push_back(SO_END_LINE_INDEX);
+    i += 2;
+  }
+  
+  vertices->vertex.setValues(0, points.size(), &points[0]);
+  vertices->vertex.setNum(points.size());
+
+  lineSet->coordIndex.setValues(0, lineIndices.size(), &lineIndices[0]);
+  lineSet->vertexProperty = vertices;
+
+  sep->addChild(lineSet);
+}
 
 
 static void
@@ -1950,7 +2140,7 @@ ISpyApplication::ISpyApplication(void)
 #else
   QCoreApplication::setApplicationName("iSpy");
 #endif
-  QCoreApplication::setApplicationVersion("1.3.0");
+  QCoreApplication::setApplicationVersion("1.3.1");
   QCoreApplication::setOrganizationDomain("iguana");
   QCoreApplication::setOrganizationName("iguana");
 
@@ -2001,10 +2191,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 
@@ -2191,6 +2381,20 @@ ISpyApplication::ISpyApplication(void)
              make3DPreshowerTowers,
              Qt::Checked);
 
+  collection("ECAL/CaloClusters",
+             "CaloClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "CaloClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
+  collection("ECAL/SuperClusters",
+             "SuperClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "SuperClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
 // -------------------------------------------------------------------------------------
   
   collection("HCAL/Barrel Rec. Hits",
@@ -2228,7 +2432,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DDTDigis,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Muon/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
@@ -2273,41 +2477,6 @@ ISpyApplication::ISpyApplication(void)
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
 // -------------------------------------------------------------------------------------
 
   collection("Particle Flow/Rec. Tracks",
@@ -2346,27 +2515,111 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
+
+  collection("Physics Objects/Muons (Reco)",
+             "Muons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (Reco)",
+             "TrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
   
+  collection("Physics Objects/Global Muons (Reco)",
+             "GlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+  
+  collection("Physics Objects/Tracker Muons (PAT)",
+             "PATTrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (PAT)",
+             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATMuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (PAT)",
+             "PATGlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Electrons (PAT)",
+             "PATElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (Reco)",
+             "Photons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (PAT)",
+             "PATPhotons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DCaloTowers,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Jets",
              "Jets_V1:et:theta:phi",
              0,
              0,
              make3DJetShapes,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Missing Et",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
-             Qt::Checked);
+             Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
 
@@ -2566,10 +2819,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 
@@ -2704,20 +2957,34 @@ ISpyApplication::ISpyApplication(void)
              make3DEnergyTowers,
              Qt::Checked);
 
+ collection("ECAL/CaloClusters",
+             "CaloClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "CaloClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
+  collection("ECAL/SuperClusters",
+             "SuperClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "SuperClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
 // -------------------------------------------------------------------------------------
 
   collection("HCAL/Barrel Rec. Hits",
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2727,7 +2994,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DDTDigis,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Muon/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
@@ -2756,41 +3023,6 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DRPCRecHits,
-             Qt::Checked);
-
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -2825,26 +3057,110 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
 
+  collection("Physics Objects/Muons (Reco)",
+             "Muons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (Reco)",
+             "TrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (Reco)",
+             "GlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (PAT)",
+             "PATTrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (PAT)",
+             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATMuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (PAT)",
+             "PATGlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+   collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Electrons (PAT)",
+             "PATElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (Reco)",
+             "Photons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (PAT)",
+             "PATPhotons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DCaloTowers,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Jets",
              "Jets_V1:et:theta:phi",
              0,
              0,
              make3DJetShapes,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Missing Et",
              "METs_V1:pt:px:py:phi",
              0,
              0,
              make3DMET,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Monte-Carlo/Sim. tracks with hits",
              "TrackingParticles_V1",
@@ -2889,10 +3205,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 
@@ -2908,7 +3224,7 @@ ISpyApplication::ISpyApplication(void)
              0, 
              0,
              Qt::Checked);
-
+  
 // -------------------------------------------------------------------------------------
 
   collection("Detector/Tracker",
@@ -3077,34 +3393,48 @@ ISpyApplication::ISpyApplication(void)
              make3DPreshowerTowers,
              Qt::Checked);
 
+   collection("ECAL/CaloClusters",
+             "CaloClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "CaloClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
+  collection("ECAL/SuperClusters",
+             "SuperClusters_V1:pos:energy",
+             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
+             "SuperClusterRecHitFractions_V1",
+             make3DCaloClusters,
+             Qt::Checked);
+
 // -------------------------------------------------------------------------------------
 
   collection("HCAL/Barrel Rec. Hits",
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Endcap Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Forward Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             make3DEnergyBoxes,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
@@ -3114,7 +3444,7 @@ ISpyApplication::ISpyApplication(void)
              0,
              0,
              make3DDTDigis,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Muon/DT Rec. Hits",
              "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
@@ -3159,41 +3489,6 @@ ISpyApplication::ISpyApplication(void)
              make3DRPCRecHits,
              Qt::Checked);
 
-  collection("Muon/Muon Tracks",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Tracker Muons",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Muon/Stand-alone Muons",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Muon/Global Muons",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
 // -------------------------------------------------------------------------------------
 
   collection("Particle Flow/Rec. Tracks",
@@ -3232,14 +3527,97 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
 // -------------------------------------------------------------------------------------
+   
+  collection("Physics Objects/Muons (Reco)",
+             "Muons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
 
+  collection("Physics Objects/Tracker Muons (Reco)",
+             "TrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonStandalonePoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (Reco)",
+             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "MuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (Reco)",
+             "GlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "MuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Tracker Muons (PAT)",
+             "PATTrackerMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonTrackerPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+
+  collection("Physics Objects/Stand-alone Muons (PAT)",
+             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATMuonTrackExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+  
+  collection("Physics Objects/Global Muons (PAT)",
+             "PATGlobalMuons_V1:pt:charge:phi:eta",
+             "Points_V1:pos",
+             "PATMuonGlobalPoints_V1",
+             make3DTrackPoints,
+             Qt::Checked);
+  
+  collection("Physics Objects/Electrons (GSF)",
+             "GsfElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "GsfElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Electrons (PAT)",
+             "PATElectrons_V1:pt:pos:dir",
+             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
+             "PATElectronExtras_V1",
+             make3DTracks,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (Reco)",
+             "Photons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
+
+  collection("Physics Objects/Photons (PAT)",
+             "PATPhotons_V1:energy:eta:phi:pos",
+             0,
+             0,
+             make3DPhoton,
+             Qt::Checked);
 
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              make3DCaloTowers,
-             Qt::Checked);
+             Qt::Unchecked);
 
   collection("Physics Objects/Jets",
              "Jets_V1:et:theta:phi",
@@ -3299,10 +3677,10 @@ ISpyApplication::ISpyApplication(void)
              Qt::Unchecked);
 
   collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1",
+             "TriggerObjects_V1:VID:pt:eta:phi",
              0,
              0,
-             0,
+             make3DTriggerObject,
              Qt::Unchecked);
 
   collection("Provenance/Data Products found", 
@@ -3330,13 +3708,16 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
 
+/*
+  TM: Doesn't the had energy need to be dran as well?
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              makeLegoCaloTowers,
              Qt::Checked);
-
+*/
   collection("Physics Objects/Jets",
              "Jets_V1:et:eta:phi",
              0,
@@ -5100,7 +5481,7 @@ ISpyApplication::getUrl(const QUrl &url)
 {
   QNetworkRequest request;
   request.setUrl(url);
-  request.setRawHeader("User-Agent", "iSpy 1.3.0");
+  request.setRawHeader("User-Agent", "iSpy 1.3.1");
   return m_networkManager->get(request);
 }
 

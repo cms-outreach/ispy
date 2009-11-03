@@ -3,9 +3,6 @@
 /ISpyConsumer.h/1.8/Sun Sep  6 12:18:12 2009//
 /ISpyDigitalClock.h/1.1/Sun Sep  6 12:18:12 2009//
 /ISpyEventFilter.h/1.3/Sun Sep  6 12:18:12 2009//
-/ISpyMainWindow.h/1.13/Sun Sep  6 12:18:12 2009//
-/ISpyRestartPlayDialog.h/1.1/Sun Sep  6 12:18:12 2009//
-/ISpySplashScreen.h/1.6/Sun Sep  6 12:18:12 2009//
 /Ig3DBaseModel.h/1.6/Sun Sep  6 12:18:12 2009//
 /IgCollectionTableModel.h/1.3/Sun Sep  6 12:18:12 2009//
 /IgDataStorageTableModel.h/1.2/Sun Sep  6 12:18:12 2009//
@@ -13,7 +10,6 @@
 /IgLocationDialog.h/1.2/Sun Sep  6 12:18:12 2009//
 /IgMultiStorageTreeModel.h/1.2/Sun Sep  6 12:18:12 2009//
 /IgNetworkReplyHandler.h/1.3/Sun Sep  6 12:18:12 2009//
-/IgSettingsEditor.h/1.5/Sun Sep  6 12:18:12 2009//
 /IgSettingsTree.h/1.3/Sun Sep  6 12:18:12 2009//
 /IgVariantDelegate.h/1.2/Sun Sep  6 12:18:12 2009//
 /PausePressed.png/1.1/Sun Sep  6 12:18:12 2009//
@@ -36,18 +32,18 @@
 /previous.png/1.1/Sun Sep  6 12:18:12 2009//
 /print.png/1.1/Sun Sep  6 12:18:12 2009//
 /stylesheet-branch-open.png/1.1/Sun Sep  6 12:18:12 2009//
-/ui_ISpyRestartPlayDialog.h/1.1/Wed Sep  9 17:33:10 2009//
-/ui_IgMainWindow.h/1.27/Wed Sep  9 17:33:10 2009//
-/ui_IgSettingsEditorMainWindow.h/1.3/Wed Sep  9 17:33:10 2009//
 /view_all.xpm/1.1/Sun Sep  6 12:18:12 2009//
 /xz_small.xpm/1.1/Sun Sep  6 12:18:12 2009//
 /yx_small.xpm/1.1/Sun Sep  6 12:18:12 2009//
 /yz_small.xpm/1.1/Sun Sep  6 12:18:12 2009//
 /zoom_in.png/1.1/Sun Sep  6 12:18:12 2009//
 /zoom_out.png/1.1/Sun Sep  6 12:18:12 2009//
-/ui_ISpySplashScreen.h/1.9/Sun Sep 13 16:45:55 2009//
 /ISpyConsumerThread.h/1.6/Mon Oct  5 10:23:09 2009//
 /ISpyApplication.h/1.42/Mon Oct 19 14:46:15 2009//
-/default-style.css/1.1/Mon Oct 19 14:46:15 2009//
 /ispy.qrc/1.7/Mon Oct 19 14:46:15 2009//
+/ISpyMainWindow.h/1.14/Tue Oct 27 20:12:07 2009//
+/ISpyRestartPlayDialog.h/1.2/Tue Oct 27 20:12:07 2009//
+/ISpySplashScreen.h/1.7/Tue Oct 27 20:12:07 2009//
+/IgSettingsEditor.h/1.6/Tue Oct 27 20:12:07 2009//
+/default-style.css/1.7/Tue Nov  3 22:08:31 2009//
 D

@@ -22,7 +22,7 @@
 }
 
 Background {
-  diffuse-color: rgb(0.1, 0.0, 0.3);
+  diffuse-color: rgb(0.0, 0.0, 0.0);
 }
 
 // Event information.
@@ -134,6 +134,10 @@ HBRecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0);}
 HERecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0);}
 HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0);}
 HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0);}
+
+CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0);}
+SuperCluster_V1 {diffuse-color: rgb(1.0, 0.2, 0.0);}
+
 DTDigis_V1 {
   diffuse-color: rgb(0.4, 1.0, 0.4);
   transparency: 0.2;
@@ -218,9 +222,54 @@ PFBrems_V1 {
   line-width: 1;
 }
 
+PATTrackerMuons_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+}
+
+PATStandaloneMuons_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+  marker-style: outline;
+}
+
+PATGlobalMuons_V1 {
+  draw-style: lines; 
+  line-width: 3;
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+}
+
+GsfElectrons_V1
+{
+  draw-style: lines; 
+  line-width:2;
+  diffuse-color: rgb(0.0, 1.0, 0.5);
+}
+
+PATElectrons_V1
+{
+  draw-style: lines; 
+  line-width:2;
+  diffuse-color: rgb(0.0, 1.0, 0.5);
+}
+
 CaloTowers_V1 {
   transparency: 0.75;
   diffuse-color: rgb(0.1, 1.0, 0.2);
+}
+
+Photons_V1 { 
+  diffuse-color: rgb(1.0, 1.0, 0.0); 
+  draw-style: lines;
+  line-width: 3;
+}
+
+PATPhotons_V1 { 
+  diffuse-color: rgb(1.0, 1.0, 0.0); 
+  draw-style: lines;
+  line-width: 3;
 }
 
 Jets_V1 {

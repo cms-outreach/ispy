@@ -1,3 +1,61 @@
+2009-11-03  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* default-style.css: background back to black.
+
+2009-11-03  Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-style.css: better style when rendering GSF electrons.
+
+	* ISpyApplication.cc: reshuffling of items in Physics Objects 
+	  group.
+
+	* ISpyApplication.cc: do not draw calotowers since it does 
+	  not take hadronic contribution into account.
+
+	* IgDrawTowerHelper.cc: make colors of Ecal, Hcal rec hits
+	  the same as the colors in 3D views.
+
+	* ISpyApplication.cc: disable CaloTowers, MET, Jets, DT digis 
+	  and rec hits by default to avoid slow down with splash events.
+
+2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpySplashScreen.ui: version number bumped 
+	  to 1.3.1.
+
+2009-10-28  Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc, default-style.css: add support for
+	  CaloClusters and SuperClusters
+
+2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: revert to make3DBoxes for HCAL rec hits
+	  in R-PHI and RZ.
+
+2009-10-28  Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc: GSF electrons support.
+
+	* ISpyApplication.cc: Move muons to physics objects.
+
+	* ISpyApplication.cc, default-style.css: PAT muons support.
+
+	* ISpyApplication.cc, default-style.css: PAT electrons support.
+	
+	* ISpyApplication.cc: Trigger objects drawing.
+
+	* ISpyApplication.cc, default-style.css: add support for
+	  PAT and Reco Photons.
+
+2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyMainWindow.h, ISpyRestartPlayDialog.h ISpySplashScreen.h          
+	  IgSettingsEditor.h, ui_ISpyRestartPlayDialog.h, ui_ISpySplashScreen.h
+	  ui_IgMainWindow.h, ui_IgSettingsEditorMainWindow.h ispy.pro                      
+	  ISpySplashScreen.ui, IgMainWindowMDI.ui: qmake now runs uic. No
+	  need anymore for generating the ui_* files by hand.
+
 2009-10-19  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, Iguana/QtGUI/interface/default-style.css,
