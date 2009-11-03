@@ -241,6 +241,13 @@ PATGlobalMuons_V1 {
   diffuse-color: rgb(1.0, 0.0, 0.0);
 }
 
+GsfElectrons_V1
+{
+  draw-style: lines; 
+  line-width:2;
+  diffuse-color: rgb(0.0, 1.0, 0.5);
+}
+
 PATElectrons_V1
 {
   draw-style: lines; 
