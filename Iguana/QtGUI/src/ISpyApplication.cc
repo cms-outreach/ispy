@@ -3709,13 +3709,16 @@ ISpyApplication::ISpyApplication(void)
 
 // -------------------------------------------------------------------------------------
 
+/*
+  TM: Doesn't the had energy need to be dran as well?
+
   collection("Physics Objects/Calorimeter Energy Towers",
              "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
              makeLegoCaloTowers,
              Qt::Checked);
-
+*/
   collection("Physics Objects/Jets",
              "Jets_V1:et:eta:phi",
              0,

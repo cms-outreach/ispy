@@ -5,6 +5,9 @@
 	* ISpyApplication.cc: reshuffling of items in Physics Objects 
 	  group.
 
+	* ISpyApplication.cc: do not draw calotowers since it does 
+	  not take hadronic contribution into account.
+
 2009-10-28  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, ISpySplashScreen.ui: version number bumped 
