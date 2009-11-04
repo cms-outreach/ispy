@@ -3,6 +3,13 @@
 	* ISpyApplication.cc: Draw HCAL and ECAL rechits as histograms in
 	  RZ view.
 
+	* IgMainWindowMDI.1.0.ui: Enable printing to a printer/file and
+	  saving a picture to a file.
+
+	* ISpy3DView.h, ISpy3DView.cc: Enable printing to a file. Use
+	  proper printer dialog. Use save member function to save an
+	  image. Save as .iv format should go to an expert export as menu.
+
 2009-11-03  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-style.css: background back to black.
@@ -99,7 +106,7 @@
 
 	* ISpy3DView.cc: Do not allow popping up a non-functional GUI on
 	  right mouse click.
-
+	  
 2009-09-13  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy.pro, Iguana/QtGUI/src/Info.plist, Iguana/QtGUI/src/ispy.icns:

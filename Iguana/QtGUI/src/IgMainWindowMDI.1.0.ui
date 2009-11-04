@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -43,6 +43,8 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionOpenWizard"/>
+    <addaction name="actionSave"/>
+    <addaction name="actionPrint"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -358,9 +360,6 @@ QComboBox QAbstractItemView
        <attribute name="verticalHeaderVisible">
         <bool>false</bool>
        </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
       </widget>
      </item>
     </layout>
@@ -427,7 +426,7 @@ QComboBox QAbstractItemView
   </action>
   <action name="actionPrint">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../interface/ispy.qrc">
@@ -439,14 +438,14 @@ QComboBox QAbstractItemView
   </action>
   <action name="actionSave">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../interface/ispy.qrc">
      <normaloff>:/images/filesave.png</normaloff>:/images/filesave.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Save</string>
+    <string>&amp;Save as...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
