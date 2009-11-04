@@ -5319,6 +5319,11 @@ ISpyApplication::updateCollections(void)
   
     if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
     {
+      m_mainWindow->showNormal();
+      m_mainWindow->dockTreeWidget->setShown(true);
+      m_mainWindow->dockTableWidget->setShown(true);
+      m_mainWindow->menubar->show();
+      m_3DToolBar->show();
       m_idleTimer->stop();
       m_idleTimer->disconnect();
       m_animationTimer->stop();
@@ -5824,6 +5829,11 @@ ISpyApplication::autoEvents(void)
 
   if (m_autoEvents)
   {
+    m_mainWindow->showMaximized();
+    m_mainWindow->dockTreeWidget->setShown(false);
+    m_mainWindow->dockTableWidget->setShown(false);
+    m_mainWindow->menubar->hide();
+    m_3DToolBar->hide();
     // Stops animation and restores all the camera.
     if (m_viewer->isAnimating())
       m_viewer->stopAnimating();
@@ -5851,6 +5861,11 @@ ISpyApplication::autoEvents(void)
   }
   else
   {
+    m_mainWindow->showNormal();
+    m_mainWindow->dockTreeWidget->setShown(true);
+    m_mainWindow->dockTableWidget->setShown(true);
+    m_mainWindow->menubar->show();
+    m_3DToolBar->show();
     m_animationTimer->stop();
     m_animationTimer->disconnect();
     m_timer->stop();

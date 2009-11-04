@@ -10,6 +10,8 @@
 	  proper printer dialog. Use save member function to save an
 	  image. Save as .iv format should go to an expert export as menu.
 
+	* ISpyApplication.cc: Hide extra stuff in a play mode.
+
 2009-11-03  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-style.css: background back to black.
