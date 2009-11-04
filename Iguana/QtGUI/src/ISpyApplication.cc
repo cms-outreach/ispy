@@ -7,6 +7,7 @@
 #include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 #include "Iguana/QtGUI/interface/ISpyEventFilter.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
+#include "Iguana/QtGUI/src/ISpyPicturePublishingDialog.h"
 #include "Iguana/QtGUI/interface/ISpyRestartPlayDialog.h"
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
@@ -2238,7 +2239,8 @@ ISpyApplication::ISpyApplication(void)
     m_progressDialog(0),
     m_3DToolBar(0),
     m_actionCameraPerspective(0),
-    m_actionCameraOrthographic(0)
+    m_actionCameraOrthographic(0),
+    m_printTimer(new QTimer(this))
 {
   m_archives[0] = m_archives[1] = 0;
   m_storages[0] = new IgDataStorage;
@@ -4602,7 +4604,8 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(save()),          this, SIGNAL(save()));
   QObject::connect(m_mainWindow, SIGNAL(showAbout()),     this, SLOT(showAbout()));
   QObject::connect(m_mainWindow->actionEvent_Filter, SIGNAL(triggered()), m_selector, SLOT(show()));
- 
+  QObject::connect(m_mainWindow->actionPicture_Publishing, SIGNAL(triggered()), this, SLOT(showPublish()));
+
   m_mainWindow->actionAuto->setChecked(false);
   m_mainWindow->actionAuto->setEnabled(false);
   m_mainWindow->actionNext->setEnabled(false);
@@ -4627,6 +4630,10 @@ ISpyApplication::setupMainWindow(void)
   m_itemFont->setPixelSize(11);
 
   m_mainWindow->restoreSettings();
+  m_pubDialog = new ISpyPicturePublishingDialog(m_mainWindow->centralWidget());
+  m_printTimer->setInterval(m_pubDialog->delay());
+  if(m_pubDialog->isAuto())
+    m_printTimer->start();
 
   // Create the various cameras as defined by the various CameraSpecs.
   // We use an extra Camera struct to maintain this information, because
@@ -4687,6 +4694,21 @@ ISpyApplication::setupMainWindow(void)
 }
 
 void
+ISpyApplication::showPublish(void)
+{
+  m_pubDialog->show();
+  if(m_pubDialog->exec() == QDialog::Accepted)
+  {
+    if(m_printTimer->isActive())
+      m_printTimer->stop();
+    m_printTimer->setInterval(m_pubDialog->delay());
+    
+    if(m_pubDialog->isAuto())
+      m_printTimer->start();
+  }
+}
+
+void
 ISpyApplication::showAbout(void)
 {
   m_splash->showAbout();
@@ -4720,6 +4742,7 @@ ISpyApplication::doRun(void)
   QObject::connect(this, SIGNAL(print()), m_viewer, SLOT(print()));
   QObject::connect(m_viewer, SIGNAL(cameraToggled()), 
                    this, SLOT(cameraToggled()));
+  QObject::connect(m_printTimer, SIGNAL(timeout()), this, SLOT(autoPrint()));
   QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
   QObject::connect(this, SIGNAL(showMessage(const QString &)), m_mainWindow->statusBar(), SLOT(showMessage(const QString &)));
   QObject::connect(&filter, SIGNAL(open(const QString &)),
@@ -4792,6 +4815,35 @@ ISpyApplication::doRun(void)
   delete m_viewer;
   delete m_splash;
   return 0;
+}
+
+/** Request a View to print its scene in a png format.
+    Assuming that the status bar hold event nd run information,
+    it will be added as the image metadata.
+
+    Print images in a directory specified by a publisher dialog.
+ */
+void
+ISpyApplication::autoPrint(void)
+{
+  // Check if the view should be printed
+  QStringList viewsToPublish = m_pubDialog->views();
+  
+  bool flag = false;
+  foreach(QString viewStr, viewsToPublish)
+  {
+    if(m_metaData.contains(viewStr, Qt::CaseInsensitive))
+    {
+      flag = true;
+    }
+  }
+  
+  if(! flag) { return; }
+  
+  QDir curDir = QDir::current();
+  QDir::setCurrent(m_pubDialog->dir());
+  m_viewer->autoPrint(m_metaData);
+  QDir::setCurrent(curDir.path());
 }
 
 /** Respond to selection changes in the tree view.  This may be due to
@@ -5056,6 +5108,11 @@ ISpyApplication::updateCollections(void)
   m_groups.swap(oldgroups);
   m_collections.swap(oldcollections);
   View &view = m_views[m_currentViewIndex];
+
+  // Add a name of the view to the meta-data of
+  // an automatically printed image
+  m_metaData.clear();
+  m_metaData.append("View: ").append(QString::fromStdString(view.spec->name));
 
   for (size_t sti = 0, ste = 2, i = 0; sti < ste; ++sti)
   {

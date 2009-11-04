@@ -47,6 +47,7 @@ class SoCamera;
 class SoMaterial;
 class SoDrawStyle;
 class SoFont;
+class ISpyPicturePublishingDialog;
 
 namespace lat
 {
@@ -92,6 +93,7 @@ public slots:
   void                  previousEvent(void);
   void                  showAbout(void);
   void                  newEvent(void);
+  void 			autoPrint(void);
 
 signals:
   void                  showMessage(const QString &fileName);
@@ -124,6 +126,7 @@ private slots:
   void                  resetToHomePosition(void);
   void                  restartPlay(void);
   void			updateFilterListModel(const QString& title);
+  void			showPublish(void);
 
 private:
   typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
@@ -384,6 +387,9 @@ private:
   QFont                 *m_itemFont;
   QActionGroup          *m_viewPlaneGroup;
   QActionGroup          *m_viewModeGroup;
+  ISpyPicturePublishingDialog *m_pubDialog;
+  QTimer		*m_printTimer;
+  QString		m_metaData;
 
   class MatchByName {
   public:

@@ -71,6 +71,7 @@
      <property name="title">
       <string>Expert Debug Tools...</string>
      </property>
+     <addaction name="actionPicture_Publishing"/>
      <addaction name="actionEditSettings"/>
      <addaction name="separator"/>
      <addaction name="actionSaveSettings"/>
@@ -510,6 +511,11 @@ QComboBox QAbstractItemView
   <action name="actionEvent_Filter">
    <property name="text">
     <string>Event Filter...</string>
+   </property>
+  </action>
+  <action name="actionPicture_Publishing">
+   <property name="text">
+    <string>Picture Publishing...</string>
    </property>
   </action>
  </widget>

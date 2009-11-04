@@ -65,8 +65,7 @@ public slots:
   void         view(void);
   void         pick(void);
   void         setWhatsThisPicking(bool enable = true);
-  virtual void autoPrint(void);
-  virtual void autoPrint(const std::string text);
+  void 	       autoPrint(QString text);
   virtual void viewPlaneX(void);
   virtual void viewPlaneY(void);
   virtual void viewPlaneZ(void);

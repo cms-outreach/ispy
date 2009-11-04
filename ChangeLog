@@ -12,6 +12,18 @@
 
 	* ISpyApplication.cc: Hide extra stuff in a play mode.
 
+	* ISpyPicturePublishingDialog.h, ISpyPicturePublishingDialog.cc: A
+	  picture publishing settings dialog.
+	
+	* ISpyPicturePublishingDialog.ui: Designer file for the above
+	  dialog.
+
+	* ISpy3DView.h, ISpy3DView.cc, ISpyApplication.h,
+	  ISpyApplication.cc: Enable auto printing of the png images in a
+	  given directory with a given time delay.
+
+	* IgMainWindowMDI.1.0.ui: A menu for launching the dialog added.
+
 2009-11-03  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-style.css: background back to black.

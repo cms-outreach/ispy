@@ -591,36 +591,47 @@ ISpy3DView::invertCamera(void)
 }
 
 void
-ISpy3DView::autoPrint(void)
-{
-  autoPrint(this->getTitle());
-}
-
-void
-ISpy3DView::autoPrint(const std::string text)
+ISpy3DView::autoPrint(QString text)
 {
   QDateTime dt = QDateTime::currentDateTime();
-  QString fName = "screenShot-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
-  QString dName = "screenShot-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
+  QString fName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
+  QString dName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
 
   SbColor c = getBackgroundColor();
-  SoOffscreenRenderer osr(this->getViewportRegion());
-  osr.setBackgroundColor(c);
+  SbViewportRegion    outvr = this->getViewportRegion();
+  SoOffscreenRenderer renderer(outvr);
+  SbVec2s             pixels(outvr.getViewportSizePixels());
+  SbVec2s             size((short)(pixels[0] + 0.5), (short)(pixels[1] + 0.5));
+  SbVec2s             origin = outvr.getViewportOriginPixels();
+  outvr.setViewportPixels(origin, size);
+  renderer.setBackgroundColor(c);
   SoNode *root = getSceneManager()->getSceneGraph();
-  SbBool ok = osr.render(root);
+  if(! renderer.render(root)) { return; }
+  
+  unsigned char *buffer = renderer.getBuffer();
+  int width = size[0];
+  int height = size[1];
+  QImage image(width, height, QImage::Format_RGB32);
+  QRgb value;
 
-  if (!ok) { return; }
-  // ok = osr.writeToRGB(fName);
-  ok = osr.writeToFile(fName.toStdString().c_str(), "png");
-  if (!ok) { return; }
+  for(int j = 0; j < height; j++)
+    for(int k = 0; k < width; k++)
+    {
+      value = qRgb(buffer[0], buffer[1], buffer[2]);
+      image.setPixel(k, j, value);
+      buffer += 3;
+    }
 
+  QImage mimage = image.mirrored();
+  if(!mimage.save(fName, "PNG")) { return; }
+  
   dt = QDateTime::currentDateTime();
   QFile file(dName);
   if  (file.open(QIODevice::WriteOnly))
   {
     QTextStream stream(&file);
     stream << dt.toString("ddd MMM d hh:mm:ss.zzz yyyy") << "\n";
-    stream << QString::fromStdString(text) << "\n";
+    stream << text << "\n";
     file.close();
   }
 }
