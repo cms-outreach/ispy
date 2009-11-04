@@ -73,6 +73,8 @@
      <addaction name="separator"/>
      <addaction name="actionSaveSettings"/>
     </widget>
+    <addaction name="actionEvent_Filter"/>
+    <addaction name="separator"/>
     <addaction name="menuExpert_Debug_Tools"/>
    </widget>
    <addaction name="menuFile"/>
@@ -504,6 +506,11 @@ QComboBox QAbstractItemView
    </property>
    <property name="toolTip">
     <string>Get data to display</string>
+   </property>
+  </action>
+  <action name="actionEvent_Filter">
+   <property name="text">
+    <string>Event Filter...</string>
    </property>
   </action>
  </widget>

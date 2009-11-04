@@ -22,8 +22,10 @@
 
 class IgCollection;
 class IgAssociationSet;
+class ISpyEventSelectorDialog;
 class ISpyMainWindow;
 class IgDataStorage;
+class IgCollectionListModel;
 class IgCollectionTableModel;
 class IgMultiStorageTreeModel;
 class Ig3DBaseModel;
@@ -121,6 +123,7 @@ private slots:
   void                  cameraToggled(void);
   void                  resetToHomePosition(void);
   void                  restartPlay(void);
+  void			updateFilterListModel(const QString& title);
 
 private:
   typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
@@ -241,6 +244,21 @@ private:
     lat::ZipMember              *contents;
   };
 
+  struct FilterSpec
+  {
+    std::string                 friendlyName;
+    std::string                 collection;
+    std::vector<std::string>    requiredFields;
+  };
+  
+  struct Filter
+  {
+    FilterSpec                  *spec;
+    IgCollection                *data[2];
+    std::string                 collectionName;
+    bool                      	result;
+  };
+
   typedef std::vector<CollectionSpec>   CollectionSpecs;
   typedef std::vector<CameraSpec>       CameraSpecs;
   typedef std::vector<ViewSpec>         ViewSpecs;
@@ -252,6 +270,9 @@ private:
   typedef std::vector<size_t>           GroupIndex;
   typedef std::vector<Qt::CheckState>   Visibilities;
   typedef std::map<std::string, size_t> VisibilityGroupMap;
+  typedef std::vector<Filter>           Filters;
+  typedef std::vector<FilterSpec>       FilterSpecs;
+
 
   struct SortBySpecAndName
   {
@@ -301,6 +322,11 @@ private:
   void                  simpleOpen(const QString &fileName);
   void                  setupActions(void);
   void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
+  void                  filter(const char *friendlyName,
+			       const char *collectionSpec);
+  bool                  filter(void);
+  bool                  doFilterCollection(const Collection &collection, const char *algoName, const char *result);
+  void                  doUpdateFilterListModel(const Collection &collection);
   // Helper methods to handle rendering styles.
   SoMarkerSet::MarkerType   getMarkerType(enum ISPY_MARKER_STYLE style,
                                           enum ISPY_MARKER_SIZE size,
@@ -327,7 +353,10 @@ private:
   VisibilityGroupMap    m_visibilityGroupMap;
   size_t                m_eventIndex;
   size_t                m_currentViewIndex;
+  FilterSpecs         	m_filterSpecs;
+  Filters             	m_filters;
 
+  IgCollectionListModel *m_listModel;
   IgCollectionTableModel *m_tableModel;
   QSortFilterProxyModel *m_tableProxyModel;
   Ig3DBaseModel         *m_3DModel;
@@ -335,7 +364,9 @@ private:
   ISpyMainWindow        *m_mainWindow;
   QTreeWidget           *m_treeWidget;
   ISpySplashScreen      *m_splash;
-
+  ISpyEventSelectorDialog *m_selector;
+  bool                   m_nextEvent;
+  
   ISpyConsumerThread    m_consumer;
   
   bool                  m_online;
@@ -354,6 +385,22 @@ private:
   QActionGroup          *m_viewPlaneGroup;
   QActionGroup          *m_viewModeGroup;
 
+  class MatchByName {
+  public:
+    MatchByName(std::string name) : m_name(name) {}
+    bool operator()(Collection &collection) const { return (m_name.compare(collection.collectionName) == 0); }
+  private:
+    std::string m_name;
+  };
+ 
+  class MatchByFriendlyName {
+  public:
+    MatchByFriendlyName(std::string name) : m_name(name) {}
+    bool operator()(CollectionSpec &spec) const { return (m_name.compare(spec.friendlyName) == 0); }
+  private:
+    std::string m_name;
+  };
+  
   // Data concerning rendering style handling.
   typedef std::vector<StyleSpec> StyleSpecs;
   typedef std::vector<Style>     Styles;

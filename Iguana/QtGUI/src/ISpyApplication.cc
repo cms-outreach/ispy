@@ -3,12 +3,14 @@
 #include "Iguana/QtGUI/interface/ISpyApplication.h"
 #include "Iguana/QtGUI/interface/ISpy3DView.h"
 #include "Iguana/QtGUI/interface/ISpyDigitalClock.h"
+#include "Iguana/QtGUI/src/ISpyEventSelectorDialog.h"
 #include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 #include "Iguana/QtGUI/interface/ISpyEventFilter.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
 #include "Iguana/QtGUI/interface/ISpyRestartPlayDialog.h"
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
+#include "Iguana/QtGUI/src/IgCollectionListModel.h"
 #include "Iguana/QtGUI/interface/IgCollectionTableModel.h"
 #include "Iguana/QtGUI/interface/IgNetworkReplyHandler.h"
 #include "Iguana/QtGUI/interface/IgDrawTowerHelper.h"
@@ -2114,6 +2116,7 @@ ISpyApplication::ISpyApplication(void)
     m_appname(0),
     m_eventIndex(0),
     m_currentViewIndex(0),
+    m_listModel(0),
     m_tableModel(0),
     m_3DModel(0),
     m_mainWindow(0),
@@ -2147,6 +2150,12 @@ ISpyApplication::ISpyApplication(void)
   if (QDir::home().isReadable())
     defaultSettings();
 
+  // Define event filters
+  // A filter is defined by a friendly collection name.
+  // The collection must have the fields specified here.
+  //
+  filter("Provenance/L1 Triggers", "L1GtTrigger_V1:algorithm:result");
+  filter("Provenance/HLT Trigger Paths", "TriggerPaths_V1:Name:Accept");
 
   // Create the default style reading the specification from a QT resource.
   style("*", "");
@@ -3906,8 +3915,114 @@ ISpyApplication::collection(const char *friendlyName,
   view.endCollIndex++;
 }
 
+/** Specify a new event filter.  Call this during the application
+     initialisation to register filters for known collection handlers.
+ */
+void
+ISpyApplication::filter(const char *friendlyName,
+			const char *collectionSpec)
+{
+  ASSERT(collectionSpec);
+  
+  m_filterSpecs.resize(m_filterSpecs.size() + 1);
+  FilterSpec &spec = m_filterSpecs.back();
+  StringList parts;
 
+  if (friendlyName)
+    spec.friendlyName = friendlyName;
+  
+  parts = StringOps::split(collectionSpec, ':');
+  
+  ASSERT(! parts.empty());
+  spec.collection = parts[0];
+  spec.requiredFields.insert(spec.requiredFields.end(),
+                             parts.begin()+1, parts.end());
+}
 
+/** Accumulate results from all registered filters
+ */
+bool
+ISpyApplication::filter(void)
+{
+  bool flag = true;
+
+  for(size_t it = 0; it < m_filters.size(); ++it)
+  {
+    Filter &f = m_filters[it];
+    flag &= f.result;
+  }
+
+  return flag;
+}
+
+/** Do the actual event filterng.
+    Assume that a filter is done on
+
+    @a algoName
+
+    which an is an algorithm name - std::string type in the collection for
+    
+    @a result
+    
+    which is an int type in the collection.
+    The result should be == 1 for the filter to pass.
+    The algo names are defined in a GUI as a list of strings.
+    The filter returns true on the first match (e.g. OR).
+ */
+bool
+ISpyApplication::doFilterCollection(const Collection &collection, const char* algoName, const char *result)
+{
+  QStringList strList = m_selector->filterText(QString::fromStdString(collection.spec->friendlyName)).split("|", QString::SkipEmptyParts);
+  if(strList.isEmpty())
+    return true;
+
+  QStringList fullList;
+  
+  IgCollection *lc = collection.data[0];
+  for (IgCollectionIterator ci = lc->begin(), ce = lc->end(); ci != ce; ++ci)
+  {
+    if(ci->get<int>(result) == 1)
+      fullList << QString::fromStdString(ci->get<std::string>(algoName));
+  }
+  foreach (QString str, strList) {
+    if(fullList.contains(str.trimmed()))
+      return true;
+  }
+  
+  return false;
+}
+
+/** Find the collection by friendly name and trigger an update
+    of its filter list model.
+  */
+void
+ISpyApplication::updateFilterListModel(const QString &title)
+{
+  CollectionSpecs::iterator it = find_if (m_specs.begin(), m_specs.end(),
+					  MatchByFriendlyName(title.toStdString()));
+  if(it != m_specs.end())
+  {
+    Collections::iterator cit = find_if (m_collections.begin(), m_collections.end(), MatchByName(it->collection));
+    if(cit != m_collections.end())
+    {
+      doUpdateFilterListModel(*cit);
+    }
+  }
+}
+
+/** Actual update of the filter list model.
+  */
+void
+ISpyApplication::doUpdateFilterListModel(const Collection &collection)
+{
+  if (! m_listModel)
+  {
+    m_listModel = new IgCollectionListModel(collection.data[0]);
+    m_selector->setModel(m_listModel);
+  }
+  else
+    m_listModel->setCollection(collection.data[0]);
+}
 
 /** Begins the definition of a new view. 
     A view is simply a set of CollectionSpecs, as defined by the 
@@ -4010,6 +4125,8 @@ ISpyApplication::onExit(void)
   }
   
   m_exiting = true;
+  delete m_listModel;
+  m_listModel = 0;
   delete m_tableModel;
   m_tableModel = 0;
   m_3DModel->sceneGraph()->removeAllChildren();
@@ -4367,6 +4484,9 @@ ISpyApplication::setupMainWindow(void)
   m_mainWindow = new ISpyMainWindow;
   m_mainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
+  m_selector = new ISpyEventSelectorDialog (m_mainWindow);
+  QObject::connect(m_selector, SIGNAL(pageChanged(QString)), this, SLOT(updateFilterListModel(QString)));
+
   QObject::connect(m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
   QObject::connect(m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
   QObject::connect(m_mainWindow, SIGNAL(nextEvent()),     this, SLOT(nextEvent()));
@@ -4375,7 +4495,8 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(print()),         this, SIGNAL(print()));
   QObject::connect(m_mainWindow, SIGNAL(save()),          this, SIGNAL(save()));
   QObject::connect(m_mainWindow, SIGNAL(showAbout()),     this, SLOT(showAbout()));
-
+  QObject::connect(m_mainWindow->actionEvent_Filter, SIGNAL(triggered()), m_selector, SLOT(show()));
+ 
   m_mainWindow->actionAuto->setChecked(false);
   m_mainWindow->actionAuto->setEnabled(false);
   m_mainWindow->actionNext->setEnabled(false);
@@ -4425,6 +4546,15 @@ ISpyApplication::setupMainWindow(void)
     View &view = m_views.back();
     view.spec = spec;
     view.camera = &(m_cameras[spec->cameraIndex]);
+  }
+
+  // Create the filters
+  for(size_t fsi = 0, fse = m_filterSpecs.size(); fsi != fse; ++fsi)
+  {
+    FilterSpec *spec = &(m_filterSpecs[fsi]);
+    m_filters.resize(m_filters.size() + 1);
+    Filter &filter = m_filters.back();
+    filter.spec = spec;
   }
 
   // Setup the combo box with the possible views.
@@ -4533,8 +4663,6 @@ ISpyApplication::doRun(void)
     m_mainWindow->actionAuto->setChecked(true);
     m_mainWindow->showMaximized();
     autoEvents();
-    QObject::disconnect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(nextEvent()));
-    QObject::connect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(newEvent()));
 
     ISpyDigitalClock *clock = new ISpyDigitalClock(m_mainWindow->toolBarEvent);
     m_mainWindow->toolBarEvent->addWidget (clock);
@@ -5094,6 +5222,25 @@ ISpyApplication::updateCollections(void)
       m_mainWindow->actionAuto->setChecked(false);
     }
   }
+
+  // Update registered filters
+  //
+  for(size_t fi = 0; fi < m_filters.size(); ++fi)
+  {
+    Filter &f = m_filters[fi];
+    Collections::iterator cit = find_if (m_collections.begin(), m_collections.end(), MatchByName(f.spec->collection));
+    if(cit != m_collections.end())
+    {
+      f.data[0] = (*cit).data[0];
+      f.collectionName = (*cit).collectionName;
+      
+      // There must be two fields
+      ASSERT(f.spec->requiredFields.size() == 2);
+      f.result = doFilterCollection(*cit, f.spec->requiredFields[0].c_str(), f.spec->requiredFields[1].c_str());
+    }
+  }
+  
+  m_selector->updateDialog();
 }
 
 /** Read in and display a new event. */
@@ -5101,21 +5248,17 @@ void
 ISpyApplication::newEvent(void)
 {
   delete m_storages[0];
-  if (m_online)
-  {
-    showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
-    if (! m_storages[0]->empty())
-      resetCounter();
-  }
-  else
-  {    
-    ASSERT(m_eventIndex < m_events.size());
-    readData(m_storages[0] = new IgDataStorage,
-	     m_events[m_eventIndex].archive,
-	     m_events[m_eventIndex].contents);
-  }
+
+  ASSERT(m_eventIndex < m_events.size());
+  readData(m_storages[0] = new IgDataStorage,
+	   m_events[m_eventIndex].archive,
+	   m_events[m_eventIndex].contents);
   
   updateCollections();
+
+  // Skip an event if it did not pass the filters
+  if(!filter() && m_nextEvent)
+    nextEvent();
 }
 
 /** Prompt for a new file to be openend. */
@@ -5593,20 +5736,12 @@ ISpyApplication::autoEvents(void)
       QObject::connect(m_idleTimer, SIGNAL(timeout()), SLOT(restartPlay()));
       m_idleTimer->start(idleTimeout);
     }
-    
-    if(m_online)
-    {
-      QObject::connect(m_timer, SIGNAL(timeout()), SLOT(newEvent()));
-      newEvent();
-    }
-    else
-    { 
-      QObject::connect(m_timer, SIGNAL(timeout()), SLOT(nextEvent()));
-      nextEvent();
-    }
-    
-    m_animationTimer->start(animationTimeout);
-    m_timer->start(timeout);
+    QObject::connect(m_timer, SIGNAL(timeout()), SLOT(nextEvent()));
+
+    m_animationTimer->setInterval(animationTimeout);
+    m_animationTimer->start();
+    m_timer->setInterval(timeout);
+    m_timer->start();
   }
   else
   {
@@ -5630,6 +5765,16 @@ ISpyApplication::animateViews(void)
 void
 ISpyApplication::nextEvent(void)
 {
+  m_nextEvent = true;
+  if (m_online)
+  {
+    delete m_storages[0];
+    showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
+    if (! m_storages[0]->empty())
+      resetCounter();
+
+    updateCollections();
+  }
   if (++m_eventIndex < m_events.size())
   {
     showMessage(m_events[m_eventIndex].contents->name().name());
@@ -5643,6 +5788,7 @@ ISpyApplication::nextEvent(void)
 void
 ISpyApplication::previousEvent(void)
 {
+  m_nextEvent = false;
   if (m_online)
   {
     delete m_storages[0];
