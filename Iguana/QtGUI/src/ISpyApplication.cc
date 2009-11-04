@@ -735,6 +735,112 @@ make3DAnyDetId(IgCollection **, IgAssociationSet **,
 {
 }
 
+// Transform energy towers in R-Z view:
+// All hits above XZ plane go up, below - down.
+// The layer offsets the representation in X to show Ecal
+// hits on top of HCAL ones.
+// The flag indicats that it is ECAL which needs some special
+// adjustment.
+//
+static void
+makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, SoSeparator *sep, float minE, float layer, bool flag)
+{
+  IgCollection *c = collections[0];
+  float energyScaleFactor = 0.03;
+  
+  IgDrawTowerHelper drawTowerHelper(sep);
+
+  IgProperty ENERGY = c->getProperty("energy");
+  IgProperty FRONT_1 = c->getProperty("front_1");
+  IgProperty FRONT_2 = c->getProperty("front_2");
+  IgProperty FRONT_3 = c->getProperty("front_3");
+  IgProperty FRONT_4 = c->getProperty("front_4");
+  IgProperty BACK_1 = c->getProperty("back_1");
+  IgProperty BACK_2 = c->getProperty("back_2");
+  IgProperty BACK_3 = c->getProperty("back_3");
+  IgProperty BACK_4 = c->getProperty("back_4");
+
+  for(IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    double energy = ci->get<double>(ENERGY);
+    if(energy > minE)
+    {
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+
+      float yf1 = sqrt (f1.x () * f1.x () + f1.y () * f1.y ());
+      float yf2 = sqrt (f2.x () * f2.x () + f2.y () * f2.y ());
+      float yf3 = sqrt (f3.x () * f3.x () + f3.y () * f3.y ());
+      float yf4 = sqrt (f4.x () * f4.x () + f4.y () * f4.y ());
+
+      float yb1 = sqrt (b1.x () * b1.x () + b1.y () * b1.y ());
+      float yb2 = sqrt (b2.x () * b2.x () + b2.y () * b2.y ());
+      float yb3 = sqrt (b3.x () * b3.x () + b3.y () * b3.y ());
+      float yb4 = sqrt (b4.x () * b4.x () + b4.y () * b4.y ());
+
+      float x = 0.001;
+      
+      if (f1.y () < 0.)
+      {
+	yf1 = - yf1;
+	yf2 = - yf2;
+	yf3 = - yf3;
+	yf4 = - yf4;
+	yb1 = - yb1;
+	yb2 = - yb2;
+	yb3 = - yb3;
+	yb4 = - yb4;
+	x = - x;
+      }
+      
+      if(flag && f2.z() > 0.)
+	x = - x;
+
+      IgV3d tf1  = IgV3d(layer + x, yf1, f1.z());
+      IgV3d tf2  = IgV3d(layer + 2*x, yf2, f2.z());
+      IgV3d tf3  = IgV3d(layer + 2*x, yf3, f3.z());
+      IgV3d tf4  = IgV3d(layer + x, yf4, f4.z());
+
+      IgV3d tb1  = IgV3d(layer + x, yb1, b1.z());
+      IgV3d tb2  = IgV3d(layer + 2*x, yb2, b2.z());
+      IgV3d tb3  = IgV3d(layer + 2*x, yb3, b3.z());
+      IgV3d tb4  = IgV3d(layer + x, yb4, b4.z());
+      
+      drawTowerHelper.addTower(tf1, tf2, tf3, tf4, tb1, tb2, tb3, tb4,
+                               energy,
+                               energyScaleFactor);
+    }
+  }
+}
+
+static void
+makeRZECalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+                  SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeRZEnergyHisto(collections, assocs, sep, 0.2f, -0.5, true);
+}
+
+static void
+makeRZEPRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+                SoSeparator *sep, ISpyApplication::Style * /*style*/)
+{
+  makeRZEnergyHisto(collections, assocs, sep, 0.001f, 0.0, false);
+}
+
+static void
+makeRZHCalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+                SoSeparator *sep, ISpyApplication::Style * /*style*/)
+{
+  makeRZEnergyHisto(collections, assocs, sep, 0.2f, 0.0, false);
+}
+
 static void
 makeLegoGrid(IgCollection **, IgAssociationSet **, 
              SoSeparator *gridSep, ISpyApplication::Style * /*style*/)
@@ -3378,28 +3484,28 @@ ISpyApplication::ISpyApplication(void)
              "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             makeRZECalRecHits,
              Qt::Checked);
 
   collection("ECAL/Barrel Rec. Hits",
              "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             makeRZECalRecHits,
              Qt::Checked);
 
   collection("ECAL/Endcap Rec. Hits",
              "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyTowers,
+             makeRZECalRecHits,
              Qt::Checked);
   
   collection("ECAL/Preshower Rec. Hits",
              "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DPreshowerTowers,
+             makeRZEPRecHits,
              Qt::Checked);
 
    collection("ECAL/CaloClusters",
@@ -3422,28 +3528,28 @@ ISpyApplication::ISpyApplication(void)
              "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyBoxes,
+             makeRZHCalRecHits,
              Qt::Checked);
 
   collection("HCAL/Endcap Rec. Hits",
              "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyBoxes,
+             makeRZHCalRecHits,
              Qt::Checked);
 
   collection("HCAL/Forward Rec. Hits",
              "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyBoxes,
+             makeRZHCalRecHits,
              Qt::Checked);
 
   collection("HCAL/Outer Rec. Hits",
              "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
              0,
              0,
-             make3DEnergyBoxes,
+             makeRZHCalRecHits,
              Qt::Checked);
 
 // -------------------------------------------------------------------------------------
