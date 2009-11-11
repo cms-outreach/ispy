@@ -1,3 +1,7 @@
+2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: Version number changed to 1.4.0.
+
 2009-11-04  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc: Draw HCAL and ECAL rechits as histograms in
