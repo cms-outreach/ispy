@@ -2,6 +2,9 @@
 
 	* Allow view definition in an xml file.
 
+	* ISpyApplication.h, default-style.css, ISpyApplication.cc: 
+	  Improved stylesheet parsing.
+
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: Version number changed to 1.4.0.

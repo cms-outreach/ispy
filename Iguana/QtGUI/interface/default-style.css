@@ -14,7 +14,7 @@
   line-width: 1.0;
   line-pattern: 0xffff;
   font-size: 12;
-  font-name: Helvetica;
+  font-family: Helvetica;
   draw-style: solid;
   marker-shape: square;
   marker-size: normal;
@@ -72,7 +72,7 @@ TriggerObjects_V1
 {
   diffuse-color: rgb(1.0, 0.8, 1.0);
   font-size: 14;
-  font-name: Helvetica;
+  font-family: Helvetica;
   line-pattern: 0x0fff;
 }
 

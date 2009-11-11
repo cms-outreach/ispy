@@ -68,6 +68,16 @@ struct ViewSpecParseError
   size_t m_lineNumber;
 };
 
+struct CssParseError
+{
+  CssParseError(const char *why, const std::string &what)
+  :why(why), what(what)
+  {}
+  
+  std::string why;
+  std::string what;
+};
+
 class ISpyApplication : public QObject
 {
   Q_OBJECT
@@ -221,7 +231,7 @@ private:
     float                       lineWidth;
     unsigned int                linePattern;
     float                       fontSize;
-    std::string                 fontName;
+    std::string                 fontFamily;
     ISPY_DRAW_STYLE             drawStyle;
     ISPY_MARKER_SHAPE           markerShape;
     ISPY_MARKER_SIZE            markerSize;

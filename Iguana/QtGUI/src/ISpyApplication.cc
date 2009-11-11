@@ -203,14 +203,12 @@ parseColor(const char *rgb, float *color)
       if (*endptr)
       {
         defaultColor(color);
-        ASSERT(false && "Unable to parse color.");
-        return;
+        throw CssParseError("Unable to parse color.", rgb);
       }
       if (color[i] < 0. || color[i] > 1.0)
       {
         defaultColor(color);
-        ASSERT(false && "Color not normalized");
-        return;
+        throw CssParseError("Color not normalized.", rgb);
       }
     }
   }
@@ -246,7 +244,7 @@ ISpyApplication::style(const char *rule, const char *css)
   spec.lineWidth = 1.0;
   spec.linePattern = 0xffff;
   spec.fontSize = 12;
-  spec.fontName = "Helvetica";
+  spec.fontFamily = "Helvetica";
   spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
   spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
   spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
@@ -257,7 +255,7 @@ ISpyApplication::style(const char *rule, const char *css)
   if (ruleParts.size() == 1)
     spec.collectionName = ruleParts[0];
   else if (!ruleParts.size() || ruleParts.size() > 2)
-    ASSERT(false && "Wrong syntax for rule!");
+    throw CssParseError("Wrong syntax for rule!", rule);
   else
   {
     spec.viewName = ruleParts[0];
@@ -282,7 +280,7 @@ ISpyApplication::style(const char *rule, const char *css)
     spec.lineWidth = previous.lineWidth;
     spec.linePattern = previous.linePattern;
     spec.fontSize = previous.fontSize;
-    spec.fontName = previous.fontName;
+    spec.fontFamily = previous.fontFamily;
     spec.drawStyle = previous.drawStyle;
     spec.markerShape = previous.markerShape;
     spec.markerSize = previous.markerSize;
@@ -304,13 +302,12 @@ ISpyApplication::style(const char *rule, const char *css)
 
   for (size_t pi = 0, pe = properties.size(); pi != pe; pi++)
   {
+    // Split a string at the first ":" and use the first part as property key,
+    // the second as value.
     std::string &property = properties[pi];
-    StringList pairs = StringOps::split(property, ":");
-    
-    ASSERT(pairs.size() == 2);
-    
-    key = pairs[0];
-    value = pairs[1];
+    size_t sep_pos = property.find(':');
+    key.assign(property.c_str(), 0, sep_pos);
+    value.assign(property.c_str(), sep_pos + 1, property.size());
 
     char *endptr;
     
@@ -319,25 +316,29 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "transparency")
     {
       spec.transparency = strtod(value.c_str(), &endptr);
-      ASSERT(! (*endptr) && "Error while parsing transparency value");
+      if (*endptr)
+        throw CssParseError("Error while parsing transparency value", value);
     }
     else if (key == "line-width")
     {
       spec.lineWidth = strtod(value.c_str(), &endptr);
-      ASSERT(! (*endptr) && "Error while parsing line-width value");
+      if (*endptr)
+        throw CssParseError("Error while parsing line-width value", value);
     }
     else if (key == "line-pattern")
     {
       spec.linePattern = strtol(value.c_str(), &endptr, 16);
-      ASSERT(! (*endptr) && "Error while parsing line-pattern value");
+      if (*endptr)
+        throw CssParseError("Error while parsing line-pattern value", value);
     }
     else if (key == "font-size")
     {
       spec.fontSize = strtod(value.c_str(), &endptr);
-      ASSERT(! (*endptr) && "Error while parsing font-size value");
+      if (*endptr)
+        throw CssParseError("Error while parsing font-size value", value);
     }
-    else if (key == "font-name")
-      spec.fontName = value;
+    else if (key == "font-family")
+      spec.fontFamily = value;
     else if (key == "draw-style" && value == "solid")
       spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
     else if (key == "draw-style" && value == "lines")
@@ -345,7 +346,7 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "draw-style" && value == "points")
       spec.drawStyle = ISPY_POINTS_DRAW_STYLE;
     else if (key == "draw-style")
-      ASSERT(false && "Syntax error while defining draw-style");    
+      throw CssParseError("Syntax error while defining draw-style", value);    
     else if (key == "marker-shape" && value == "square")
       spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
     else if (key == "marker-shape" && value == "cross")
@@ -355,7 +356,7 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "marker-shape" && value == "circle")
       spec.markerShape = ISPY_CIRCLE_MARKER_SHAPE;
     else if (key == "marker-shape")
-      ASSERT(false && "Syntax error while defining marker-shape");
+      throw CssParseError("Syntax error while defining marker-shape", value);
     else if (key == "marker-size" && value == "normal")
       spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
     else if (key == "marker-size" && value == "big")
@@ -367,11 +368,10 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "marker-style" && value == "outline")
       spec.markerStyle = ISPY_OUTLINE_MARKER_STYLE;
     else if (key == "marker-style")
-      ASSERT(false && "Syntax error while defining marker-style");
+      throw CssParseError("Syntax error while defining marker-style", value);
     else
     {
-      std::cerr << "Unknown property " << key << std::endl;
-      ASSERT(false && "Unknown property");
+      throw CssParseError("Unknown property", key);
     }
   }
 }
@@ -2464,8 +2464,15 @@ ISpyApplication::ISpyApplication(void)
   ASSERT(ok && "Default style not compiled as resource.");
   QByteArray cssData = cssFile.readAll();
   ASSERT(cssData.size());
-  parseCss(cssData.data());
-
+  try 
+  {
+    parseCss(cssData.data());
+  }
+  catch (CssParseError &e)
+  {
+    qDebug() << e.why.c_str() << ": " << e.what.c_str();
+    ASSERT(false && "Wrong default definition of styles.");
+  }
   // Create the default views, reading the specification from QT resource
   // containing a conveniently formatted xml file.
   registerDrawFunctions();
@@ -2481,7 +2488,7 @@ ISpyApplication::ISpyApplication(void)
   catch (ViewSpecParseError &e)
   {
     qDebug() << e.m_lineNumber;
-    ASSERT(false && "Wrong definition of views.");
+    ASSERT(false && "Wrong default definition of views.");
   }
 }
 
@@ -3626,7 +3633,7 @@ ISpyApplication::findStyle(const char *pattern)
     style.drawStyle->linePattern = spec.linePattern;
     style.font = new SoFont;
     style.font->size = spec.fontSize;
-    style.font->name = spec.fontName.c_str();
+    style.font->name = spec.fontFamily.c_str();
     style.markerType = getMarkerType(spec.markerStyle, spec.markerSize, 
                                      spec.markerShape);
     // Style nodes do not get deleted  by dropping a given
