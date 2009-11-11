@@ -59,6 +59,15 @@ namespace lat
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
+struct ViewSpecParseError
+{
+  ViewSpecParseError(size_t lineNumber = 0)
+  :m_lineNumber(lineNumber)
+  {
+  }
+  size_t m_lineNumber;
+};
+
 class ISpyApplication : public QObject
 {
   Q_OBJECT
@@ -337,6 +346,10 @@ private:
   void                      style(const char *rule, const char *css);
   void                      parseCss(const char *css);
   size_t                    findStyle(const char *pattern);
+  
+  // Helper methods to handle views layouts.
+  void                      parseViewsDefinition(QByteArray &data);
+  void                      registerDrawFunctions(void);
 
   int                   m_argc;
   char                  **m_argv;
@@ -412,6 +425,7 @@ private:
   typedef std::vector<Style>     Styles;
   typedef std::map<size_t, size_t> StylesMap;
 
+
   // Storage for all the available styles.
   StyleSpecs            m_styleSpecs;
   // Actually active styles.
@@ -419,6 +433,12 @@ private:
   // Mapping between a StyleSpec and an active style, so that we avoid
   // creating the latter more than once.
   StylesMap             m_stylesMap;
+
+  // Data concerning the view layout definition.
+  typedef std::map<std::string, Make3D> DrawFunctionsRegistry;
+  
+  // Lookup table for the available draw functions.
+  DrawFunctionsRegistry   m_drawFunctions;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

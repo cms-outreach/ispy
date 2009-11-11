@@ -60,6 +60,8 @@ ICON = Iguana/QtGUI/src/ispy.icns
 QMAKE_INFO_PLIST = Iguana/QtGUI/src/Info.plist
 }
 
+QMAKE_CXXFLAGS_RELEASE = -ggdb -O0
+
 unix:!mac {
 # Statically link stdc++ and libgcc.
 LIBS += -Wl,-dn -lstdc++ -Wl,-dy -static-libgcc
