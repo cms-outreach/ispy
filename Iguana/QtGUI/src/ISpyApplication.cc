@@ -2407,7 +2407,8 @@ ISpyApplication::parseViewsDefinition(QByteArray &data)
     throw ViewSpecParseError(xml.lineNumber());
 }
 
-/** Initialise but do not yet run the application object. */
+/** Initialise but do not yet run the application object. 
+  */
 ISpyApplication::ISpyApplication(void)
   : m_argc(-1),
     m_argv(0),
@@ -2459,9 +2460,37 @@ ISpyApplication::ISpyApplication(void)
   // Create the default style reading the specification from a QT resource.
   style("*", "");
   style("Background","diffuse-color: rbg(1.,0,0);");
-  QFile cssFile(":/css/default-style.css");
-  bool ok = cssFile.open(QIODevice::ReadOnly | QIODevice::Text);
+  bool ok = parseCssFile(":/css/default-style.css");
   ASSERT(ok && "Default style not compiled as resource.");
+  
+  // Register draw functions which will be later used to draw various 
+  // collections.
+  registerDrawFunctions();
+  
+  // Notice that the actual parsing of the configuration file is now deferred
+  // until the ISpyApplication::doRun method is invoked, so that we can
+  // use a view layout specified from the command line or even inside the ig
+  // file itself.
+}
+
+/** Destroy the application.  A no-op since everything is done on exit. */
+ISpyApplication::~ISpyApplication(void)
+{
+}
+
+/** Helper function which parses a CSS file pointed by @a filename 
+
+    @a filename the name of the css file.
+    
+    @return true if the file contains a valid css.
+*/
+bool
+ISpyApplication::parseCssFile(const char *filename)
+{
+  QFile cssFile(filename);
+  bool ok = cssFile.open(QIODevice::ReadOnly | QIODevice::Text);
+  if (!ok)
+    return false;
   QByteArray cssData = cssFile.readAll();
   ASSERT(cssData.size());
   try 
@@ -2471,14 +2500,27 @@ ISpyApplication::ISpyApplication(void)
   catch (CssParseError &e)
   {
     qDebug() << e.why.c_str() << ": " << e.what.c_str();
-    ASSERT(false && "Wrong default definition of styles.");
+    return false;
   }
-  // Create the default views, reading the specification from QT resource
-  // containing a conveniently formatted xml file.
-  registerDrawFunctions();
-  QFile viewsDefinitionFile(":/views/default-views.xml");
-  bool viewsOk = viewsDefinitionFile.open(QIODevice::ReadOnly | QIODevice::Text);
-  ASSERT(viewsOk && "Default views not compiled as resource.");
+  
+  return true;
+}
+
+/** Helper function which parses a view layout file pointed by @a filename 
+
+    @a filename the name of the css file.
+    
+    @return true if the file contains a valid layout.
+*/
+bool
+ISpyApplication::parseViewsDefinitionFile(const char *filename)
+{
+  QFile viewsDefinitionFile(filename);
+  bool ok = viewsDefinitionFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+  if (!ok)
+    return false;
+
   QByteArray viewData = viewsDefinitionFile.readAll();
   ASSERT(viewData.size());
   try
@@ -2487,14 +2529,11 @@ ISpyApplication::ISpyApplication(void)
   }
   catch (ViewSpecParseError &e)
   {
-    qDebug() << e.m_lineNumber;
-    ASSERT(false && "Wrong default definition of views.");
+    qDebug() << "Error while parsing file " << filename
+             << " at line " << e.lineNumber;
+    return false;
   }
-}
-
-/** Destroy the application.  A no-op since everything is done on exit. */
-ISpyApplication::~ISpyApplication(void)
-{
+  return true;
 }
 
 /** Specify a new collection.  Call this during the application
@@ -2882,10 +2921,10 @@ int
 ISpyApplication::usage(void)
 {
   const char *app = appname();
-  std::cerr << "Usage: " << app << " [OPTION-OR-FILENAME]...\n"
+  std::cerr << "Usage: " << app << " [CSS-FILE] [LAYOUT-FILE] [IG-FILE]...\n"
             << "   or: " << app << " --help\n"
             << "   or: " << app << " --version\n"
-	    << "   or: " << app << " --online HOST[:PORT]\n";
+            << "   or: " << app << " --online HOST[:PORT]\n";
 
   return EXIT_FAILURE;
 }
@@ -2898,6 +2937,17 @@ ISpyApplication::version(void)
             << QCoreApplication::applicationVersion().toStdString() << "\n";
 
   return EXIT_SUCCESS;
+}
+
+/** Checks if @a filename ends with @a extension.
+ */
+bool
+hasExtension(const std::string& filename, const std::string &extension)
+{
+  size_t pos = filename.rfind(extension);
+  if (filename.size() == pos + extension.size())
+    return true;
+  return false;
 }
 
 /** Run the application with the given command line arguments.
@@ -2917,6 +2967,20 @@ ISpyApplication::run(int argc, char *argv[])
       return usage();
     else if (!strcmp(*argv, "--version"))
       return version();
+    else if (hasExtension(*argv, ".iss"))
+    {
+      m_cssFilename = *argv;
+      // Remove the command line option so that
+      // it would not be treated as a filename.
+      m_argv[i][0] = '\0';
+    }
+    else if (hasExtension(*argv, ".iml"))
+    {
+      m_viewsLayoutFilename = *argv;
+      // Remove the command line option so that
+      // it would not be treated as a filename.
+      m_argv[i][0] = '\0';
+    }
     else if (!strcmp(*argv, "--online"))
     {      
 #ifdef Q_WS_MAC
@@ -2925,18 +2989,19 @@ ISpyApplication::run(int argc, char *argv[])
 #endif
       if (! *++argv)
       {
-	std::cerr << "--online requires an argument\n";
-	return usage();
+        std::cerr << "--online requires an argument\n";
+        return usage();
       }
       else
       {
-	m_online = true;
-	m_autoEvents = true;
-	onlineConfig(*argv);
-	*++argv;
-	// Remove the command line option so that
-	// it would not be treated as a filename.
-	m_argv[i][0] = '\0'; m_argv[i+1][0] = '\0';
+        m_online = true;
+        m_autoEvents = true;
+        onlineConfig(*argv);
+        *++argv;
+        // Remove the command line option so that
+        // it would not be treated as a filename.
+        m_argv[i][0] = '\0'; m_argv[i+1][0] = '\0';
+        i++;
       }
     }
     i++;
@@ -3302,14 +3367,31 @@ ISpyApplication::showAbout(void)
   m_splash->showAbout();
 }
 
-/** Main application run loop.  Initialises the application, shows its
-    windows, opens any files requested(on command line or from
-    operating system open file events) and executes the run loop.
+/** Main application run loop. If specified, read and additional css file
+    from the command line. If specified read a view layout file from the 
+    command-line, if not read the default one.
+    Initialises the application, shows its windows, opens any files requested
+    (on command line or from operating system open file events) and executes 
+    the run loop.
     Returns the application exit code.  Note that this function may
     never return in certain situations such as GUI log-out. */
 int
 ISpyApplication::doRun(void)
 {
+  if (!m_cssFilename.empty())
+    parseCssFile(m_cssFilename.c_str());
+  if (!m_viewsLayoutFilename.empty())
+  {
+    qDebug() << "Reading " << m_viewsLayoutFilename.c_str();
+    parseViewsDefinitionFile(m_viewsLayoutFilename.c_str());
+  }
+  else
+  {
+      bool ok = parseViewsDefinitionFile(":/views/default-views.xml");
+      ASSERT(ok && "Default views are broken!!!");
+      qDebug() << "Reading default views.";
+  }
+  
   ISpyEventFilter filter;
   QApplication app(m_argc, m_argv);
   SoQt::init(m_argc, m_argv, m_argv[0]);
@@ -3352,12 +3434,12 @@ ISpyApplication::doRun(void)
   evloop.processEvents(QEventLoop::ExcludeUserInputEvents);
 
   // Open file names given on the command line(unix, windows).
-  for (int i = 1; i < m_argc; ++i)
-    simpleOpen(m_argv[i]);
-  
   // If the geometry is not there after loading all the ig files
   // passed on command line, get it from the web.
-  if (m_argc != 1 && !m_archives[1])
+  bool didOpen = false;
+  for (int i = 1; i < m_argc; ++i)
+    didOpen |= simpleOpen(m_argv[i]);
+  if (didOpen && !m_archives[1])
     downloadGeometry();
 
   // If we don't have any files open, show the splash screen as a file
@@ -4062,11 +4144,11 @@ ISpyApplication::openWithFallbackGeometry(const QString &fileName)
     Apart from those, only the zip index is read and is used to
     rebuild the in-memory event list.
 */
-void
+bool
 ISpyApplication::simpleOpen(const QString &fileName)
 {
   if (fileName.isEmpty())
-    return;
+    return false;
 
   qDebug() << "Try to open " << fileName;
   showMessage(QString("Opening ") + fileName + tr("..."));
@@ -4074,7 +4156,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
   // Read the file in.
   ZipArchive *file = loadFile(fileName);
   if (! file)
-    return;
+    return false;
 
   // See what the file contains.
   Events                        events;
@@ -4159,6 +4241,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
     m_splash->hide();
   }
 
+  return true;
 }
 
 /** Downloads geometry from a fixed web location if not 

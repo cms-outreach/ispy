@@ -62,10 +62,10 @@ namespace lat
 struct ViewSpecParseError
 {
   ViewSpecParseError(size_t lineNumber = 0)
-  :m_lineNumber(lineNumber)
+  :lineNumber(lineNumber)
   {
   }
-  size_t m_lineNumber;
+  size_t lineNumber;
 };
 
 struct CssParseError
@@ -341,7 +341,7 @@ private:
                                  lat::ZipMember *source);
   void                  downloadFile(const QUrl &url);
   void                  downloadGeometry(void);
-  void                  simpleOpen(const QString &fileName);
+  bool                  simpleOpen(const QString &fileName);
   void                  setupActions(void);
   void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
   void                  filter(const char *friendlyName,
@@ -355,10 +355,12 @@ private:
                                           enum ISPY_MARKER_SHAPE shape);
   void                      style(const char *rule, const char *css);
   void                      parseCss(const char *css);
+  bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);
   
   // Helper methods to handle views layouts.
   void                      parseViewsDefinition(QByteArray &data);
+  bool                      parseViewsDefinitionFile(const char *filename);
   void                      registerDrawFunctions(void);
 
   int                   m_argc;
@@ -429,8 +431,10 @@ private:
   private:
     std::string m_name;
   };
-  
+
+  //
   // Data concerning rendering style handling.
+  //
   typedef std::vector<StyleSpec> StyleSpecs;
   typedef std::vector<Style>     Styles;
   typedef std::map<size_t, size_t> StylesMap;
@@ -443,12 +447,20 @@ private:
   // Mapping between a StyleSpec and an active style, so that we avoid
   // creating the latter more than once.
   StylesMap             m_stylesMap;
-
+  // Name of the css file to use to read style information from. Since
+  // it's cascading it's contents get appended at the end of the default ones.
+  std::string           m_cssFilename;
+  
+  //
   // Data concerning the view layout definition.
+  //
   typedef std::map<std::string, Make3D> DrawFunctionsRegistry;
   
   // Lookup table for the available draw functions.
   DrawFunctionsRegistry   m_drawFunctions;
+  // Name of the view layout file to read. The file has to contain the full 
+  // view description.
+  std::string             m_viewsLayoutFilename;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
