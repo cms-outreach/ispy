@@ -27,6 +27,9 @@
 
 	* ISpyApplication.cc: Disable notification while we are editing the
 	  separator.
+	
+	* ISpyApplication.h, default-style.css, ISpyApplication.cc: put
+	  physics limits in css.
 
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 

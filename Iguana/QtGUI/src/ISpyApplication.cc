@@ -251,6 +251,9 @@ ISpyApplication::style(const char *rule, const char *css)
   spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
   spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
   spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
+  spec.minEnergy = 0.2;   // Default value is 0.2 GeV
+  spec.maxEnergy = 5.;    // Default value is 5.0 GeV
+  spec.energyScale = 1.;  // Default value is 0.1 m/GeV
   
   // Parse the rule.
   StringList ruleParts = StringOps::split(rule, "::");
@@ -288,6 +291,9 @@ ISpyApplication::style(const char *rule, const char *css)
     spec.markerSize = previous.markerSize;
     spec.markerStyle = previous.markerStyle;
     spec.textAlign = previous.textAlign;
+    spec.minEnergy = previous.minEnergy;
+    spec.maxEnergy = previous.maxEnergy;
+    spec.energyScale = previous.energyScale;
   }
 
   // Parse the property declarations and deposit new value on top of those
@@ -380,6 +386,24 @@ ISpyApplication::style(const char *rule, const char *css)
       spec.textAlign = ISPY_TEXT_ALIGN_CENTER;
     else if (key == "text-align")
       throw CssParseError("Syntax error while defining text-align", value);
+    else if (key == "min-energy")
+    {
+      spec.minEnergy = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing min-energy value", value);
+    }
+    else if (key == "energy-scale")
+    {
+      spec.energyScale = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing energy-scale value", value);
+    }
+    else if (key == "max-energy")
+    {
+      spec.maxEnergy = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing max-energy value", value);
+    }
     else
     {
       throw CssParseError("Unknown property", key);
@@ -844,11 +868,11 @@ make3DAnyDetId(IgCollection **, IgAssociationSet **,
 // adjustment.
 //
 static void
-makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, SoSeparator *sep, float minE, float layer, bool flag)
+makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, 
+                  SoSeparator *sep, ISpyApplication::Style *style, float layer, bool flag)
 {
   IgCollection *c = collections[0];
-  float energyScaleFactor = 0.03;
-  
+
   IgDrawTowerHelper drawTowerHelper(sep);
 
   IgProperty ENERGY = c->getProperty("energy");
@@ -864,7 +888,7 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, SoSeparator *
   for(IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     double energy = ci->get<double>(ENERGY);
-    if(energy > minE)
+    if(energy > style->minEnergy)
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -916,7 +940,7 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, SoSeparator *
       
       drawTowerHelper.addTower(tf1, tf2, tf3, tf4, tb1, tb2, tb3, tb4,
                                energy,
-                               energyScaleFactor);
+                               style->energyScale);
     }
   }
 }
@@ -925,21 +949,21 @@ static void
 makeRZECalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
                   SoSeparator *sep, ISpyApplication::Style *style)
 {
-  makeRZEnergyHisto(collections, assocs, sep, 0.2f, -0.5, true);
+  makeRZEnergyHisto(collections, assocs, sep, style, -0.5, true);
 }
 
 static void
 makeRZEPRecHits(IgCollection **collections, IgAssociationSet **assocs, 
-                SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                SoSeparator *sep, ISpyApplication::Style *style)
 {
-  makeRZEnergyHisto(collections, assocs, sep, 0.001f, 0.0, false);
+  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false);
 }
 
 static void
 makeRZHCalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
-                SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                SoSeparator *sep, ISpyApplication::Style *style)
 {
-  makeRZEnergyHisto(collections, assocs, sep, 0.2f, 0.0, false);
+  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false);
 }
 
 static void
@@ -1144,12 +1168,9 @@ phi4eta (float eta)
 
 static void
 makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **, 
-                   SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                   SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
-
   IgDrawTowerHelper drawTowerHelper(sep);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
@@ -1158,14 +1179,14 @@ makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **,
     double et = ci->get<double>("et");
     double emFraction = emEnergy / et;
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
       double eta  = ci->get<double>("eta");
       double phi  = ci->get<double>("phi");
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, (emFraction > 0 ? emFraction : 0),
-                                   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+                                   style->energyScale, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
                                    phi4eta (fabs (eta)));
     }
   }
@@ -1191,8 +1212,6 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   top->addChild(sty);
   
   IgCollection          *c = collections[0];
-  //  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 5.0;  // GeV      FIXME LT: should get it from some service
 
   IgProperty ETA = c->getProperty("eta");
   IgProperty PHI = c->getProperty("phi"); 
@@ -1202,7 +1221,7 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   {
     double et = ci->get<double>(ET);
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
       double eta  = ci->get<double>(ETA);
       double phi  = ci->get<double>(PHI);
@@ -1248,11 +1267,9 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
 static void
 makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
-                    SoSeparator *sep, ISpyApplication::Style * /* style */)
+                    SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1266,25 +1283,24 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
     double eta  = ci->get<double>(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
       double phi  = ci->get<double>(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 0.0,
-				   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
-				   phi4eta (fabs (eta)));
+                                   style->energyScale, 
+                                   (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+                                   phi4eta (fabs (eta)));
     }
   }
 }
 
 static void
 makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
-                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                    SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1298,14 +1314,14 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
     double eta  = ci->get<double>(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
       double phi  = ci->get<double>(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 1.0,
-				   energyScaleFactor, 0.0174f,
-				   0.0174f);
+                                   style->energyScale, 0.0174f,
+                                   0.0174f);
     }
   }
 }
@@ -1507,11 +1523,10 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, 
-                  SoSeparator *sep, ISpyApplication::Style * /* style */)
+                  SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection          *c = collections[0];
-  float minEnergy     = 0.2;   // GeV  FIXME LT: should get it from some service
-  float maxEnergy     = 5.0;  // GeV  Not a cut -- just used to set max box size
+  float maxEnergy          = style->maxEnergy;  // GeV  Not a cut -- just used to set max box size
 
   // FIXME: can compress the following code
 
@@ -1540,7 +1555,7 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **,
   {
     double energy = ci->get<double>("energy");
 
-    if (energy > minEnergy)
+    if (energy > style->minEnergy)
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1560,13 +1575,9 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, 
-                   SoSeparator *sep, ISpyApplication::Style * /* style */)
+                   SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-
-  float energyScaleFactor = 0.03;  // m/GeV    FIXME LT: should get it from some service
-  // float energyScaleFactor = 0.2;  // increase to help PF electrons show up  
-  float minEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1586,7 +1597,7 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
   {
     double energy = ci->get<double>(ENERGY);
 
-    if (energy > minEnergy)
+    if (energy > style->minEnergy)       // GeV
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1601,7 +1612,7 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
                                energy,
-                               energyScaleFactor);
+                               style->energyScale); // m/GeV
     }
   }
 }
@@ -1612,11 +1623,9 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
-                        SoSeparator *sep, ISpyApplication::Style * /* style */)
+                        SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1636,7 +1645,7 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
   {
     double energy = ci->get<double>(ENERGY);
 
-    if (energy > minimumEnergy)
+    if (energy > style->minEnergy)  // GeV
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1651,18 +1660,16 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
                                energy,
-                               energyScaleFactor);
+                               style->energyScale); // m / GeV
     }
   }
 }
 
 static void
 make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
-                               SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                               SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1684,7 +1691,7 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
     double emEnergy = ci->get<double>(EMENERGY);
     double hadEnergy = ci->get<double>(HADENERGY);
 
-    if (hadEnergy > minimumEnergy)
+    if (hadEnergy > style->minEnergy)
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1698,15 +1705,15 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
 
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
-                               hadEnergy, (emEnergy>minimumEnergy?emEnergy:0),
-                               energyScaleFactor);
+                               hadEnergy, (emEnergy > style->minEnergy ? emEnergy : 0),
+                               style->energyScale);
     }
   }
 }
 
 static void 
 make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
-                   SoSeparator *sep, ISpyApplication::Style */*style*/)
+                   SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection       *clusters = collections[0];
   IgCollection       *fracs    = collections[1];
@@ -1918,10 +1925,9 @@ make3DPhoton(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DJetShapes(IgCollection **collections, IgAssociationSet **, 
-                SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  double                ecut = 5.0;  // FIXME LT: get value from some service
   IgProperty ET = c->getProperty("et");
   IgProperty THETA = c->getProperty("theta");
   IgProperty PHI = c->getProperty("phi");
@@ -1932,7 +1938,7 @@ make3DJetShapes(IgCollection **collections, IgAssociationSet **,
     double theta = ci->get<double>(THETA);
     double phi   = ci->get<double>(PHI);
 
-    if (et > ecut)
+    if (et > style->minEnergy)
     {
       IgSoJet *recoJet = new IgSoJet;
       recoJet->theta.setValue(theta);
@@ -3841,6 +3847,10 @@ ISpyApplication::findStyle(const char *pattern)
       case ISPY_TEXT_ALIGN_RIGHT: style.textAlign = SoText2::RIGHT; break;
       case ISPY_TEXT_ALIGN_CENTER: style.textAlign = SoText2::CENTER; break;        
     }
+    style.minEnergy = spec.minEnergy;
+    style.maxEnergy = spec.maxEnergy;
+    style.energyScale = spec.energyScale;
+
     // Style nodes do not get deleted  by dropping a given
     // collection representation.
     style.material->ref();

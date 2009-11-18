@@ -85,6 +85,10 @@ class ISpyApplication : public QObject
   Q_OBJECT
 public:
 
+  // The style structure is used to keep track of the context used to render
+  // a collection. It includes stuff that is graphics related (like the font
+  // and the material) and stuff which is physics related (like min-energy, 
+  // max-pt, etc).
   struct Style
   {
     size_t                      spec;
@@ -94,6 +98,9 @@ public:
     SoMarkerSet::MarkerType     markerType;
     SbViewportRegion            viewport;
     SoText2::Justification      textAlign;
+    double                      minEnergy;
+    double                      maxEnergy;
+    double                      energyScale;
   };
 
   ISpyApplication(void);
@@ -247,6 +254,9 @@ private:
     ISPY_MARKER_SIZE            markerSize;
     ISPY_MARKER_STYLE           markerStyle;
     ISPY_TEXT_ALIGN             textAlign;
+    double                      minEnergy;
+    double                      maxEnergy;
+    double                      energyScale; 
   };
   
   struct Collection
