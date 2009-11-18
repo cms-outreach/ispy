@@ -8,6 +8,8 @@
 	* ISpyApplication.cc, ISpyApplication.h: read configuration files from
 	  disk.
 
+	* IgParser.h: improve parser speed for igfiles.
+
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: Version number changed to 1.4.0.
