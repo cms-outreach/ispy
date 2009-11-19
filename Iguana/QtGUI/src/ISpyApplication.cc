@@ -1179,7 +1179,7 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 }
 
 static void
-makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
                     SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
   IgCollection          *c = collections[0];
