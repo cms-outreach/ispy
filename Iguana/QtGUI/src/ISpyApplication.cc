@@ -1156,15 +1156,19 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty ENERGY = c->getProperty("energy");
+  IgProperty ETA = c->getProperty("eta");
+  IgProperty PHI = c->getProperty("phi");
+  
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
-    double eta  = ci->get<double>("eta");
+    double energy = ci->get<double>(ENERGY);
+    double eta  = ci->get<double>(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
     if (et > minimumEnergy)
     {
-      double phi  = ci->get<double>("phi");
+      double phi  = ci->get<double>(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 0.0,
@@ -1184,15 +1188,19 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet **assocs,
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty ENERGY = c->getProperty("energy");
+  IgProperty ETA = c->getProperty("eta");
+  IgProperty PHI = c->getProperty("phi");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
-    double eta  = ci->get<double>("eta");
+    double energy = ci->get<double>(ENERGY);
+    double eta  = ci->get<double>(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
     if (et > minimumEnergy)
     {
-      double phi  = ci->get<double>("phi");
+      double phi  = ci->get<double>(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 1.0,
@@ -1472,9 +1480,11 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
   IgProperty BACK_3 = c->getProperty("back_3");
   IgProperty BACK_4 = c->getProperty("back_4");
 
+  IgProperty ENERGY = c->getProperty("energy");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
+    double energy = ci->get<double>(ENERGY);
 
     if (energy > minEnergy)
     {
@@ -1566,10 +1576,13 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
   IgProperty BACK_3 = c->getProperty("back_3");
   IgProperty BACK_4 = c->getProperty("back_4");
 
+  IgProperty EMENERGY = c->getProperty("emEnergy");
+  IgProperty HADENERGY = c->getProperty("hadEnergy");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double emEnergy = ci->get<double>("emEnergy");
-    double hadEnergy = ci->get<double>("hadEnergy");
+    double emEnergy = ci->get<double>(EMENERGY);
+    double hadEnergy = ci->get<double>(HADENERGY);
 
     if (hadEnergy > minimumEnergy)
     {
