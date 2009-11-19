@@ -12,6 +12,9 @@
 
 	* ISpyApplication.cc: optimize collection navigation.
 
+	* IgDrawTowerHelper.h, IgDrawTowerHelper.cc: much improved  / optimized 
+	  helper for drawing towers and cubes.
+
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: Version number changed to 1.4.0.

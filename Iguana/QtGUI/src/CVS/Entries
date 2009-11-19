@@ -32,7 +32,6 @@
 /IgVariantDelegate.cc/1.2/Sun Sep  6 12:18:12 2009//
 /Info.plist/1.1/Sun Sep 13 16:23:09 2009//
 /ispy.icns/1.1/Sun Sep 13 16:23:09 2009//
-/IgDrawTowerHelper.cc/1.9/Tue Nov  3 22:03:16 2009//
 /ISpyEventSelectorDialog.cc/1.1/Thu Nov  5 07:08:31 2009//
 /ISpyEventSelectorDialog.h/1.1/Thu Nov  5 07:08:31 2009//
 /ISpyEventSelectorDialog.ui/1.1/Thu Nov  5 07:08:31 2009//
@@ -48,4 +47,5 @@
 /IgMainWindowMDI.1.0.ui/1.16/Thu Nov  5 07:50:37 2009//
 /ISpySplashScreen.ui/1.12/Wed Nov 11 11:20:56 2009//
 /ISpyApplication.cc/1.141/Wed Nov 25 17:41:00 2009//
+/IgDrawTowerHelper.cc/1.10/Wed Nov 25 17:43:33 2009//
 D
