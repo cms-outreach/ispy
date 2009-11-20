@@ -28,7 +28,8 @@ Background {
 // Event information.
 Event_V1 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
-  font-size: 14.0;
+  font-size: 30.0; 
+  font-family: Arial;
 }
 
 L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); text-align: right;}

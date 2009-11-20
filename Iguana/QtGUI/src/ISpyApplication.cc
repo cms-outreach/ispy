@@ -595,21 +595,24 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
   OverlayCreatorHelper helper(sep, style);
 
   helper.beginBox(-0.95, 0.97, style->textAlign);
-  helper.createTextLine("CMS Experiment, CERN");
-  helper.createTextLine(" ");
+  helper.createTextLine("CMS Experiment at the LHC, CERN");
+  helper.indentText(0, 0.8);
   helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
-                               ("Data_taken " + time).c_str());
-  helper.createTextLine(" ");
-  helper.createIntLine("Run_no____ ", e.get<int>("run"));
-  helper.createIntLine("Event_no__ ", e.get<int>("event"));
-  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));
-  helper.createIntLine("Orbit_____ ", e.get<int>("orbit"));
-  helper.createIntLine("Crossing__ ", e.get<int>("bx"));
-  helper.createTextLine("http://iguana.cern.ch/ispy");
+                               ("Data recorded: " + time).c_str());
+  char runStr[1024];
+  helper.createTextLine((sprintf(runStr, "Run / Event: %d / %d", 
+                         e.get<int>("run"), e.get<int>("event")), runStr));
   helper.endBox();
-  helper.beginBox(-0.95, -0.93, style->textAlign, 0.6);
+  helper.beginBox(-0.95, -0.92, style->textAlign, 0.6);
   helper.createTextLine("(c) CERN 2009. All rights reserved.");  
   helper.endBox();
+  
+//  helper.createIntLine("Run_no____ ", e.get<int>("run"));
+//  helper.createIntLine("Event_no__ ", e.get<int>("event"));
+//  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));
+//  helper.createIntLine("Orbit_____ ", e.get<int>("orbit"));
+//  helper.createIntLine("Crossing__ ", e.get<int>("bx"));
+//  helper.createTextLine("http://iguana.cern.ch/ispy");
 }
 
 

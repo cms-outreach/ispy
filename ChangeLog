@@ -22,6 +22,9 @@
 	* ISpyApplication.cc, default-style.css, ISpyApplication.h: improved overlay 
 	  creator helper, including support for fonts of different sizes.
 
+	* ISpyApplication.cc, default-style.css: change make3DEvent text /
+	  style to match the one requested by the spokesman.
+
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: Version number changed to 1.4.0.
