@@ -58,9 +58,13 @@ LIBS += -L$$SOQT_BASE/lib -lSoQt
 LIBS += -L$$COIN3D_BASE/lib -lCoin
 LIBS += -L$$PCRE_BASE/lib -lpcre
 LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
-LIBS += -L$$FREETYPE_BASE/lib -lfreetype
-LIBS += -L$$EXPAT_BASE/lib -lexpat
 LIBS += -L$$FONTCONFIG_BASE/lib -lfontconfig
+LIBS += -L$$FREETYPE_BASE/lib -lfreetype
+mac { 
+LIBS += -L$$EXPAT_BASE/lib -lexpatstatic
+}
+
+unix:!mac { LIBS += -L$$EXPAT_BASE/lib -lexpat }
 
 mac {
 LIBS += -framework QuickTime
@@ -68,14 +72,13 @@ ICON = Iguana/QtGUI/src/ispy.icns
 QMAKE_INFO_PLIST = Iguana/QtGUI/src/Info.plist
 }
 
-QMAKE_CXXFLAGS_RELEASE = -ggdb -O0
+QT += network opengl
 
 unix:!mac {
 # Statically link stdc++ and libgcc.
 LIBS += -Wl,-dn -lstdc++ -Wl,-dy -static-libgcc
 LIBS += -lXi
+LIBS += -lfontconfig -lexpat -lfreetype
 }
-
-QT += network opengl
 
 message("Now please type make")
