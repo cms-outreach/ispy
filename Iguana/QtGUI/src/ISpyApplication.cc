@@ -3770,11 +3770,13 @@ ISpyApplication::displayCollection(Collection &c)
     {
       Style *style = &(m_styles[c.style]);
       ASSERT(style);
+      c.sep->enableNotify(FALSE);
       style->viewport = m_viewer->getViewportRegion();
       c.sep->addChild(style->material);
       c.sep->addChild(style->drawStyle);
       c.sep->addChild(style->font);
       (*c.spec->make3D)(c.data, &c.assoc, c.sep, style);
+      c.sep->enableNotify(TRUE);
     }
     c.node->whichChild = SO_SWITCH_ALL;
   }

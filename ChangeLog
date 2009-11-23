@@ -25,6 +25,9 @@
 	* ISpyApplication.cc, default-style.css: change make3DEvent text /
 	  style to match the one requested by the spokesman.
 
+	* ISpyApplication.cc: Disable notification while we are editing the
+	  separator.
+
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: Version number changed to 1.4.0.
