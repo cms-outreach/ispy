@@ -3,7 +3,6 @@
     Colour table at:
     
     http://www.december.com/html/spec/colorsafecodes.html
-
  */
 
 
@@ -131,14 +130,14 @@ GsfTracks_V1
   diffuse-color: rgb(1.0, 0.8, 0.4);
 }
 
-EcalRecHits_V1 { diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.03;}
-EBRecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.03;}
-EERecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.03;}
-ESRecHits_V1 {diffuse-color: rgb(1.0, 0.6, 0.0); min-energy: 0.001;}
-HBRecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 0.2; energy-scale: 0.03;}
-HERecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 0.2; energy-scale: 0.03;}
-HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 0.2; energy-scale: 0.03;}
-HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 0.2; energy-scale: 0.03;}
+EcalRecHits_V1 { diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.03;}
+EBRecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.03;}
+EERecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.03;}
+ESRecHits_V1 {diffuse-color: rgb(1.0, 0.6, 0.0); min-energy: 0.001; energy-scale: 100.;}
+HBRecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.03;}
+HERecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.03;}
+HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.03;}
+HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 1.0; energy-scale: 0.03;}
 
 CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0);}
 SuperCluster_V1 {diffuse-color: rgb(1.0, 0.2, 0.0);}
