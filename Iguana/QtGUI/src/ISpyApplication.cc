@@ -643,7 +643,7 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
   // FIXME LT: make visibilty of each line switchable in the interface(and settings) e.g. as for ig collections
   OverlayCreatorHelper helper(sep, style);
 
-  helper.beginBox(-0.65, 0.97, style->textAlign);
+  helper.beginBox(-0.75, 0.93, style->textAlign);
   helper.createTextLine("CMS Experiment at the LHC, CERN");
   helper.indentText(0, 0.7);
   helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
@@ -655,9 +655,13 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
   helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
   helper.createTextLine("(c) CERN 2009. All rights reserved.");
   helper.endBox();
+  helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
+  helper.createTextLine("http://iguana.cern.ch/ispy");
+  helper.endBox();
+  
   
   if (style->background)
-    helper.addImage(-0.95, 0.93, 0.26, 0.26, style->background);
+    helper.addImage(-0.95, 0.93, 0.16, 0.16, style->background);
 //  helper.createIntLine("Run_no____ ", e.get<int>("run"));
 //  helper.createIntLine("Event_no__ ", e.get<int>("event"));
 //  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));
