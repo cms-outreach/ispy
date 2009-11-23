@@ -31,6 +31,8 @@
 	* ISpyApplication.h, default-style.css, ISpyApplication.cc: put
 	  physics limits in css.
 
+	* ISpyApplication.cc: faster CSC Rec hits.
+
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: Version number changed to 1.4.0.

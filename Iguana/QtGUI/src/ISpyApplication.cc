@@ -2080,14 +2080,11 @@ make3DCSCDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep
   {
     IgV3d pos = ci->get<IgV3d>(POS);
 
-    SoTranslation* trans = new SoTranslation;
-    trans->translation = SbVec3f(pos.x(),pos.y(),pos.z());
-   
-    SbVec3f axis(0.0, 0.0, 1.0);
+    SoTransform *transform = new SoTransform;
+    transform->translation.setValue(pos.x(), pos.y(), pos.z());
     double angle = -atan2(pos.x(),pos.y()) - rotate;
 
-    SoTransform* xform = new SoTransform;
-    xform->rotation = SbRotation(axis,angle);
+    transform->rotation.setValue(SbVec3f(0.0, 0.0, 1.0), angle);
 
     SoCube* hit = new SoCube;
     hit->width  = width;
@@ -2095,8 +2092,7 @@ make3DCSCDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep
     hit->depth  = depth;
 
     SoSeparator* pulse = new SoSeparator;
-    pulse->addChild(trans);
-    pulse->addChild(xform);
+    pulse->addChild(transform);
     pulse->addChild(hit);
     sep->addChild(pulse);
   }
