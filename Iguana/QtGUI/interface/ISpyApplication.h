@@ -13,6 +13,8 @@
 # include <map>
 # include <Inventor/nodes/SoMarkerSet.h>
 # include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoText2.h>
+# include <Inventor/SbViewportRegion.h>
 
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 
@@ -90,6 +92,8 @@ public:
     SoDrawStyle                 *drawStyle;
     SoFont                      *font;
     SoMarkerSet::MarkerType     markerType;
+    SbViewportRegion            viewport;
+    SoText2::Justification      textAlign;
   };
 
   ISpyApplication(void);
@@ -222,6 +226,12 @@ private:
     ISPY_CIRCLE_MARKER_SHAPE = 3 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES)
   };
 
+  enum ISPY_TEXT_ALIGN {
+    ISPY_TEXT_ALIGN_LEFT,
+    ISPY_TEXT_ALIGN_RIGHT,
+    ISPY_TEXT_ALIGN_CENTER
+  };
+
   struct StyleSpec
   {
     std::string                 viewName;
@@ -236,6 +246,7 @@ private:
     ISPY_MARKER_SHAPE           markerShape;
     ISPY_MARKER_SIZE            markerSize;
     ISPY_MARKER_STYLE           markerStyle;
+    ISPY_TEXT_ALIGN             textAlign;
   };
   
   struct Collection

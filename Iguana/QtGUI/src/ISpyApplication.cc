@@ -59,6 +59,7 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoVertexProperty.h>
+#include <Inventor/actions/SoGetBoundingBoxAction.h>
 
 #include <QApplication>
 #include <QEventLoop>
@@ -249,6 +250,7 @@ ISpyApplication::style(const char *rule, const char *css)
   spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
   spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
   spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
+  spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
   
   // Parse the rule.
   StringList ruleParts = StringOps::split(rule, "::");
@@ -285,6 +287,7 @@ ISpyApplication::style(const char *rule, const char *css)
     spec.markerShape = previous.markerShape;
     spec.markerSize = previous.markerSize;
     spec.markerStyle = previous.markerStyle;
+    spec.textAlign = previous.textAlign;
   }
 
   // Parse the property declarations and deposit new value on top of those
@@ -369,6 +372,14 @@ ISpyApplication::style(const char *rule, const char *css)
       spec.markerStyle = ISPY_OUTLINE_MARKER_STYLE;
     else if (key == "marker-style")
       throw CssParseError("Syntax error while defining marker-style", value);
+    else if (key == "text-align" && value == "left")
+      spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
+    else if (key == "text-align" && value == "right")
+      spec.textAlign = ISPY_TEXT_ALIGN_RIGHT;
+    else if (key == "text-align" && value == "center")
+      spec.textAlign = ISPY_TEXT_ALIGN_CENTER;
+    else if (key == "text-align")
+      throw CssParseError("Syntax error while defining text-align", value);
     else
     {
       throw CssParseError("Unknown property", key);
@@ -443,102 +454,188 @@ ISpyApplication::parseCss(const char *css)
 // Draw Text Overlays
 // ------------------------------------------------------
 
-
-static void
-createTextLine(SoGroup *group, SoTranslation *trans, const std::string &text)
+class OverlayCreatorHelper
 {
-  SoText2 *label = new SoText2;
-  label->string = text.c_str();
-  group->addChild(trans);
-  group->addChild(label);
-}
+public:
+  /** Helper class to draw overlay information. It also created a background
+    bevel for the overlay, so that it stands out from the rest of the scene.
+    
+    The coordinate system is centered in the middle of the screen. Top left
+    corner is (-1, 1), while bottom right one is (1, -1). I'm not particularly 
+    sure this is a good typographic convention, but that's ok for now.
+    
+    @a group where to attach the result.
+    
+    @a style is the style used for rendering.
+    
+    FIXME: Notice that deltaY is bound to DPI values although I have
+           a factor 10 difference.
+  */
+  OverlayCreatorHelper(SoGroup *group, ISpyApplication::Style *style)
+  :m_group(group),
+   m_style(style),
+   m_overlay(new SoAnnotation),
+   m_camera(new SoOrthographicCamera),
+   m_textStartTranslation(0),
+   m_nextLineTranslation(0),
+   m_boxSeparator(0),
+   m_font(0),
+   m_fontScale(1.)
+  {
+    m_group->enableNotify(FALSE);
+    // Scale is 1. by default. LEAVE_ALONE is used to make sure we can have
+    // an almost view independent positioning.
+    m_camera->nearDistance = 1;
+    m_camera->farDistance = 10;
+    m_camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
+    m_camera->focalDistance = 1;
+    m_camera->viewportMapping = SoCamera::LEAVE_ALONE;
+    m_overlay->addChild(m_camera);
+  }
+
+  ~OverlayCreatorHelper()
+  {
+    m_group->addChild(m_overlay);
+    m_group->enableNotify(TRUE);
+  }
+  
+  /** Start a new text box in the current annotation layer.
+  @a x is the x coordinate of the top left corner of the overlay.
+  
+  @a y is the y coordinate of the top left corner of the overlay.
+  
+  @a deltaX is the X increment for the position of a new line when compared 
+            to the following one.
+  
+  @a deltaY is the Y increment for the position of a new line when compared 
+            to the following one.
+  */
+  void beginBox(float x, float y,
+                enum SoText2::Justification justification = SoText2::LEFT,
+                float fontScale = 1.0,
+                float deltaX = 0.0, float deltaY = -0.254/72)
+  {
+    m_font = new SoFont;
+    m_font->size = m_style->font->size.getValue() * fontScale;
+    m_font->name = m_style->font->name.getValue();
+    m_justification = justification;
+    m_textStartTranslation = new SoTranslation;
+    m_nextLineTranslation = new SoTranslation;
+    float fontHeight = deltaY * m_font->size.getValue();
+    m_textStartTranslation->translation = SbVec3f(x, y + fontHeight, 0.);
+    m_nextLineTranslation->translation = SbVec3f(deltaX, fontHeight, 0.);
+    m_boxSeparator = new SoSeparator;
+    m_boxSeparator->addChild(m_textStartTranslation);
+    m_boxSeparator->addChild(m_font);
+  }
+  
+  /** Indent text in the box and possibly rescale it.
+      
+      Useful to create titled lists or so.
+      
+   */
+  void indentText(int indentationLevel, float fontScale = 1.0)
+  {
+    m_font = new SoFont;
+    m_font->size = m_style->font->size.getValue() * fontScale;
+    m_font->name = m_style->font->name.getValue();
+    SoTranslation *indentation = new SoTranslation;
+    m_nextLineTranslation = new SoTranslation;
+    float fontHeight = -0.254/72 * m_font->size.getValue();
+    indentation->translation = SbVec3f((float)(indentationLevel) * 0.04, 0, 0.);
+    m_nextLineTranslation->translation = SbVec3f(0, fontHeight, 0.);
+    m_boxSeparator->addChild(indentation);
+    m_boxSeparator->addChild(m_font);
+  }
+  
+  // End a text box and attach it to the layer.
+  void endBox(void)
+  {
+    m_overlay->addChild(m_boxSeparator);
+  }
+  
+  void createTextLine (const char *text)
+  {
+    SoText2 *label = new SoText2;
+    label->string = text;
+    label->justification = m_justification;
+    m_boxSeparator->addChild(label);
+    m_boxSeparator->addChild(m_nextLineTranslation);
+  }
+  
+  void createIntLine (const char *text, int value)
+  {
+    char                  buf [256];
+    std::string           str = std::string(text) + (sprintf(buf, "%d", value), buf);
+    this->createTextLine(str.c_str());
+  }
+private:
+  SoGroup                       *m_group;
+  ISpyApplication::Style        *m_style;
+  SoAnnotation                  *m_overlay;
+  SoOrthographicCamera          *m_camera;
+  SoTranslation                 *m_textStartTranslation;
+  SoTranslation                 *m_nextLineTranslation;
+  SoSeparator                   *m_boxSeparator;
+  enum SoText2::Justification   m_justification;
+  SoFont                        *m_font;
+  float                         m_fontScale;
+};
 
 static void
 make3DEvent(IgCollection **collections, IgAssociationSet **, 
-            SoSeparator *sep, ISpyApplication::Style * /* style */)
+            SoSeparator *sep, ISpyApplication::Style * style)
 {
-  char                  buf [128];
   IgCollection          *c = collections[0];
-  SoAnnotation          *overlay = new SoAnnotation;
-  SoOrthographicCamera  *camera = new SoOrthographicCamera;
-  SoTranslation         *textStartTranslation = new SoTranslation;
-  SoTranslation         *nextLineTranslation  = new SoTranslation;
   IgCollectionItem      e = *c->begin();
 
-  std::string           timestr;
   std::string           time  = e.get<std::string>("time");
-  
-  if (time.substr (0,11) == "1970-Jan-01") 
-    timestr = std::string("Simulated (MC) event");
-  else 
-    timestr = std::string("Data_taken ") + time;
-
-  std::string           run     = std::string("Run_no____ ") + (sprintf(buf, "%d", e.get<int>("run")), buf);
-  std::string           event   = std::string("Event_no__ ") + (sprintf(buf, "%d", e.get<int>("event")), buf);
-  std::string           orbit   = std::string("Orbit_____ ") + (sprintf(buf, "%d", e.get<int>("orbit")), buf);
-  std::string           bx      = std::string("Crossing__ ") + (sprintf(buf, "%d", e.get<int>("bx")), buf);
-  std::string           ls      = std::string("Lumi_sec__ ") + (sprintf(buf, "%d", e.get<int>("ls")), buf);
-
   // FIXME LT: make text positioning independent of window resize
   // FIXME LT: make visibilty of each line switchable in the interface(and settings) e.g. as for ig collections
+  OverlayCreatorHelper helper(sep, style);
 
-  camera->nearDistance = 1;
-  camera->farDistance = 10;
-  camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
-  camera->scaleHeight(5.5f);
-  camera->focalDistance = 1;
-  overlay->addChild(camera);
-
-  textStartTranslation->translation = SbVec3f(-5.0,  5.0,  0.0);
-  nextLineTranslation ->translation = SbVec3f( 0.0, -0.25, 0.0);
-
-  createTextLine(overlay, textStartTranslation, "CMS Experiment, CERN");
-  createTextLine(overlay, nextLineTranslation, " ");
-  createTextLine(overlay, nextLineTranslation, timestr);
-  createTextLine(overlay, nextLineTranslation, " ");
-  createTextLine(overlay, nextLineTranslation, run);
-  createTextLine(overlay, nextLineTranslation, event);
-  createTextLine(overlay, nextLineTranslation, ls);
-  createTextLine(overlay, nextLineTranslation, orbit);
-  createTextLine(overlay, nextLineTranslation, bx);
-  createTextLine(overlay, nextLineTranslation, "http://iguana.cern.ch/ispy");
-  sep->addChild(overlay);
+  helper.beginBox(-0.95, 0.97, style->textAlign);
+  helper.createTextLine("CMS Experiment, CERN");
+  helper.createTextLine(" ");
+  helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
+                               ("Data_taken " + time).c_str());
+  helper.createTextLine(" ");
+  helper.createIntLine("Run_no____ ", e.get<int>("run"));
+  helper.createIntLine("Event_no__ ", e.get<int>("event"));
+  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));
+  helper.createIntLine("Orbit_____ ", e.get<int>("orbit"));
+  helper.createIntLine("Crossing__ ", e.get<int>("bx"));
+  helper.createTextLine("http://iguana.cern.ch/ispy");
+  helper.endBox();
+  helper.beginBox(-0.95, -0.93, style->textAlign, 0.6);
+  helper.createTextLine("(c) CERN 2009. All rights reserved.");  
+  helper.endBox();
 }
 
 
 static void
 make3DL1Trigger(IgCollection **collections, IgAssociationSet **, 
-                SoSeparator *sep, ISpyApplication::Style * /* style */)
+                SoSeparator *sep, ISpyApplication::Style * style)
 {
-  char                   buf[128];
   IgCollection           *c = collections[0];
-  SoAnnotation           *overlay = new SoAnnotation;
-  SoOrthographicCamera   *camera = new SoOrthographicCamera;
-  SoTranslation          *textStartTranslation = new SoTranslation;
-  SoTranslation          *nextLineTranslation  = new SoTranslation;
-   
-  camera->nearDistance = 1;
-  camera->farDistance = 10;
-  camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
-  camera->scaleHeight(5.5f);
-  camera->focalDistance = 1;
-  overlay->addChild(camera);
 
-  textStartTranslation->translation = SbVec3f(4.5,  5.0,  0.0);
-  nextLineTranslation ->translation = SbVec3f(0.0, -0.25, 0.0);
-  createTextLine (overlay, textStartTranslation, "L1 Triggers:");
-  createTextLine (overlay, nextLineTranslation,  "------------");
+  char                  buf [256];
+  OverlayCreatorHelper  helper(sep, style);
+
+  helper.beginBox(0.95,  0.97, style->textAlign);
+  helper.createTextLine("L1 Triggers:");
+  helper.createTextLine("------------");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     if (ci->get<int>("result") == 1)
     {   
       sprintf(buf, "%.100s", ci->get<std::string>("algorithm").c_str());
-      createTextLine(overlay, nextLineTranslation, buf);
+      helper.createTextLine(buf);
     }
   }
- 
-  sep->addChild (overlay);
+
+  helper.endBox();
 }
 
 static void
@@ -3670,6 +3767,7 @@ ISpyApplication::displayCollection(Collection &c)
     {
       Style *style = &(m_styles[c.style]);
       ASSERT(style);
+      style->viewport = m_viewer->getViewportRegion();
       c.sep->addChild(style->material);
       c.sep->addChild(style->drawStyle);
       c.sep->addChild(style->font);
@@ -3731,6 +3829,13 @@ ISpyApplication::findStyle(const char *pattern)
     style.font->name = spec.fontFamily.c_str();
     style.markerType = getMarkerType(spec.markerStyle, spec.markerSize, 
                                      spec.markerShape);
+    // Determine the openinventor property from the ISPY style.
+    switch(spec.textAlign)
+    {
+      case ISPY_TEXT_ALIGN_LEFT: style.textAlign = SoText2::LEFT; break;
+      case ISPY_TEXT_ALIGN_RIGHT: style.textAlign = SoText2::RIGHT; break;
+      case ISPY_TEXT_ALIGN_CENTER: style.textAlign = SoText2::CENTER; break;        
+    }
     // Style nodes do not get deleted  by dropping a given
     // collection representation.
     style.material->ref();
