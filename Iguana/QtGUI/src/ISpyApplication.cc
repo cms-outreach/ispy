@@ -896,7 +896,8 @@ make3DAnyDetId(IgCollection **, IgAssociationSet **,
 //
 static void
 makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, 
-                  SoSeparator *sep, ISpyApplication::Style *style, float layer, bool flag)
+                  SoSeparator *sep, ISpyApplication::Style *style, float layer, 
+                  bool flag, bool mirror)
 {
   IgCollection *c = collections[0];
 
@@ -911,6 +912,21 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **,
   IgProperty BACK_2 = c->getProperty("back_2");
   IgProperty BACK_3 = c->getProperty("back_3");
   IgProperty BACK_4 = c->getProperty("back_4");
+
+  // FIXME: can compress the following code
+  float maxEnergy = style->maxEnergy;
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    double energy = ci->get<double>(ENERGY);
+    if (energy > maxEnergy)
+    {
+      maxEnergy = energy;
+    }
+  }
+  
+  if (maxEnergy == 0.)
+    return;
 
   for(IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -941,19 +957,19 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **,
       
       if (f1.y () < 0.)
       {
-	yf1 = - yf1;
-	yf2 = - yf2;
-	yf3 = - yf3;
-	yf4 = - yf4;
-	yb1 = - yb1;
-	yb2 = - yb2;
-	yb3 = - yb3;
-	yb4 = - yb4;
-	x = - x;
+        yf1 = - yf1;
+        yf2 = - yf2;
+        yf3 = - yf3;
+        yf4 = - yf4;
+        yb1 = - yb1;
+        yb2 = - yb2;
+        yb3 = - yb3;
+        yb4 = - yb4;
+        x = - x;
       }
       
       if(flag && f2.z() > 0.)
-	x = - x;
+        x = - x;
 
       IgV3d tf1  = IgV3d(layer + x, yf1, f1.z());
       IgV3d tf2  = IgV3d(layer + 2*x, yf2, f2.z());
@@ -964,10 +980,15 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **,
       IgV3d tb2  = IgV3d(layer + 2*x, yb2, b2.z());
       IgV3d tb3  = IgV3d(layer + 2*x, yb3, b3.z());
       IgV3d tb4  = IgV3d(layer + x, yb4, b4.z());
-      
-      drawTowerHelper.addTower(tf1, tf2, tf3, tf4, tb1, tb2, tb3, tb4,
-                               energy,
-                               style->energyScale);
+
+      if(mirror && f2.z() < 0.)
+        drawTowerHelper.addTower(tb1, tb4, tb3, tb2, tf1, tf4, tf3, tf2,
+                                 energy/style->maxEnergy, 
+                                 style->energyScale);
+      else
+        drawTowerHelper.addTower(tf1, tf2, tf3, tf4, tb1, tb2, tb3, tb4,
+                                 energy/style->maxEnergy, 
+                                 style->energyScale);
     }
   }
 }
@@ -976,21 +997,21 @@ static void
 makeRZECalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
                   SoSeparator *sep, ISpyApplication::Style *style)
 {
-  makeRZEnergyHisto(collections, assocs, sep, style, -0.5, true);
+  makeRZEnergyHisto(collections, assocs, sep, style, -0.5, true, false);
 }
 
 static void
 makeRZEPRecHits(IgCollection **collections, IgAssociationSet **assocs, 
                 SoSeparator *sep, ISpyApplication::Style *style)
 {
-  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false);
+  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false, true);
 }
 
 static void
 makeRZHCalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
                 SoSeparator *sep, ISpyApplication::Style *style)
 {
-  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false);
+  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false, false);
 }
 
 static void
