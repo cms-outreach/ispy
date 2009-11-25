@@ -1457,30 +1457,39 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
   IgAssociationSet      *assoc = assocs[0];
   IgProperty            PT  = tracks->getProperty("pt");
   IgProperty            POS = tracks->getProperty("pos");
+  IgProperty            P = tracks->getProperty("dir");
   IgProperty            POS1 = extras->getProperty("pos_1");
   IgProperty            DIR1 = extras->getProperty("dir_1");
   IgProperty            POS2 = extras->getProperty("pos_2");
   IgProperty            DIR2 = extras->getProperty("dir_2");
   SoSeparator           *vsep = new SoSeparator;
-  SoVertexProperty      *vertices = new SoVertexProperty;
-  SoIndexedLineSet      *vertexLines = new SoIndexedLineSet;
-  int                   nv = 0;
- 
+
+  SoDrawStyle *vertexLinesStyle = new SoDrawStyle;
+  vertexLinesStyle->style = style->drawStyle->style;
+  vertexLinesStyle->lineWidth = style->drawStyle->lineWidth.getValue() - 1;
+  vertexLinesStyle->linePattern = 0xf0f0;
+  vsep->addChild(vertexLinesStyle);
+
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
     IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
+    IgSoSplineTrack     *vertexRep = new IgSoSplineTrack;
+
     SoVertexProperty    *tvertices = new SoVertexProperty;
     SoMarkerSet         *tpoints   = new SoMarkerSet;
     int                 nVtx = 0;
 
     IgV3d p = ci->get<IgV3d>(POS);
-    vertices->vertex.set1Value(nv++, SbVec3f(p.x(), p.y(), p.z()));
-    
+    IgV3d d = ci->get<IgV3d>(P);
+
+    SbVec3f vertexDiri(d.x(), d.y(), d.z());
+    vertexDiri.normalize();
+    vertexRep->points.set1Value(0, SbVec3f(p.x(), p.y(), p.z()));
+    vertexRep->tangents.set1Value(0, vertexDiri);
+
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get<double>(PT))
                         .arg(p.x()).arg(p.y()).arg(p.z());
-
-    bool firstDot = true;
 
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
     {
@@ -1488,17 +1497,14 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
       {
         IgCollectionItem m(extras, ai->second().objectId());
         p = ci->get<IgV3d>(POS1);
-        IgV3d d = ci->get<IgV3d>(DIR1);
+        d = ci->get<IgV3d>(DIR1);
         // If this is the first hit, then also add it to the vertex property
         // for the dotted line which goes to the vertex. 
-        if (firstDot)
-        {
-          firstDot = false;
-          vertices->vertex.set1Value(nv++, SbVec3f(p.x(), p.y(), p.z()));
-        }
         SbVec3f diri(d.x(), d.y(), d.z());
         diri.normalize();
 
+        vertexRep->points.set1Value(1, SbVec3f(p.x(), p.y(), p.z()));
+        vertexRep->tangents.set1Value(1, diri);
 
         trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
         trackRep->tangents.set1Value(nVtx, diri);
@@ -1522,24 +1528,12 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
     tpoints->vertexProperty = tvertices;
     tpoints->numPoints.setValue(nVtx);
 
+    vsep->addChild(vertexRep);
     sep->addChild(trackRep);
     sep->addChild(tpoints);
   }
 
   // Add a dotted line from the vertex of the track to the first hit.
-  vertexLines->vertexProperty.setValue(vertices);
-  for (size_t i = 0; i < nv/2; i++)
-  {
-    int index[3] = {2*i, 2*i+1, SO_END_LINE_INDEX};
-    vertexLines->coordIndex.setValues(i*3, 3, index);
-  }
-  
-  SoDrawStyle *vertexLinesStyle = new SoDrawStyle;
-  vertexLinesStyle->style = style->drawStyle->style;
-  vertexLinesStyle->lineWidth = style->drawStyle->lineWidth.getValue() - 1;
-  vertexLinesStyle->linePattern = 0xf0f0;
-  vsep->addChild(vertexLinesStyle);
-  vsep->addChild(vertexLines);
   sep->addChild(vsep);
 }
 
