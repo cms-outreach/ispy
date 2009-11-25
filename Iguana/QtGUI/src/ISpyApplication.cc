@@ -3923,8 +3923,9 @@ ISpyApplication::findStyle(const char *pattern)
       style.background = 0;
     else
     {
-      QImage backgroundImage = QImage(spec.background.c_str()).scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation).mirrored(true, true).rgbSwapped();
+      QImage backgroundImage = QImage(spec.background.c_str()).mirrored(true, true).rgbSwapped();
       int bytesPerPixel = backgroundImage.depth() / 8;
+      
       if (!backgroundImage.isNull() && bytesPerPixel)
       {
         style.background = new SoTexture2;
@@ -3935,6 +3936,8 @@ ISpyApplication::findStyle(const char *pattern)
         style.background->model = SoTexture2::DECAL;
         style.background->ref();
       }
+      else
+        style.background = 0;
     }
     
     // Style nodes do not get deleted  by dropping a given

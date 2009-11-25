@@ -17,6 +17,7 @@ then
   branchname=next
 fi
 
+
 case `uname` in
   Linux)
     cp ./ispy ./ispy-debug
