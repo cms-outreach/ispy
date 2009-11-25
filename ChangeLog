@@ -1,3 +1,10 @@
+2009-11-25  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy.cpp, default-style.css, default-views.xml, ispy.qrc,
+          ispy.pro, ISpyApplication.cc, ISpySplashScreen.ui: 
+	  more tweaks done together with Ianna and Tom to get 
+	  collisions pictures just right.
+
 2009-11-25  Lucas Taylor <lucas.taylor@cern.ch>
 
 	* ISpy3DView.cc: enable antialiasing of lines.
