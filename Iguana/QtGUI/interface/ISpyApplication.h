@@ -50,6 +50,7 @@ class SoMaterial;
 class SoDrawStyle;
 class SoFont;
 class ISpyPicturePublishingDialog;
+class SoTexture2;
 
 namespace lat
 {
@@ -101,6 +102,7 @@ public:
     double                      minEnergy;
     double                      maxEnergy;
     double                      energyScale;
+    SoTexture2                  *background;
   };
 
   ISpyApplication(void);
@@ -243,6 +245,7 @@ private:
   {
     std::string                 viewName;
     std::string                 collectionName;
+    std::string                 background;
     float                       diffuseColor[3];
     float                       transparency;
     float                       lineWidth;

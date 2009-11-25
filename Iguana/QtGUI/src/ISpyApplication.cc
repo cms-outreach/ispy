@@ -59,7 +59,9 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoVertexProperty.h>
+#include <Inventor/nodes/SoTexture2.h>
 #include <Inventor/actions/SoGetBoundingBoxAction.h>
+#include <Inventor/elements/SoMultiTextureImageElement.h>
 
 #include <QApplication>
 #include <QEventLoop>
@@ -240,6 +242,7 @@ ISpyApplication::style(const char *rule, const char *css)
   // Define the defaults.
   spec.viewName = "*";
   spec.collectionName = "*";
+  spec.background = "";
   defaultColor(spec.diffuseColor);
   spec.transparency = 0.0;
   spec.lineWidth = 1.0;
@@ -294,6 +297,7 @@ ISpyApplication::style(const char *rule, const char *css)
     spec.minEnergy = previous.minEnergy;
     spec.maxEnergy = previous.maxEnergy;
     spec.energyScale = previous.energyScale;
+    spec.background = spec.background;
   }
 
   // Parse the property declarations and deposit new value on top of those
@@ -404,6 +408,8 @@ ISpyApplication::style(const char *rule, const char *css)
       if (*endptr)
         throw CssParseError("Error while parsing max-energy value", value);
     }
+    else if (key == "background")
+      spec.background = value;
     else
     {
       throw CssParseError("Unknown property", key);
@@ -593,6 +599,25 @@ public:
     std::string           str = std::string(text) + (sprintf(buf, "%d", value), buf);
     this->createTextLine(str.c_str());
   }
+
+  void
+  addImage (float x, float y, float w, float h, SoTexture2 *image)
+  {
+    SoSeparator *logoSep = new SoSeparator;
+    SoTranslation *translation = new SoTranslation;
+    // FIXME: hardcoded value for the aspect ratio.
+    h *= 1.25;
+    translation->translation = SbVec3f(x + w/2, 
+                                       (y - h/2), 
+                                       0);
+    SoCube *logoBox = new SoCube;
+    logoBox->width = w;
+    logoBox->height = h;
+    logoSep->addChild(translation);
+    logoSep->addChild(image);
+    logoSep->addChild(logoBox);
+    m_overlay->addChild(logoSep);
+  }
 private:
   SoGroup                       *m_group;
   ISpyApplication::Style        *m_style;
@@ -618,19 +643,21 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
   // FIXME LT: make visibilty of each line switchable in the interface(and settings) e.g. as for ig collections
   OverlayCreatorHelper helper(sep, style);
 
-  helper.beginBox(-0.95, 0.97, style->textAlign);
+  helper.beginBox(-0.65, 0.97, style->textAlign);
   helper.createTextLine("CMS Experiment at the LHC, CERN");
-  helper.indentText(0, 0.8);
+  helper.indentText(0, 0.7);
   helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
                                ("Data recorded: " + time).c_str());
   char runStr[1024];
   helper.createTextLine((sprintf(runStr, "Run / Event: %d / %d", 
                          e.get<int>("run"), e.get<int>("event")), runStr));
   helper.endBox();
-  helper.beginBox(-0.95, -0.92, style->textAlign, 0.6);
-  helper.createTextLine("(c) CERN 2009. All rights reserved.");  
+  helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
+  helper.createTextLine("(c) CERN 2009. All rights reserved.");
   helper.endBox();
   
+  if (style->background)
+    helper.addImage(-0.95, 0.93, 0.26, 0.26, style->background);
 //  helper.createIntLine("Run_no____ ", e.get<int>("run"));
 //  helper.createIntLine("Event_no__ ", e.get<int>("event"));
 //  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));
@@ -1408,7 +1435,7 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
   IgProperty            DIR2 = extras->getProperty("dir_2");
   SoSeparator           *vsep = new SoSeparator;
   SoVertexProperty      *vertices = new SoVertexProperty;
-  SoMarkerSet           *mpoints = new SoMarkerSet;
+  SoIndexedLineSet      *vertexLines = new SoIndexedLineSet;
   int                   nv = 0;
  
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
@@ -1425,6 +1452,8 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
                         .arg(ci->get<double>(PT))
                         .arg(p.x()).arg(p.y()).arg(p.z());
 
+    bool firstDot = true;
+
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
     {
       if (ai->first().objectId() == ci->currentRow())
@@ -1432,8 +1461,16 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
         IgCollectionItem m(extras, ai->second().objectId());
         p = ci->get<IgV3d>(POS1);
         IgV3d d = ci->get<IgV3d>(DIR1);
+        // If this is the first hit, then also add it to the vertex property
+        // for the dotted line which goes to the vertex. 
+        if (firstDot)
+        {
+          firstDot = false;
+          vertices->vertex.set1Value(nv++, SbVec3f(p.x(), p.y(), p.z()));
+        }
         SbVec3f diri(d.x(), d.y(), d.z());
         diri.normalize();
+
 
         trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
         trackRep->tangents.set1Value(nVtx, diri);
@@ -1461,12 +1498,21 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
     sep->addChild(tpoints);
   }
 
-  vertices->vertex.setNum(nv);
-  mpoints->markerIndex = SoMarkerSet::CROSS_5_5;
-  mpoints->vertexProperty.setValue(vertices);
-  mpoints->numPoints.setValue(nv);
-  vsep->addChild(mpoints);
-
+  // Add a dotted line from the vertex of the track to the first hit.
+  vertexLines->vertexProperty.setValue(vertices);
+  for (size_t i = 0; i < nv/2; i++)
+  {
+    int index[3] = {2*i, 2*i+1, SO_END_LINE_INDEX};
+    vertexLines->coordIndex.setValues(i*3, 3, index);
+  }
+  
+  SoDrawStyle *vertexLinesStyle = new SoDrawStyle;
+  vertexLinesStyle->style = style->drawStyle->style;
+  vertexLinesStyle->lineWidth = style->drawStyle->lineWidth.getValue() - 1;
+  vertexLinesStyle->linePattern = 0xf0f0;
+  vsep->addChild(vertexLinesStyle);
+  vsep->addChild(vertexLines);
+  sep->addChild(vsep);
 }
 
 static void
@@ -2572,6 +2618,7 @@ ISpyApplication::ISpyApplication(void)
   filter("Provenance/L1 Triggers", "L1GtTrigger_V1:algorithm:result");
   filter("Provenance/HLT Trigger Paths", "TriggerPaths_V1:Name:Accept");
 
+  
   // Create the default style reading the specification from a QT resource.
   style("*", "");
   style("Background","diffuse-color: rbg(1.,0,0);");
@@ -3847,6 +3894,27 @@ ISpyApplication::findStyle(const char *pattern)
     style.maxEnergy = spec.maxEnergy;
     style.energyScale = spec.energyScale;
 
+    // Read the background file and put it in a SoTexture2 so that it can be
+    // used as required. In case no file are specified, the texture pointer 
+    // will be zero.
+    if (spec.background.empty())
+      style.background = 0;
+    else
+    {
+      QImage backgroundImage = QImage(spec.background.c_str()).scaled(128, 128, Qt::KeepAspectRatio, Qt::SmoothTransformation).mirrored(true, true).rgbSwapped();
+      int bytesPerPixel = backgroundImage.depth() / 8;
+      if (!backgroundImage.isNull() && bytesPerPixel)
+      {
+        style.background = new SoTexture2;
+        style.background->image.setValue(SbVec2s(backgroundImage.width(), 
+                                                 backgroundImage.height()), 
+                                                 bytesPerPixel,
+                                                 backgroundImage.bits());
+        style.background->model = SoTexture2::DECAL;
+        style.background->ref();
+      }
+    }
+    
     // Style nodes do not get deleted  by dropping a given
     // collection representation.
     style.material->ref();

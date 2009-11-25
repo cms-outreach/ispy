@@ -5,7 +5,8 @@
   <qresource prefix="views">
     <file>default-views.xml</file>
   </qresource>
-  <qresource prefix="images" >
+  <qresource prefix="images">
+    <file>CMS-Color.png</file>
     <file>Play1Normal.png</file>
     <file>PausePressed.png</file>
     <file>stylesheet-branch-open.png</file>

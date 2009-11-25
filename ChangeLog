@@ -1,3 +1,10 @@
+2009-11-25  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* default-style.css: improved cuts.
+
+	* IgNet.cc: improved buffer size so that we can look at big online 
+	  events.
+
 2009-11-25  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* Allow view definition in an xml file.
@@ -32,6 +39,9 @@
 	  physics limits in css.
 
 	* ISpyApplication.cc: faster CSC Rec hits.
+
+	* ISpyApplication.cc, ispy.pro, ispy.qrc, CMS-Color.png
+	  cms-logo-small.png: CMS logo added.
 
 2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
