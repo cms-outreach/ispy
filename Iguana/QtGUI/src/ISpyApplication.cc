@@ -1538,14 +1538,12 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
 
 static void
 make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, 
-                      SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                      SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  SoMarkerSet           *points = new SoMarkerSet;
-  SoVertexProperty      *vertices = new SoVertexProperty;
-  int                   n = 0;
 
   IgDrawTowerHelper drawTowerHelper(sep);
+  IgProperty ENERGY = c->getProperty("energy");
   IgProperty FRONT_1 = c->getProperty("front_1");
   IgProperty FRONT_2 = c->getProperty("front_2");
   IgProperty FRONT_3 = c->getProperty("front_3");
@@ -1558,30 +1556,32 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **,
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-    IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-    IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-    IgV3d f4  = ci->get<IgV3d>(FRONT_4);
-
-    IgV3d b1  = ci->get<IgV3d>(BACK_1);
-    IgV3d b2  = ci->get<IgV3d>(BACK_2);
-    IgV3d b3  = ci->get<IgV3d>(BACK_3);
-    IgV3d b4  = ci->get<IgV3d>(BACK_4);
-    drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
-
-    vertices->vertex.set1Value(n++, SbVec3f(f1.x(), f1.y(), f1.z()));
-    vertices->vertex.set1Value(n++, SbVec3f(f2.x(), f2.y(), f2.z()));
-    vertices->vertex.set1Value(n++, SbVec3f(f3.x(), f3.y(), f3.z()));
-    vertices->vertex.set1Value(n++, SbVec3f(f4.x(), f4.y(), f4.z()));
+    double energy = ci->get<double>(ENERGY);
+    if (energy > style->minEnergy)
+    {
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+      
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+    
+      // FIXME: There is a bug in Preshower geometry.
+      // The corners order is a translation.
+      // When it is fixed to mirrored, the fix
+      // to flip energy bumps can be removed.
+      if(f2.z() > 0.)
+        drawTowerHelper.addTower(f1, f2, f3, f4, b1, b2, b3, b4,
+                                 energy, style->energyScale);
+      else
+        drawTowerHelper.addTower(b1, b4, b3, b2, f1, f4, f3, f2,
+                                 energy, style->energyScale);	
+    }
   }
-  vertices->vertex.setNum(n);
-
-  points->markerIndex = SoMarkerSet::PLUS_5_5;
-  points->vertexProperty = vertices;
-  points->numPoints = n;
-  sep->addChild(points);
 }
-
 
 
 // ------------------------------------------------------
