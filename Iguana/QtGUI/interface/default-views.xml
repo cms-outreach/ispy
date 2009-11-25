@@ -9,7 +9,8 @@
 
   <collection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
-              draw="make3DL1Trigger"/>
+              draw="make3DL1Trigger" 
+              visibility="none"/>
 
   <collection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
@@ -64,8 +65,7 @@
 
   <collection label="Detector/HCAL Outer"
               spec="HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"
-              visibility="none"/>
+              draw="make3DAnyBox"/>
 
   <collection label="Detector/HCAL Forward"
               spec="HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
@@ -114,13 +114,11 @@
 
   <collection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
   <collection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
   <collection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
@@ -129,8 +127,7 @@
 
   <collection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
 <!-- ..................................................................... -->
 
@@ -159,7 +156,7 @@
               spec="SuperClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="SuperClusterRecHitFractions_V1"
-              draw="make3DCaloClusters"/>
+              draw="make3DCaloClusters" visibility="none"/>
 
 <!-- ..................................................................................... -->  
   <collection label="HCAL/Barrel Rec. Hits"
@@ -176,7 +173,8 @@
 
   <collection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"
+              visibility="none"/>
 
 <!-- ..................................................................................... -->
   
@@ -421,7 +419,7 @@
 </view>
 </visibilityGroup>
 </camera>
-<camera position="0, 0, 1" pointAt="0, 0, 0" scale="8.5" orthographic="true" rotating="false">
+<camera position="0, 0, 1" pointAt="0, 0, 0" scale="3.5" orthographic="true" rotating="false">
 <visibilityGroup>
 <view label="Standard R-Phi View" specialised="true">
 
@@ -432,7 +430,8 @@
 
   <collection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
-              draw="make3DL1Trigger"/>
+              draw="make3DL1Trigger"
+              visibility="none"/>
 
   <collection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
@@ -503,13 +502,11 @@
 
   <collection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
   <collection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
   <collection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
@@ -518,8 +515,7 @@
 
   <collection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
 <!--  ..................................................................................... -->
 
@@ -541,7 +537,7 @@
               spec="SuperClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="SuperClusterRecHitFractions_V1"
-              draw="make3DCaloClusters"/>
+              draw="make3DCaloClusters" visibility="none"/>
 
 <!--  ..................................................................................... -->
 
@@ -551,7 +547,8 @@
 
   <collection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"
+              visibility="none"/>
 
 <!--  ..................................................................................... -->
 
@@ -717,7 +714,8 @@
 
   <collection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
-              draw="make3DL1Trigger"/>
+              draw="make3DL1Trigger"
+              visibility="none"/>
 
   <collection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
@@ -763,8 +761,7 @@
 
   <collection label="Detector/HCAL Outer"
               spec="HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"
-              visibility="none"/>
+              draw="make3DAnyBox"/>
 
   <collection label="Detector/HCAL Forward"
               spec="HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
@@ -811,13 +808,11 @@
 
   <collection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
   <collection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
   <collection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
@@ -826,8 +821,7 @@
 
   <collection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
-              draw="make3DPointSetShapes"
-              visibility="none"/>
+              draw="make3DPointSetShapes"/>
 
 <!--  ..................................................................................... -->
 
@@ -857,7 +851,7 @@
               spec="SuperClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="SuperClusterRecHitFractions_V1"
-              draw="make3DCaloClusters"/>
+              draw="make3DCaloClusters" visibility="none"/>
 
 <!--  ..................................................................................... -->
 
@@ -875,7 +869,8 @@
 
   <collection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZHCalRecHits"/>
+              draw="makeRZHCalRecHits"
+              visibility="none"/>
 
 <!--  ..................................................................................... -->
 
@@ -1117,7 +1112,8 @@
 
   <collection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:eta:phi"
-              draw="makeLegoHcalRecHits"/>
+              draw="makeLegoHcalRecHits"
+              visibility="none"/>
 
 </view>
 </visibilityGroup>

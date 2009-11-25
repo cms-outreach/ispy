@@ -61,7 +61,7 @@ LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
 LIBS += -L$$FONTCONFIG_BASE/lib -lfontconfig
 LIBS += -L$$FREETYPE_BASE/lib -lfreetype
 mac { 
-LIBS += -L$$EXPAT_BASE/lib -lexpat
+LIBS += -L$$EXPAT_BASE/lib -lexpatstatic
 }
 
 unix:!mac { LIBS += -L$$EXPAT_BASE/lib -lexpat }

@@ -611,8 +611,11 @@ public:
                                        (y - h/2), 
                                        0);
     SoCube *logoBox = new SoCube;
+    SoMaterial *mat = new SoMaterial;
+    mat->transparency = 0.1;
     logoBox->width = w;
     logoBox->height = h;
+    logoSep->addChild(mat);
     logoSep->addChild(translation);
     logoSep->addChild(image);
     logoSep->addChild(logoBox);
@@ -661,7 +664,7 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
   
   
   if (style->background)
-    helper.addImage(-0.95, 0.93, 0.16, 0.16, style->background);
+    helper.addImage(-0.94, 0.93, 0.16, 0.16, style->background);
 //  helper.createIntLine("Run_no____ ", e.get<int>("run"));
 //  helper.createIntLine("Event_no__ ", e.get<int>("event"));
 //  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));

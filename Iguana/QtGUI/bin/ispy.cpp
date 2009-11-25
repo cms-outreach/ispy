@@ -36,7 +36,7 @@ main (int argc, char *argv[])
 {
   putenv("LANG=C");
 
-  #ifndef Q_WS_MAC
+  #ifdef Q_WS_MAC
   putenv("COIN_FORCE_FONTCONFIG_OFF=1");
   #endif
 
