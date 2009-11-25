@@ -19,6 +19,7 @@ fi
 
 case `uname` in
   Linux)
+    cp ./ispy ./ispy-debug
     strip ./ispy
     
     # Copy files twice as scp seems to fail once in a while, on first attempt.
@@ -30,6 +31,8 @@ case `uname` in
       *)
         scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy || true
         scp ./ispy lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy
+        scp ./ispy-debug lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy-debug || true
+        scp ./ispy-debug lxplus.cern.ch:/afs/cern.ch/user/i/iguana/www/ispy-next/bin/linux/ispy-debug
         ;;
     esac
     ;;
