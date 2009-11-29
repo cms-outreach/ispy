@@ -102,8 +102,7 @@ private:
   void setLineIndices(int p1, int p2, int p3, int p4, int p5);
   void setLineIndices(int p1, int p2);
   void setFaceIndices(int p1, int p2, int p3, int p4);
-  void drawTower(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &sf4,
-                 SbVec3f &sb1, SbVec3f &sb2, SbVec3f &sb3, SbVec3f &sb4);
+  void drawTower(SbVec3f *vertices);
   void drawTowerOutline(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &sf4,
 			SbVec3f &sb1, SbVec3f &sb2, SbVec3f &sb3, SbVec3f &sb4);
 };

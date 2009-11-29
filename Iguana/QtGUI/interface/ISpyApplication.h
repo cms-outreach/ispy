@@ -13,6 +13,8 @@
 # include <map>
 # include <Inventor/nodes/SoMarkerSet.h>
 # include <Inventor/nodes/SoDrawStyle.h>
+# include <Inventor/nodes/SoText2.h>
+# include <Inventor/SbViewportRegion.h>
 
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 
@@ -22,8 +24,10 @@
 
 class IgCollection;
 class IgAssociationSet;
+class ISpyEventSelectorDialog;
 class ISpyMainWindow;
 class IgDataStorage;
+class IgCollectionListModel;
 class IgCollectionTableModel;
 class IgMultiStorageTreeModel;
 class Ig3DBaseModel;
@@ -45,6 +49,8 @@ class SoCamera;
 class SoMaterial;
 class SoDrawStyle;
 class SoFont;
+class ISpyPicturePublishingDialog;
+class SoTexture2;
 
 namespace lat
 {
@@ -56,11 +62,34 @@ namespace lat
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
+struct ViewSpecParseError
+{
+  ViewSpecParseError(size_t lineNumber = 0)
+  :lineNumber(lineNumber)
+  {
+  }
+  size_t lineNumber;
+};
+
+struct CssParseError
+{
+  CssParseError(const char *why, const std::string &what)
+  :why(why), what(what)
+  {}
+  
+  std::string why;
+  std::string what;
+};
+
 class ISpyApplication : public QObject
 {
   Q_OBJECT
 public:
 
+  // The style structure is used to keep track of the context used to render
+  // a collection. It includes stuff that is graphics related (like the font
+  // and the material) and stuff which is physics related (like min-energy, 
+  // max-pt, etc).
   struct Style
   {
     size_t                      spec;
@@ -68,6 +97,12 @@ public:
     SoDrawStyle                 *drawStyle;
     SoFont                      *font;
     SoMarkerSet::MarkerType     markerType;
+    SbViewportRegion            viewport;
+    SoText2::Justification      textAlign;
+    double                      minEnergy;
+    double                      maxEnergy;
+    double                      energyScale;
+    SoTexture2                  *background;
   };
 
   ISpyApplication(void);
@@ -90,6 +125,7 @@ public slots:
   void                  previousEvent(void);
   void                  showAbout(void);
   void                  newEvent(void);
+  void 			autoPrint(void);
 
 signals:
   void                  showMessage(const QString &fileName);
@@ -121,6 +157,8 @@ private slots:
   void                  cameraToggled(void);
   void                  resetToHomePosition(void);
   void                  restartPlay(void);
+  void			updateFilterListModel(const QString& title);
+  void			showPublish(void);
 
 private:
   typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
@@ -197,20 +235,31 @@ private:
     ISPY_CIRCLE_MARKER_SHAPE = 3 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES)
   };
 
+  enum ISPY_TEXT_ALIGN {
+    ISPY_TEXT_ALIGN_LEFT,
+    ISPY_TEXT_ALIGN_RIGHT,
+    ISPY_TEXT_ALIGN_CENTER
+  };
+
   struct StyleSpec
   {
     std::string                 viewName;
     std::string                 collectionName;
+    std::string                 background;
     float                       diffuseColor[3];
     float                       transparency;
     float                       lineWidth;
     unsigned int                linePattern;
     float                       fontSize;
-    std::string                 fontName;
+    std::string                 fontFamily;
     ISPY_DRAW_STYLE             drawStyle;
     ISPY_MARKER_SHAPE           markerShape;
     ISPY_MARKER_SIZE            markerSize;
     ISPY_MARKER_STYLE           markerStyle;
+    ISPY_TEXT_ALIGN             textAlign;
+    double                      minEnergy;
+    double                      maxEnergy;
+    double                      energyScale; 
   };
   
   struct Collection
@@ -241,6 +290,21 @@ private:
     lat::ZipMember              *contents;
   };
 
+  struct FilterSpec
+  {
+    std::string                 friendlyName;
+    std::string                 collection;
+    std::vector<std::string>    requiredFields;
+  };
+  
+  struct Filter
+  {
+    FilterSpec                  *spec;
+    IgCollection                *data[2];
+    std::string                 collectionName;
+    bool                      	result;
+  };
+
   typedef std::vector<CollectionSpec>   CollectionSpecs;
   typedef std::vector<CameraSpec>       CameraSpecs;
   typedef std::vector<ViewSpec>         ViewSpecs;
@@ -252,6 +316,9 @@ private:
   typedef std::vector<size_t>           GroupIndex;
   typedef std::vector<Qt::CheckState>   Visibilities;
   typedef std::map<std::string, size_t> VisibilityGroupMap;
+  typedef std::vector<Filter>           Filters;
+  typedef std::vector<FilterSpec>       FilterSpecs;
+
 
   struct SortBySpecAndName
   {
@@ -298,16 +365,27 @@ private:
                                  lat::ZipMember *source);
   void                  downloadFile(const QUrl &url);
   void                  downloadGeometry(void);
-  void                  simpleOpen(const QString &fileName);
+  bool                  simpleOpen(const QString &fileName);
   void                  setupActions(void);
   void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
+  void                  filter(const char *friendlyName,
+			       const char *collectionSpec);
+  bool                  filter(void);
+  bool                  doFilterCollection(const Collection &collection, const char *algoName, const char *result);
+  void                  doUpdateFilterListModel(const Collection &collection);
   // Helper methods to handle rendering styles.
   SoMarkerSet::MarkerType   getMarkerType(enum ISPY_MARKER_STYLE style,
                                           enum ISPY_MARKER_SIZE size,
                                           enum ISPY_MARKER_SHAPE shape);
   void                      style(const char *rule, const char *css);
   void                      parseCss(const char *css);
+  bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);
+  
+  // Helper methods to handle views layouts.
+  void                      parseViewsDefinition(QByteArray &data);
+  bool                      parseViewsDefinitionFile(const char *filename);
+  void                      registerDrawFunctions(void);
 
   int                   m_argc;
   char                  **m_argv;
@@ -327,7 +405,10 @@ private:
   VisibilityGroupMap    m_visibilityGroupMap;
   size_t                m_eventIndex;
   size_t                m_currentViewIndex;
+  FilterSpecs         	m_filterSpecs;
+  Filters             	m_filters;
 
+  IgCollectionListModel *m_listModel;
   IgCollectionTableModel *m_tableModel;
   QSortFilterProxyModel *m_tableProxyModel;
   Ig3DBaseModel         *m_3DModel;
@@ -335,7 +416,9 @@ private:
   ISpyMainWindow        *m_mainWindow;
   QTreeWidget           *m_treeWidget;
   ISpySplashScreen      *m_splash;
-
+  ISpyEventSelectorDialog *m_selector;
+  bool                   m_nextEvent;
+  
   ISpyConsumerThread    m_consumer;
   
   bool                  m_online;
@@ -353,11 +436,33 @@ private:
   QFont                 *m_itemFont;
   QActionGroup          *m_viewPlaneGroup;
   QActionGroup          *m_viewModeGroup;
+  ISpyPicturePublishingDialog *m_pubDialog;
+  QTimer		*m_printTimer;
+  QString		m_metaData;
 
+  class MatchByName {
+  public:
+    MatchByName(std::string name) : m_name(name) {}
+    bool operator()(Collection &collection) const { return (m_name.compare(collection.collectionName) == 0); }
+  private:
+    std::string m_name;
+  };
+ 
+  class MatchByFriendlyName {
+  public:
+    MatchByFriendlyName(std::string name) : m_name(name) {}
+    bool operator()(CollectionSpec &spec) const { return (m_name.compare(spec.friendlyName) == 0); }
+  private:
+    std::string m_name;
+  };
+
+  //
   // Data concerning rendering style handling.
+  //
   typedef std::vector<StyleSpec> StyleSpecs;
   typedef std::vector<Style>     Styles;
   typedef std::map<size_t, size_t> StylesMap;
+
 
   // Storage for all the available styles.
   StyleSpecs            m_styleSpecs;
@@ -366,6 +471,20 @@ private:
   // Mapping between a StyleSpec and an active style, so that we avoid
   // creating the latter more than once.
   StylesMap             m_stylesMap;
+  // Name of the css file to use to read style information from. Since
+  // it's cascading it's contents get appended at the end of the default ones.
+  std::string           m_cssFilename;
+  
+  //
+  // Data concerning the view layout definition.
+  //
+  typedef std::map<std::string, Make3D> DrawFunctionsRegistry;
+  
+  // Lookup table for the available draw functions.
+  DrawFunctionsRegistry   m_drawFunctions;
+  // Name of the view layout file to read. The file has to contain the full 
+  // view description.
+  std::string             m_viewsLayoutFilename;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

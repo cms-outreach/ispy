@@ -2,7 +2,12 @@
   <qresource prefix="css">
     <file>default-style.css</file>
   </qresource>
-  <qresource prefix="images" >
+  <qresource prefix="views">
+    <file>default-views.xml</file>
+  </qresource>
+  <qresource prefix="images">
+    <file>CMS-Color.png</file>
+    <file>cms-logo-small.png</file>
     <file>Play1Normal.png</file>
     <file>PausePressed.png</file>
     <file>stylesheet-branch-open.png</file>

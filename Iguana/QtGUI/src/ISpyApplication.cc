@@ -3,12 +3,15 @@
 #include "Iguana/QtGUI/interface/ISpyApplication.h"
 #include "Iguana/QtGUI/interface/ISpy3DView.h"
 #include "Iguana/QtGUI/interface/ISpyDigitalClock.h"
+#include "Iguana/QtGUI/src/ISpyEventSelectorDialog.h"
 #include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 #include "Iguana/QtGUI/interface/ISpyEventFilter.h"
 #include "Iguana/QtGUI/interface/ISpyMainWindow.h"
+#include "Iguana/QtGUI/src/ISpyPicturePublishingDialog.h"
 #include "Iguana/QtGUI/interface/ISpyRestartPlayDialog.h"
 #include "Iguana/QtGUI/interface/ISpySplashScreen.h"
 #include "Iguana/QtGUI/interface/Ig3DBaseModel.h"
+#include "Iguana/QtGUI/src/IgCollectionListModel.h"
 #include "Iguana/QtGUI/interface/IgCollectionTableModel.h"
 #include "Iguana/QtGUI/interface/IgNetworkReplyHandler.h"
 #include "Iguana/QtGUI/interface/IgDrawTowerHelper.h"
@@ -56,6 +59,9 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoVertexProperty.h>
+#include <Inventor/nodes/SoTexture2.h>
+#include <Inventor/actions/SoGetBoundingBoxAction.h>
+#include <Inventor/elements/SoMultiTextureImageElement.h>
 
 #include <QApplication>
 #include <QEventLoop>
@@ -200,14 +206,12 @@ parseColor(const char *rgb, float *color)
       if (*endptr)
       {
         defaultColor(color);
-        ASSERT(false && "Unable to parse color.");
-        return;
+        throw CssParseError("Unable to parse color.", rgb);
       }
       if (color[i] < 0. || color[i] > 1.0)
       {
         defaultColor(color);
-        ASSERT(false && "Color not normalized");
-        return;
+        throw CssParseError("Color not normalized.", rgb);
       }
     }
   }
@@ -238,23 +242,28 @@ ISpyApplication::style(const char *rule, const char *css)
   // Define the defaults.
   spec.viewName = "*";
   spec.collectionName = "*";
+  spec.background = "";
   defaultColor(spec.diffuseColor);
   spec.transparency = 0.0;
   spec.lineWidth = 1.0;
   spec.linePattern = 0xffff;
   spec.fontSize = 12;
-  spec.fontName = "Helvetica";
+  spec.fontFamily = "Helvetica";
   spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
   spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
   spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
   spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
+  spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
+  spec.minEnergy = 0.2;   // Default value is 0.2 GeV
+  spec.maxEnergy = 5.;    // Default value is 5.0 GeV
+  spec.energyScale = 1.;  // Default value is 0.1 m/GeV
   
   // Parse the rule.
   StringList ruleParts = StringOps::split(rule, "::");
   if (ruleParts.size() == 1)
     spec.collectionName = ruleParts[0];
   else if (!ruleParts.size() || ruleParts.size() > 2)
-    ASSERT(false && "Wrong syntax for rule!");
+    throw CssParseError("Wrong syntax for rule!", rule);
   else
   {
     spec.viewName = ruleParts[0];
@@ -279,11 +288,16 @@ ISpyApplication::style(const char *rule, const char *css)
     spec.lineWidth = previous.lineWidth;
     spec.linePattern = previous.linePattern;
     spec.fontSize = previous.fontSize;
-    spec.fontName = previous.fontName;
+    spec.fontFamily = previous.fontFamily;
     spec.drawStyle = previous.drawStyle;
     spec.markerShape = previous.markerShape;
     spec.markerSize = previous.markerSize;
     spec.markerStyle = previous.markerStyle;
+    spec.textAlign = previous.textAlign;
+    spec.minEnergy = previous.minEnergy;
+    spec.maxEnergy = previous.maxEnergy;
+    spec.energyScale = previous.energyScale;
+    spec.background = spec.background;
   }
 
   // Parse the property declarations and deposit new value on top of those
@@ -301,13 +315,12 @@ ISpyApplication::style(const char *rule, const char *css)
 
   for (size_t pi = 0, pe = properties.size(); pi != pe; pi++)
   {
+    // Split a string at the first ":" and use the first part as property key,
+    // the second as value.
     std::string &property = properties[pi];
-    StringList pairs = StringOps::split(property, ":");
-    
-    ASSERT(pairs.size() == 2);
-    
-    key = pairs[0];
-    value = pairs[1];
+    size_t sep_pos = property.find(':');
+    key.assign(property.c_str(), 0, sep_pos);
+    value.assign(property.c_str(), sep_pos + 1, property.size());
 
     char *endptr;
     
@@ -316,25 +329,29 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "transparency")
     {
       spec.transparency = strtod(value.c_str(), &endptr);
-      ASSERT(! (*endptr) && "Error while parsing transparency value");
+      if (*endptr)
+        throw CssParseError("Error while parsing transparency value", value);
     }
     else if (key == "line-width")
     {
       spec.lineWidth = strtod(value.c_str(), &endptr);
-      ASSERT(! (*endptr) && "Error while parsing line-width value");
+      if (*endptr)
+        throw CssParseError("Error while parsing line-width value", value);
     }
     else if (key == "line-pattern")
     {
       spec.linePattern = strtol(value.c_str(), &endptr, 16);
-      ASSERT(! (*endptr) && "Error while parsing line-pattern value");
+      if (*endptr)
+        throw CssParseError("Error while parsing line-pattern value", value);
     }
     else if (key == "font-size")
     {
       spec.fontSize = strtod(value.c_str(), &endptr);
-      ASSERT(! (*endptr) && "Error while parsing font-size value");
+      if (*endptr)
+        throw CssParseError("Error while parsing font-size value", value);
     }
-    else if (key == "font-name")
-      spec.fontName = value;
+    else if (key == "font-family")
+      spec.fontFamily = value;
     else if (key == "draw-style" && value == "solid")
       spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
     else if (key == "draw-style" && value == "lines")
@@ -342,7 +359,7 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "draw-style" && value == "points")
       spec.drawStyle = ISPY_POINTS_DRAW_STYLE;
     else if (key == "draw-style")
-      ASSERT(false && "Syntax error while defining draw-style");    
+      throw CssParseError("Syntax error while defining draw-style", value);    
     else if (key == "marker-shape" && value == "square")
       spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
     else if (key == "marker-shape" && value == "cross")
@@ -352,7 +369,7 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "marker-shape" && value == "circle")
       spec.markerShape = ISPY_CIRCLE_MARKER_SHAPE;
     else if (key == "marker-shape")
-      ASSERT(false && "Syntax error while defining marker-shape");
+      throw CssParseError("Syntax error while defining marker-shape", value);
     else if (key == "marker-size" && value == "normal")
       spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
     else if (key == "marker-size" && value == "big")
@@ -364,11 +381,38 @@ ISpyApplication::style(const char *rule, const char *css)
     else if (key == "marker-style" && value == "outline")
       spec.markerStyle = ISPY_OUTLINE_MARKER_STYLE;
     else if (key == "marker-style")
-      ASSERT(false && "Syntax error while defining marker-style");
+      throw CssParseError("Syntax error while defining marker-style", value);
+    else if (key == "text-align" && value == "left")
+      spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
+    else if (key == "text-align" && value == "right")
+      spec.textAlign = ISPY_TEXT_ALIGN_RIGHT;
+    else if (key == "text-align" && value == "center")
+      spec.textAlign = ISPY_TEXT_ALIGN_CENTER;
+    else if (key == "text-align")
+      throw CssParseError("Syntax error while defining text-align", value);
+    else if (key == "min-energy")
+    {
+      spec.minEnergy = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing min-energy value", value);
+    }
+    else if (key == "energy-scale")
+    {
+      spec.energyScale = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing energy-scale value", value);
+    }
+    else if (key == "max-energy")
+    {
+      spec.maxEnergy = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing max-energy value", value);
+    }
+    else if (key == "background")
+      spec.background = value;
     else
     {
-      std::cerr << "Unknown property " << key << std::endl;
-      ASSERT(false && "Unknown property");
+      throw CssParseError("Unknown property", key);
     }
   }
 }
@@ -440,102 +484,219 @@ ISpyApplication::parseCss(const char *css)
 // Draw Text Overlays
 // ------------------------------------------------------
 
-
-static void
-createTextLine(SoGroup *group, SoTranslation *trans, const std::string &text)
+class OverlayCreatorHelper
 {
-  SoText2 *label = new SoText2;
-  label->string = text.c_str();
-  group->addChild(trans);
-  group->addChild(label);
-}
+public:
+  /** Helper class to draw overlay information. It also created a background
+    bevel for the overlay, so that it stands out from the rest of the scene.
+    
+    The coordinate system is centered in the middle of the screen. Top left
+    corner is (-1, 1), while bottom right one is (1, -1). I'm not particularly 
+    sure this is a good typographic convention, but that's ok for now.
+    
+    @a group where to attach the result.
+    
+    @a style is the style used for rendering.
+    
+    FIXME: Notice that deltaY is bound to DPI values although I have
+           a factor 10 difference.
+  */
+  OverlayCreatorHelper(SoGroup *group, ISpyApplication::Style *style)
+  :m_group(group),
+   m_style(style),
+   m_overlay(new SoAnnotation),
+   m_camera(new SoOrthographicCamera),
+   m_textStartTranslation(0),
+   m_nextLineTranslation(0),
+   m_boxSeparator(0),
+   m_font(0),
+   m_fontScale(1.)
+  {
+    m_group->enableNotify(FALSE);
+    // Scale is 1. by default. LEAVE_ALONE is used to make sure we can have
+    // an almost view independent positioning.
+    m_camera->nearDistance = 1;
+    m_camera->farDistance = 10;
+    m_camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
+    m_camera->focalDistance = 1;
+    m_camera->viewportMapping = SoCamera::LEAVE_ALONE;
+    m_overlay->addChild(m_camera);
+  }
+
+  ~OverlayCreatorHelper()
+  {
+    m_group->addChild(m_overlay);
+    m_group->enableNotify(TRUE);
+  }
+  
+  /** Start a new text box in the current annotation layer.
+  @a x is the x coordinate of the top left corner of the overlay.
+  
+  @a y is the y coordinate of the top left corner of the overlay.
+  
+  @a deltaX is the X increment for the position of a new line when compared 
+            to the following one.
+  
+  @a deltaY is the Y increment for the position of a new line when compared 
+            to the following one.
+  */
+  void beginBox(float x, float y,
+                enum SoText2::Justification justification = SoText2::LEFT,
+                float fontScale = 1.0,
+                float deltaX = 0.0, float deltaY = -0.254/72)
+  {
+    m_font = new SoFont;
+    m_font->size = m_style->font->size.getValue() * fontScale;
+    m_font->name = m_style->font->name.getValue();
+    m_justification = justification;
+    m_textStartTranslation = new SoTranslation;
+    m_nextLineTranslation = new SoTranslation;
+    float fontHeight = deltaY * m_font->size.getValue();
+    m_textStartTranslation->translation = SbVec3f(x, y + fontHeight, 0.);
+    m_nextLineTranslation->translation = SbVec3f(deltaX, fontHeight, 0.);
+    m_boxSeparator = new SoSeparator;
+    m_boxSeparator->addChild(m_textStartTranslation);
+    m_boxSeparator->addChild(m_font);
+  }
+  
+  /** Indent text in the box and possibly rescale it.
+      
+      Useful to create titled lists or so.
+      
+   */
+  void indentText(int indentationLevel, float fontScale = 1.0)
+  {
+    m_font = new SoFont;
+    m_font->size = m_style->font->size.getValue() * fontScale;
+    m_font->name = m_style->font->name.getValue();
+    SoTranslation *indentation = new SoTranslation;
+    m_nextLineTranslation = new SoTranslation;
+    float fontHeight = -0.254/72 * m_font->size.getValue();
+    indentation->translation = SbVec3f((float)(indentationLevel) * 0.04, 0, 0.);
+    m_nextLineTranslation->translation = SbVec3f(0, fontHeight, 0.);
+    m_boxSeparator->addChild(indentation);
+    m_boxSeparator->addChild(m_font);
+  }
+  
+  // End a text box and attach it to the layer.
+  void endBox(void)
+  {
+    m_overlay->addChild(m_boxSeparator);
+  }
+  
+  void createTextLine (const char *text)
+  {
+    SoText2 *label = new SoText2;
+    label->string = text;
+    label->justification = m_justification;
+    m_boxSeparator->addChild(label);
+    m_boxSeparator->addChild(m_nextLineTranslation);
+  }
+  
+  void createIntLine (const char *text, int value)
+  {
+    char                  buf [256];
+    std::string           str = std::string(text) + (sprintf(buf, "%d", value), buf);
+    this->createTextLine(str.c_str());
+  }
+
+  void
+  addImage (float x, float y, float w, float h, SoTexture2 *image)
+  {
+    SoSeparator *logoSep = new SoSeparator;
+    SoTranslation *translation = new SoTranslation;
+    // FIXME: hardcoded value for the aspect ratio.
+    h *= 1.25;
+    translation->translation = SbVec3f(x + w/2, 
+                                       (y - h/2), 
+                                       0);
+    SoCube *logoBox = new SoCube;
+    SoMaterial *mat = new SoMaterial;
+    mat->transparency = 0.1;
+    logoBox->width = w;
+    logoBox->height = h;
+    logoSep->addChild(mat);
+    logoSep->addChild(translation);
+    logoSep->addChild(image);
+    logoSep->addChild(logoBox);
+    m_overlay->addChild(logoSep);
+  }
+private:
+  SoGroup                       *m_group;
+  ISpyApplication::Style        *m_style;
+  SoAnnotation                  *m_overlay;
+  SoOrthographicCamera          *m_camera;
+  SoTranslation                 *m_textStartTranslation;
+  SoTranslation                 *m_nextLineTranslation;
+  SoSeparator                   *m_boxSeparator;
+  enum SoText2::Justification   m_justification;
+  SoFont                        *m_font;
+  float                         m_fontScale;
+};
 
 static void
 make3DEvent(IgCollection **collections, IgAssociationSet **, 
-            SoSeparator *sep, ISpyApplication::Style * /* style */)
+            SoSeparator *sep, ISpyApplication::Style * style)
 {
-  char                  buf [128];
   IgCollection          *c = collections[0];
-  SoAnnotation          *overlay = new SoAnnotation;
-  SoOrthographicCamera  *camera = new SoOrthographicCamera;
-  SoTranslation         *textStartTranslation = new SoTranslation;
-  SoTranslation         *nextLineTranslation  = new SoTranslation;
   IgCollectionItem      e = *c->begin();
 
-  std::string           timestr;
   std::string           time  = e.get<std::string>("time");
-  
-  if (time.substr (0,11) == "1970-Jan-01") 
-    timestr = std::string("Simulated (MC) event");
-  else 
-    timestr = std::string("Data_taken ") + time;
-
-  std::string           run     = std::string("Run_no____ ") + (sprintf(buf, "%d", e.get<int>("run")), buf);
-  std::string           event   = std::string("Event_no__ ") + (sprintf(buf, "%d", e.get<int>("event")), buf);
-  std::string           orbit   = std::string("Orbit_____ ") + (sprintf(buf, "%d", e.get<int>("orbit")), buf);
-  std::string           bx      = std::string("Crossing__ ") + (sprintf(buf, "%d", e.get<int>("bx")), buf);
-  std::string           ls      = std::string("Lumi_sec__ ") + (sprintf(buf, "%d", e.get<int>("ls")), buf);
-
   // FIXME LT: make text positioning independent of window resize
   // FIXME LT: make visibilty of each line switchable in the interface(and settings) e.g. as for ig collections
+  OverlayCreatorHelper helper(sep, style);
 
-  camera->nearDistance = 1;
-  camera->farDistance = 10;
-  camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
-  camera->scaleHeight(5.5f);
-  camera->focalDistance = 1;
-  overlay->addChild(camera);
-
-  textStartTranslation->translation = SbVec3f(-5.0,  5.0,  0.0);
-  nextLineTranslation ->translation = SbVec3f( 0.0, -0.25, 0.0);
-
-  createTextLine(overlay, textStartTranslation, "CMS Experiment, CERN");
-  createTextLine(overlay, nextLineTranslation, " ");
-  createTextLine(overlay, nextLineTranslation, timestr);
-  createTextLine(overlay, nextLineTranslation, " ");
-  createTextLine(overlay, nextLineTranslation, run);
-  createTextLine(overlay, nextLineTranslation, event);
-  createTextLine(overlay, nextLineTranslation, ls);
-  createTextLine(overlay, nextLineTranslation, orbit);
-  createTextLine(overlay, nextLineTranslation, bx);
-  createTextLine(overlay, nextLineTranslation, "http://iguana.cern.ch/ispy");
-  sep->addChild(overlay);
+  helper.beginBox(-0.75, 0.93, style->textAlign);
+  helper.createTextLine("CMS Experiment at the LHC, CERN");
+  helper.indentText(0, 0.7);
+  helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
+                               ("Data recorded: " + time).c_str());
+  char runStr[1024];
+  helper.createTextLine((sprintf(runStr, "Run / Event: %d / %d", 
+                         e.get<int>("run"), e.get<int>("event")), runStr));
+  helper.endBox();
+  helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
+  helper.createTextLine("(c) CERN 2009. All rights reserved.");
+  helper.endBox();
+  helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
+  helper.createTextLine("http://iguana.cern.ch/ispy");
+  helper.endBox();
+  
+  
+  if (style->background)
+    helper.addImage(-0.94, 0.93, 0.16, 0.16, style->background);
+//  helper.createIntLine("Run_no____ ", e.get<int>("run"));
+//  helper.createIntLine("Event_no__ ", e.get<int>("event"));
+//  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));
+//  helper.createIntLine("Orbit_____ ", e.get<int>("orbit"));
+//  helper.createIntLine("Crossing__ ", e.get<int>("bx"));
+//  helper.createTextLine("http://iguana.cern.ch/ispy");
 }
 
 
 static void
 make3DL1Trigger(IgCollection **collections, IgAssociationSet **, 
-                SoSeparator *sep, ISpyApplication::Style * /* style */)
+                SoSeparator *sep, ISpyApplication::Style * style)
 {
-  char                   buf[128];
   IgCollection           *c = collections[0];
-  SoAnnotation           *overlay = new SoAnnotation;
-  SoOrthographicCamera   *camera = new SoOrthographicCamera;
-  SoTranslation          *textStartTranslation = new SoTranslation;
-  SoTranslation          *nextLineTranslation  = new SoTranslation;
-   
-  camera->nearDistance = 1;
-  camera->farDistance = 10;
-  camera->pointAt(SbVec3f(0.0, 0.0, 0.0));
-  camera->scaleHeight(5.5f);
-  camera->focalDistance = 1;
-  overlay->addChild(camera);
 
-  textStartTranslation->translation = SbVec3f(4.5,  5.0,  0.0);
-  nextLineTranslation ->translation = SbVec3f(0.0, -0.25, 0.0);
-  createTextLine (overlay, textStartTranslation, "L1 Triggers:");
-  createTextLine (overlay, nextLineTranslation,  "------------");
+  char                  buf [256];
+  OverlayCreatorHelper  helper(sep, style);
+
+  helper.beginBox(0.95,  0.97, style->textAlign);
+  helper.createTextLine("L1 Triggers:");
+  helper.createTextLine("------------");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     if (ci->get<int>("result") == 1)
     {   
       sprintf(buf, "%.100s", ci->get<std::string>("algorithm").c_str());
-      createTextLine(overlay, nextLineTranslation, buf);
+      helper.createTextLine(buf);
     }
   }
- 
-  sep->addChild (overlay);
+
+  helper.endBox();
 }
 
 static void
@@ -731,6 +892,133 @@ static void
 make3DAnyDetId(IgCollection **, IgAssociationSet **, 
                SoSeparator *, ISpyApplication::Style * /* style */)
 {
+}
+
+// Transform energy towers in R-Z view:
+// All hits above XZ plane go up, below - down.
+// The layer offsets the representation in X to show Ecal
+// hits on top of HCAL ones.
+// The flag indicats that it is ECAL which needs some special
+// adjustment.
+//
+static void
+makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, 
+                  SoSeparator *sep, ISpyApplication::Style *style, float layer, 
+                  bool flag, bool mirror)
+{
+  IgCollection *c = collections[0];
+
+  IgDrawTowerHelper drawTowerHelper(sep);
+
+  IgProperty ENERGY = c->getProperty("energy");
+  IgProperty FRONT_1 = c->getProperty("front_1");
+  IgProperty FRONT_2 = c->getProperty("front_2");
+  IgProperty FRONT_3 = c->getProperty("front_3");
+  IgProperty FRONT_4 = c->getProperty("front_4");
+  IgProperty BACK_1 = c->getProperty("back_1");
+  IgProperty BACK_2 = c->getProperty("back_2");
+  IgProperty BACK_3 = c->getProperty("back_3");
+  IgProperty BACK_4 = c->getProperty("back_4");
+
+  // FIXME: can compress the following code
+  float maxEnergy = style->maxEnergy;
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    double energy = ci->get<double>(ENERGY);
+    if (energy > maxEnergy)
+    {
+      maxEnergy = energy;
+    }
+  }
+  
+  if (maxEnergy == 0.)
+    return;
+
+  for(IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    double energy = ci->get<double>(ENERGY);
+    if(energy > style->minEnergy)
+    {
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+
+      float yf1 = sqrt (f1.x () * f1.x () + f1.y () * f1.y ());
+      float yf2 = sqrt (f2.x () * f2.x () + f2.y () * f2.y ());
+      float yf3 = sqrt (f3.x () * f3.x () + f3.y () * f3.y ());
+      float yf4 = sqrt (f4.x () * f4.x () + f4.y () * f4.y ());
+
+      float yb1 = sqrt (b1.x () * b1.x () + b1.y () * b1.y ());
+      float yb2 = sqrt (b2.x () * b2.x () + b2.y () * b2.y ());
+      float yb3 = sqrt (b3.x () * b3.x () + b3.y () * b3.y ());
+      float yb4 = sqrt (b4.x () * b4.x () + b4.y () * b4.y ());
+
+      float x = 0.001;
+      
+      if (f1.y () < 0.)
+      {
+        yf1 = - yf1;
+        yf2 = - yf2;
+        yf3 = - yf3;
+        yf4 = - yf4;
+        yb1 = - yb1;
+        yb2 = - yb2;
+        yb3 = - yb3;
+        yb4 = - yb4;
+        x = - x;
+      }
+      
+      if(flag && f2.z() > 0.)
+        x = - x;
+
+      IgV3d tf1  = IgV3d(layer + x, yf1, f1.z());
+      IgV3d tf2  = IgV3d(layer + 2*x, yf2, f2.z());
+      IgV3d tf3  = IgV3d(layer + 2*x, yf3, f3.z());
+      IgV3d tf4  = IgV3d(layer + x, yf4, f4.z());
+
+      IgV3d tb1  = IgV3d(layer + x, yb1, b1.z());
+      IgV3d tb2  = IgV3d(layer + 2*x, yb2, b2.z());
+      IgV3d tb3  = IgV3d(layer + 2*x, yb3, b3.z());
+      IgV3d tb4  = IgV3d(layer + x, yb4, b4.z());
+
+      if(mirror && f2.z() < 0.)
+        drawTowerHelper.addTower(tb1, tb4, tb3, tb2, tf1, tf4, tf3, tf2,
+                                 energy/style->maxEnergy, 
+                                 style->energyScale);
+      else
+        drawTowerHelper.addTower(tf1, tf2, tf3, tf4, tb1, tb2, tb3, tb4,
+                                 energy/style->maxEnergy, 
+                                 style->energyScale);
+    }
+  }
+}
+
+static void
+makeRZECalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+                  SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeRZEnergyHisto(collections, assocs, sep, style, -0.5, true, false);
+}
+
+static void
+makeRZEPRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+                SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false, true);
+}
+
+static void
+makeRZHCalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
+                SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false, false);
 }
 
 static void
@@ -935,12 +1223,9 @@ phi4eta (float eta)
 
 static void
 makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **, 
-                   SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                   SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
-
   IgDrawTowerHelper drawTowerHelper(sep);
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
@@ -949,14 +1234,14 @@ makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **,
     double et = ci->get<double>("et");
     double emFraction = emEnergy / et;
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
       double eta  = ci->get<double>("eta");
       double phi  = ci->get<double>("phi");
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, (emFraction > 0 ? emFraction : 0),
-                                   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+                                   style->energyScale, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
                                    phi4eta (fabs (eta)));
     }
   }
@@ -982,8 +1267,6 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   top->addChild(sty);
   
   IgCollection          *c = collections[0];
-  //  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 5.0;  // GeV      FIXME LT: should get it from some service
 
   IgProperty ETA = c->getProperty("eta");
   IgProperty PHI = c->getProperty("phi"); 
@@ -993,7 +1276,7 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   {
     double et = ci->get<double>(ET);
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
       double eta  = ci->get<double>(ETA);
       double phi  = ci->get<double>(PHI);
@@ -1039,56 +1322,61 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
 static void
 makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
-                    SoSeparator *sep, ISpyApplication::Style * /* style */)
+                    SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty ENERGY = c->getProperty("energy");
+  IgProperty ETA = c->getProperty("eta");
+  IgProperty PHI = c->getProperty("phi");
+  
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
-    double eta  = ci->get<double>("eta");
+    double energy = ci->get<double>(ENERGY);
+    double eta  = ci->get<double>(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
-      double phi  = ci->get<double>("phi");
+      double phi  = ci->get<double>(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 0.0,
-				   energyScaleFactor, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
-				   phi4eta (fabs (eta)));
+                                   style->energyScale, 
+                                   (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+                                   phi4eta (fabs (eta)));
     }
   }
 }
 
 static void
-makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
-                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
+makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
+                    SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 1.0;  // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
+  IgProperty ENERGY = c->getProperty("energy");
+  IgProperty ETA = c->getProperty("eta");
+  IgProperty PHI = c->getProperty("phi");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
-    double eta  = ci->get<double>("eta");
+    double energy = ci->get<double>(ENERGY);
+    double eta  = ci->get<double>(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
-    if (et > minimumEnergy)
+    if (et > style->minEnergy)
     {
-      double phi  = ci->get<double>("phi");
+      double phi  = ci->get<double>(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 1.0,
-				   energyScaleFactor, 0.0174f,
-				   0.0174f);
+                                   style->energyScale, 0.0174f,
+                                   0.0174f);
     }
   }
 }
@@ -1169,25 +1457,36 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
   IgAssociationSet      *assoc = assocs[0];
   IgProperty            PT  = tracks->getProperty("pt");
   IgProperty            POS = tracks->getProperty("pos");
+  IgProperty            P = tracks->getProperty("dir");
   IgProperty            POS1 = extras->getProperty("pos_1");
   IgProperty            DIR1 = extras->getProperty("dir_1");
   IgProperty            POS2 = extras->getProperty("pos_2");
   IgProperty            DIR2 = extras->getProperty("dir_2");
   SoSeparator           *vsep = new SoSeparator;
-  SoVertexProperty      *vertices = new SoVertexProperty;
-  SoMarkerSet           *mpoints = new SoMarkerSet;
-  int                   nv = 0;
- 
+
+  SoDrawStyle *vertexLinesStyle = new SoDrawStyle;
+  vertexLinesStyle->style = style->drawStyle->style;
+  vertexLinesStyle->lineWidth = style->drawStyle->lineWidth.getValue() - 1;
+  vertexLinesStyle->linePattern = 0xf0f0;
+  vsep->addChild(vertexLinesStyle);
+
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
     IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
+    IgSoSplineTrack     *vertexRep = new IgSoSplineTrack;
+
     SoVertexProperty    *tvertices = new SoVertexProperty;
     SoMarkerSet         *tpoints   = new SoMarkerSet;
     int                 nVtx = 0;
 
     IgV3d p = ci->get<IgV3d>(POS);
-    vertices->vertex.set1Value(nv++, SbVec3f(p.x(), p.y(), p.z()));
-    
+    IgV3d d = ci->get<IgV3d>(P);
+
+    SbVec3f vertexDiri(d.x(), d.y(), d.z());
+    vertexDiri.normalize();
+    vertexRep->points.set1Value(0, SbVec3f(p.x(), p.y(), p.z()));
+    vertexRep->tangents.set1Value(0, vertexDiri);
+
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get<double>(PT))
                         .arg(p.x()).arg(p.y()).arg(p.z());
@@ -1198,9 +1497,14 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
       {
         IgCollectionItem m(extras, ai->second().objectId());
         p = ci->get<IgV3d>(POS1);
-        IgV3d d = ci->get<IgV3d>(DIR1);
+        d = ci->get<IgV3d>(DIR1);
+        // If this is the first hit, then also add it to the vertex property
+        // for the dotted line which goes to the vertex. 
         SbVec3f diri(d.x(), d.y(), d.z());
         diri.normalize();
+
+        vertexRep->points.set1Value(1, SbVec3f(p.x(), p.y(), p.z()));
+        vertexRep->tangents.set1Value(1, diri);
 
         trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
         trackRep->tangents.set1Value(nVtx, diri);
@@ -1224,28 +1528,23 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
     tpoints->vertexProperty = tvertices;
     tpoints->numPoints.setValue(nVtx);
 
+    vsep->addChild(vertexRep);
     sep->addChild(trackRep);
     sep->addChild(tpoints);
   }
 
-  vertices->vertex.setNum(nv);
-  mpoints->markerIndex = SoMarkerSet::CROSS_5_5;
-  mpoints->vertexProperty.setValue(vertices);
-  mpoints->numPoints.setValue(nv);
-  vsep->addChild(mpoints);
-
+  // Add a dotted line from the vertex of the track to the first hit.
+  sep->addChild(vsep);
 }
 
 static void
 make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, 
-                      SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                      SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  SoMarkerSet           *points = new SoMarkerSet;
-  SoVertexProperty      *vertices = new SoVertexProperty;
-  int                   n = 0;
 
   IgDrawTowerHelper drawTowerHelper(sep);
+  IgProperty ENERGY = c->getProperty("energy");
   IgProperty FRONT_1 = c->getProperty("front_1");
   IgProperty FRONT_2 = c->getProperty("front_2");
   IgProperty FRONT_3 = c->getProperty("front_3");
@@ -1258,30 +1557,32 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **,
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-    IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-    IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-    IgV3d f4  = ci->get<IgV3d>(FRONT_4);
-
-    IgV3d b1  = ci->get<IgV3d>(BACK_1);
-    IgV3d b2  = ci->get<IgV3d>(BACK_2);
-    IgV3d b3  = ci->get<IgV3d>(BACK_3);
-    IgV3d b4  = ci->get<IgV3d>(BACK_4);
-    drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
-
-    vertices->vertex.set1Value(n++, SbVec3f(f1.x(), f1.y(), f1.z()));
-    vertices->vertex.set1Value(n++, SbVec3f(f2.x(), f2.y(), f2.z()));
-    vertices->vertex.set1Value(n++, SbVec3f(f3.x(), f3.y(), f3.z()));
-    vertices->vertex.set1Value(n++, SbVec3f(f4.x(), f4.y(), f4.z()));
+    double energy = ci->get<double>(ENERGY);
+    if (energy > style->minEnergy)
+    {
+      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+      
+      IgV3d b1  = ci->get<IgV3d>(BACK_1);
+      IgV3d b2  = ci->get<IgV3d>(BACK_2);
+      IgV3d b3  = ci->get<IgV3d>(BACK_3);
+      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+    
+      // FIXME: There is a bug in Preshower geometry.
+      // The corners order is a translation.
+      // When it is fixed to mirrored, the fix
+      // to flip energy bumps can be removed.
+      if(f2.z() > 0.)
+        drawTowerHelper.addTower(f1, f2, f3, f4, b1, b2, b3, b4,
+                                 energy, style->energyScale);
+      else
+        drawTowerHelper.addTower(b1, b4, b3, b2, f1, f4, f3, f2,
+                                 energy, style->energyScale);	
+    }
   }
-  vertices->vertex.setNum(n);
-
-  points->markerIndex = SoMarkerSet::PLUS_5_5;
-  points->vertexProperty = vertices;
-  points->numPoints = n;
-  sep->addChild(points);
 }
-
 
 
 // ------------------------------------------------------
@@ -1290,11 +1591,10 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, 
-                  SoSeparator *sep, ISpyApplication::Style * /* style */)
+                  SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection          *c = collections[0];
-  float minEnergy     = 0.2;   // GeV  FIXME LT: should get it from some service
-  float maxEnergy     = 5.0;  // GeV  Not a cut -- just used to set max box size
+  float maxEnergy          = style->maxEnergy;  // GeV  Not a cut -- just used to set max box size
 
   // FIXME: can compress the following code
 
@@ -1323,7 +1623,7 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **,
   {
     double energy = ci->get<double>("energy");
 
-    if (energy > minEnergy)
+    if (energy > style->minEnergy)
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1343,13 +1643,9 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, 
-                   SoSeparator *sep, ISpyApplication::Style * /* style */)
+                   SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-
-  float energyScaleFactor = 0.03;  // m/GeV    FIXME LT: should get it from some service
-  // float energyScaleFactor = 0.2;  // increase to help PF electrons show up  
-  float minEnergy     = 0.2;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1363,11 +1659,13 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
   IgProperty BACK_3 = c->getProperty("back_3");
   IgProperty BACK_4 = c->getProperty("back_4");
 
+  IgProperty ENERGY = c->getProperty("energy");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
+    double energy = ci->get<double>(ENERGY);
 
-    if (energy > minEnergy)
+    if (energy > style->minEnergy)       // GeV
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1382,7 +1680,7 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
                                energy,
-                               energyScaleFactor);
+                               style->energyScale); // m/GeV
     }
   }
 }
@@ -1393,11 +1691,9 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
-                        SoSeparator *sep, ISpyApplication::Style * /* style */)
+                        SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1417,7 +1713,7 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
   {
     double energy = ci->get<double>(ENERGY);
 
-    if (energy > minimumEnergy)
+    if (energy > style->minEnergy)  // GeV
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1432,18 +1728,16 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
                                energy,
-                               energyScaleFactor);
+                               style->energyScale); // m / GeV
     }
   }
 }
 
 static void
 make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
-                               SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                               SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  float energyScaleFactor = 0.04; // m/GeV    FIXME LT: should get it from some service
-  float minimumEnergy     = 0.5;  // GeV      FIXME LT: should get it from some service
 
   IgDrawTowerHelper drawTowerHelper(sep);
 
@@ -1457,12 +1751,15 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
   IgProperty BACK_3 = c->getProperty("back_3");
   IgProperty BACK_4 = c->getProperty("back_4");
 
+  IgProperty EMENERGY = c->getProperty("emEnergy");
+  IgProperty HADENERGY = c->getProperty("hadEnergy");
+
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double emEnergy = ci->get<double>("emEnergy");
-    double hadEnergy = ci->get<double>("hadEnergy");
+    double emEnergy = ci->get<double>(EMENERGY);
+    double hadEnergy = ci->get<double>(HADENERGY);
 
-    if (hadEnergy > minimumEnergy)
+    if (hadEnergy > style->minEnergy)
     {
       IgV3d f1  = ci->get<IgV3d>(FRONT_1);
       IgV3d f2  = ci->get<IgV3d>(FRONT_2);
@@ -1476,15 +1773,15 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
 
       drawTowerHelper.addTower(f1,f2,f3,f4,
                                b1,b2,b3,b4,
-                               hadEnergy, (emEnergy>minimumEnergy?emEnergy:0),
-                               energyScaleFactor);
+                               hadEnergy, (emEnergy > style->minEnergy ? emEnergy : 0),
+                               style->energyScale);
     }
   }
 }
 
 static void 
 make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
-                   SoSeparator *sep, ISpyApplication::Style */*style*/)
+                   SoSeparator *sep, ISpyApplication::Style *style)
 {
   IgCollection       *clusters = collections[0];
   IgCollection       *fracs    = collections[1];
@@ -1696,10 +1993,9 @@ make3DPhoton(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DJetShapes(IgCollection **collections, IgAssociationSet **, 
-                SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                SoSeparator *sep, ISpyApplication::Style * style)
 {
   IgCollection          *c = collections[0];
-  double                ecut = 5.0;  // FIXME LT: get value from some service
   IgProperty ET = c->getProperty("et");
   IgProperty THETA = c->getProperty("theta");
   IgProperty PHI = c->getProperty("phi");
@@ -1710,7 +2006,7 @@ make3DJetShapes(IgCollection **collections, IgAssociationSet **,
     double theta = ci->get<double>(THETA);
     double phi   = ci->get<double>(PHI);
 
-    if (et > ecut)
+    if (et > style->minEnergy)
     {
       IgSoJet *recoJet = new IgSoJet;
       recoJet->theta.setValue(theta);
@@ -1852,14 +2148,11 @@ make3DCSCDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep
   {
     IgV3d pos = ci->get<IgV3d>(POS);
 
-    SoTranslation* trans = new SoTranslation;
-    trans->translation = SbVec3f(pos.x(),pos.y(),pos.z());
-   
-    SbVec3f axis(0.0, 0.0, 1.0);
+    SoTransform *transform = new SoTransform;
+    transform->translation.setValue(pos.x(), pos.y(), pos.z());
     double angle = -atan2(pos.x(),pos.y()) - rotate;
 
-    SoTransform* xform = new SoTransform;
-    xform->rotation = SbRotation(axis,angle);
+    transform->rotation.setValue(SbVec3f(0.0, 0.0, 1.0), angle);
 
     SoCube* hit = new SoCube;
     hit->width  = width;
@@ -1867,8 +2160,7 @@ make3DCSCDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep
     hit->depth  = depth;
 
     SoSeparator* pulse = new SoSeparator;
-    pulse->addChild(trans);
-    pulse->addChild(xform);
+    pulse->addChild(transform);
     pulse->addChild(hit);
     sep->addChild(pulse);
   }
@@ -2107,13 +2399,206 @@ make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs,
 //<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
 //<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
-/** Initialise but do not yet run the application object. */
+/** Helper method to parse attributes that contain a 3-vector where components
+    are comma separated, e. g.: "1.0, 0.0, 2.0".
+    
+    @a value to set according to the attribute.
+    
+    @a attr containing all the attributes.
+
+    @a name for the attribute containing the vector.
+    
+    @throw ViewSpecParseError in case of mistakes.
+*/
+void
+parseVectorAttribute(float *v, QXmlStreamAttributes &attr, const char *name)
+{
+  QStringList sl = attr.value(name).toString().simplified().split(QRegExp("[ ]*,[ ]*"));
+  if (sl.count() != 3)
+    throw ViewSpecParseError();
+
+  for (size_t i = 0; i != 3; ++i)
+  {
+    bool ok;
+    v[i] = sl[i].toFloat(&ok);
+    if (!ok)
+      throw ViewSpecParseError();
+  }
+}
+
+/** Helper method to parse attributes that can be either "true" or "false".
+    
+    @a value to set according to the attribute.
+    
+    @a attr containing all the attributes in the element.
+    
+    @a name containing the name of the attribute to be used.
+    
+    @a trueString containing the mnemonic for a true condition.
+    
+    @a falseString containing the mnemonic for a false condition.
+    
+    @throw ViewSpecParseError on parse errors.
+*/
+void
+parseBooleanAttribute(bool &value, QXmlStreamAttributes &attr, const char *name, 
+                      const char *trueString = "true", 
+                      const char * falseString = "false")
+{
+  if (!attr.hasAttribute(name))
+    return;
+  
+  QStringRef str = attr.value(name);
+  
+  if (str != trueString && str != falseString)
+    throw ViewSpecParseError();
+
+  value = (str == trueString);
+}
+
+/** Helper method to parse attributes float attributes.
+    
+    @a value to set according to the attribute.
+    
+    @a attr containing all attributes.
+    
+    @a name for the attribute.
+    
+    @throw ViewSpecParseError on parse errors.
+*/
+void
+parseFloatAttribute(float &value, QXmlStreamAttributes &attr, const char *name)
+{
+  if (!attr.hasAttribute(name))
+    return;
+  
+  QString str = attr.value(name).toString();
+
+  bool ok;
+  value = str.toFloat(&ok);
+  
+  if (!ok)
+    throw ViewSpecParseError();
+}
+
+/** Helper method to parse string attributes.
+    
+    @a value to set according to the attribute.
+    
+    @a attr containing all attributes.
+    
+    @a name for the attribute.
+    
+    @throw ViewSpecParseError on parse errors.
+*/
+void
+parseStringAttribute(QString &value, QXmlStreamAttributes &attr, const char *name)
+{
+  if (!attr.hasAttribute(name))
+    return;
+  
+  value = attr.value(name).toString();
+}
+
+/** Read the view definition from @a device and create the various views.
+
+    TODO: this is a first step in a direction where the views are actually not
+          hardcoded in the application but could even be read from the ig file
+          itself. For example an analiser could decide to selectively turn on
+          and off displaying some collections depending on the trigger status.
+*/
+void
+ISpyApplication::parseViewsDefinition(QByteArray &data)
+{
+  QXmlStreamReader xml;
+  xml.addData(data);
+
+  while (!xml.atEnd())
+  {
+    xml.readNext();
+    if (xml.tokenType() == QXmlStreamReader::StartElement)
+    {
+      QXmlStreamAttributes attr = xml.attributes();
+      if (xml.name() == "collection")
+      {
+        QString label, collectionSpec, otherCollectionSpec, 
+                associationSpec, make3DName;
+        bool visibility = true;
+        
+        parseStringAttribute(label, attr, "label");
+        parseStringAttribute(collectionSpec, attr, "spec");
+        parseStringAttribute(otherCollectionSpec, attr, "other");
+        parseStringAttribute(associationSpec, attr, "associations");
+        parseStringAttribute(make3DName, attr, "draw");
+        parseBooleanAttribute(visibility, attr, "visibility", "block", "none");
+
+        DrawFunctionsRegistry::iterator i = m_drawFunctions.find(make3DName.toStdString().c_str());
+        Make3D df = 0;
+
+        if (i != m_drawFunctions.end())
+          df = i->second;
+
+        collection(label.toStdString().c_str(),
+                   collectionSpec.toStdString().c_str(),
+                   otherCollectionSpec.toStdString().c_str(),
+                   associationSpec.toStdString().c_str(),
+                   df,
+                   visibility ? Qt::Checked : Qt::Unchecked);
+      }
+      else if (xml.name() == "view")
+      {
+        QString label = "Unnamed view";
+        bool specialised = true;
+        
+        if (attr.hasAttribute("label"))
+          label = attr.value("label").toString();
+        parseBooleanAttribute(specialised, attr, "specialised");
+        
+        view(label.toAscii(), specialised);
+      }
+      else if (xml.name() == "camera")
+      {
+        float position[3] = {0., 0., 0.};
+        float pointAt[3] = {1., 0., 0.};
+        float scale = 1.0;
+        bool ortho = false;
+        bool rotating = true;
+        
+        parseVectorAttribute(position, attr, "position");
+        parseVectorAttribute(pointAt, attr, "pointAt");
+        parseFloatAttribute(scale, attr, "scale");
+        parseBooleanAttribute(ortho, attr, "orthographic");
+        parseBooleanAttribute(rotating, attr, "rotating");
+        camera(position, pointAt, scale, ortho, rotating);
+      }
+      else if (xml.name() == "visibilityGroup")
+      {  
+        visibilityGroup(); 
+      }
+      else if (xml.name() == "layout")
+      {
+        continue;
+      }
+      else
+      {  
+        throw ViewSpecParseError(xml.lineNumber());
+      }
+    }
+  }
+  
+  if (xml.hasError())
+    throw ViewSpecParseError(xml.lineNumber());
+}
+
+/** Initialise but do not yet run the application object. 
+  */
 ISpyApplication::ISpyApplication(void)
   : m_argc(-1),
     m_argv(0),
     m_appname(0),
     m_eventIndex(0),
     m_currentViewIndex(0),
+    m_listModel(0),
     m_tableModel(0),
     m_3DModel(0),
     m_mainWindow(0),
@@ -2129,7 +2614,8 @@ ISpyApplication::ISpyApplication(void)
     m_progressDialog(0),
     m_3DToolBar(0),
     m_actionCameraPerspective(0),
-    m_actionCameraOrthographic(0)
+    m_actionCameraOrthographic(0),
+    m_printTimer(new QTimer(this))
 {
   m_archives[0] = m_archives[1] = 0;
   m_storages[0] = new IgDataStorage;
@@ -2140,1656 +2626,98 @@ ISpyApplication::ISpyApplication(void)
 #else
   QCoreApplication::setApplicationName("iSpy");
 #endif
-  QCoreApplication::setApplicationVersion("1.3.1");
+  QCoreApplication::setApplicationVersion("1.4.1");
   QCoreApplication::setOrganizationDomain("iguana");
   QCoreApplication::setOrganizationName("iguana");
 
   if (QDir::home().isReadable())
     defaultSettings();
 
+  // Define event filters
+  // A filter is defined by a friendly collection name.
+  // The collection must have the fields specified here.
+  //
+  filter("Provenance/L1 Triggers", "L1GtTrigger_V1:algorithm:result");
+  filter("Provenance/HLT Trigger Paths", "TriggerPaths_V1:Name:Accept");
 
+  
   // Create the default style reading the specification from a QT resource.
   style("*", "");
   style("Background","diffuse-color: rbg(1.,0,0);");
-  QFile cssFile(":/css/default-style.css");
-  bool ok = cssFile.open(QIODevice::ReadOnly | QIODevice::Text);
+  bool ok = parseCssFile(":/css/default-style.css");
   ASSERT(ok && "Default style not compiled as resource.");
-  QByteArray cssData = cssFile.readAll();
-  ASSERT(cssData.size());
-  parseCss(cssData.data());
-
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
   
-  float position1[3] = {-18.1, 8.6, 14.0};
-  float pointAt1[3] = {0, 0, 0};
-  camera(position1, pointAt1, 10.6, true, true);
-  visibilityGroup();
-
-  view("Standard 3D View", true);
+  // Register draw functions which will be later used to draw various 
+  // collections.
+  registerDrawFunctions();
   
-  collection("Provenance/Event information",
-             "Event_V1:time:run:event:ls:orbit:bx",
-             0,
-             0,
-             make3DEvent,
-             Qt::Checked);
-
-  collection("Provenance/L1 Triggers",
-             "L1GtTrigger_V1",
-             0,
-             0,
-             make3DL1Trigger,
-             Qt::Checked);
-
-  collection("Provenance/HLT Trigger Paths",
-             "TriggerPaths_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1:VID:pt:eta:phi",
-             0,
-             0,
-             make3DTriggerObject,
-             Qt::Unchecked);
-
-  collection("Provenance/Data Products found", 
-             "Products_V1", 
-             0, 
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Provenance/Data Products not found", 
-             "Errors_V1", 
-             0, 
-             0, 
-             0,
-             Qt::Unchecked);
-  
-// -------------------------------------------------------------------------------------
-
-  // For now, draw the detector with the default "make3DAnyBox" code but explicit state
-  // this in each case so lables in visibility widget a nice than default ones
-  
-  collection("Detector/Tracker",
-             "Tracker3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/ECAL Barrel",
-             "EcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/ECAL Endcap",
-             "EcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/Preshower",
-             "EcalPreshower3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/HCAL Barrel",
-             "HcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/HCAL Endcap",
-             "HcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/HCAL Outer",
-             "HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/HCAL Forward",
-             "HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/Drift Tubes",
-             "DTs3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/Cathode Strip Chambers",
-             "CSC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/Resistive Plate Chambers",
-             "RPC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Tracking/Tracks (reco.)",
-             "Tracks_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "TrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Tracking/Tracks (GSF)",
-             "GsfTracks_V1:pt:pos:dir",
-             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfTrackExtras_V1",
-             make3DTracks,
-             Qt::Unchecked);
-  
-  collection("Tracking/Digis (Si Pixels)",
-             "PixelDigis_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Digis (Si Strips)",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Clusters (Si Pixels)",
-             "SiPixelClusters_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Clusters (Si Strips)",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Rec. Hits (Si Pixels)",
-             "SiPixelRecHits_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Rec. Hits (Tracking)",
-             "TrackingRecHits_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("ECAL/ECAL Rec. Hits",     // pre-Aug 2009 ig files only
-             "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-
-  collection("ECAL/Barrel Rec. Hits",
-             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-
-  collection("ECAL/Endcap Rec. Hits",
-             "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-  
-  collection("ECAL/Preshower Rec. Hits",
-             "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DPreshowerTowers,
-             Qt::Checked);
-
-  collection("ECAL/CaloClusters",
-             "CaloClusters_V1:pos:energy",
-             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             "CaloClusterRecHitFractions_V1",
-             make3DCaloClusters,
-             Qt::Checked);
-
-  collection("ECAL/SuperClusters",
-             "SuperClusters_V1:pos:energy",
-             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             "SuperClusterRecHitFractions_V1",
-             make3DCaloClusters,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-  
-  collection("HCAL/Barrel Rec. Hits",
-             "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-  collection("HCAL/Endcap Rec. Hits",
-             "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-  collection("HCAL/Forward Rec. Hits",
-             "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-  collection("HCAL/Outer Rec. Hits",
-             "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-  
-  collection("Muon/DT Digis",
-             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
-             0,
-             0,
-             make3DDTDigis,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Hits",
-             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
-             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
-             0,
-             0,
-             make3DDTRecHits,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Segments (4D)",
-             "DTRecSegment4D_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DSegmentShapes,
-             Qt::Checked);
-
-  collection("Muon/CSC Segments",
-             "CSCSegments_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DSegmentShapes,
-             Qt::Checked);
-
-  collection("Muon/CSC Wire Digis",
-             "CSCWireDigis_V1:pos:length",
-             0,
-             0,
-             make3DCSCWireDigis,
-             Qt::Checked);
-
-  collection("Muon/CSC Strip Digis",
-             "CSCStripDigis_V1:pos:length",
-             0,
-             0,
-             make3DCSCStripDigis,
-             Qt::Checked);
-
-  collection("Muon/RPC Rec. Hits",
-             "RPCRecHits_V1:u1:u2:v1:v2:w2",
-             0,
-             0,
-             make3DRPCRecHits,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Particle Flow/Rec. Tracks",
-             "PFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "PFRecTrackTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-  collection("Particle Flow/GSF Tracks",
-             "GsfPFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-  collection("Particle Flow/ECAL Barrel Rec. Hits",
-             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Unchecked);
-
-  collection("Particle Flow/ECAL Endcap Rec. Hits",
-             "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Unchecked);
-
-  collection("Particle Flow/Bremsstrahlung candidate tangents",
-             "PFBrems_V1:deltaP:sigmadeltaP",
-             "PFTrajectoryPoints_V1:pos",
-             "PFBremTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Physics Objects/Muons (Reco)",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Tracker Muons (Reco)",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (Reco)",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (Reco)",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Physics Objects/Global Muons (Reco)",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Physics Objects/Tracker Muons (PAT)",
-             "PATTrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "PATMuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (PAT)",
-             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "PATMuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Physics Objects/Global Muons (PAT)",
-             "PATGlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "PATMuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Electrons (GSF)",
-             "GsfElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Physics Objects/Electrons (PAT)",
-             "PATElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "PATElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Physics Objects/Photons (Reco)",
-             "Photons_V1:energy:eta:phi:pos",
-             0,
-             0,
-             make3DPhoton,
-             Qt::Checked);
-
-  collection("Physics Objects/Photons (PAT)",
-             "PATPhotons_V1:energy:eta:phi:pos",
-             0,
-             0,
-             make3DPhoton,
-             Qt::Checked);
-
-  collection("Physics Objects/Calorimeter Energy Towers",
-             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DCaloTowers,
-             Qt::Unchecked);
-
-  collection("Physics Objects/Jets",
-             "Jets_V1:et:theta:phi",
-             0,
-             0,
-             make3DJetShapes,
-             Qt::Unchecked);
-
-  collection("Physics Objects/Missing Et",
-             "METs_V1:pt:px:py:phi",
-             0,
-             0,
-             make3DMET,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Monte-Carlo/Sim. tracks with hits",
-             "TrackingParticles_V1",
-             "PSimHits_V1:pos:dir",
-             "TrackingParticlePSimHits_V1",
-             make3DTrackingParticles,
-             Qt::Unchecked);
-
-
-// -------------------------------------------------------------------------------------
-
-// First specify collections that exist that never appear in tree widget 
-  collection("Collections not drawn/Extras_V1", "Extras_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Collections not drawn/Hits_V1", "Hits_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Collections not drawn/Points_V1", "Points_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Collections not drawn/DetIds_V1", "DetIds_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Collections not drawn/PSimHits_V1","PSimHits_V1",0, 0, 0, Qt::Unchecked);
-  collection("Collections not drawn/GsfExtras_V1", "GsfExtras_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Collections not drawn/PFTrajectoryPoints_V1", "PFTrajectoryPoints_V1", 0, 0, 0, Qt::Unchecked);
-  collection("Collections not drawn/PFRecHitFractions_V1", "PFRecHitFractions_V1", 0, 0, 0, Qt::Unchecked);
-
-  // Do not draw the geometries which are only for the other views.
-
-  collection("Collections not drawn/TrackerRPhi_V1",
-             "TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/TrackerRZ_V1",
-	     "TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/EcalBarrelRPhi_V1",
-	     "EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/EcalBarrelRZ_V1",
-	     "EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/EcalPreshowerRZ_V1",
-	     "EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/EcalEndcapRZ_V1",
-	     "EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/HcalBarrelRPhi_V1",
-	     "HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/HcalBarrelRZ_V1",
-	     "HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/HcalEndcapRZ_V1",
-	     "HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/CaloLego_V1",
-	     "CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/HcalOuterRPhi_V1",
-	     "HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/HcalOuterRZ_V1",
-	     "HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/HcalForwardRZ_V1",
-	     "HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/CSCRZ_V1",
-	     "CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-  
-  collection("Collections not drawn/DTsRPhi_V1",
-	     "DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/DTsRZ_V1",
-	     "DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/RPCRPhi_V1",
-	     "RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Collections not drawn/RPCRZ_V1",
-	     "RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             0,
-             Qt::Checked);
-
-
-// ///////////////////////////////////////////////////////////////////////////////
-  
-
-  // Attempt generic default drawing operations if none of the above explicitly matched
-
-  collection(0, ":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4", 0, 0, make3DAnyBox, Qt::Unchecked);
-  collection(0, ":pos_1:pos_2", 0, 0, make3DAnyLine, Qt::Unchecked);
-  collection(0, ":pos", 0, 0, make3DAnyPoint, Qt::Unchecked);
-  collection(0, ":detid", 0, 0, make3DAnyDetId, Qt::Unchecked);
-
-
-
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-
-  float position2[] = {0, 0, 1};
-  float pointAt2[] = {0, 0, 0};
-  camera(position2, pointAt2, 8.5, true, false);
-  visibilityGroup();
-
-  view("Standard R-Phi View", true);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Provenance/Event information",
-             "Event_V1:time:run:event:ls:orbit:bx",
-             0,
-             0,
-             make3DEvent,
-             Qt::Checked);
-
-  collection("Provenance/L1 Triggers",
-             "L1GtTrigger_V1",
-             0,
-             0,
-             make3DL1Trigger,
-             Qt::Checked);
-
-  collection("Provenance/HLT Trigger Paths",
-             "TriggerPaths_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1:VID:pt:eta:phi",
-             0,
-             0,
-             make3DTriggerObject,
-             Qt::Unchecked);
-
-  collection("Provenance/Data Products found", 
-             "Products_V1", 
-             0, 
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Provenance/Data Products not found", 
-             "Errors_V1", 
-             0, 
-             0, 
-             0,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Detector/Tracker",
-             "TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/ECAL Barrel",
-             "EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/HCAL Barrel",
-             "HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/HCAL Outer",
-             "HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/Drift Tubes",
-             "DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/Resistive Plate Chambers",
-             "RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Tracking/Tracks (reco.)",
-             "Tracks_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "TrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Tracking/Tracks (GSF)",
-             "GsfTracks_V1:pt:pos:dir",
-             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfTrackExtras_V1",
-             make3DTracks,
-             Qt::Unchecked);
-  
-  collection("Tracking/Digis (Si Pixels)",
-             "PixelDigis_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Digis (Si Strips)",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Clusters (Si Pixels)",
-             "SiPixelClusters_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Clusters (Si Strips)",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Rec. Hits (Si Pixels)",
-             "SiPixelRecHits_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Rec. Hits (Tracking)",
-             "TrackingRecHits_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("ECAL/ECAL Rec. Hits",   // pre-Aug 2009 ig files only
-             "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-
-  collection("ECAL/Barrel Rec. Hits",
-             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-
- collection("ECAL/CaloClusters",
-             "CaloClusters_V1:pos:energy",
-             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             "CaloClusterRecHitFractions_V1",
-             make3DCaloClusters,
-             Qt::Checked);
-
-  collection("ECAL/SuperClusters",
-             "SuperClusters_V1:pos:energy",
-             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             "SuperClusterRecHitFractions_V1",
-             make3DCaloClusters,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("HCAL/Barrel Rec. Hits",
-             "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-  collection("HCAL/Outer Rec. Hits",
-             "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Muon/DT Digis",
-             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
-             0,
-             0,
-             make3DDTDigis,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Hits",
-             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
-             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
-             0,
-             0,
-             make3DDTRecHits,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Segments (4D)",
-             "DTRecSegment4D_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DSegmentShapes,
-             Qt::Checked);
-
-  collection("Muon/CSC Segments",
-             "CSCSegments_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DSegmentShapes,
-             Qt::Checked);
-
-  collection("Muon/RPC Rec. Hits",
-             "RPCRecHits_V1:u1:u2:v1:v2:w2",
-             0,
-             0,
-             make3DRPCRecHits,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Particle Flow/Rec. Tracks",
-             "PFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "PFRecTrackTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-  collection("Particle Flow/GSF Tracks",
-             "GsfPFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-  collection("Particle Flow/ECAL barrel Rec. Hits",
-             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Unchecked);
-
-  collection("Particle Flow/Bremsstrahlung candidate tangents",
-             "PFBrems_V1:deltaP:sigmadeltaP",
-             "PFTrajectoryPoints_V1:pos",
-             "PFBremTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Physics Objects/Muons (Reco)",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Tracker Muons (Reco)",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (Reco)",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (Reco)",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Physics Objects/Global Muons (Reco)",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Tracker Muons (PAT)",
-             "PATTrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "PATMuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (PAT)",
-             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "PATMuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Physics Objects/Global Muons (PAT)",
-             "PATGlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "PATMuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-   collection("Physics Objects/Electrons (GSF)",
-             "GsfElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Physics Objects/Electrons (PAT)",
-             "PATElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "PATElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Physics Objects/Photons (Reco)",
-             "Photons_V1:energy:eta:phi:pos",
-             0,
-             0,
-             make3DPhoton,
-             Qt::Checked);
-
-  collection("Physics Objects/Photons (PAT)",
-             "PATPhotons_V1:energy:eta:phi:pos",
-             0,
-             0,
-             make3DPhoton,
-             Qt::Checked);
-
-  collection("Physics Objects/Calorimeter Energy Towers",
-             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DCaloTowers,
-             Qt::Unchecked);
-
-  collection("Physics Objects/Jets",
-             "Jets_V1:et:theta:phi",
-             0,
-             0,
-             make3DJetShapes,
-             Qt::Unchecked);
-
-  collection("Physics Objects/Missing Et",
-             "METs_V1:pt:px:py:phi",
-             0,
-             0,
-             make3DMET,
-             Qt::Unchecked);
-
-  collection("Monte-Carlo/Sim. tracks with hits",
-             "TrackingParticles_V1",
-             "PSimHits_V1:pos:dir",
-             "TrackingParticlePSimHits_V1",
-             make3DTrackingParticles,
-             Qt::Unchecked);
-
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-
-  float positionRZ[3] = {-1, 0, 0};
-  float pointAtRZ[3] = {0, 0, 0};
-  camera(positionRZ, pointAtRZ, 8.5, true, false);
-  visibilityGroup();
-
-  view("Standard R-Z View", true);
-
-
-// -------------------------------------------------------------------------------------
-
-  collection("Provenance/Event information",
-             "Event_V1:time:run:event:ls:orbit:bx",
-             0,
-             0,
-             make3DEvent,
-             Qt::Checked);
-
-  collection("Provenance/L1 Triggers",
-             "L1GtTrigger_V1",
-             0,
-             0,
-             make3DL1Trigger,
-             Qt::Checked);
-
-  collection("Provenance/HLT Trigger Paths",
-             "TriggerPaths_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1:VID:pt:eta:phi",
-             0,
-             0,
-             make3DTriggerObject,
-             Qt::Unchecked);
-
-  collection("Provenance/Data Products found", 
-             "Products_V1", 
-             0, 
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Provenance/Data Products not found", 
-             "Errors_V1", 
-             0, 
-             0, 
-             0,
-             Qt::Checked);
-  
-// -------------------------------------------------------------------------------------
-
-  collection("Detector/Tracker",
-             "TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/ECAL Barrel",
-             "EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/ECAL Endcap",
-             "EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/Preshower",
-             "EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/HCAL Barrel",
-             "HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/HCAL Endcap",
-             "HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/HCAL Outer",
-             "HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-  collection("Detector/HCAL Forward",
-             "HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/Drift Tubes",
-             "DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/Cathode Strip Chambers",
-             "CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Checked);
-
-  collection("Detector/Resistive Plate Chambers",
-             "RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DAnyBox,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-
-  collection("Tracking/Tracks (reco.)",
-             "Tracks_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "TrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Tracking/Tracks (GSF)",
-             "GsfTracks_V1:pt:pos:dir",
-             "GsfExtras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfTrackExtras_V1",
-             make3DTracks,
-             Qt::Unchecked);
-  
-  collection("Tracking/Digis (Si Pixels)",
-             "PixelDigis_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Digis (Si Strips)",
-             "SiStripDigis_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Clusters (Si Pixels)",
-             "SiPixelClusters_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Clusters (Si Strips)",
-             "SiStripClusters_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Rec. Hits (Si Pixels)",
-             "SiPixelRecHits_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-  collection("Tracking/Rec. Hits (Tracking)",
-             "TrackingRecHits_V1:pos",
-             0,
-             0,
-             make3DPointSetShapes,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("ECAL/ECAL Rec. Hits",   // pre-Aug 2009 ig files only
-             "EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-
-  collection("ECAL/Barrel Rec. Hits",
-             "EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-
-  collection("ECAL/Endcap Rec. Hits",
-             "EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Checked);
-  
-  collection("ECAL/Preshower Rec. Hits",
-             "ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DPreshowerTowers,
-             Qt::Checked);
-
-   collection("ECAL/CaloClusters",
-             "CaloClusters_V1:pos:energy",
-             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             "CaloClusterRecHitFractions_V1",
-             make3DCaloClusters,
-             Qt::Checked);
-
-  collection("ECAL/SuperClusters",
-             "SuperClusters_V1:pos:energy",
-             "RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             "SuperClusterRecHitFractions_V1",
-             make3DCaloClusters,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("HCAL/Barrel Rec. Hits",
-             "HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-  collection("HCAL/Endcap Rec. Hits",
-             "HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-  collection("HCAL/Forward Rec. Hits",
-             "HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-  collection("HCAL/Outer Rec. Hits",
-             "HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyBoxes,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Muon/DT Digis",
-             "DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight",
-             0,
-             0,
-             make3DDTDigis,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Hits",
-             "DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
-             ":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight",
-             0,
-             0,
-             make3DDTRecHits,
-             Qt::Unchecked);
-
-  collection("Muon/DT Rec. Segments (4D)",
-             "DTRecSegment4D_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DSegmentShapes,
-             Qt::Checked);
-
-  collection("Muon/CSC Segments",
-             "CSCSegments_V1:pos_1:pos_2",
-             0,
-             0,
-             make3DSegmentShapes,
-             Qt::Checked);
-
-  collection("Muon/CSC Wire Digis",
-             "CSCWireDigis_V1:pos:length",
-             0,
-             0,
-             make3DCSCWireDigis,
-             Qt::Checked);
-
-  collection("Muon/CSC Strip Digis",
-             "CSCStripDigis_V1:pos:length",
-             0,
-             0,
-             make3DCSCStripDigis,
-             Qt::Checked);
-
-  collection("Muon/RPC Rec. Hits",
-             "RPCRecHits_V1:u1:u2:v1:v2:w2",
-             0,
-             0,
-             make3DRPCRecHits,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Particle Flow/Rec. Tracks",
-             "PFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "PFRecTrackTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-  collection("Particle Flow/GSF Tracks",
-             "GsfPFRecTracks_V1:pt:charge:phi:eta",
-             "PFTrajectoryPoints_V1:pos",
-             "GsfPFRecTrackTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-  collection("Particle Flow/ECAL Barrel Rec. Hits",
-             "PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Unchecked);
-
-  collection("Particle Flow/ECAL Endcap Rec. Hits",
-             "PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DEnergyTowers,
-             Qt::Unchecked);
-
-  collection("Particle Flow/Bremsstrahlung candidate tangents",
-             "PFBrems_V1:deltaP:sigmadeltaP",
-             "PFTrajectoryPoints_V1:pos",
-             "PFBremTrajectoryPoints_V1",
-             make3DTrackPoints,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-   
-  collection("Physics Objects/Muons (Reco)",
-             "Muons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Tracker Muons (Reco)",
-             "TrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (Reco)",
-             "StandaloneMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonStandalonePoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (Reco)",
-             "StandaloneMuons_V2:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "MuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Physics Objects/Global Muons (Reco)",
-             "GlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "MuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Tracker Muons (PAT)",
-             "PATTrackerMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "PATMuonTrackerPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-
-  collection("Physics Objects/Stand-alone Muons (PAT)",
-             "PATStandaloneMuons_V1:pt:charge:pos:phi:eta",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "PATMuonTrackExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-  
-  collection("Physics Objects/Global Muons (PAT)",
-             "PATGlobalMuons_V1:pt:charge:phi:eta",
-             "Points_V1:pos",
-             "PATMuonGlobalPoints_V1",
-             make3DTrackPoints,
-             Qt::Checked);
-  
-  collection("Physics Objects/Electrons (GSF)",
-             "GsfElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "GsfElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Physics Objects/Electrons (PAT)",
-             "PATElectrons_V1:pt:pos:dir",
-             "Extras_V1:pos_1:dir_1:pos_2:dir_2",
-             "PATElectronExtras_V1",
-             make3DTracks,
-             Qt::Checked);
-
-  collection("Physics Objects/Photons (Reco)",
-             "Photons_V1:energy:eta:phi:pos",
-             0,
-             0,
-             make3DPhoton,
-             Qt::Checked);
-
-  collection("Physics Objects/Photons (PAT)",
-             "PATPhotons_V1:energy:eta:phi:pos",
-             0,
-             0,
-             make3DPhoton,
-             Qt::Checked);
-
-  collection("Physics Objects/Calorimeter Energy Towers",
-             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             make3DCaloTowers,
-             Qt::Unchecked);
-
-  collection("Physics Objects/Jets",
-             "Jets_V1:et:theta:phi",
-             0,
-             0,
-             make3DJetShapes,
-             Qt::Unchecked);
-
-  collection("Physics Objects/Missing Et",
-             "METs_V1:pt:px:py:phi",
-             0,
-             0,
-             make3DMET,
-             Qt::Unchecked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Monte Carlo/Sim. tracks with hits",
-             "TrackingParticles_V1",
-             "PSimHits_V1:pos:dir",
-             "TrackingParticlePSimHits_V1",
-             make3DTrackingParticles,
-             Qt::Unchecked);
-
-
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-
-  float position4[3] = {7.2, 4.5, 2.5};
-  float pointAt4[3] = {0, 0, 0};
-  camera(position4, pointAt4, 6.5, true, true);
-  visibilityGroup();
-
-
-  view("Standard LEGO View", true);
-
-  collection("Provenance/Event information",
-             "Event_V1:time:run:event:ls:orbit:bx",
-             0,
-             0,
-             make3DEvent,
-             Qt::Checked);
-
-  collection("Provenance/L1 Triggers",
-             "L1GtTrigger_V1",
-             0,
-             0,
-             make3DL1Trigger,
-             Qt::Checked);
-
-  collection("Provenance/HLT Trigger Paths",
-             "TriggerPaths_V1",
-             0,
-             0,
-             0,
-             Qt::Unchecked);
-
-  collection("Provenance/Trigger Objects",
-             "TriggerObjects_V1:VID:pt:eta:phi",
-             0,
-             0,
-             make3DTriggerObject,
-             Qt::Unchecked);
-
-  collection("Provenance/Data Products found", 
-             "Products_V1", 
-             0, 
-             0,
-             0,
-             Qt::Checked);
-
-  collection("Provenance/Data Products not found", 
-             "Errors_V1", 
-             0, 
-             0, 
-             0,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-  collection("Detector/Eta-Phi Grid",
-             "CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             makeLegoGrid,
-             Qt::Checked);
-
-// -------------------------------------------------------------------------------------
-
-/*
-  TM: Doesn't the had energy need to be dran as well?
-
-  collection("Physics Objects/Calorimeter Energy Towers",
-             "CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4",
-             0,
-             0,
-             makeLegoCaloTowers,
-             Qt::Checked);
-*/
-  collection("Physics Objects/Jets",
-             "Jets_V1:et:eta:phi",
-             0,
-             0,
-             makeLegoJets,
-             Qt::Checked);
-
-  collection("ECAL/ECAL Rec. Hits",     // pre-Aug 2009 ig files only
-             "EcalRecHits_V1:energy:eta:phi",
-             0,
-             0,
-             makeLegoEcalRecHits,
-             Qt::Checked);
-
-  collection("HCAL/Barrel Rec. Hits",
-             "HBRecHits_V1:energy:eta:phi",
-             0,
-             0,
-             makeLegoHcalRecHits,
-             Qt::Checked);
-
-  collection("ECAL/Barrel Rec. Hits",
-             "EBRecHits_V1:energy:eta:phi",
-             0,
-             0,
-             makeLegoEcalRecHits,
-             Qt::Checked);
-
-  collection("ECAL/Endcap Rec. Hits",
-             "EERecHits_V1:energy:eta:phi",
-             0,
-             0,
-             makeLegoEcalRecHits,
-             Qt::Checked);
-
-  collection("HCAL/Endcap Rec. Hits",
-             "HERecHits_V1:energy:eta:phi",
-             0,
-             0,
-             makeLegoHcalRecHits,
-             Qt::Checked);
-
-  collection("HCAL/Forward Rec. Hits",
-             "HFRecHits_V1:energy:eta:phi",
-             0,
-             0,
-             makeLegoHcalRecHits,
-             Qt::Checked);
-
-  collection("HCAL/Outer Rec. Hits",
-             "HORecHits_V1:energy:eta:phi",
-             0,
-             0,
-             makeLegoHcalRecHits,
-             Qt::Checked);
-
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-// ///////////////////////////////////////////////////////////////////////////////
-  
-
-
+  // Notice that the actual parsing of the configuration file is now deferred
+  // until the ISpyApplication::doRun method is invoked, so that we can
+  // use a view layout specified from the command line or even inside the ig
+  // file itself.
 }
-
-
-
-
-
 
 /** Destroy the application.  A no-op since everything is done on exit. */
 ISpyApplication::~ISpyApplication(void)
 {
+}
+
+/** Helper function which parses a CSS file pointed by @a filename 
+
+    @a filename the name of the css file.
+    
+    @return true if the file contains a valid css.
+*/
+bool
+ISpyApplication::parseCssFile(const char *filename)
+{
+  QFile cssFile(filename);
+  bool ok = cssFile.open(QIODevice::ReadOnly | QIODevice::Text);
+  if (!ok)
+    return false;
+  QByteArray cssData = cssFile.readAll();
+  ASSERT(cssData.size());
+  try 
+  {
+    parseCss(cssData.data());
+  }
+  catch (CssParseError &e)
+  {
+    qDebug() << e.why.c_str() << ": " << e.what.c_str();
+    return false;
+  }
+  
+  return true;
+}
+
+/** Helper function which parses a view layout file pointed by @a filename 
+
+    @a filename the name of the css file.
+    
+    @return true if the file contains a valid layout.
+*/
+bool
+ISpyApplication::parseViewsDefinitionFile(const char *filename)
+{
+  QFile viewsDefinitionFile(filename);
+  bool ok = viewsDefinitionFile.open(QIODevice::ReadOnly | QIODevice::Text);
+
+  if (!ok)
+    return false;
+
+  QByteArray viewData = viewsDefinitionFile.readAll();
+  ASSERT(viewData.size());
+  try
+  {
+    parseViewsDefinition(viewData);
+  }
+  catch (ViewSpecParseError &e)
+  {
+    qDebug() << "Error while parsing file " << filename
+             << " at line " << e.lineNumber;
+    return false;
+  }
+  return true;
 }
 
 /** Specify a new collection.  Call this during the application
@@ -3906,8 +2834,114 @@ ISpyApplication::collection(const char *friendlyName,
   view.endCollIndex++;
 }
 
+/** Specify a new event filter.  Call this during the application
+     initialisation to register filters for known collection handlers.
+ */
+void
+ISpyApplication::filter(const char *friendlyName,
+			const char *collectionSpec)
+{
+  ASSERT(collectionSpec);
+  
+  m_filterSpecs.resize(m_filterSpecs.size() + 1);
+  FilterSpec &spec = m_filterSpecs.back();
+  StringList parts;
 
+  if (friendlyName)
+    spec.friendlyName = friendlyName;
+  
+  parts = StringOps::split(collectionSpec, ':');
+  
+  ASSERT(! parts.empty());
+  spec.collection = parts[0];
+  spec.requiredFields.insert(spec.requiredFields.end(),
+                             parts.begin()+1, parts.end());
+}
 
+/** Accumulate results from all registered filters
+ */
+bool
+ISpyApplication::filter(void)
+{
+  bool flag = true;
+
+  for(size_t it = 0; it < m_filters.size(); ++it)
+  {
+    Filter &f = m_filters[it];
+    flag &= f.result;
+  }
+
+  return flag;
+}
+
+/** Do the actual event filterng.
+    Assume that a filter is done on
+
+    @a algoName
+
+    which an is an algorithm name - std::string type in the collection for
+    
+    @a result
+    
+    which is an int type in the collection.
+    The result should be == 1 for the filter to pass.
+    The algo names are defined in a GUI as a list of strings.
+    The filter returns true on the first match (e.g. OR).
+ */
+bool
+ISpyApplication::doFilterCollection(const Collection &collection, const char* algoName, const char *result)
+{
+  QStringList strList = m_selector->filterText(QString::fromStdString(collection.spec->friendlyName)).split("|", QString::SkipEmptyParts);
+  if(strList.isEmpty())
+    return true;
+
+  QStringList fullList;
+  
+  IgCollection *lc = collection.data[0];
+  for (IgCollectionIterator ci = lc->begin(), ce = lc->end(); ci != ce; ++ci)
+  {
+    if(ci->get<int>(result) == 1)
+      fullList << QString::fromStdString(ci->get<std::string>(algoName));
+  }
+  foreach (QString str, strList) {
+    if(fullList.contains(str.trimmed()))
+      return true;
+  }
+  
+  return false;
+}
+
+/** Find the collection by friendly name and trigger an update
+    of its filter list model.
+  */
+void
+ISpyApplication::updateFilterListModel(const QString &title)
+{
+  CollectionSpecs::iterator it = find_if (m_specs.begin(), m_specs.end(),
+					  MatchByFriendlyName(title.toStdString()));
+  if(it != m_specs.end())
+  {
+    Collections::iterator cit = find_if (m_collections.begin(), m_collections.end(), MatchByName(it->collection));
+    if(cit != m_collections.end())
+    {
+      doUpdateFilterListModel(*cit);
+    }
+  }
+}
+
+/** Actual update of the filter list model.
+  */
+void
+ISpyApplication::doUpdateFilterListModel(const Collection &collection)
+{
+  if (! m_listModel)
+  {
+    m_listModel = new IgCollectionListModel(collection.data[0]);
+    m_selector->setModel(m_listModel);
+  }
+  else
+    m_listModel->setCollection(collection.data[0]);
+}
 
 /** Begins the definition of a new view. 
     A view is simply a set of CollectionSpecs, as defined by the 
@@ -4010,6 +3044,8 @@ ISpyApplication::onExit(void)
   }
   
   m_exiting = true;
+  delete m_listModel;
+  m_listModel = 0;
   delete m_tableModel;
   m_tableModel = 0;
   m_3DModel->sceneGraph()->removeAllChildren();
@@ -4069,10 +3105,10 @@ int
 ISpyApplication::usage(void)
 {
   const char *app = appname();
-  std::cerr << "Usage: " << app << " [OPTION-OR-FILENAME]...\n"
+  std::cerr << "Usage: " << app << " [CSS-FILE] [LAYOUT-FILE] [IG-FILE]...\n"
             << "   or: " << app << " --help\n"
             << "   or: " << app << " --version\n"
-	    << "   or: " << app << " --online HOST[:PORT]\n";
+            << "   or: " << app << " --online HOST[:PORT]\n";
 
   return EXIT_FAILURE;
 }
@@ -4085,6 +3121,17 @@ ISpyApplication::version(void)
             << QCoreApplication::applicationVersion().toStdString() << "\n";
 
   return EXIT_SUCCESS;
+}
+
+/** Checks if @a filename ends with @a extension.
+ */
+bool
+hasExtension(const std::string& filename, const std::string &extension)
+{
+  size_t pos = filename.rfind(extension);
+  if (filename.size() == pos + extension.size())
+    return true;
+  return false;
 }
 
 /** Run the application with the given command line arguments.
@@ -4104,6 +3151,20 @@ ISpyApplication::run(int argc, char *argv[])
       return usage();
     else if (!strcmp(*argv, "--version"))
       return version();
+    else if (hasExtension(*argv, ".iss"))
+    {
+      m_cssFilename = *argv;
+      // Remove the command line option so that
+      // it would not be treated as a filename.
+      m_argv[i][0] = '\0';
+    }
+    else if (hasExtension(*argv, ".iml"))
+    {
+      m_viewsLayoutFilename = *argv;
+      // Remove the command line option so that
+      // it would not be treated as a filename.
+      m_argv[i][0] = '\0';
+    }
     else if (!strcmp(*argv, "--online"))
     {      
 #ifdef Q_WS_MAC
@@ -4112,18 +3173,19 @@ ISpyApplication::run(int argc, char *argv[])
 #endif
       if (! *++argv)
       {
-	std::cerr << "--online requires an argument\n";
-	return usage();
+        std::cerr << "--online requires an argument\n";
+        return usage();
       }
       else
       {
-	m_online = true;
-	m_autoEvents = true;
-	onlineConfig(*argv);
-	*++argv;
-	// Remove the command line option so that
-	// it would not be treated as a filename.
-	m_argv[i][0] = '\0'; m_argv[i+1][0] = '\0';
+        m_online = true;
+        m_autoEvents = true;
+        onlineConfig(*argv);
+        *++argv;
+        // Remove the command line option so that
+        // it would not be treated as a filename.
+        m_argv[i][0] = '\0'; m_argv[i+1][0] = '\0';
+        i++;
       }
     }
     i++;
@@ -4367,6 +3429,9 @@ ISpyApplication::setupMainWindow(void)
   m_mainWindow = new ISpyMainWindow;
   m_mainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
+  m_selector = new ISpyEventSelectorDialog (m_mainWindow);
+  QObject::connect(m_selector, SIGNAL(pageChanged(QString)), this, SLOT(updateFilterListModel(QString)));
+
   QObject::connect(m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
   QObject::connect(m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
   QObject::connect(m_mainWindow, SIGNAL(nextEvent()),     this, SLOT(nextEvent()));
@@ -4375,6 +3440,8 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(print()),         this, SIGNAL(print()));
   QObject::connect(m_mainWindow, SIGNAL(save()),          this, SIGNAL(save()));
   QObject::connect(m_mainWindow, SIGNAL(showAbout()),     this, SLOT(showAbout()));
+  QObject::connect(m_mainWindow->actionEvent_Filter, SIGNAL(triggered()), m_selector, SLOT(show()));
+  QObject::connect(m_mainWindow->actionPicture_Publishing, SIGNAL(triggered()), this, SLOT(showPublish()));
 
   m_mainWindow->actionAuto->setChecked(false);
   m_mainWindow->actionAuto->setEnabled(false);
@@ -4400,6 +3467,10 @@ ISpyApplication::setupMainWindow(void)
   m_itemFont->setPixelSize(11);
 
   m_mainWindow->restoreSettings();
+  m_pubDialog = new ISpyPicturePublishingDialog(m_mainWindow->centralWidget());
+  m_printTimer->setInterval(m_pubDialog->delay());
+  if(m_pubDialog->isAuto())
+    m_printTimer->start();
 
   // Create the various cameras as defined by the various CameraSpecs.
   // We use an extra Camera struct to maintain this information, because
@@ -4427,6 +3498,15 @@ ISpyApplication::setupMainWindow(void)
     view.camera = &(m_cameras[spec->cameraIndex]);
   }
 
+  // Create the filters
+  for(size_t fsi = 0, fse = m_filterSpecs.size(); fsi != fse; ++fsi)
+  {
+    FilterSpec *spec = &(m_filterSpecs[fsi]);
+    m_filters.resize(m_filters.size() + 1);
+    Filter &filter = m_filters.back();
+    filter.spec = spec;
+  }
+
   // Setup the combo box with the possible views.
   m_mainWindow->viewSelector->clear();
   for (size_t vi = 0, ve = m_views.size(); vi != ve; ++vi)
@@ -4451,19 +3531,51 @@ ISpyApplication::setupMainWindow(void)
 }
 
 void
+ISpyApplication::showPublish(void)
+{
+  m_pubDialog->show();
+  if(m_pubDialog->exec() == QDialog::Accepted)
+  {
+    if(m_printTimer->isActive())
+      m_printTimer->stop();
+    m_printTimer->setInterval(m_pubDialog->delay());
+    
+    if(m_pubDialog->isAuto())
+      m_printTimer->start();
+  }
+}
+
+void
 ISpyApplication::showAbout(void)
 {
   m_splash->showAbout();
 }
 
-/** Main application run loop.  Initialises the application, shows its
-    windows, opens any files requested(on command line or from
-    operating system open file events) and executes the run loop.
+/** Main application run loop. If specified, read and additional css file
+    from the command line. If specified read a view layout file from the 
+    command-line, if not read the default one.
+    Initialises the application, shows its windows, opens any files requested
+    (on command line or from operating system open file events) and executes 
+    the run loop.
     Returns the application exit code.  Note that this function may
     never return in certain situations such as GUI log-out. */
 int
 ISpyApplication::doRun(void)
 {
+  if (!m_cssFilename.empty())
+    parseCssFile(m_cssFilename.c_str());
+  if (!m_viewsLayoutFilename.empty())
+  {
+    qDebug() << "Reading " << m_viewsLayoutFilename.c_str();
+    parseViewsDefinitionFile(m_viewsLayoutFilename.c_str());
+  }
+  else
+  {
+      bool ok = parseViewsDefinitionFile(":/views/default-views.xml");
+      ASSERT(ok && "Default views are broken!!!");
+      qDebug() << "Reading default views.";
+  }
+  
   ISpyEventFilter filter;
   QApplication app(m_argc, m_argv);
   SoQt::init(m_argc, m_argv, m_argv[0]);
@@ -4484,6 +3596,7 @@ ISpyApplication::doRun(void)
   QObject::connect(this, SIGNAL(print()), m_viewer, SLOT(print()));
   QObject::connect(m_viewer, SIGNAL(cameraToggled()), 
                    this, SLOT(cameraToggled()));
+  QObject::connect(m_printTimer, SIGNAL(timeout()), this, SLOT(autoPrint()));
   QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
   QObject::connect(this, SIGNAL(showMessage(const QString &)), m_mainWindow->statusBar(), SLOT(showMessage(const QString &)));
   QObject::connect(&filter, SIGNAL(open(const QString &)),
@@ -4505,12 +3618,12 @@ ISpyApplication::doRun(void)
   evloop.processEvents(QEventLoop::ExcludeUserInputEvents);
 
   // Open file names given on the command line(unix, windows).
-  for (int i = 1; i < m_argc; ++i)
-    simpleOpen(m_argv[i]);
-  
   // If the geometry is not there after loading all the ig files
   // passed on command line, get it from the web.
-  if (m_argc != 1 && !m_archives[1])
+  bool didOpen = false;
+  for (int i = 1; i < m_argc; ++i)
+    didOpen |= simpleOpen(m_argv[i]);
+  if (didOpen && !m_archives[1])
     downloadGeometry();
 
   // If we don't have any files open, show the splash screen as a file
@@ -4533,8 +3646,6 @@ ISpyApplication::doRun(void)
     m_mainWindow->actionAuto->setChecked(true);
     m_mainWindow->showMaximized();
     autoEvents();
-    QObject::disconnect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(nextEvent()));
-    QObject::connect(m_mainWindow, SIGNAL(nextEvent()), this, SLOT(newEvent()));
 
     ISpyDigitalClock *clock = new ISpyDigitalClock(m_mainWindow->toolBarEvent);
     m_mainWindow->toolBarEvent->addWidget (clock);
@@ -4558,6 +3669,35 @@ ISpyApplication::doRun(void)
   delete m_viewer;
   delete m_splash;
   return 0;
+}
+
+/** Request a View to print its scene in a png format.
+    Assuming that the status bar hold event nd run information,
+    it will be added as the image metadata.
+
+    Print images in a directory specified by a publisher dialog.
+ */
+void
+ISpyApplication::autoPrint(void)
+{
+  // Check if the view should be printed
+  QStringList viewsToPublish = m_pubDialog->views();
+  
+  bool flag = false;
+  foreach(QString viewStr, viewsToPublish)
+  {
+    if(m_metaData.contains(viewStr, Qt::CaseInsensitive))
+    {
+      flag = true;
+    }
+  }
+  
+  if(! flag) { return; }
+  
+  QDir curDir = QDir::current();
+  QDir::setCurrent(m_pubDialog->dir());
+  m_viewer->autoPrint(m_metaData);
+  QDir::setCurrent(curDir.path());
 }
 
 /** Respond to selection changes in the tree view.  This may be due to
@@ -4701,10 +3841,13 @@ ISpyApplication::displayCollection(Collection &c)
     {
       Style *style = &(m_styles[c.style]);
       ASSERT(style);
+      c.sep->enableNotify(FALSE);
+      style->viewport = m_viewer->getViewportRegion();
       c.sep->addChild(style->material);
       c.sep->addChild(style->drawStyle);
       c.sep->addChild(style->font);
       (*c.spec->make3D)(c.data, &c.assoc, c.sep, style);
+      c.sep->enableNotify(TRUE);
     }
     c.node->whichChild = SO_SWITCH_ALL;
   }
@@ -4759,9 +3902,44 @@ ISpyApplication::findStyle(const char *pattern)
     style.drawStyle->linePattern = spec.linePattern;
     style.font = new SoFont;
     style.font->size = spec.fontSize;
-    style.font->name = spec.fontName.c_str();
+    style.font->name = spec.fontFamily.c_str();
     style.markerType = getMarkerType(spec.markerStyle, spec.markerSize, 
                                      spec.markerShape);
+    // Determine the openinventor property from the ISPY style.
+    switch(spec.textAlign)
+    {
+      case ISPY_TEXT_ALIGN_LEFT: style.textAlign = SoText2::LEFT; break;
+      case ISPY_TEXT_ALIGN_RIGHT: style.textAlign = SoText2::RIGHT; break;
+      case ISPY_TEXT_ALIGN_CENTER: style.textAlign = SoText2::CENTER; break;        
+    }
+    style.minEnergy = spec.minEnergy;
+    style.maxEnergy = spec.maxEnergy;
+    style.energyScale = spec.energyScale;
+
+    // Read the background file and put it in a SoTexture2 so that it can be
+    // used as required. In case no file are specified, the texture pointer 
+    // will be zero.
+    if (spec.background.empty())
+      style.background = 0;
+    else
+    {
+      QImage backgroundImage = QImage(spec.background.c_str()).mirrored(true, true).rgbSwapped();
+      int bytesPerPixel = backgroundImage.depth() / 8;
+      
+      if (!backgroundImage.isNull() && bytesPerPixel)
+      {
+        style.background = new SoTexture2;
+        style.background->image.setValue(SbVec2s(backgroundImage.width(), 
+                                                 backgroundImage.height()), 
+                                                 bytesPerPixel,
+                                                 backgroundImage.bits());
+        style.background->model = SoTexture2::DECAL;
+        style.background->ref();
+      }
+      else
+        style.background = 0;
+    }
+    
     // Style nodes do not get deleted  by dropping a given
     // collection representation.
     style.material->ref();
@@ -4822,6 +4000,11 @@ ISpyApplication::updateCollections(void)
   m_groups.swap(oldgroups);
   m_collections.swap(oldcollections);
   View &view = m_views[m_currentViewIndex];
+
+  // Add a name of the view to the meta-data of
+  // an automatically printed image
+  m_metaData.clear();
+  m_metaData.append("View: ").append(QString::fromStdString(view.spec->name));
 
   for (size_t sti = 0, ste = 2, i = 0; sti < ste; ++sti)
   {
@@ -5085,6 +4268,11 @@ ISpyApplication::updateCollections(void)
   
     if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
     {
+      m_mainWindow->showNormal();
+      m_mainWindow->dockTreeWidget->setShown(true);
+      m_mainWindow->dockTableWidget->setShown(true);
+      m_mainWindow->menubar->show();
+      m_3DToolBar->show();
       m_idleTimer->stop();
       m_idleTimer->disconnect();
       m_animationTimer->stop();
@@ -5094,6 +4282,25 @@ ISpyApplication::updateCollections(void)
       m_mainWindow->actionAuto->setChecked(false);
     }
   }
+
+  // Update registered filters
+  //
+  for(size_t fi = 0; fi < m_filters.size(); ++fi)
+  {
+    Filter &f = m_filters[fi];
+    Collections::iterator cit = find_if (m_collections.begin(), m_collections.end(), MatchByName(f.spec->collection));
+    if(cit != m_collections.end())
+    {
+      f.data[0] = (*cit).data[0];
+      f.collectionName = (*cit).collectionName;
+      
+      // There must be two fields
+      ASSERT(f.spec->requiredFields.size() == 2);
+      f.result = doFilterCollection(*cit, f.spec->requiredFields[0].c_str(), f.spec->requiredFields[1].c_str());
+    }
+  }
+  
+  m_selector->updateDialog();
 }
 
 /** Read in and display a new event. */
@@ -5101,21 +4308,17 @@ void
 ISpyApplication::newEvent(void)
 {
   delete m_storages[0];
-  if (m_online)
-  {
-    showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
-    if (! m_storages[0]->empty())
-      resetCounter();
-  }
-  else
-  {    
-    ASSERT(m_eventIndex < m_events.size());
-    readData(m_storages[0] = new IgDataStorage,
-	     m_events[m_eventIndex].archive,
-	     m_events[m_eventIndex].contents);
-  }
+
+  ASSERT(m_eventIndex < m_events.size());
+  readData(m_storages[0] = new IgDataStorage,
+	   m_events[m_eventIndex].archive,
+	   m_events[m_eventIndex].contents);
   
   updateCollections();
+
+  // Skip an event if it did not pass the filters
+  if(!filter() && m_nextEvent)
+    nextEvent();
 }
 
 /** Prompt for a new file to be openend. */
@@ -5163,11 +4366,11 @@ ISpyApplication::openWithFallbackGeometry(const QString &fileName)
     Apart from those, only the zip index is read and is used to
     rebuild the in-memory event list.
 */
-void
+bool
 ISpyApplication::simpleOpen(const QString &fileName)
 {
   if (fileName.isEmpty())
-    return;
+    return false;
 
   qDebug() << "Try to open " << fileName;
   showMessage(QString("Opening ") + fileName + tr("..."));
@@ -5175,7 +4378,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
   // Read the file in.
   ZipArchive *file = loadFile(fileName);
   if (! file)
-    return;
+    return false;
 
   // See what the file contains.
   Events                        events;
@@ -5260,6 +4463,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
     m_splash->hide();
   }
 
+  return true;
 }
 
 /** Downloads geometry from a fixed web location if not 
@@ -5481,7 +4685,7 @@ ISpyApplication::getUrl(const QUrl &url)
 {
   QNetworkRequest request;
   request.setUrl(url);
-  request.setRawHeader("User-Agent", "iSpy 1.3.1");
+  request.setRawHeader("User-Agent", "iSpy 1.4.1");
   return m_networkManager->get(request);
 }
 
@@ -5575,6 +4779,11 @@ ISpyApplication::autoEvents(void)
 
   if (m_autoEvents)
   {
+    m_mainWindow->showMaximized();
+    m_mainWindow->dockTreeWidget->setShown(false);
+    m_mainWindow->dockTableWidget->setShown(false);
+    m_mainWindow->menubar->hide();
+    m_3DToolBar->hide();
     // Stops animation and restores all the camera.
     if (m_viewer->isAnimating())
       m_viewer->stopAnimating();
@@ -5593,23 +4802,20 @@ ISpyApplication::autoEvents(void)
       QObject::connect(m_idleTimer, SIGNAL(timeout()), SLOT(restartPlay()));
       m_idleTimer->start(idleTimeout);
     }
-    
-    if(m_online)
-    {
-      QObject::connect(m_timer, SIGNAL(timeout()), SLOT(newEvent()));
-      newEvent();
-    }
-    else
-    { 
-      QObject::connect(m_timer, SIGNAL(timeout()), SLOT(nextEvent()));
-      nextEvent();
-    }
-    
-    m_animationTimer->start(animationTimeout);
-    m_timer->start(timeout);
+    QObject::connect(m_timer, SIGNAL(timeout()), SLOT(nextEvent()));
+
+    m_animationTimer->setInterval(animationTimeout);
+    m_animationTimer->start();
+    m_timer->setInterval(timeout);
+    m_timer->start();
   }
   else
   {
+    m_mainWindow->showNormal();
+    m_mainWindow->dockTreeWidget->setShown(true);
+    m_mainWindow->dockTableWidget->setShown(true);
+    m_mainWindow->menubar->show();
+    m_3DToolBar->show();
     m_animationTimer->stop();
     m_animationTimer->disconnect();
     m_timer->stop();
@@ -5630,6 +4836,16 @@ ISpyApplication::animateViews(void)
 void
 ISpyApplication::nextEvent(void)
 {
+  m_nextEvent = true;
+  if (m_online)
+  {
+    delete m_storages[0];
+    showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
+    if (! m_storages[0]->empty())
+      resetCounter();
+
+    updateCollections();
+  }
   if (++m_eventIndex < m_events.size())
   {
     showMessage(m_events[m_eventIndex].contents->name().name());
@@ -5643,6 +4859,7 @@ ISpyApplication::nextEvent(void)
 void
 ISpyApplication::previousEvent(void)
 {
+  m_nextEvent = false;
   if (m_online)
   {
     delete m_storages[0];
@@ -5740,4 +4957,49 @@ ISpyApplication::switchView(int viewIndex)
   m_mainWindow->viewSelector->clearFocus();
   m_treeWidget->setFocus(Qt::MouseFocusReason);
   m_mainWindow->viewSelector->setFocusPolicy(Qt::ClickFocus);
+}
+
+/** Register functions that are to be used for drawing.
+    TODO: for the moment, given it's not really time critical,
+          we simply relay on std::map. In future we might want to 
+          use a vector of pairs and do a binary search.
+              
+*/
+void
+ISpyApplication::registerDrawFunctions(void)
+{
+  ASSERT(m_drawFunctions.empty());
+  m_drawFunctions.insert(std::make_pair("make3DAnyBox", make3DAnyBox));
+  m_drawFunctions.insert(std::make_pair("make3DAnyDetId", make3DAnyDetId));
+  m_drawFunctions.insert(std::make_pair("make3DAnyLine", make3DAnyLine));
+  m_drawFunctions.insert(std::make_pair("make3DAnyPoint", make3DAnyPoint));
+  m_drawFunctions.insert(std::make_pair("make3DCSCStripDigis", make3DCSCStripDigis));
+  m_drawFunctions.insert(std::make_pair("make3DCSCWireDigis", make3DCSCWireDigis));
+  m_drawFunctions.insert(std::make_pair("make3DCaloClusters", make3DCaloClusters));
+  m_drawFunctions.insert(std::make_pair("make3DCaloTowers", make3DCaloTowers));
+  m_drawFunctions.insert(std::make_pair("make3DDTDigis", make3DDTDigis));
+  m_drawFunctions.insert(std::make_pair("make3DDTRecHits", make3DDTRecHits));
+  m_drawFunctions.insert(std::make_pair("make3DEnergyBoxes", make3DEnergyBoxes));
+  m_drawFunctions.insert(std::make_pair("make3DEnergyTowers", make3DEnergyTowers));
+  m_drawFunctions.insert(std::make_pair("make3DEvent", make3DEvent));
+  m_drawFunctions.insert(std::make_pair("make3DJetShapes", make3DJetShapes));
+  m_drawFunctions.insert(std::make_pair("make3DL1Trigger", make3DL1Trigger));
+  m_drawFunctions.insert(std::make_pair("make3DMET", make3DMET));
+  m_drawFunctions.insert(std::make_pair("make3DPhoton", make3DPhoton));
+  m_drawFunctions.insert(std::make_pair("make3DPointSetShapes", make3DPointSetShapes));
+  m_drawFunctions.insert(std::make_pair("make3DPreshowerTowers", make3DPreshowerTowers));
+  m_drawFunctions.insert(std::make_pair("make3DRPCRecHits", make3DRPCRecHits));
+  m_drawFunctions.insert(std::make_pair("make3DSegmentShapes", make3DSegmentShapes));
+  m_drawFunctions.insert(std::make_pair("make3DTrackPoints", make3DTrackPoints));
+  m_drawFunctions.insert(std::make_pair("make3DTrackingParticles", make3DTrackingParticles));
+  m_drawFunctions.insert(std::make_pair("make3DTracks", make3DTracks));
+  m_drawFunctions.insert(std::make_pair("make3DTriggerObject", make3DTriggerObject));
+  m_drawFunctions.insert(std::make_pair("makeLegoCaloTowers", makeLegoCaloTowers));
+  m_drawFunctions.insert(std::make_pair("makeLegoEcalRecHits", makeLegoEcalRecHits));
+  m_drawFunctions.insert(std::make_pair("makeLegoGrid", makeLegoGrid));
+  m_drawFunctions.insert(std::make_pair("makeLegoHcalRecHits", makeLegoHcalRecHits));
+  m_drawFunctions.insert(std::make_pair("makeLegoJets", makeLegoJets));
+  m_drawFunctions.insert(std::make_pair("makeRZECalRecHits", makeRZECalRecHits));
+  m_drawFunctions.insert(std::make_pair("makeRZEPRecHits", makeRZEPRecHits));
+  m_drawFunctions.insert(std::make_pair("makeRZHCalRecHits", makeRZHCalRecHits));
 }

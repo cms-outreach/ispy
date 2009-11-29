@@ -92,7 +92,6 @@ public:
 
   void parseInt(int &result)
     {
-      skipSpaces();
       char *endbuf;
       result = strtol(m_buffer, &endbuf, 10);
       if (!endbuf)
@@ -102,7 +101,6 @@ public:
 
   void parseDouble(double &result)
     {
-      skipSpaces();
       char *endbuf;
       result = strtod(m_buffer, &endbuf);
       if (!endbuf)
@@ -128,16 +126,16 @@ public:
       m_buffer += stringSize+1;
     }
 
-  void parseDoubleTuple(double *result)
+  void parseDoubleTuple(double *result, size_t e)
     {
-      skipChar('(');
-      int i = 0;
-      do
+      m_buffer += strspn(m_buffer, "\n\t (");;
+      switch(e)
       {
-        parseDouble(result[i]);
-        i++;
-      } while(checkChar(','));
-      skipChar(')');
+        case 4: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
+        case 3: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
+        case 2: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
+        case 1: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t )");
+      }
     }
 
   void parseAssociation(IgAssociation &result)
@@ -218,7 +216,12 @@ public:
       if (checkChar(']')) return;
       int maxSize = 0;
       int currentRow = 0;
-      do {
+      std::vector<int> types(m_currentCollection->properties().size(), 0);
+      for (size_t ti = 0, te = types.size(); ti != te; ++ti)
+        types[ti] = m_currentCollection->properties()[ti].handle().type();
+      
+      do 
+      {
         if (currentRow >= maxSize)
         {
           maxSize += 10;
@@ -228,11 +231,9 @@ public:
         skipChar('[');
         assert(m_currentCollection->properties().size());
         IgCollectionItem item(m_currentCollection, currentRow);
-        for (IgCollection::Properties::iterator i = m_currentCollection->properties().begin();
-             i != m_currentCollection->properties().end();
-             i++)
+        for (size_t ti = 0, te = types.size(); ti != te; ++ti)
         {
-          switch ((*i).handle().type())
+          switch (types[ti])
           {
           case INT_COLUMN:
             parseInt(item.current<int>());
@@ -244,13 +245,13 @@ public:
             parseDouble(item.current<double>());
             break;
           case VECTOR_2D:
-            parseDoubleTuple(item.current<IgV2d>().data());
+            parseDoubleTuple(item.current<IgV2d>().data(), 2);
             break;
           case VECTOR_3D:
-            parseDoubleTuple(item.current<IgV3d>().data());
+            parseDoubleTuple(item.current<IgV3d>().data(), 3);
             break;
           case VECTOR_4D:
-            parseDoubleTuple(item.current<IgV4d>().data());
+            parseDoubleTuple(item.current<IgV4d>().data(), 4);
             break;
           default:
             std::cerr << "Unknown type" << std::endl;
@@ -258,7 +259,7 @@ public:
             break;
           }
 
-          if (i+1 != m_currentCollection->properties().end())
+          if (ti + 1 != te)
           {
             skipChar(',');
             item.nextColumn();

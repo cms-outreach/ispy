@@ -88,6 +88,9 @@ ISpy3DView::initWidget(void)
   setEventCallback(eventCallback, this);
   setSceneGraph(model()->sceneGraph());
   getSceneManager()->getGLRenderAction()->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
+
+  // LT FIXME: the following adds GL smoothing (anti-aliasing). It works but seems to make rotations "sticky". Can it be done better? 
+  getSceneManager()->getGLRenderAction()->setSmoothing (TRUE);  // LT FIXME: "Computationally-cheap anti-aliasing" (smooths jagged line and points)
   setAutoClippingStrategy(CONSTANT_NEAR_PLANE, 0.9, fixedDistanceClipPlanesCB, this);
   setDecoration(false);
   parent()->setMinimumSize(300, 200);
@@ -112,8 +115,8 @@ ISpy3DView::model(void) const
 { return m_model; }
 
 void
-ISpy3DView::printBitmap(QString file, float ppi,
-                        float dpi, QString format)
+ISpy3DView::printBitmap(const QString &file, 
+			const QString &format)
 {
   // This is mostly like the *Inventor Mentor* example.
   // Initialise off-screen renderer.
@@ -121,7 +124,7 @@ ISpy3DView::printBitmap(QString file, float ppi,
   SbViewportRegion    outvr = this->getViewportRegion();
 
   SbVec2s             pixels(outvr.getViewportSizePixels());
-  SbVec2s             size((short)(pixels [0] * dpi / ppi + 0.5),(short)(pixels [1] * dpi / ppi + 0.5));
+  SbVec2s             size((short)(pixels[0] + 0.5), (short)(pixels[1] + 0.5));
   SbVec2s             origin = outvr.getViewportOriginPixels();
   outvr.setViewportPixels(origin, size);
 
@@ -133,34 +136,43 @@ ISpy3DView::printBitmap(QString file, float ppi,
   SoGLRenderAction    *ra = new SoGLRenderAction(outvr);
   SoOffscreenRenderer *renderer = new SoOffscreenRenderer(outvr);
 
-  // FIXME? renderer.setComponents(SoOffscreenRenderer::RGB_TRANSPARENCY);
   getSceneManager()->getBackgroundColor().getValue(r, g, b);
   renderer->setBackgroundColor(SbColor(r, g, b));
   renderer->setGLRenderAction(ra);
   ra->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
-  ra->setSmoothing(TRUE);
-  ra->setNumPasses(8);
 
   // Want to render from above the SceneGraph so we get what the
   // camera sees; SoQtViewer uses the following code.(FIXME:
   // do we actually want to just render root, or look for camera?)
   SoNode *root = getSceneManager()->getSceneGraph();
 
-  SbBool ok = renderer->render(root);
-  if (!ok)
+  if(renderer->render(root))
   {
-    QMessageBox::information(parent(), "IGUANA Print Info",
-                             tr("Printing of the %1 format works only\n"
-                                "if you run locally installed software\n"
-                                "If iguana is running remotely, please,\n"
-                                "print as vector Postscript.").arg(file.right(3)));
+    unsigned char *buffer = renderer->getBuffer();
+    int width = size[0];
+    int height = size[1];
+    QImage image(width, height, QImage::Format_RGB32);
+    QRgb value;
+
+    for(int j = 0; j < height; j++)
+      for(int k = 0; k < width; k++)
+      {
+	value = qRgb(buffer[0], buffer[1], buffer[2]);
+	image.setPixel(k, j, value);
+	buffer += 3;
+      }
+    QImage mimage = image.mirrored();
+    if(!mimage.save(file, format.toAscii()))
+      QMessageBox::warning(getShellWidget(), "iSpy Save Image Error",
+			   "Failed to save an image.",
+			   "Ok");
+      
   }
-  else if (!renderer->writeToFile(file.toStdString().c_str(), format.toStdString().c_str()))
+  else
   {
-    qDebug() << file << ": Failed to open file for writing.\n";
-    QMessageBox::warning(getShellWidget(), "System Error",
-                         "Failed to open file \""+file+"\" for writing.",
-                         "Ok");
+    QMessageBox::warning(getShellWidget(), "iSpy Off-Screen Renderer Error",
+			 "Failed to render a scene graph.",
+			 "Ok");
   }
   delete renderer;
   delete ra;
@@ -169,7 +181,71 @@ ISpy3DView::printBitmap(QString file, float ppi,
 void
 ISpy3DView::save(void)
 {
-  saveNode(getSceneManager()->getSceneGraph(), "Save Scene As...", parent());
+  // Get the list of supported image formats
+  // Qt should support a lot of formats by default,
+  // but I do not get them...
+  QList<QByteArray> extList = QImageWriter::supportedImageFormats();
+  QStringList strList;
+  for(int i = 0; i < extList.length(); ++i)
+    strList << QString(extList.at(i));
+  
+  QStringList filters;
+  if(strList.contains("PNG", Qt::CaseInsensitive))
+     filters.append("The PNG file format(*.png)");
+
+  // Pop up file dialog to as for the name.
+  QFileDialog dialog(parent(), "Save To File");
+  dialog.setFilters(filters);
+  dialog.setFileMode(QFileDialog::AnyFile);
+  dialog.setAcceptMode(QFileDialog::AcceptSave);
+  dialog.setLabelText(QFileDialog::Accept, "&Save");
+  bool tryagain = true;
+  QString     f;
+  while (tryagain)
+  {
+    if (dialog.exec() != QDialog::Accepted)
+      return;
+
+    f = dialog.selectedFiles().front();
+    if (f.isEmpty())
+      return;
+    else
+    {
+      QFile sealf(f);
+      if (sealf.exists())
+      {
+        int button = QMessageBox::warning(parent(), "File Already Exists",
+                                          "File \""+f+"\" already exists.\n"
+                                          "Do you want to overwrite it?",
+                                          "Yes", "No");
+        if (button == 0)
+        {
+          tryagain = false;
+        }
+      }
+      else
+        tryagain = false;
+    }
+  }
+  // Pick format settings.
+  QString sfilter = dialog.selectedFilter();
+  QString format = sfilter.section('.', -1);
+  format.remove(QChar(')'));
+
+  // Add suffix.
+  QString suffix("." + format);
+  if (! f.endsWith(suffix))
+    f += suffix;
+
+  // FIXME: Use a state element to remeber all file operations(save, open)
+  QDir::setCurrent(QFileInfo(f).absoluteFilePath());
+
+  QApplication::setOverrideCursor(Qt::WaitCursor);
+  printBitmap(f, format);
+  QApplication::restoreOverrideCursor();
+
+  //FIXME: Should be export menu:
+  // saveNode(getSceneManager()->getSceneGraph(), "Save Scene As...", parent());
   // saveNode(model()->sceneGraph(), "Save Scene As...", getShellWidget());
 }
 
@@ -264,92 +340,44 @@ ISpy3DView::writeNode(SoNode *node, const QString& file, bool binary,
 void
 ISpy3DView::print(void)
 {
-  QStringList filters;
-
-  SoOffscreenRenderer *renderer =
-    new SoOffscreenRenderer(this->getViewportRegion());
-
-  int num = renderer->getNumWriteFiletypes();
-
-  if (num == 0)
+#ifndef QT_NO_PRINTER
+  QPrintDialog pdialog(&m_printer, m_parent);
+  if(pdialog.exec())
   {
-    filters.append("The SGI RGB file format(*.rgb)");
-    filters.append("The SGI RGB file format(*.rgba)");
-    filters.append("The SGI RGB file format(*.bw)");
-    filters.append("The SGI RGB file format(*.inta)");
-    filters.append("The SGI RGB file format(*.int)");
-  }
-  else
-  {
-    for (int i = 0; i < num; i++)
-    {
-      SbPList extlist;
-      SbString fullname;
-      SbString description;
-      renderer->getWriteFiletypeInfo(i, extlist, fullname, description);
-      QString filter(fullname.getString());
-      filter += "(*.";
-      for (int j = 0; j < extlist.getLength(); j++)
-        filters.append(filter + (const char *)extlist [j] + ")");
-    }
-  }
-  delete renderer;
+    QPainter painter(&m_printer);
+    QRect rect = painter.viewport();
 
-  // Pop up file dialog to as for the name.
-  QFileDialog dialog(parent(), "Print To File");
-  dialog.setFilters(filters);
-  dialog.setFileMode(QFileDialog::AnyFile);
-  dialog.setAcceptMode(QFileDialog::AcceptSave);
-  dialog.setLabelText(QFileDialog::Accept, "&Save");
-  bool tryagain = true;
-  QString     f;
-  while (tryagain)
-  {
-    if (dialog.exec() != QDialog::Accepted)
-      return;
-
-    f = dialog.selectedFiles().front();
-    if (f.isEmpty())
-      return;
-    else
-    {
-      QFile sealf(f);
-      if (sealf.exists())
+    QList<QByteArray> extList = QImageWriter::supportedImageFormats();
+    
+    if(! extList.isEmpty())
+    {     
+      QTemporaryFile tmpFile;
+      if(tmpFile.open())
       {
-        int button = QMessageBox::warning(parent(), "File Already Exists",
-                                          "File \""+f+"\" already exists.\n"
-                                          "Do you want to overwrite it?",
-                                          "Yes", "No");
-        if (button == 0)
-        {
-          tryagain = false;
-        }
+	QApplication::setOverrideCursor(Qt::WaitCursor);
+	printBitmap(tmpFile.fileName(), QString(extList.at(0)));
+	QApplication::restoreOverrideCursor();
+      }
+      QPixmap pxm (tmpFile.fileName());
+      if(!pxm.isNull())
+      {	
+	QSize size = pxm.size();
+	size.scale(rect.size(), Qt::KeepAspectRatio);
+	painter.setViewport(rect.x(), rect.y(), size.width(), size.height());
+	painter.setWindow(pxm.rect());
+	painter.drawPixmap(0, 0, pxm);
       }
       else
-        tryagain = false;
+	QMessageBox::warning(parent(), "iSpy Print Error",
+			     "Failed to print the image.",
+			     "Ok");
     }
+    else
+      QMessageBox::warning(parent(), "iSpy Print Error",
+			   "No image formats are supported by Qt.",
+			   "Ok");
   }
-  // Pick format settings.
-  float       ppi = SoOffscreenRenderer::getScreenPixelsPerInch();
-  //float     dpi = 300.;
-  float       dpi = ppi;
-  QString     format("jpg");
-
-  QString sfilter = dialog.selectedFilter();
-  format = sfilter.section('.', -1);
-  format.remove(QChar(')'));
-
-  // Add suffix.
-  QString suffix("." + format);
-  if (! f.endsWith(suffix))
-    f += suffix;
-
-  // FIXME: Use a state element to remeber all file operations(save, open)
-  QDir::setCurrent(QFileInfo(f).absoluteFilePath());
-
-  QApplication::setOverrideCursor(Qt::WaitCursor);
-  printBitmap(f, ppi, dpi, format);
-  QApplication::restoreOverrideCursor();
+#endif
 }
 
 void
@@ -566,36 +594,47 @@ ISpy3DView::invertCamera(void)
 }
 
 void
-ISpy3DView::autoPrint(void)
-{
-  autoPrint(this->getTitle());
-}
-
-void
-ISpy3DView::autoPrint(const std::string text)
+ISpy3DView::autoPrint(QString text)
 {
   QDateTime dt = QDateTime::currentDateTime();
-  QString fName = "screenShot-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
-  QString dName = "screenShot-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
+  QString fName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
+  QString dName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
 
   SbColor c = getBackgroundColor();
-  SoOffscreenRenderer osr(this->getViewportRegion());
-  osr.setBackgroundColor(c);
+  SbViewportRegion    outvr = this->getViewportRegion();
+  SoOffscreenRenderer renderer(outvr);
+  SbVec2s             pixels(outvr.getViewportSizePixels());
+  SbVec2s             size((short)(pixels[0] + 0.5), (short)(pixels[1] + 0.5));
+  SbVec2s             origin = outvr.getViewportOriginPixels();
+  outvr.setViewportPixels(origin, size);
+  renderer.setBackgroundColor(c);
   SoNode *root = getSceneManager()->getSceneGraph();
-  SbBool ok = osr.render(root);
+  if(! renderer.render(root)) { return; }
+  
+  unsigned char *buffer = renderer.getBuffer();
+  int width = size[0];
+  int height = size[1];
+  QImage image(width, height, QImage::Format_RGB32);
+  QRgb value;
 
-  if (!ok) { return; }
-  // ok = osr.writeToRGB(fName);
-  ok = osr.writeToFile(fName.toStdString().c_str(), "png");
-  if (!ok) { return; }
+  for(int j = 0; j < height; j++)
+    for(int k = 0; k < width; k++)
+    {
+      value = qRgb(buffer[0], buffer[1], buffer[2]);
+      image.setPixel(k, j, value);
+      buffer += 3;
+    }
 
+  QImage mimage = image.mirrored();
+  if(!mimage.save(fName, "PNG")) { return; }
+  
   dt = QDateTime::currentDateTime();
   QFile file(dName);
   if  (file.open(QIODevice::WriteOnly))
   {
     QTextStream stream(&file);
     stream << dt.toString("ddd MMM d hh:mm:ss.zzz yyyy") << "\n";
-    stream << QString::fromStdString(text) << "\n";
+    stream << text << "\n";
     file.close();
   }
 }

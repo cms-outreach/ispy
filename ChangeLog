@@ -1,3 +1,94 @@
+2009-11-26  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: fixes bug when the logo is for some
+	  reason not readable.
+
+2009-11-25  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy.cpp, default-style.css, default-views.xml, ispy.qrc,
+          ispy.pro, ISpyApplication.cc, ISpySplashScreen.ui: 
+	  more tweaks done together with Ianna and Tom to get 
+	  collisions pictures just right.
+
+2009-11-25  Lucas Taylor <lucas.taylor@cern.ch>
+
+	* ISpy3DView.cc: enable antialiasing of lines.
+
+2009-11-25  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* default-style.css: improved cuts.
+
+	* IgNet.cc: improved buffer size so that we can look at big online 
+	  events.
+
+2009-11-25  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* Allow view definition in an xml file.
+
+	* ISpyApplication.h, default-style.css, ISpyApplication.cc: 
+	  Improved stylesheet parsing.
+
+	* ISpyApplication.cc, ISpyApplication.h: read configuration files from
+	  disk.
+
+	* IgParser.h: improve parser speed for igfiles.
+
+	* ISpyApplication.cc: optimize collection navigation.
+
+	* IgDrawTowerHelper.h, IgDrawTowerHelper.cc: much improved  / optimized 
+	  helper for drawing towers and cubes.
+
+	* ISpyApplication.cc: fix a few warnings.
+
+	* ispy.pro: adds support for freetype.
+
+	* ISpyApplication.cc, default-style.css, ISpyApplication.h: improved overlay 
+	  creator helper, including support for fonts of different sizes.
+
+	* ISpyApplication.cc, default-style.css: change make3DEvent text /
+	  style to match the one requested by the spokesman.
+
+	* ISpyApplication.cc: Disable notification while we are editing the
+	  separator.
+	
+	* ISpyApplication.h, default-style.css, ISpyApplication.cc: put
+	  physics limits in css.
+
+	* ISpyApplication.cc: faster CSC Rec hits.
+
+	* ISpyApplication.cc, ispy.pro, ispy.qrc, CMS-Color.png
+	  cms-logo-small.png: CMS logo added.
+
+2009-11-11  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: Version number changed to 1.4.0.
+
+2009-11-04  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc: Draw HCAL and ECAL rechits as histograms in
+	  RZ view.
+
+	* IgMainWindowMDI.1.0.ui: Enable printing to a printer/file and
+	  saving a picture to a file.
+
+	* ISpy3DView.h, ISpy3DView.cc: Enable printing to a file. Use
+	  proper printer dialog. Use save member function to save an
+	  image. Save as .iv format should go to an expert export as menu.
+
+	* ISpyApplication.cc: Hide extra stuff in a play mode.
+
+	* ISpyPicturePublishingDialog.h, ISpyPicturePublishingDialog.cc: A
+	  picture publishing settings dialog.
+	
+	* ISpyPicturePublishingDialog.ui: Designer file for the above
+	  dialog.
+
+	* ISpy3DView.h, ISpy3DView.cc, ISpyApplication.h,
+	  ISpyApplication.cc: Enable auto printing of the png images in a
+	  given directory with a given time delay.
+
+	* IgMainWindowMDI.1.0.ui: A menu for launching the dialog added.
+
 2009-11-03  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-style.css: background back to black.
@@ -94,7 +185,7 @@
 
 	* ISpy3DView.cc: Do not allow popping up a non-functional GUI on
 	  right mouse click.
-
+	  
 2009-09-13  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy.pro, Iguana/QtGUI/src/Info.plist, Iguana/QtGUI/src/ispy.icns:

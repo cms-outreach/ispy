@@ -5,6 +5,7 @@
 
 # include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
 # include <QObject>
+# include <QPrinter>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -40,8 +41,7 @@ public:
   virtual Ig3DBaseModel *       model(void) const;
   virtual QWidget *             parent(void) const;
 
-  virtual void   printBitmap(QString file, float ppi,
-                             float dpi, QString format);
+  virtual void   printBitmap(const QString &file, const QString &format);
 
   static bool    saveNode(SoNode *node, const QString& title,
                           QWidget *parent = 0, const char* file = 0);
@@ -65,8 +65,7 @@ public slots:
   void         view(void);
   void         pick(void);
   void         setWhatsThisPicking(bool enable = true);
-  virtual void autoPrint(void);
-  virtual void autoPrint(const std::string text);
+  void 	       autoPrint(QString text);
   virtual void viewPlaneX(void);
   virtual void viewPlaneY(void);
   virtual void viewPlaneZ(void);
@@ -99,6 +98,10 @@ private:
   bool                  m_oldView;
   bool                  m_oldSeek;
   enum Mode             m_viewMode;
+
+#ifndef QT_NO_PRINTER
+  QPrinter 		m_printer;
+#endif
   
   // undefined semantics
   ISpy3DView(const ISpy3DView &);
