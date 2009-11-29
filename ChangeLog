@@ -1,3 +1,8 @@
+2009-11-26  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: fixes bug when the logo is for some
+	  reason not readable.
+
 2009-11-25  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy.cpp, default-style.css, default-views.xml, ispy.qrc,
