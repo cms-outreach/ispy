@@ -1211,8 +1211,8 @@ makeLegoGrid(IgCollection **, IgAssociationSet **,
   SoSeparator         *labelScale = new SoSeparator;
   SoText2             *labelScaleText = new SoText2;
   SoTranslation       *labelScaleOffset = new SoTranslation;
-  char scaleChars [12] = "1.0 GeV";
-  sprintf (scaleChars, "%.2G GeV", scale);
+  char scaleChars [12];
+  sprintf (scaleChars, "%.2G GeV (Et)", scale);
   labelScaleText->string = scaleChars;
   labelScaleOffset->translation
     = SbVec3f (-0.6, 1, z - 0.6);
@@ -1288,7 +1288,7 @@ makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **,
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, (emFraction > 0 ? emFraction : 0),
-                                   style->energyScale, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
+                                   1.00, (fabs (eta) > 1.74 ? 0.174f : 0.087f),
                                    phi4eta (fabs (eta)));
     }
   }
@@ -1391,7 +1391,7 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 0.0,
-                                   style->energyScale, 
+                                   1., 
                                    (fabs (eta) > 1.74 ? 0.174f : 0.087f),
                                    phi4eta (fabs (eta)));
     }
@@ -1422,7 +1422,7 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 1.0,
-                                   style->energyScale, 0.0174f,
+                                   1., 0.0174f,
                                    0.0174f);
     }
   }
