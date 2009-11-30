@@ -14,9 +14,6 @@
 	* ISpyApplication.cc: fixes Lego views scaling. This fixes a
 	  regression which was introduced by the styles.
 
-	* ISpy3DView.cc: uses QImage::rgbSwapped() rather than a custom 
-	  loop to convert from RGB to BGR.
-
 2009-11-26  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: fixes bug when the logo is for some
