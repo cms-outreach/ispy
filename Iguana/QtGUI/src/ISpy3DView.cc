@@ -152,16 +152,7 @@ ISpy3DView::printBitmap(const QString &file,
     int width = size[0];
     int height = size[1];
     QImage image(width, height, QImage::Format_RGB32);
-    QRgb value;
-
-    for(int j = 0; j < height; j++)
-      for(int k = 0; k < width; k++)
-      {
-	value = qRgb(buffer[0], buffer[1], buffer[2]);
-	image.setPixel(k, j, value);
-	buffer += 3;
-      }
-    QImage mimage = image.mirrored();
+    QImage mimage = image.mirrored().rgbSwapped();
     if(!mimage.save(file, format.toAscii()))
       QMessageBox::warning(getShellWidget(), "iSpy Save Image Error",
 			   "Failed to save an image.",
@@ -615,17 +606,7 @@ ISpy3DView::autoPrint(QString text)
   int width = size[0];
   int height = size[1];
   QImage image(width, height, QImage::Format_RGB32);
-  QRgb value;
-
-  for(int j = 0; j < height; j++)
-    for(int k = 0; k < width; k++)
-    {
-      value = qRgb(buffer[0], buffer[1], buffer[2]);
-      image.setPixel(k, j, value);
-      buffer += 3;
-    }
-
-  QImage mimage = image.mirrored();
+  QImage mimage = image.mirrored().rgbSwapped();
   if(!mimage.save(fName, "PNG")) { return; }
   
   dt = QDateTime::currentDateTime();
