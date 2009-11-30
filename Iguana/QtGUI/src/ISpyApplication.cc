@@ -257,6 +257,7 @@ ISpyApplication::style(const char *rule, const char *css)
   spec.minEnergy = 0.2;   // Default value is 0.2 GeV
   spec.maxEnergy = 5.;    // Default value is 5.0 GeV
   spec.energyScale = 1.;  // Default value is 0.1 m/GeV
+  spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
   
   // Parse the rule.
   StringList ruleParts = StringOps::split(rule, "::");
@@ -297,7 +298,8 @@ ISpyApplication::style(const char *rule, const char *css)
     spec.minEnergy = previous.minEnergy;
     spec.maxEnergy = previous.maxEnergy;
     spec.energyScale = previous.energyScale;
-    spec.background = spec.background;
+    spec.background = previous.background;
+    spec.annotationLevel = previous.annotationLevel;
   }
 
   // Parse the property declarations and deposit new value on top of those
@@ -390,6 +392,16 @@ ISpyApplication::style(const char *rule, const char *css)
       spec.textAlign = ISPY_TEXT_ALIGN_CENTER;
     else if (key == "text-align")
       throw CssParseError("Syntax error while defining text-align", value);
+    else if (key == "annotation-level" && value == "none")
+      spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NONE;
+    else if (key == "annotation-level" && value == "press")
+      spec.annotationLevel = ISPY_ANNOTATION_LEVEL_PRESS;
+    else if (key == "annotation-level" && value == "normal")
+      spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
+    else if (key == "annotation-level" && value == "full")
+      spec.annotationLevel = ISPY_ANNOTATION_LEVEL_FULL;
+    else if (key == "annotation-level")
+      throw CssParseError("Syntax error while defining annotation-level", value);      
     else if (key == "min-energy")
     {
       spec.minEnergy = strtod(value.c_str(), &endptr);
@@ -642,35 +654,70 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
   IgCollectionItem      e = *c->begin();
 
   std::string           time  = e.get<std::string>("time");
-  // FIXME LT: make text positioning independent of window resize
-  // FIXME LT: make visibilty of each line switchable in the interface(and settings) e.g. as for ig collections
   OverlayCreatorHelper helper(sep, style);
+  char buf[1024];
 
-  helper.beginBox(-0.75, 0.93, style->textAlign);
-  helper.createTextLine("CMS Experiment at the LHC, CERN");
-  helper.indentText(0, 0.7);
-  helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
-                               ("Data recorded: " + time).c_str());
-  char runStr[1024];
-  helper.createTextLine((sprintf(runStr, "Run / Event: %d / %d", 
-                         e.get<int>("run"), e.get<int>("event")), runStr));
-  helper.endBox();
-  helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-  helper.createTextLine("(c) CERN 2009. All rights reserved.");
-  helper.endBox();
-  helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
-  helper.createTextLine("http://iguana.cern.ch/ispy");
-  helper.endBox();
-  
-  
-  if (style->background)
-    helper.addImage(-0.94, 0.93, 0.16, 0.16, style->background);
-//  helper.createIntLine("Run_no____ ", e.get<int>("run"));
-//  helper.createIntLine("Event_no__ ", e.get<int>("event"));
-//  helper.createIntLine("Lumi_sec__ ", e.get<int>("ls"));
-//  helper.createIntLine("Orbit_____ ", e.get<int>("orbit"));
-//  helper.createIntLine("Crossing__ ", e.get<int>("bx"));
-//  helper.createTextLine("http://iguana.cern.ch/ispy");
+  switch (style->annotationLevel)
+  {
+    case ISPY_ANNOTATION_LEVEL_NONE:
+      break;
+    case ISPY_ANNOTATION_LEVEL_PRESS:
+      // This is  a view stripped down of information which is suitable for 
+      // press releases.
+      helper.beginBox(-0.75, 0.93, style->textAlign);
+      helper.createTextLine("CMS Experiment at the LHC, CERN");
+      helper.indentText(0, 0.7);
+      helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
+                                   ("Data recorded: " + time).c_str());
+      helper.createTextLine((sprintf(buf, "Run / Event: %d / %d", 
+                             e.get<int>("run"), e.get<int>("event")), buf));
+      helper.endBox();
+      helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
+      helper.createTextLine("(c) CERN 2009. All rights reserved.");
+      helper.endBox();
+      helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
+      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.endBox();
+      
+      if (style->background)
+        helper.addImage(-0.94, 0.93, 0.16, 0.16, style->background);
+      break;
+    case ISPY_ANNOTATION_LEVEL_NORMAL:
+    case ISPY_ANNOTATION_LEVEL_FULL:
+      // This is the default view.
+      helper.beginBox(-0.75, 0.93, style->textAlign);
+      helper.createTextLine("CMS Experiment at the LHC, CERN");
+      helper.indentText(0, 0.7);
+      helper.createTextLine("Data recorded: ");
+      helper.createTextLine("Run: ");
+      helper.createTextLine("Event: ");
+      helper.createTextLine("Lumi section: ");
+      helper.createTextLine("Orbit: ");
+      helper.createTextLine("Crossing: ");
+      helper.endBox();
+
+      helper.beginBox(-0.45, 0.93, SoText2::LEFT);
+      helper.createTextLine(""); // Empty line to align table.
+      helper.indentText(0, 0.7);
+      helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" : time.c_str());
+      helper.createTextLine((sprintf(buf, "%d", e.get<int>("run")), buf));
+      helper.createTextLine((sprintf(buf, "%d", e.get<int>("event")), buf));
+      helper.createTextLine((sprintf(buf, "%d", e.get<int>("ls")), buf));
+      helper.createTextLine((sprintf(buf, "%d", e.get<int>("orbit")), buf));
+      helper.createTextLine((sprintf(buf, "%d", e.get<int>("bx")), buf));
+      helper.endBox();
+      
+      helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
+      helper.createTextLine("(c) CERN 2009. All rights reserved.");
+      helper.endBox();
+      helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
+      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.endBox();
+      
+      if (style->background)
+        helper.addImage(-0.94, 0.93, 0.16, 0.16, style->background);
+      break;
+  }
 }
 
 
@@ -3915,7 +3962,8 @@ ISpyApplication::findStyle(const char *pattern)
     style.minEnergy = spec.minEnergy;
     style.maxEnergy = spec.maxEnergy;
     style.energyScale = spec.energyScale;
-
+    style.annotationLevel = spec.annotationLevel;
+    
     // Read the background file and put it in a SoTexture2 so that it can be
     // used as required. In case no file are specified, the texture pointer 
     // will be zero.

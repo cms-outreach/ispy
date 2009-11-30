@@ -81,6 +81,13 @@ struct CssParseError
   std::string what;
 };
 
+enum ISPY_ANNOTATION_LEVEL {
+  ISPY_ANNOTATION_LEVEL_NONE,
+  ISPY_ANNOTATION_LEVEL_PRESS,
+  ISPY_ANNOTATION_LEVEL_NORMAL,
+  ISPY_ANNOTATION_LEVEL_FULL
+};
+
 class ISpyApplication : public QObject
 {
   Q_OBJECT
@@ -103,6 +110,7 @@ public:
     double                      maxEnergy;
     double                      energyScale;
     SoTexture2                  *background;
+    ISPY_ANNOTATION_LEVEL       annotationLevel;
   };
 
   ISpyApplication(void);
@@ -240,7 +248,7 @@ private:
     ISPY_TEXT_ALIGN_RIGHT,
     ISPY_TEXT_ALIGN_CENTER
   };
-
+  
   struct StyleSpec
   {
     std::string                 viewName;
@@ -257,6 +265,7 @@ private:
     ISPY_MARKER_SIZE            markerSize;
     ISPY_MARKER_STYLE           markerStyle;
     ISPY_TEXT_ALIGN             textAlign;
+    ISPY_ANNOTATION_LEVEL       annotationLevel;
     double                      minEnergy;
     double                      maxEnergy;
     double                      energyScale; 

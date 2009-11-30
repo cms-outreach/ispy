@@ -3,6 +3,14 @@
 	* ispy.cpp: silence COIN complaints about indirect rendering
 	  when running remotely.
 
+	* ISpyApplication.cc, ISpyApplication.h: adds a new CSS property
+	  "annotation" to control annotation level. The property can be 
+	  either: "none", "normal", "full" or "press" and controls
+	  the amount of information that a given rendering method
+	  will show. This is useful, for example, to show the full event
+	  information while still being	able to quickly produce images 
+	  for the press.
+
 2009-11-26  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: fixes bug when the logo is for some
