@@ -1,3 +1,8 @@
+2009-11-30  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy.cpp: silence COIN complaints about indirect rendering
+	  when running remotely.
+
 2009-11-26  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: fixes bug when the logo is for some

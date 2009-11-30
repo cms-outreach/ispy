@@ -40,6 +40,17 @@ main (int argc, char *argv[])
   putenv("COIN_FORCE_FONTCONFIG_OFF=1");
   #endif
 
+  // Do not inform when COIN is running using indirect rendering
+  // because it simply confuses things and there is not
+  // much the user can really do since
+  //
+  // COIN_FULL_INDIRECT_RENDERING=1
+  //
+  // most likely will cause even more user feedback.
+  //
+  // TODO: check the actual impact of COIN_FULL_INDIRECT_RENDERING=1
+  putenv("COIN_DONT_INFORM_INDIRECT_RENDERING=1");
+
   ISpyApplication app;
   return app.run (argc, argv);
 }
