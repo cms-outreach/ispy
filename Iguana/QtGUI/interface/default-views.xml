@@ -9,7 +9,7 @@
 
   <collection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
-              draw="make3DL1Trigger" 
+              draw="make3DL1Trigger"
               visibility="none"/>
   <collection label="Provenance/Technical Triggers"
               spec="TechTrigger_V1"
@@ -18,7 +18,7 @@
 
   <collection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
-              visibility="none"/>
+              draw="make3DHLTrigger"/>
 
   <collection label="Provenance/Trigger Objects"
               spec="TriggerObjects_V1:VID:pt:eta:phi"
@@ -444,6 +444,7 @@
 
   <collection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
+              draw="make3DHLTrigger"
               visibility="none"/>
 
   <collection label="Provenance/Technical Triggers"
@@ -737,6 +738,7 @@
 
   <collection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
+              draw="make3DHLTrigger"
               visibility="none"/>
 
   <collection label="Provenance/Technical Triggers"
@@ -1083,6 +1085,7 @@
 
   <collection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
+              draw="make3DHLTrigger"
               visibility="none"/>
 
   <collection label="Provenance/Technical Triggers"

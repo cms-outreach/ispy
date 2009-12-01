@@ -747,6 +747,31 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **,
 }
 
 static void
+make3DHLTrigger(IgCollection **collections, IgAssociationSet **, 
+                 SoSeparator *sep, ISpyApplication::Style * style)
+{
+  IgCollection           *c = collections[0];
+
+  char                  buf [256];
+  OverlayCreatorHelper  helper(sep, style);
+
+  helper.beginBox(-0.75,  0.0, SoText2::LEFT);
+  helper.createTextLine("HLT Triggers:");
+  helper.createTextLine("------------");
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    if (ci->get<int>("Accept") == 1)
+    {
+      sprintf(buf, "%.100s", ci->get<std::string>("Name").c_str());
+      helper.createTextLine(buf);
+    }
+  }
+
+  helper.endBox();
+}
+
+static void
 make3DTechTrigger(IgCollection **collections, IgAssociationSet **,
                  SoSeparator *sep, ISpyApplication::Style * style )
 {
@@ -5127,6 +5152,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DEnergyBoxes", make3DEnergyBoxes));
   m_drawFunctions.insert(std::make_pair("make3DEnergyTowers", make3DEnergyTowers));
   m_drawFunctions.insert(std::make_pair("make3DEvent", make3DEvent));
+  m_drawFunctions.insert(std::make_pair("make3DHLTrigger", make3DHLTrigger));
   m_drawFunctions.insert(std::make_pair("make3DJetShapes", make3DJetShapes));
   m_drawFunctions.insert(std::make_pair("make3DL1Trigger", make3DL1Trigger));
   m_drawFunctions.insert(std::make_pair("make3DMET", make3DMET));

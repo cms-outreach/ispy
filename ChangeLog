@@ -5,6 +5,9 @@
 
 	* default-views.xml, default-style.css: draw CSS Rec Hits (2D).
 
+	* ISpyApplication.cc, default-views.xml, default-style.css:
+	  draw HLT information.
+
 2009-12-01  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: trap schema errors when they occur

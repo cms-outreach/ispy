@@ -37,7 +37,7 @@ Event_V1 {
 }
 
 L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); text-align: right;}
-TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
+TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); text-align: right; transparency: 0;}
 Products_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 Errors_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 
