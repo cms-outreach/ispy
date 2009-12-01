@@ -2774,7 +2774,9 @@ ISpyApplication::ISpyApplication(void)
     m_3DToolBar(0),
     m_actionCameraPerspective(0),
     m_actionCameraOrthographic(0),
-    m_printTimer(new QTimer(this))
+    m_printTimer(new QTimer(this)),
+    m_filterProgressDialog(0),
+    m_counter(0)
 {
   m_archives[0] = m_archives[1] = 0;
   m_storages[0] = new IgDataStorage;
@@ -3194,6 +3196,15 @@ ISpyApplication::visibilityGroup(void)
 void
 ISpyApplication::onExit(void)
 {
+  m_exiting = true;
+  stopFiltering();
+  m_idleTimer->stop();
+  m_idleTimer->disconnect();
+  m_animationTimer->stop();
+  m_animationTimer->disconnect();
+  m_timer->stop();
+  m_timer->disconnect();
+  
   QObject::disconnect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
 
   if (m_consumer.isRunning ())
@@ -3202,7 +3213,6 @@ ISpyApplication::onExit(void)
     m_consumer.quit();
   }
   
-  m_exiting = true;
   delete m_listModel;
   m_listModel = 0;
   delete m_tableModel;
@@ -3591,6 +3601,12 @@ ISpyApplication::setupMainWindow(void)
   m_selector = new ISpyEventSelectorDialog (m_mainWindow);
   QObject::connect(m_selector, SIGNAL(pageChanged(QString)), this, SLOT(updateFilterListModel(QString)));
 
+  m_filterProgressDialog = new QProgressDialog(m_mainWindow);
+  if(m_online)
+    m_filterProgressDialog->setMaximum(0);
+  m_filterProgressDialog->setModal(true);
+  QObject::connect(m_filterProgressDialog, SIGNAL(canceled()), this, SLOT(stopFiltering()));
+
   QObject::connect(m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
   QObject::connect(m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
   QObject::connect(m_mainWindow, SIGNAL(nextEvent()),     this, SLOT(nextEvent()));
@@ -3705,6 +3721,13 @@ ISpyApplication::showPublish(void)
 }
 
 void
+ISpyApplication::stopFiltering(void)
+{
+  m_counter = 0;
+  m_nextEvent = false;
+}
+
+void
 ISpyApplication::showAbout(void)
 {
   m_splash->showAbout();
@@ -3810,6 +3833,7 @@ ISpyApplication::doRun(void)
     m_mainWindow->toolBarEvent->addWidget (clock);
     QObject::connect(this, SIGNAL(resetCounter()), clock, SLOT(resetTime()));
     clock->show();
+    nextEvent();
   }
   else if (! m_archives[0] && ! m_archives[1])
   {
@@ -4485,10 +4509,28 @@ ISpyApplication::newEvent(void)
 	   m_events[m_eventIndex].contents);
   
   updateCollections();
+}
 
-  // Skip an event if it did not pass the filters
+/* Run current event through the filters */
+void
+ISpyApplication::filterEvent(void)
+{
+  // Skip an event if it did not pass the filters.
+  // Filter only forward.
   if(!filter() && m_nextEvent)
-    nextEvent();
+  {
+    QCoreApplication::processEvents();
+    m_filterProgressDialog->show();
+
+    // When the filtering is canceled from the dialog above,
+    // the flag is set to false.
+    if(m_nextEvent)
+      nextEvent();
+  }  
+  else
+    m_counter = 0;
+  
+  m_filterProgressDialog->hide();
 }
 
 /** Prompt for a new file to be openend. */
@@ -4619,6 +4661,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
       update = true;
     else
     {
+      m_filterProgressDialog->setMaximum(m_events.size());
       newEvent();
       update = false;
     }
@@ -5013,13 +5056,20 @@ ISpyApplication::nextEvent(void)
     showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
     if (! m_storages[0]->empty())
       resetCounter();
+    else
+      m_filterProgressDialog->setLabelText("Waiting for online events...");
 
     updateCollections();
+    filterEvent();
   }
   if (++m_eventIndex < m_events.size())
   {
+    m_filterProgressDialog->setMaximum(m_events.size() - m_eventIndex);
+    m_filterProgressDialog->setValue(++m_counter);
+    m_filterProgressDialog->setLabelText("Filtered out " + QString::number(m_counter) + " events.");
     showMessage(m_events[m_eventIndex].contents->name().name());
     newEvent();
+    filterEvent();
   }
   else
     m_eventIndex = (m_events.empty() ? 0 : m_events.size()-1);

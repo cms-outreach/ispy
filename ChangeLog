@@ -1,3 +1,7 @@
+2009-12-02  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc, ISpyApplication.h: enable online filtering.
+
 2009-12-01  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, ISpySplashScreen.ui: version number changed to

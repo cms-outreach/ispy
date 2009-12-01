@@ -167,6 +167,7 @@ private slots:
   void                  restartPlay(void);
   void			updateFilterListModel(const QString& title);
   void			showPublish(void);
+  void			stopFiltering(void);
 
 private:
   typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
@@ -380,6 +381,7 @@ private:
   void                  filter(const char *friendlyName,
 			       const char *collectionSpec);
   bool                  filter(void);
+  void			filterEvent(void);
   bool                  doFilterCollection(const Collection &collection, const char *algoName, const char *result);
   void                  doUpdateFilterListModel(const Collection &collection);
   // Helper methods to handle rendering styles.
@@ -448,6 +450,8 @@ private:
   ISpyPicturePublishingDialog *m_pubDialog;
   QTimer		*m_printTimer;
   QString		m_metaData;
+  QProgressDialog       *m_filterProgressDialog;
+  int			m_counter;
 
   class MatchByName {
   public:
