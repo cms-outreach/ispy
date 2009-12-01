@@ -1515,6 +1515,74 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
 }
 
 static 
+void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs, 
+                  SoSeparator *sep, ISpyApplication::Style *style)
+{
+  IgCollection          *tracks = collections[0];
+  IgCollection          *extras = collections[1];
+  IgAssociationSet      *assoc = assocs[0];
+  IgProperty            PT  = tracks->getProperty("pt");
+  IgProperty            POS = tracks->getProperty("pos");
+  IgProperty            POS1 = extras->getProperty("pos_1");
+  IgProperty            DIR1 = extras->getProperty("dir_1");
+  IgProperty            POS2 = extras->getProperty("pos_2");
+  IgProperty            DIR2 = extras->getProperty("dir_2");
+
+  for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
+  {
+    IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
+
+    SoVertexProperty    *tvertices = new SoVertexProperty;
+    SoMarkerSet         *tpoints   = new SoMarkerSet;
+    int                 nVtx = 0;
+
+    IgV3d p = ci->get<IgV3d>(POS);
+
+    QString trackName = QString("Track %1 GeV(%2, %3, %4)")
+                        .arg(ci->get<double>(PT))
+                        .arg(p.x()).arg(p.y()).arg(p.z());
+
+    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    {
+      if (ai->first().objectId() == ci->currentRow())
+      {
+        IgCollectionItem m(extras, ai->second().objectId());
+        p = ci->get<IgV3d>(POS1);
+        IgV3d d = ci->get<IgV3d>(DIR1);
+        // If this is the first hit, then also add it to the vertex property
+        // for the dotted line which goes to the vertex. 
+        SbVec3f diri(d.x(), d.y(), d.z());
+        diri.normalize();
+
+        trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        trackRep->tangents.set1Value(nVtx, diri);
+        tvertices->vertex.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        ++nVtx;
+
+        p = ci->get<IgV3d>(POS2);
+        d = ci->get<IgV3d>(DIR2);
+        SbVec3f diro(d.x(), d.y(), d.z());
+        diro.normalize();
+
+        trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        trackRep->tangents.set1Value(nVtx, diro);
+        tvertices->vertex.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        ++nVtx;
+      }
+    }
+
+    tvertices->vertex.setNum(nVtx);
+    tpoints->markerIndex = style->markerType;
+    tpoints->vertexProperty = tvertices;
+    tpoints->numPoints.setValue(nVtx);
+
+    sep->addChild(trackRep);
+    sep->addChild(tpoints);
+  }
+}
+
+
+static 
 void make3DTracks(IgCollection **collections, IgAssociationSet **assocs, 
                   SoSeparator *sep, ISpyApplication::Style *style)
 {
@@ -5071,6 +5139,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DTrackPoints", make3DTrackPoints));
   m_drawFunctions.insert(std::make_pair("make3DTrackingParticles", make3DTrackingParticles));
   m_drawFunctions.insert(std::make_pair("make3DTracks", make3DTracks));
+  m_drawFunctions.insert(std::make_pair("make3DTracksNoVertex", make3DTracksNoVertex));
   m_drawFunctions.insert(std::make_pair("make3DTriggerObject", make3DTriggerObject));
   m_drawFunctions.insert(std::make_pair("makeLegoCaloTowers", makeLegoCaloTowers));
   m_drawFunctions.insert(std::make_pair("makeLegoEcalRecHits", makeLegoEcalRecHits));

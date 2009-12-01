@@ -270,7 +270,7 @@
               spec="StandaloneMuons_V2:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="MuonTrackExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracksNoVertex"/>
   
   <collection label="Physics Objects/Global Muons (Reco)"
               spec="GlobalMuons_V1:pt:charge:phi:eta"
@@ -288,7 +288,7 @@
               spec="PATStandaloneMuons_V1:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATMuonTrackExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracksNoVertex"/>
   
   <collection label="Physics Objects/Global Muons (PAT)"
               spec="PATGlobalMuons_V1:pt:charge:phi:eta"
@@ -636,7 +636,7 @@
               spec="StandaloneMuons_V2:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="MuonTrackExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracksNoVertex"/>
   
   <collection label="Physics Objects/Global Muons (Reco)"
               spec="GlobalMuons_V1:pt:charge:phi:eta"
@@ -654,7 +654,7 @@
               spec="PATStandaloneMuons_V1:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATMuonTrackExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracksNoVertex"/>
   
   <collection label="Physics Objects/Global Muons (PAT)"
               spec="PATGlobalMuons_V1:pt:charge:phi:eta"
@@ -976,7 +976,7 @@
               spec="StandaloneMuons_V2:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="MuonTrackExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracksNoVertex"/>
   
   <collection label="Physics Objects/Global Muons (Reco)"
               spec="GlobalMuons_V1:pt:charge:phi:eta"
@@ -994,7 +994,7 @@
               spec="PATStandaloneMuons_V1:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATMuonTrackExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracksNoVertex"/>
   
   <collection label="Physics Objects/Global Muons (PAT)"
               spec="PATGlobalMuons_V1:pt:charge:phi:eta"
