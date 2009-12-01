@@ -3858,7 +3858,6 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
   
   // Show the contents in 3D, as appropriate.
   displayCollection(c);
-  
   // Show table collection.
   if (! m_tableModel)
   {
@@ -3912,7 +3911,18 @@ ISpyApplication::displayCollection(Collection &c)
       c.sep->addChild(style->material);
       c.sep->addChild(style->drawStyle);
       c.sep->addChild(style->font);
-      (*c.spec->make3D)(c.data, &c.assoc, c.sep, style);
+      try
+      {
+        (*c.spec->make3D)(c.data, &c.assoc, c.sep, style);
+      }
+      catch (IgSchemaError &e)
+      {
+        QMessageBox::critical(m_mainWindow, 
+                              "Schema error",
+                              ("The following collection" 
+                              + c.spec->collection +
+                              "does not match the requested schema.").c_str());
+      }
       c.sep->enableNotify(TRUE);
     }
     c.node->whichChild = SO_SWITCH_ALL;

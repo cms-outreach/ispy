@@ -1,3 +1,8 @@
+2009-12-01  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: trap schema errors when they occur
+	  while rendering.
+
 2009-12-01  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc, default-views.xml: display 
