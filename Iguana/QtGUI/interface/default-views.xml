@@ -210,8 +210,13 @@
               draw="make3DCSCStripDigis"/>
 
   <collection label="Muon/RPC Rec. Hits"
-              spec="RPCRecHits_V1:u1:u2:v1:v2:w2"
+              spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
               draw="make3DRPCRecHits"/>
+
+  <collection label="Muon/CSC Rec. Hits (2D)"
+              spec="CSCRecHit2Ds_V1:u1:u2:v1:v2:w1:w2"
+              draw="make3DRPCRecHits"/>
+
 
 <!-- ..................................................................................... -->
 
@@ -581,7 +586,11 @@
               draw="make3DSegmentShapes"/>
 
   <collection label="Muon/RPC Rec. Hits"
-              spec="RPCRecHits_V1:u1:u2:v1:v2:w2"
+              spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
+              draw="make3DRPCRecHits"/>
+  
+  <collection label="Muon/CSC Rec. Hits (2D)"
+              spec="CSCRecHit2Ds_V1:u1:u2:v1:v2:w1:w2"
               draw="make3DRPCRecHits"/>
 
 <!--  ..................................................................................... -->
@@ -916,8 +925,13 @@
               draw="make3DCSCStripDigis"/>
 
   <collection label="Muon/RPC Rec. Hits"
-              spec="RPCRecHits_V1:u1:u2:v1:v2:w2"
+              spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
               draw="make3DRPCRecHits"/>
+
+  <collection label="Muon/CSC Rec. Hits (2D)"
+              spec="CSCRecHit2Ds_V1:u1:u2:v1:v2:w1:w2"
+              draw="make3DRPCRecHits"/>
+
 
 <!--  ..................................................................................... -->
 

@@ -3,6 +3,8 @@
 	* ISpyApplication.cc, default-views.xml: do not extrapolate
 	  muon tracks to the vertex.
 
+	* default-views.xml, default-style.css: draw CSS Rec Hits (2D).
+
 2009-12-01  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: trap schema errors when they occur
