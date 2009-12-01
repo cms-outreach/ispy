@@ -747,6 +747,25 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **,
 }
 
 static void
+make3DTechTrigger(IgCollection **collections, IgAssociationSet **,
+                 SoSeparator *sep, ISpyApplication::Style * style )
+{
+  char                   buf[128];
+  IgCollection           *c = collections[0];
+  OverlayCreatorHelper  helper(sep, style);
+
+  helper.beginBox(0.45, 0.97, style->textAlign);
+  helper.createTextLine("Tech Triggers:");
+  helper.createTextLine("--------------");
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    if (ci->get<int>("result") == 1)
+      helper.createTextLine((sprintf(buf, "%d", ci->get<int>("bitNumber")), buf));
+
+  helper.endBox();
+}
+
+static void
 make3DTriggerObject(IgCollection **collections, IgAssociationSet **,
                     SoSeparator *sep, ISpyApplication::Style * /*style*/)
 {
@@ -5038,6 +5057,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DPreshowerTowers", make3DPreshowerTowers));
   m_drawFunctions.insert(std::make_pair("make3DRPCRecHits", make3DRPCRecHits));
   m_drawFunctions.insert(std::make_pair("make3DSegmentShapes", make3DSegmentShapes));
+  m_drawFunctions.insert(std::make_pair("make3DTechTrigger", make3DTechTrigger));
   m_drawFunctions.insert(std::make_pair("make3DTrackPoints", make3DTrackPoints));
   m_drawFunctions.insert(std::make_pair("make3DTrackingParticles", make3DTrackingParticles));
   m_drawFunctions.insert(std::make_pair("make3DTracks", make3DTracks));

@@ -1,3 +1,8 @@
+2009-12-01  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc, default-views.xml: display 
+	  of technical triggers.
+
 2009-11-30  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy.cpp: silence COIN complaints about indirect rendering
