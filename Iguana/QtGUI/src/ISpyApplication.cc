@@ -2785,7 +2785,7 @@ ISpyApplication::ISpyApplication(void)
 #else
   QCoreApplication::setApplicationName("iSpy");
 #endif
-  QCoreApplication::setApplicationVersion("1.4.1");
+  QCoreApplication::setApplicationVersion("1.4.2");
   QCoreApplication::setOrganizationDomain("iguana");
   QCoreApplication::setOrganizationName("iguana");
 
@@ -4855,7 +4855,7 @@ ISpyApplication::getUrl(const QUrl &url)
 {
   QNetworkRequest request;
   request.setUrl(url);
-  request.setRawHeader("User-Agent", "iSpy 1.4.1");
+  request.setRawHeader("User-Agent", "iSpy 1.4.2");
   return m_networkManager->get(request);
 }
 

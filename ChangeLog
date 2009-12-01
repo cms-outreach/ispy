@@ -1,3 +1,8 @@
+2009-12-01  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpySplashScreen.ui: version number changed to
+	  be 1.4.2.
+
 2009-12-01  Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc, default-views.xml: do not extrapolate
