@@ -258,6 +258,10 @@ ISpyApplication::style(const char *rule, const char *css)
   spec.maxEnergy = 5.;    // Default value is 5.0 GeV
   spec.energyScale = 1.;  // Default value is 0.1 m/GeV
   spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
+  // Default position it top left corner. Coordinate system
+  // is like the web one.
+  spec.left = 0;
+  spec.top = 0;
   
   // Parse the rule.
   StringList ruleParts = StringOps::split(rule, "::");
@@ -300,6 +304,8 @@ ISpyApplication::style(const char *rule, const char *css)
     spec.energyScale = previous.energyScale;
     spec.background = previous.background;
     spec.annotationLevel = previous.annotationLevel;
+    spec.top = previous.top;
+    spec.left = previous.left;
   }
 
   // Parse the property declarations and deposit new value on top of those
@@ -422,6 +428,18 @@ ISpyApplication::style(const char *rule, const char *css)
     }
     else if (key == "background")
       spec.background = value;
+    else if (key == "left")
+    {
+      spec.left = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing left value", value);
+    }
+    else if (key == "top")
+    {
+      spec.top = strtod(value.c_str(), &endptr);
+      if (*endptr)
+        throw CssParseError("Error while parsing top value", value);
+    }
     else
     {
       throw CssParseError("Unknown property", key);
@@ -664,7 +682,7 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
     case ISPY_ANNOTATION_LEVEL_PRESS:
       // This is  a view stripped down of information which is suitable for 
       // press releases.
-      helper.beginBox(-0.75, 0.93, style->textAlign);
+      helper.beginBox(style->left, style->top, style->textAlign);
       helper.createTextLine("CMS Experiment at the LHC, CERN");
       helper.indentText(0, 0.7);
       helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
@@ -680,12 +698,13 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
       helper.endBox();
       
       if (style->background)
-        helper.addImage(-0.94, 0.93, 0.16, 0.16, style->background);
+        helper.addImage(style->left - 0.2, style->top, 0.16, 0.16, 
+                        style->background);
       break;
     case ISPY_ANNOTATION_LEVEL_NORMAL:
     case ISPY_ANNOTATION_LEVEL_FULL:
       // This is the default view.
-      helper.beginBox(-0.75, 0.93, style->textAlign);
+      helper.beginBox(style->left, style->top, style->textAlign);
       helper.createTextLine("CMS Experiment at the LHC, CERN");
       helper.indentText(0, 0.7);
       helper.createTextLine("Data recorded: ");
@@ -696,7 +715,7 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
       helper.createTextLine("Crossing: ");
       helper.endBox();
 
-      helper.beginBox(-0.45, 0.93, SoText2::LEFT);
+      helper.beginBox(style->left + 0.30, style->top, SoText2::LEFT);
       helper.createTextLine(""); // Empty line to align table.
       helper.indentText(0, 0.7);
       helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" : time.c_str());
@@ -715,7 +734,8 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
       helper.endBox();
       
       if (style->background)
-        helper.addImage(-0.94, 0.93, 0.16, 0.16, style->background);
+        helper.addImage(style->left - 0.20, style->top, 0.16, 0.16, 
+                        style->background);
       break;
   }
 }
@@ -730,7 +750,7 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **,
   char                  buf [256];
   OverlayCreatorHelper  helper(sep, style);
 
-  helper.beginBox(0.95,  0.97, style->textAlign);
+  helper.beginBox(style->left,  style->top, style->textAlign);
   helper.createTextLine("L1 Triggers:");
   helper.createTextLine("------------");
 
@@ -755,7 +775,7 @@ make3DHLTrigger(IgCollection **collections, IgAssociationSet **,
   char                  buf [256];
   OverlayCreatorHelper  helper(sep, style);
 
-  helper.beginBox(-0.75,  0.0, SoText2::LEFT);
+  helper.beginBox(style->left, style->top , SoText2::LEFT);
   helper.createTextLine("HLT Triggers:");
   helper.createTextLine("------------");
 
@@ -779,7 +799,7 @@ make3DTechTrigger(IgCollection **collections, IgAssociationSet **,
   IgCollection           *c = collections[0];
   OverlayCreatorHelper  helper(sep, style);
 
-  helper.beginBox(0.45, 0.97, style->textAlign);
+  helper.beginBox(style->left, style->top, style->textAlign);
   helper.createTextLine("Tech Triggers:");
   helper.createTextLine("--------------");
 
@@ -4134,6 +4154,11 @@ ISpyApplication::findStyle(const char *pattern)
         style.background = 0;
     }
     
+    // Positioning information we need to rescale them to [-1, 1] interval 
+    // from [0, 1].
+    style.left = (spec.left * 2) - 1;
+    style.top = 1 - (spec.top * 2);
+
     // Style nodes do not get deleted  by dropping a given
     // collection representation.
     style.material->ref();

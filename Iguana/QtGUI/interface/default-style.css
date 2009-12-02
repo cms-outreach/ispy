@@ -22,6 +22,8 @@
   min-energy: 0.2;
   max-energy: 5.0;
   energy-scale: 1.0;
+  left: 0.;
+  top: 0.;
 }
 
 Background {
@@ -34,10 +36,28 @@ Event_V1 {
   font-size: 24.0; 
   font-family: Arial;
   background: :/images/cms-logo-small.png;
+  left: 0.125;
+  top: 0.025;
 }
 
-L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); text-align: right;}
-TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); text-align: right; transparency: 0;}
+L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); 
+  text-align: right;
+  left: 0.985;  
+  top: 0.025;
+  }
+
+TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); 
+                  text-align: right; 
+                  left: 0.125;
+                  top: 0.5;
+}
+
+TechTrigger_V1 {
+  text-align: left; 
+  left: 0.70;
+  top: 0.025;
+}
+
 Products_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 Errors_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 

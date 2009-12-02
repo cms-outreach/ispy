@@ -111,6 +111,8 @@ public:
     double                      energyScale;
     SoTexture2                  *background;
     ISPY_ANNOTATION_LEVEL       annotationLevel;
+    double                      left;
+    double                      top;
   };
 
   ISpyApplication(void);
@@ -269,7 +271,9 @@ private:
     ISPY_ANNOTATION_LEVEL       annotationLevel;
     double                      minEnergy;
     double                      maxEnergy;
-    double                      energyScale; 
+    double                      energyScale;
+    double                      left;
+    double                      top;
   };
   
   struct Collection

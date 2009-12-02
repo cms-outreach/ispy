@@ -1,3 +1,8 @@
+2009-12-03  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpyApplication.h, default-style.css: top 
+	  and left properies added to control position of annotations.
+
 2009-12-02  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc, ISpyApplication.h: enable online filtering.
