@@ -85,6 +85,47 @@ using namespace lat;
 
 //<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
 
+/** Typedef for helper function which do various kinds of projections.
+    Notice that it also needs a rotation to be used to transport the tangent
+    space correctly.
+ */
+typedef SbVec3f(*Projection)(IgV3d &);
+
+/** Helper method to do RZ projections.
+    
+    @a v the vector to be transformed.
+    
+    @a rotation which will be set to be the one that changes the tangent
+     space in the correct way.
+  
+    FIXME: set x to be the angle between x, y, i.e. asin(x/y) this way we have
+           a natural layering of points.
+  */
+static SbVec3f
+rzProjection(IgV3d &v)
+{
+  double sign = v.y() / fabs(v.y());
+  double size = sqrt(v.x()*v.x() + v.y()*v.y());
+  return SbVec3f(0, sign * size, v.z());
+}
+
+/** Helper method for the identity projection.
+    
+    @a v the vector to be transformed.
+    
+    @a rotation which will be set to be the one that changes the tangent
+     space the correct way.
+    
+    @return the transformed vector
+  */
+static SbVec3f
+identity(IgV3d &v)
+{
+  return SbVec3f(v.x(), v.y(), v.z());
+}
+
+/** Helper method to initialize our nodes.
+*/
 static void initShapes(void)
 {
   IgSoShapeKit::initClass();
@@ -872,10 +913,10 @@ make3DTriggerObject(IgCollection **collections, IgAssociationSet **,
 // Draw Generic shapes
 // ------------------------------------------------------
 
-
 static void
-make3DPointSetShapes(IgCollection **collections, IgAssociationSet **,
-                     SoSeparator *sep, ISpyApplication::Style *style)
+makeAnyPointSetShapes(IgCollection **collections, IgAssociationSet **,
+                      SoSeparator *sep, ISpyApplication::Style *style,
+                      Projection projection)
 {
   IgCollection          *c = collections[0];
   IgProperty            POS = c->getProperty("pos");
@@ -884,14 +925,8 @@ make3DPointSetShapes(IgCollection **collections, IgAssociationSet **,
   int                   n = 0;
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d p1 = ci->get<IgV3d>(POS);
+    vertices->vertex.set1Value(n++, projection(ci->get<IgV3d>(POS)));
 
-    double x = p1.x();
-    double y = p1.y();
-    double z = p1.z();
-    vertices->vertex.set1Value(n++, SbVec3f(x, y, z));
-  }
   vertices->vertex.setNum(n);
 
   points->markerIndex = style->markerType;
@@ -899,6 +934,21 @@ make3DPointSetShapes(IgCollection **collections, IgAssociationSet **,
   points->numPoints = n;
   sep->addChild(points);
 }
+
+static void
+make3DPointSetShapes(IgCollection **collections, IgAssociationSet **assocs,
+                     SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeAnyPointSetShapes(collections, assocs, sep, style, identity);
+}
+
+static void
+makeRZPointSetShapes(IgCollection **collections, IgAssociationSet **assocs,
+                     SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeAnyPointSetShapes(collections, assocs, sep, style, rzProjection);
+}
+
 
 static void
 make3DAnyBox(IgCollection **collections, IgAssociationSet **, 
@@ -1547,7 +1597,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
   sep->addChild(points);
 }
 
-static 
+static
 void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs, 
                   SoSeparator *sep, ISpyApplication::Style *style)
 {
@@ -1615,9 +1665,10 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs,
 }
 
 
-static 
-void make3DTracks(IgCollection **collections, IgAssociationSet **assocs, 
-                  SoSeparator *sep, ISpyApplication::Style *style)
+static
+void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs, 
+                   SoSeparator *sep, ISpyApplication::Style *style, 
+                   Projection projection)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *extras = collections[1];
@@ -1636,6 +1687,9 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
   vertexLinesStyle->lineWidth = style->drawStyle->lineWidth.getValue() - 1;
   vertexLinesStyle->linePattern = 0xf0f0;
   vsep->addChild(vertexLinesStyle);
+  
+  // Rotation used to transport the tangent space.
+  SbRotation            transport;
 
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
@@ -1645,18 +1699,22 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
     SoVertexProperty    *tvertices = new SoVertexProperty;
     SoMarkerSet         *tpoints   = new SoMarkerSet;
     int                 nVtx = 0;
-
+    
     IgV3d p = ci->get<IgV3d>(POS);
     IgV3d d = ci->get<IgV3d>(P);
-
-    SbVec3f vertexDiri(d.x(), d.y(), d.z());
-    vertexDiri.normalize();
-    vertexRep->points.set1Value(0, SbVec3f(p.x(), p.y(), p.z()));
-    vertexRep->tangents.set1Value(0, vertexDiri);
+    IgV3d dp1(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+    
+    SbVec3f pProj = projection(p);
+    SbVec3f dpProj = projection(dp1);
+    SbVec3f dProj = dpProj - pProj;
+    dProj.normalize();
+    
+    vertexRep->points.set1Value(0, pProj);
+    vertexRep->tangents.set1Value(0, dProj);
 
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get<double>(PT))
-                        .arg(p.x()).arg(p.y()).arg(p.z());
+                        .arg(p[0]).arg(p[1]).arg(p[2]);
 
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
     {
@@ -1665,27 +1723,33 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
         IgCollectionItem m(extras, ai->second().objectId());
         p = ci->get<IgV3d>(POS1);
         d = ci->get<IgV3d>(DIR1);
+        IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
         // If this is the first hit, then also add it to the vertex property
         // for the dotted line which goes to the vertex. 
-        SbVec3f diri(d.x(), d.y(), d.z());
-        diri.normalize();
+        pProj = projection(p);
+        dpProj = projection(dp2);
+        dProj = dpProj - pProj;
+        dProj.normalize();
 
-        vertexRep->points.set1Value(1, SbVec3f(p.x(), p.y(), p.z()));
-        vertexRep->tangents.set1Value(1, diri);
+        vertexRep->points.set1Value(1, pProj);
+        vertexRep->tangents.set1Value(1, dProj);
 
-        trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
-        trackRep->tangents.set1Value(nVtx, diri);
-        tvertices->vertex.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        trackRep->points.set1Value(nVtx, pProj);
+        trackRep->tangents.set1Value(nVtx, dProj);
+        tvertices->vertex.set1Value(nVtx, pProj);
         ++nVtx;
 
         p = ci->get<IgV3d>(POS2);
         d = ci->get<IgV3d>(DIR2);
-        SbVec3f diro(d.x(), d.y(), d.z());
-        diro.normalize();
-
-        trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
-        trackRep->tangents.set1Value(nVtx, diro);
-        tvertices->vertex.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        IgV3d dp3(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+        pProj = projection(p);
+        dpProj = projection(dp3);
+        dProj =  dpProj - pProj;
+        dProj.normalize();
+        
+        trackRep->points.set1Value(nVtx, pProj);
+        trackRep->tangents.set1Value(nVtx, dProj);
+        tvertices->vertex.set1Value(nVtx, pProj);
         ++nVtx;
       }
     }
@@ -1703,6 +1767,23 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
   // Add a dotted line from the vertex of the track to the first hit.
   sep->addChild(vsep);
 }
+
+
+static
+void make3DTracks(IgCollection **collections, IgAssociationSet **assocs, 
+                  SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeAnyTracks(collections, assocs, sep, style, identity);
+}
+
+
+static
+void makeRZTracks(IgCollection **collections, IgAssociationSet **assocs, 
+                  SoSeparator *sep, ISpyApplication::Style *style)
+{
+  makeAnyTracks(collections, assocs, sep, style, rzProjection);
+}
+
 
 static void
 make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, 
@@ -5246,6 +5327,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DMET", make3DMET));
   m_drawFunctions.insert(std::make_pair("make3DPhoton", make3DPhoton));
   m_drawFunctions.insert(std::make_pair("make3DPointSetShapes", make3DPointSetShapes));
+  m_drawFunctions.insert(std::make_pair("makeRZPointSetShapes", makeRZPointSetShapes));
   m_drawFunctions.insert(std::make_pair("make3DPreshowerTowers", make3DPreshowerTowers));
   m_drawFunctions.insert(std::make_pair("make3DRPCRecHits", make3DRPCRecHits));
   m_drawFunctions.insert(std::make_pair("make3DSegmentShapes", make3DSegmentShapes));
@@ -5253,6 +5335,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DTrackPoints", make3DTrackPoints));
   m_drawFunctions.insert(std::make_pair("make3DTrackingParticles", make3DTrackingParticles));
   m_drawFunctions.insert(std::make_pair("make3DTracks", make3DTracks));
+  m_drawFunctions.insert(std::make_pair("makeRZTracks", makeRZTracks));
   m_drawFunctions.insert(std::make_pair("make3DTracksNoVertex", make3DTracksNoVertex));
   m_drawFunctions.insert(std::make_pair("make3DTriggerObject", make3DTriggerObject));
   m_drawFunctions.insert(std::make_pair("makeLegoCaloTowers", makeLegoCaloTowers));

@@ -812,41 +812,41 @@
               spec="Tracks_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="make3DTracks"/>
+              draw="makeRZTracks"/>
 
   <collection label="Tracking/Tracks (GSF)"
               spec="GsfTracks_V1:pt:pos:dir"
               other="GsfExtras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfTrackExtras_V1"
-              draw="make3DTracks"
+              draw="makeRZTracks"
               visibility="none"/>
   
   <collection label="Tracking/Digis (Si Pixels)"
               spec="PixelDigis_V1:pos"
-              draw="make3DPointSetShapes"
+              draw="makeRZPointSetShapes"
               visibility="none"/>
 
   <collection label="Tracking/Digis (Si Strips)"
               spec="SiStripDigis_V1:pos"
-              draw="make3DPointSetShapes"
+              draw="makeRZPointSetShapes"
               visibility="none"/>
 
   <collection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
-              draw="make3DPointSetShapes"/>
+              draw="makeRZPointSetShapes"/>
 
   <collection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
-              draw="make3DPointSetShapes"/>
+              draw="makeRZPointSetShapes"/>
 
   <collection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
-              draw="make3DPointSetShapes"
+              draw="makeRZPointSetShapes"
               visibility="none"/>
 
   <collection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
-              draw="make3DPointSetShapes"/>
+              draw="makeRZPointSetShapes"/>
 
 <!--  ..................................................................................... -->
 
@@ -1022,13 +1022,13 @@
               spec="GsfElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfElectronExtras_V1"
-              draw="make3DTracks"/>
+              draw="makeRZTracks"/>
 
   <collection label="Physics Objects/Electrons (PAT)"
               spec="PATElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATElectronExtras_V1"
-              draw="make3DTracks"/>
+              draw="makeRZTracks"/>
 
   <collection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"

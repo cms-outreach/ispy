@@ -1,3 +1,8 @@
+2009-12-04  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* default-views.xml, ISpyApplication.cc: Initial attempt at proper 
+	  RZ projection for tracks.
+
 2009-12-04  Ianna Osborne <ianna.osborne@cern.ch>
 	
 	* ISpyApplication.cc: Fixes the crash introduced by 
