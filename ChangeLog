@@ -36,6 +36,10 @@
 	* ISpyApplication.h, ispy.pro, ISpyApplication.cc, Style.h: Separates 
 	  the style class in a different header.
 
+	* ISpyApplication.h, ispy.pro, ISpyApplication.cc: Watches the 
+	  .iss specified on command line for changes and updates
+	  the display accordingly.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

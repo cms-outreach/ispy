@@ -75,13 +75,14 @@
 #include <QTreeWidget>
 #include <QtGui>
 #include <QtNetwork>
+#include <QFileSystemWatcher>
 #include <iostream>
 #include <set>
 #include <sstream>
 #include <string>
 
-
 using namespace lat;
+const static size_t ISPY_MAX_STYLES = (size_t) -1;
 
 //<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
 
@@ -2880,6 +2881,7 @@ ISpyApplication::ISpyApplication(void)
     m_3DToolBar(0),
     m_actionCameraPerspective(0),
     m_actionCameraOrthographic(0),
+    m_fileWatcher(new QFileSystemWatcher),
     m_printTimer(new QTimer(this)),
     m_filterProgressDialog(0),
     m_counter(0)
@@ -2909,9 +2911,13 @@ ISpyApplication::ISpyApplication(void)
 
   
   // Create the default style reading the specification from a QT resource.
+  // Notice that we keep track of how big the vector containing the style
+  // specifications is, so that we can revert back to default simply by 
+  // resizing such a vector.
   style("*", "");
   style("Background","diffuse-color: rbg(1.,0,0);");
   bool ok = parseCssFile(":/css/default-style.css");
+  m_defaultStyleLevel = m_styleSpecs.size();
   ASSERT(ok && "Default style not compiled as resource.");
   
   // Register draw functions which will be later used to draw various 
@@ -2939,9 +2945,11 @@ bool
 ISpyApplication::parseCssFile(const char *filename)
 {
   QFile cssFile(filename);
+  
   bool ok = cssFile.open(QIODevice::ReadOnly | QIODevice::Text);
   if (!ok)
     return false;
+  
   QByteArray cssData = cssFile.readAll();
   ASSERT(cssData.size());
   try 
@@ -2951,9 +2959,11 @@ ISpyApplication::parseCssFile(const char *filename)
   catch (CssParseError &e)
   {
     qDebug() << e.why.c_str() << ": " << e.what.c_str();
+    cssFile.close();
     return false;
   }
-  
+
+  cssFile.close();
   return true;
 }
 
@@ -3848,9 +3858,67 @@ ISpyApplication::showAbout(void)
   m_splash->showAbout();
 }
 
-/** Main application run loop. If specified, read and additional css file
+/** Sometimes the file does not exists because what the editor does is to
+    remove the old version and save a new one.
+    In this case we watch for changes in the directory and read the file
+    as soon as it reappears.  
+*/
+void
+ISpyApplication::cssDirChanged(const QString &/*filename*/)
+{
+  QFileInfo info(m_cssFilename.c_str());
+  if (!info.exists())
+    QTimer::singleShot(1000, this, SLOT(checkCss()));
+}
+
+void
+ISpyApplication::checkCss(void)
+{
+  QFileInfo info(m_cssFilename.c_str());
+  if (info.exists())
+  {
+    openCss(m_cssFilename.c_str());
+    m_fileWatcher->addPath(m_cssFilename.c_str());
+  }
+}
+
+
+/** Slot method which opens a new .iss file, parses it, and updates the 
+    display. Notice that whenever we do this we assume that whatever file
+    was read in is not valid anymore, and we therefore revert to the default 
+    CSS.
+    
+    In case the .iss file is not valid, it pops up a dialog and reverts any 
+    changes done.
+    
+    updateCollections is then called to update the display.
+*/
+void
+ISpyApplication::openCss(const QString &filename)
+{
+  m_styleSpecs.resize(m_defaultStyleLevel);
+  m_stylesMap.resize(m_defaultStyleLevel);
+  
+  bool ok = parseCssFile(filename.toStdString().c_str());
+  if (!ok)
+  {
+    QMessageBox::critical(m_mainWindow, "CSS parsing error ",
+                          (filename + " is not a valid .iss file."
+                           "Reverting to default."));
+    m_styleSpecs.resize(m_defaultStyleLevel);
+    m_stylesMap.resize(m_defaultStyleLevel);
+  }
+  
+  updateCollections();
+}
+
+/** Main application run loop. If specified, read and additional .iss file
     from the command line. If specified read a view layout file from the 
     command-line, if not read the default one.
+    
+    Notice that in case of an .iss file we track the changes for the file 
+    in order to update the style on the fly.
+    
     Initialises the application, shows its windows, opens any files requested
     (on command line or from operating system open file events) and executes 
     the run loop.
@@ -3859,8 +3927,6 @@ ISpyApplication::showAbout(void)
 int
 ISpyApplication::doRun(void)
 {
-  if (!m_cssFilename.empty())
-    parseCssFile(m_cssFilename.c_str());
   if (!m_viewsLayoutFilename.empty())
   {
     qDebug() << "Reading " << m_viewsLayoutFilename.c_str();
@@ -3959,6 +4025,23 @@ ISpyApplication::doRun(void)
     m_mainWindow->show();
   }
 
+  // We look up for changes in the CSS file only at the end, so that 
+  // we are sure that there is actually something to update.
+  // Notice that I need to convert the relative path to an absolute one,
+  // otherwise the filewatcher gets confused.
+  if (!m_cssFilename.empty())
+  {
+    QFileInfo cssFilename(m_cssFilename.c_str());
+    m_cssFilename = cssFilename.absoluteFilePath().toStdString();
+    openCss(m_cssFilename.c_str());
+    QFileInfo info(m_cssFilename.c_str());
+    m_fileWatcher->addPath(m_cssFilename.c_str());
+    m_fileWatcher->addPath(info.dir().absolutePath());
+    QObject::connect(m_fileWatcher, SIGNAL(fileChanged(const QString &)),
+                     this, SLOT(openCss(const QString &)));
+    QObject::connect(m_fileWatcher, SIGNAL(directoryChanged(const QString &)),
+                     this, SLOT(cssDirChanged(const QString &)));
+  }
   
   // Now run.
   SoQt::mainLoop();
@@ -4171,8 +4254,18 @@ ISpyApplication::displayCollection(Collection &c)
 size_t
 ISpyApplication::findStyle(const char *pattern)
 {
+  // Get the last element and resize the map between StyleSpecs to 
+  // actual Style structs so that they have the same size.
+  // Fill the map with ISPY_MAX_STYLES in case extra elements are
+  // needed, because that means that those specs for sure have not been 
+  // used yet.
+  // FIXME: we should also iterate over m_stylesMap and remove any item
+  //        in m_styles which does not appear in m_stylesMap
+  //        otherwise we will leak styles every time we read a new .iss in.
+  //        This is clearly minor, but worth doing at some point.
   size_t reverse = m_styleSpecs.size();
-
+  m_stylesMap.resize(m_styleSpecs.size(), ISPY_MAX_STYLES);
+  
   for (size_t ssi = 0, sse = m_styleSpecs.size(); ssi != sse; ++ssi)
   {
     size_t i = reverse - ssi - 1;
@@ -4185,21 +4278,23 @@ ISpyApplication::findStyle(const char *pattern)
     if (spec.collectionName != "*" && spec.collectionName != pattern)
       continue;
     
-    // If this StyleSpec was already used, we point to the Style which 
-    // actually uses it.
+    // If this StyleSpec was already used (i.e. the stylesMap vector
+    // returns a valid index in m_style), we simply return the index to 
+    // such a Style.
     //
-    // If it was not we: 
+    // If this is the first time we actually find it:
+    // 
     // * create a new Style,
     // * use the StyleSpec to fill it and associate it to the StyleSpec,
     //   just in case we wanted to revert to defaults.
-    StylesMap::iterator smi = m_stylesMap.find(i);
-    if (smi != m_stylesMap.end())
-      return smi->second;
-      
-    size_t styleIndex = m_styles.size();
+    size_t styleIndex = m_stylesMap[i];
+    if (styleIndex != ISPY_MAX_STYLES)
+      return styleIndex;
+    
+    styleIndex = m_styles.size();
     m_styles.resize(styleIndex + 1);
     Style &style = m_styles.back();
-    m_stylesMap.insert(std::make_pair(i, styleIndex));
+    m_stylesMap[i] = styleIndex;
     style.spec = i;
     style.material = new SoMaterial;
     style.material->diffuseColor = spec.diffuseColor;

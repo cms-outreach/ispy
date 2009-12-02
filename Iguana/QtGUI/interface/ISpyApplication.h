@@ -48,6 +48,7 @@ class SoMaterial;
 class SoFont;
 class ISpyPicturePublishingDialog;
 class SoImage;
+class QFileSystemWatcher;
 
 namespace lat
 {
@@ -102,7 +103,11 @@ public slots:
   void                  previousEvent(void);
   void                  showAbout(void);
   void                  newEvent(void);
-  void 			autoPrint(void);
+  void                  updateCollections(void);
+  void                  openCss(const QString &filename);
+  void                  cssDirChanged(const QString &cssDir);
+  void                  checkCss(void);
+  void                  autoPrint(void);
 
 signals:
   void                  showMessage(const QString &fileName);
@@ -112,6 +117,7 @@ signals:
   void                  print(void);
   void                  resetCounter(void);
   void			getNewEvent(void);
+  void                  styleChanged(void);
 
 protected:
   int                   usage(void);
@@ -282,7 +288,6 @@ private:
   void                  visibilityGroup(void);
 
   void                  displayCollection(Collection &c);
-  void                  updateCollections(void);
   void                  createStats(void);
   lat::ZipArchive *     loadFile(const QString &fileName);
   void                  readData(IgDataStorage *to,
@@ -307,7 +312,6 @@ private:
   void                      parseCss(const char *css);
   bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);
-  
   // Helper methods to handle views layouts.
   void                      parseViewsDefinition(QByteArray &data);
   bool                      parseViewsDefinitionFile(const char *filename);
@@ -364,6 +368,7 @@ private:
   QFont                 *m_itemFont;
   QActionGroup          *m_viewPlaneGroup;
   QActionGroup          *m_viewModeGroup;
+  QFileSystemWatcher    *m_fileWatcher;
   ISpyPicturePublishingDialog *m_pubDialog;
   QTimer		*m_printTimer;
   QString		m_metaData;
@@ -391,7 +396,7 @@ private:
   //
   typedef std::vector<StyleSpec> StyleSpecs;
   typedef std::vector<Style>     Styles;
-  typedef std::map<size_t, size_t> StylesMap;
+  typedef std::vector<size_t>    StylesMap;
 
 
   // Storage for all the available styles.
@@ -400,10 +405,19 @@ private:
   Styles                m_styles;
   // Mapping between a StyleSpec and an active style, so that we avoid
   // creating the latter more than once.
+  // We use MAX_SIZE to indicate that there is no mapping yet.
   StylesMap             m_stylesMap;
+
   // Name of the css file to use to read style information from. Since
   // it's cascading it's contents get appended at the end of the default ones.
   std::string           m_cssFilename;
+  // The index of the last StyleSpec which was created by the default style
+  // sheet. This is used to revert to defaults in case the style passed on 
+  // command line is not correct.
+  // Reverting to defaults only implies resizing m_styleSpecs to this
+  // value. All the rest is handled automatically in findStyle.
+  size_t                m_defaultStyleLevel;
+  
   
   //
   // Data concerning the view layout definition.
