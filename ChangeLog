@@ -3,6 +3,8 @@
 	* ISpyApplication.cc, ISpyApplication.h, default-style.css: top 
 	  and left properies added to control position of annotations.
 
+	* Ig3DBaseModel.cc: fixes leak in setCamera reported by Ianna.
+
 2009-12-02  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.cc, ISpyApplication.h: enable online filtering.
