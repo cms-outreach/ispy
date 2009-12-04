@@ -59,7 +59,7 @@
 #include <Inventor/nodes/SoTransform.h>
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoVertexProperty.h>
-#include <Inventor/nodes/SoTexture2.h>
+#include <Inventor/nodes/SoImage.h>
 #include <Inventor/actions/SoGetBoundingBoxAction.h>
 #include <Inventor/elements/SoMultiTextureImageElement.h>
 
@@ -631,24 +631,14 @@ public:
   }
 
   void
-  addImage (float x, float y, float w, float h, SoTexture2 *image)
+  addImage (float x, float y, SoImage *image)
   {
     SoSeparator *logoSep = new SoSeparator;
     SoTranslation *translation = new SoTranslation;
-    // FIXME: hardcoded value for the aspect ratio.
-    h *= 1.25;
-    translation->translation = SbVec3f(x + w/2, 
-                                       (y - h/2), 
-                                       0);
-    SoCube *logoBox = new SoCube;
-    SoMaterial *mat = new SoMaterial;
-    mat->transparency = 0.1;
-    logoBox->width = w;
-    logoBox->height = h;
-    logoSep->addChild(mat);
+    image->vertAlignment = SoImage::TOP;
+    translation->translation = SbVec3f(x, y, 0);
     logoSep->addChild(translation);
     logoSep->addChild(image);
-    logoSep->addChild(logoBox);
     m_overlay->addChild(logoSep);
   }
 private:
@@ -698,8 +688,7 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
       helper.endBox();
       
       if (style->background)
-        helper.addImage(style->left - 0.2, style->top, 0.16, 0.16, 
-                        style->background);
+        helper.addImage(style->left - 0.2, style->top, style->background);
       break;
     case ISPY_ANNOTATION_LEVEL_NORMAL:
     case ISPY_ANNOTATION_LEVEL_FULL:
@@ -734,8 +723,7 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
       helper.endBox();
       
       if (style->background)
-        helper.addImage(style->left - 0.20, style->top, 0.16, 0.16, 
-                        style->background);
+        helper.addImage(style->left - 0.20, style->top, style->background);
       break;
   }
 }
@@ -4130,24 +4118,23 @@ ISpyApplication::findStyle(const char *pattern)
     style.energyScale = spec.energyScale;
     style.annotationLevel = spec.annotationLevel;
     
-    // Read the background file and put it in a SoTexture2 so that it can be
+    // Read the background file and put it in a SoImage so that it can be
     // used as required. In case no file are specified, the texture pointer 
     // will be zero.
     if (spec.background.empty())
       style.background = 0;
     else
     {
-      QImage backgroundImage = QImage(spec.background.c_str()).mirrored(true, true).rgbSwapped();
+      QImage backgroundImage = QImage(spec.background.c_str()).mirrored(false, true).rgbSwapped();
       int bytesPerPixel = backgroundImage.depth() / 8;
       
       if (!backgroundImage.isNull() && bytesPerPixel)
       {
-        style.background = new SoTexture2;
+        style.background = new SoImage;
         style.background->image.setValue(SbVec2s(backgroundImage.width(), 
                                                  backgroundImage.height()), 
                                                  bytesPerPixel,
                                                  backgroundImage.bits());
-        style.background->model = SoTexture2::DECAL;
         style.background->ref();
       }
       else

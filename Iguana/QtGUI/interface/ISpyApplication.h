@@ -50,7 +50,7 @@ class SoMaterial;
 class SoDrawStyle;
 class SoFont;
 class ISpyPicturePublishingDialog;
-class SoTexture2;
+class SoImage;
 
 namespace lat
 {
@@ -109,7 +109,7 @@ public:
     double                      minEnergy;
     double                      maxEnergy;
     double                      energyScale;
-    SoTexture2                  *background;
+    SoImage                     *background;
     ISPY_ANNOTATION_LEVEL       annotationLevel;
     double                      left;
     double                      top;

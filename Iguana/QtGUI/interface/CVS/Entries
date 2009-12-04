@@ -35,7 +35,6 @@
 /yz_small.xpm/1.1/Sun Sep  6 12:18:12 2009//
 /zoom_in.png/1.1/Sun Sep  6 12:18:12 2009//
 /zoom_out.png/1.1/Sun Sep  6 12:18:12 2009//
-/CMS-Color.png/1.1/Sun Nov 29 19:01:47 2009//
 /ISpy3DView.h/1.14/Sun Nov 29 19:01:47 2009//
 /ISpyConsumer.h/1.8/Mon Nov 23 14:36:08 2009//
 /ISpyConsumerThread.h/1.6/Tue Nov  3 23:45:29 2009//
@@ -45,8 +44,9 @@
 /IgDrawTowerHelper.h/1.9/Sun Nov 29 19:01:47 2009//
 /IgSettingsEditor.h/1.6/Wed Nov  4 07:59:49 2009//
 /cms-logo-small.png/1.1/Sun Nov 29 19:01:47 2009//
-/ispy.qrc/1.10/Sun Nov 29 19:01:47 2009//
 /default-views.xml/1.6/Tue Dec  1 13:58:55 2009//
-/ISpyApplication.h/1.53/Thu Dec  3 13:10:01 2009//
 /default-style.css/1.16/Thu Dec  3 13:10:01 2009//
+/CMS-Color.png/1.2/Fri Dec  4 16:35:15 2009//
+/ISpyApplication.h/1.54/Fri Dec  4 16:34:29 2009//
+/ispy.qrc/1.11/Fri Dec  4 16:35:15 2009//
 D

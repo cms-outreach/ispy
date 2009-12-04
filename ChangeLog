@@ -1,3 +1,9 @@
+2009-12-04  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* CMS-Color.png, ISpyApplication.h, cms-bw-medium.png,
+	  ispy.qrc, ISpyApplication.cc: sharper logo and more 
+	  embedded logos.
+
 2009-12-03  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc, ISpyApplication.h, default-style.css: top 
