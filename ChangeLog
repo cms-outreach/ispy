@@ -6,6 +6,9 @@
 	* ISpyApplication.h, default-style.css, default-views.xml
 	  ISpyApplication.cc: Display graphical client cuts on screen.
 
+	* default-views.xml, ISpyApplication.cc: photons are now (almost)
+	  correctly projected in RZ.
+
 2009-12-04  Ianna Osborne <ianna.osborne@cern.ch>
 	
 	* ISpyApplication.cc: Fixes the crash introduced by 

@@ -2173,8 +2173,9 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 }
 
 static void
-make3DPhoton(IgCollection **collections, IgAssociationSet **,
-             SoSeparator *sep, ISpyApplication::Style * /*style*/)
+makeAnyPhoton(IgCollection **collections, IgAssociationSet **,
+              SoSeparator *sep, ISpyApplication::Style * /*style*/,
+              Projection projection)
 {
   IgCollection         *c = collections[0];
   IgProperty           E = c->getProperty("energy");
@@ -2219,9 +2220,10 @@ make3DPhoton(IgCollection **collections, IgAssociationSet **,
       double c = x0*x0 + y0*y0 - rEB*rEB;
       t = (-b+sqrt(b*b-4*a*c))/2*a;
     }
-    
-    points.push_back(SbVec3f(x0, y0, z0));
-    points.push_back(SbVec3f(x0+px*t, y0+py*t, z0+pz*t));
+    IgV3d pnt1(x0, y0, z0);
+    IgV3d pnt2(x0+px*t, y0+py*t, z0+pz*t);
+    points.push_back(projection(pnt1));
+    points.push_back(projection(pnt2));
 
     lineIndices.push_back(i);
     lineIndices.push_back(i+1);
@@ -2238,6 +2240,19 @@ make3DPhoton(IgCollection **collections, IgAssociationSet **,
   sep->addChild(lineSet);
 }
 
+static void
+make3DPhoton(IgCollection **collections, IgAssociationSet **assocs,
+             SoSeparator *sep, ISpyApplication::Style * style)
+{
+  makeAnyPhoton(collections, assocs, sep, style, identity);
+}
+
+static void
+makeRZPhoton(IgCollection **collections, IgAssociationSet **assocs,
+             SoSeparator *sep, ISpyApplication::Style * style)
+{
+  makeAnyPhoton(collections, assocs, sep, style, rzProjection);
+}
 
 static void
 make3DJetShapes(IgCollection **collections, IgAssociationSet **, 
@@ -5429,6 +5444,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DLimits", make3DLimits));
   m_drawFunctions.insert(std::make_pair("make3DMET", make3DMET));
   m_drawFunctions.insert(std::make_pair("make3DPhoton", make3DPhoton));
+  m_drawFunctions.insert(std::make_pair("makeRZPhoton", makeRZPhoton));
   m_drawFunctions.insert(std::make_pair("make3DPointSetShapes", make3DPointSetShapes));
   m_drawFunctions.insert(std::make_pair("makeRZPointSetShapes", makeRZPointSetShapes));
   m_drawFunctions.insert(std::make_pair("make3DPreshowerTowers", make3DPreshowerTowers));

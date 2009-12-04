@@ -1048,11 +1048,11 @@
 
   <collection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"
-              draw="make3DPhoton"/>
+              draw="makeRZPhoton"/>
 
   <collection label="Physics Objects/Photons (PAT)"
               spec="PATPhotons_V1:energy:eta:phi:pos"
-              draw="make3DPhoton"/>
+              draw="makeRZPhoton"/>
 
   <collection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
