@@ -52,6 +52,11 @@ TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8);
                   top: 0.5;
 }
 
+Internal_Limits_V1 {
+  left: 0.35;
+  top: 0.8;
+}
+
 TechTrigger_V1 {
   text-align: left; 
   left: 0.70;

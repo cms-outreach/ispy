@@ -4241,6 +4241,53 @@ ISpyApplication::findStyle(const char *pattern)
   return 0;
 }
 
+/** Create a few dynamic collections which contain stats about the rest of
+    the IgDataStorage. This is useful to create summary tables etc.
+    
+    In particular this means that we can use it to populate a collection
+    containing the limits that are currently used for various collections.
+*/
+void
+ISpyApplication::createStats(void)
+{
+  IgDataStorage *es = m_storages[0];
+  
+  if (es->hasCollection("Internal_Limits_V1"))
+    return;
+  
+  // Create a collection to hold all the requested limits.
+  // To do so look fo
+  IgCollection &limits = es->getCollection("Internal_Limits_V1");
+  
+  IgProperty NAME = limits.addProperty("name", std::string());
+  IgProperty MINENERGY = limits.addProperty("minEnergy", 0.);
+  IgProperty MAXENERGY = limits.addProperty("maxEnergy", 0.);
+  IgProperty ENERGYSCALE = limits.addProperty("energyScale", 0.);
+  
+  char *interestingLimits[8] = {"EcalRecHits_V1",
+                                "EBRecHits_V1",
+                                "EERecHits_V1",
+                                "ESRecHits_V1",
+                                "HBRecHits_V1",
+                                "HERecHits_V1",
+                                "HFRecHits_V1",
+                                "HORecHits_V1"};
+
+  double energyScales[8] = {1, 1, 1, 1000, 1, 1, 1, 1};
+  double lengthScales[8] = {1, 1, 1, 0.01, 1, 1, 1, 1};
+
+  for (size_t i = 0, e = sizeof(interestingLimits) / sizeof(char *); i != e; ++i)
+  {
+    IgCollectionItem item = limits.create();
+    char *collectionName = interestingLimits[i];
+    item[NAME] = std::string(collectionName);
+    Style &style = m_styles[findStyle(collectionName)];
+    item[MINENERGY] = (double) style.minEnergy * energyScales[i];
+    item[MAXENERGY] = (double) style.maxEnergy * energyScales[i];
+    item[ENERGYSCALE] = (double) style.energyScale * lengthScales[i];
+  }
+}
+
 /** Update the collection list in the tree view.
 
     This method should be invoked any time the list of available
@@ -4256,6 +4303,9 @@ ISpyApplication::findStyle(const char *pattern)
 void
 ISpyApplication::updateCollections(void)
 {
+  // Create a few dynamic collections which contain stats about the rest of
+  // the IgDataStorage. This is useful to create summary tables etc.
+  createStats();
   // Change the background to match the current style.
   // This will allow to have different backgrounds for different
   // events, if required.
@@ -4690,6 +4740,7 @@ ISpyApplication::openWithFallbackGeometry(const QString &fileName)
     downloadGeometry();
 }
 
+
 /** Open a new file.  Auto-detects file contents to judge what to do
     with the file.  Supports opening a geometry-only file, an
     events-only file, or mixed files.  If the file contains geometry,
@@ -4785,7 +4836,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
       update = false;
     }
   }
-
+  
   if (update)
     updateCollections();
 
@@ -5298,6 +5349,57 @@ ISpyApplication::switchView(int viewIndex)
   m_mainWindow->viewSelector->setFocusPolicy(Qt::ClickFocus);
 }
 
+/** Shows the drawing limits on screen */
+void
+make3DLimits(IgCollection **collections, IgAssociationSet **, 
+             SoSeparator *sep, ISpyApplication::Style * style)
+{
+  IgCollection           *c = collections[0];
+
+  char                  buf [256];
+  OverlayCreatorHelper  helper(sep, style);
+
+  helper.beginBox(style->left,  style->top, style->textAlign);
+  helper.createTextLine("Drawing cuts & scales");
+  helper.indentText(0, 0.7);
+  helper.createTextLine("Name:");
+  helper.indentText(0, 0.9);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    helper.createTextLine((sprintf(buf, "%s", ci->get<std::string>("name").c_str()), buf));
+
+  helper.endBox();
+  helper.beginBox(style->left + 0.25,  style->top, style->textAlign);
+  helper.createTextLine("");
+  helper.indentText(0, 0.7);
+  helper.createTextLine("Min energy (GeV):");
+  helper.indentText(0, 0.9);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    helper.createTextLine((sprintf(buf, "%.3f", ci->get<double>("minEnergy")), buf));
+
+  helper.endBox();
+  helper.beginBox(style->left + 0.45,  style->top, style->textAlign);
+  helper.createTextLine("");
+  helper.indentText(0, 0.7);
+  helper.createTextLine("Max energy (GeV):");
+  helper.indentText(0, 0.9);
+
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    helper.createTextLine((sprintf(buf, "%.3f", ci->get<double>("maxEnergy")), buf));
+
+  helper.endBox();
+  helper.beginBox(style->left + 0.65,  style->top, style->textAlign);
+  helper.createTextLine("");
+  helper.indentText(0, 0.7);
+  helper.createTextLine("Energy scale (m/GeV):");
+  helper.indentText(0, 0.9);
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+    helper.createTextLine((sprintf(buf, "%.3f", ci->get<double>("energyScale")), buf));
+  helper.endBox();  
+}
+
 /** Register functions that are to be used for drawing.
     TODO: for the moment, given it's not really time critical,
           we simply relay on std::map. In future we might want to 
@@ -5324,6 +5426,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DHLTrigger", make3DHLTrigger));
   m_drawFunctions.insert(std::make_pair("make3DJetShapes", make3DJetShapes));
   m_drawFunctions.insert(std::make_pair("make3DL1Trigger", make3DL1Trigger));
+  m_drawFunctions.insert(std::make_pair("make3DLimits", make3DLimits));
   m_drawFunctions.insert(std::make_pair("make3DMET", make3DMET));
   m_drawFunctions.insert(std::make_pair("make3DPhoton", make3DPhoton));
   m_drawFunctions.insert(std::make_pair("make3DPointSetShapes", make3DPointSetShapes));

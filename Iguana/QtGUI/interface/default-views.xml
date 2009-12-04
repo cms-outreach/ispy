@@ -33,6 +33,11 @@
               spec="Errors_V1"
               visibility="none"/>
 
+  <collection label="Provenance/Drawing limits"
+              spec="Internal_Limits_V1"
+              draw="make3DLimits"
+              visibility="none"/>
+
 
   <!--  For now, draw the detector with the default "make3DAnyBox" code but explicit state -->
   <!--  this in each case so lables in visibility widget a nice than default ones -->
@@ -463,6 +468,12 @@
   <collection label="Provenance/Data Products not found"
               spec="Errors_V1"/>
 
+  <collection label="Provenance/Drawing limits"
+              spec="Internal_Limits_V1"
+              draw="make3DLimits"
+              visibility="none"/>
+
+
 <!--  ..................................................................................... -->
 
   <collection label="Detector/Tracker"
@@ -756,6 +767,11 @@
 
   <collection label="Provenance/Data Products not found"
               spec="Errors_V1"/>
+  
+  <collection label="Provenance/Drawing limits"
+              spec="Internal_Limits_V1"
+              draw="make3DLimits"
+              visibility="none"/>
   
 <!--  ..................................................................................... -->
 
@@ -1104,6 +1120,11 @@
   <collection label="Provenance/Data Products not found"
               spec="Errors_V1"/>
 
+  <collection label="Provenance/Drawing limits"
+              spec="Internal_Limits_V1"
+              draw="make3DLimits"
+              visibility="none"/>
+  
 <!--  ..................................................................................... -->
 
   <collection label="Detector/Eta-Phi Grid"

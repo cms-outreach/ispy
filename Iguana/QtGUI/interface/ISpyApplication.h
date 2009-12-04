@@ -373,6 +373,7 @@ private:
 
   void                  displayCollection(Collection &c);
   void                  updateCollections(void);
+  void                  createStats(void);
   lat::ZipArchive *     loadFile(const QString &fileName);
   void                  readData(IgDataStorage *to,
                                  lat::ZipArchive *archive,
