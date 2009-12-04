@@ -4527,6 +4527,26 @@ ISpyApplication::newEvent(void)
 void
 ISpyApplication::filterEvent(void)
 {
+  bool restorePlay = false;
+  bool restoreAnim = false;
+  bool restoreIdle = false;
+  if(m_animationTimer->isActive())
+  {
+    restorePlay = true;
+    m_animationTimer->stop();
+  }
+  if(m_idleTimer->isActive())
+  {
+    restoreIdle = true;
+    m_idleTimer->stop();
+  }
+  
+  if(m_timer->isActive())
+  {
+    restoreAnim = true;
+    m_timer->stop();
+  }
+  
   // Skip an event if it did not pass the filters.
   // Filter only forward.
   if(!filter() && m_nextEvent)
@@ -4543,6 +4563,12 @@ ISpyApplication::filterEvent(void)
     m_counter = 0;
   
   m_filterProgressDialog->hide();
+  if(restorePlay)
+    m_animationTimer->start();
+  if(restoreIdle)
+    m_idleTimer->start();
+  if(restoreAnim)
+    m_timer->start();
 }
 
 /** Prompt for a new file to be openend. */
