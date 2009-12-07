@@ -572,7 +572,7 @@ public:
     FIXME: Notice that deltaY is bound to DPI values although I have
            a factor 10 difference.
   */
-  OverlayCreatorHelper(SoGroup *group, ISpyApplication::Style *style)
+  OverlayCreatorHelper(SoGroup *group, Style *style)
   :m_group(group),
    m_style(style),
    m_overlay(new SoAnnotation),
@@ -684,7 +684,7 @@ public:
   }
 private:
   SoGroup                       *m_group;
-  ISpyApplication::Style        *m_style;
+  Style                         *m_style;
   SoAnnotation                  *m_overlay;
   SoOrthographicCamera          *m_camera;
   SoTranslation                 *m_textStartTranslation;
@@ -697,7 +697,7 @@ private:
 
 static void
 make3DEvent(IgCollection **collections, IgAssociationSet **, 
-            SoSeparator *sep, ISpyApplication::Style * style)
+            SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
   IgCollectionItem      e = *c->begin();
@@ -772,7 +772,7 @@ make3DEvent(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DL1Trigger(IgCollection **collections, IgAssociationSet **, 
-                SoSeparator *sep, ISpyApplication::Style * style)
+                SoSeparator *sep, Style * style)
 {
   IgCollection           *c = collections[0];
 
@@ -797,7 +797,7 @@ make3DL1Trigger(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DHLTrigger(IgCollection **collections, IgAssociationSet **, 
-                 SoSeparator *sep, ISpyApplication::Style * style)
+                 SoSeparator *sep, Style * style)
 {
   IgCollection           *c = collections[0];
 
@@ -822,7 +822,7 @@ make3DHLTrigger(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DTechTrigger(IgCollection **collections, IgAssociationSet **,
-                 SoSeparator *sep, ISpyApplication::Style * style )
+                 SoSeparator *sep, Style * style )
 {
   char                   buf[128];
   IgCollection           *c = collections[0];
@@ -841,7 +841,7 @@ make3DTechTrigger(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DTriggerObject(IgCollection **collections, IgAssociationSet **,
-                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                    SoSeparator *sep, Style * /*style*/)
 {
   IgCollection         *c = collections[0];
   IgProperty           ID = c->getProperty("VID");
@@ -915,7 +915,7 @@ make3DTriggerObject(IgCollection **collections, IgAssociationSet **,
 
 static void
 makeAnyPointSetShapes(IgCollection **collections, IgAssociationSet **,
-                      SoSeparator *sep, ISpyApplication::Style *style,
+                      SoSeparator *sep, Style *style,
                       Projection projection)
 {
   IgCollection          *c = collections[0];
@@ -937,14 +937,14 @@ makeAnyPointSetShapes(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DPointSetShapes(IgCollection **collections, IgAssociationSet **assocs,
-                     SoSeparator *sep, ISpyApplication::Style *style)
+                     SoSeparator *sep, Style *style)
 {
   makeAnyPointSetShapes(collections, assocs, sep, style, identity);
 }
 
 static void
 makeRZPointSetShapes(IgCollection **collections, IgAssociationSet **assocs,
-                     SoSeparator *sep, ISpyApplication::Style *style)
+                     SoSeparator *sep, Style *style)
 {
   makeAnyPointSetShapes(collections, assocs, sep, style, rzProjection);
 }
@@ -952,7 +952,7 @@ makeRZPointSetShapes(IgCollection **collections, IgAssociationSet **assocs,
 
 static void
 make3DAnyBox(IgCollection **collections, IgAssociationSet **, 
-             SoSeparator *sep, ISpyApplication::Style * /* style */)
+             SoSeparator *sep, Style * /* style */)
 {
   IgCollection *c = collections[0];
 
@@ -977,7 +977,7 @@ make3DAnyBox(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DAnyLine(IgCollection **collections, IgAssociationSet **, 
-              SoSeparator *sep, ISpyApplication::Style * /*style*/)
+              SoSeparator *sep, Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   IgProperty            P1 = c->getProperty("pos_1");
@@ -1013,7 +1013,7 @@ make3DAnyLine(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DAnyPoint(IgCollection **collections, IgAssociationSet **, 
-               SoSeparator *sep, ISpyApplication::Style * /* style */)
+               SoSeparator *sep, Style * /* style */)
 {
   IgCollection          *c = collections[0];
   IgProperty            POS = c->getProperty("pos");
@@ -1039,7 +1039,7 @@ make3DAnyPoint(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DAnyDetId(IgCollection **, IgAssociationSet **, 
-               SoSeparator *, ISpyApplication::Style * /* style */)
+               SoSeparator *, Style * /* style */)
 {
 }
 
@@ -1052,7 +1052,7 @@ make3DAnyDetId(IgCollection **, IgAssociationSet **,
 //
 static void
 makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **, 
-                  SoSeparator *sep, ISpyApplication::Style *style, float layer, 
+                  SoSeparator *sep, Style *style, float layer, 
                   bool flag, bool mirror)
 {
   IgCollection *c = collections[0];
@@ -1151,28 +1151,28 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **,
 
 static void
 makeRZECalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
-                  SoSeparator *sep, ISpyApplication::Style *style)
+                  SoSeparator *sep, Style *style)
 {
   makeRZEnergyHisto(collections, assocs, sep, style, -0.5, true, false);
 }
 
 static void
 makeRZEPRecHits(IgCollection **collections, IgAssociationSet **assocs, 
-                SoSeparator *sep, ISpyApplication::Style *style)
+                SoSeparator *sep, Style *style)
 {
   makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false, true);
 }
 
 static void
 makeRZHCalRecHits(IgCollection **collections, IgAssociationSet **assocs, 
-                SoSeparator *sep, ISpyApplication::Style *style)
+                SoSeparator *sep, Style *style)
 {
   makeRZEnergyHisto(collections, assocs, sep, style, 0.0, false, false);
 }
 
 static void
 makeLegoGrid(IgCollection **, IgAssociationSet **, 
-             SoSeparator *gridSep, ISpyApplication::Style * /*style*/)
+             SoSeparator *gridSep, Style * /*style*/)
 {
   float scale  = 1.0;
 
@@ -1372,7 +1372,7 @@ phi4eta (float eta)
 
 static void
 makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **, 
-                   SoSeparator *sep, ISpyApplication::Style * style)
+                   SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
   IgDrawTowerHelper drawTowerHelper(sep);
@@ -1398,7 +1398,7 @@ makeLegoCaloTowers(IgCollection **collections, IgAssociationSet **,
 
 static void
 makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
-             SoSeparator *sep, ISpyApplication::Style *style)
+             SoSeparator *sep, Style *style)
 {
   // FIXME: this one will pick up style from the CSS once we implement
   //        the ability to specify different style in different view.
@@ -1471,7 +1471,7 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
 static void
 makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
-                    SoSeparator *sep, ISpyApplication::Style *style)
+                    SoSeparator *sep, Style *style)
 {
   IgCollection          *c = collections[0];
 
@@ -1502,7 +1502,7 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
 static void
 makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/, 
-                    SoSeparator *sep, ISpyApplication::Style * style)
+                    SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
 
@@ -1538,7 +1538,7 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
 static void 
 make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs, 
-                        SoSeparator *sep, ISpyApplication::Style *style)
+                        SoSeparator *sep, Style *style)
 {
   IgCollection        *tracks   = collections[0];
   IgCollection        *hits     = collections[1];
@@ -1599,7 +1599,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
 
 static
 void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs, 
-                  SoSeparator *sep, ISpyApplication::Style *style)
+                  SoSeparator *sep, Style *style)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *extras = collections[1];
@@ -1667,7 +1667,7 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs,
 
 static
 void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs, 
-                   SoSeparator *sep, ISpyApplication::Style *style, 
+                   SoSeparator *sep, Style *style, 
                    Projection projection)
 {
   IgCollection          *tracks = collections[0];
@@ -1771,7 +1771,7 @@ void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs,
 
 static
 void make3DTracks(IgCollection **collections, IgAssociationSet **assocs, 
-                  SoSeparator *sep, ISpyApplication::Style *style)
+                  SoSeparator *sep, Style *style)
 {
   makeAnyTracks(collections, assocs, sep, style, identity);
 }
@@ -1779,7 +1779,7 @@ void make3DTracks(IgCollection **collections, IgAssociationSet **assocs,
 
 static
 void makeRZTracks(IgCollection **collections, IgAssociationSet **assocs, 
-                  SoSeparator *sep, ISpyApplication::Style *style)
+                  SoSeparator *sep, Style *style)
 {
   makeAnyTracks(collections, assocs, sep, style, rzProjection);
 }
@@ -1787,7 +1787,7 @@ void makeRZTracks(IgCollection **collections, IgAssociationSet **assocs,
 
 static void
 make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **, 
-                      SoSeparator *sep, ISpyApplication::Style * style)
+                      SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
 
@@ -1839,7 +1839,7 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **, 
-                  SoSeparator *sep, ISpyApplication::Style *style)
+                  SoSeparator *sep, Style *style)
 {
   IgCollection          *c = collections[0];
   float maxEnergy          = style->maxEnergy;  // GeV  Not a cut -- just used to set max box size
@@ -1891,7 +1891,7 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEnergyTowers(IgCollection **collections, IgAssociationSet **, 
-                   SoSeparator *sep, ISpyApplication::Style * style)
+                   SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
 
@@ -1939,7 +1939,7 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
-                        SoSeparator *sep, ISpyApplication::Style * style)
+                        SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
 
@@ -1983,7 +1983,7 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **, 
-                               SoSeparator *sep, ISpyApplication::Style * style)
+                               SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
 
@@ -2029,7 +2029,7 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
 
 static void 
 make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
-                   SoSeparator *sep, ISpyApplication::Style *style)
+                   SoSeparator *sep, Style * /*style*/)
 {
   IgCollection       *clusters = collections[0];
   IgCollection       *fracs    = collections[1];
@@ -2085,7 +2085,7 @@ make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
 
 static void
 make3DCaloTowers(IgCollection **collections, IgAssociationSet **assocs, 
-                 SoSeparator *sep, ISpyApplication::Style *style)
+                 SoSeparator *sep, Style *style)
 {
 
   // FIXME LT: draw ECAL and HCAL parts in different colours
@@ -2174,7 +2174,7 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 
 static void
 makeAnyPhoton(IgCollection **collections, IgAssociationSet **,
-              SoSeparator *sep, ISpyApplication::Style * /*style*/,
+              SoSeparator *sep, Style * /*style*/,
               Projection projection)
 {
   IgCollection         *c = collections[0];
@@ -2242,21 +2242,21 @@ makeAnyPhoton(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DPhoton(IgCollection **collections, IgAssociationSet **assocs,
-             SoSeparator *sep, ISpyApplication::Style * style)
+             SoSeparator *sep, Style * style)
 {
   makeAnyPhoton(collections, assocs, sep, style, identity);
 }
 
 static void
 makeRZPhoton(IgCollection **collections, IgAssociationSet **assocs,
-             SoSeparator *sep, ISpyApplication::Style * style)
+             SoSeparator *sep, Style * style)
 {
   makeAnyPhoton(collections, assocs, sep, style, rzProjection);
 }
 
 static void
 make3DJetShapes(IgCollection **collections, IgAssociationSet **, 
-                SoSeparator *sep, ISpyApplication::Style * style)
+                SoSeparator *sep, Style * style)
 {
   IgCollection          *c = collections[0];
   IgProperty ET = c->getProperty("et");
@@ -2286,7 +2286,7 @@ make3DJetShapes(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DMET(IgCollection **collections, IgAssociationSet **, 
-          SoSeparator *sep, ISpyApplication::Style * /* style */)
+          SoSeparator *sep, Style * /* style */)
 {
   IgCollection          *c = collections[0];
   SoVertexProperty      *vertices = new SoVertexProperty;
@@ -2364,7 +2364,7 @@ make3DMET(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DSegmentShapes(IgCollection **collections, IgAssociationSet **, 
-                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                    SoSeparator *sep, Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   SoVertexProperty      *vertices = new SoVertexProperty;
@@ -2431,7 +2431,7 @@ make3DCSCDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep
 
 static void
 make3DCSCWireDigis(IgCollection **collections, IgAssociationSet **assocs, 
-                   SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                   SoSeparator *sep, Style * /*style*/)
 {
   // FIXME: we should have something similar to the style
   //        infrastructure also for "cuts", so that the magic numbers here
@@ -2441,7 +2441,7 @@ make3DCSCWireDigis(IgCollection **collections, IgAssociationSet **assocs,
 
 static void
 make3DCSCStripDigis(IgCollection **collections, IgAssociationSet **assocs, 
-                    SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                    SoSeparator *sep, Style * /*style*/)
 {
   // FIXME: we should have something similar to the style
   //        infrastructure also for "cuts", so that the magic numbers here
@@ -2451,7 +2451,7 @@ make3DCSCStripDigis(IgCollection **collections, IgAssociationSet **assocs,
 
 static void
 make3DDTDigis(IgCollection **collections, IgAssociationSet **, 
-              SoSeparator *sep, ISpyApplication::Style * /*style*/)
+              SoSeparator *sep, Style * /*style*/)
 {
   IgCollection          *c = collections[0];
   IgProperty            POS = c->getProperty("pos");
@@ -2486,7 +2486,7 @@ make3DDTDigis(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DDTRecHits(IgCollection **collections, IgAssociationSet **, 
-                SoSeparator *sep, ISpyApplication::Style * /* style */)
+                SoSeparator *sep, Style * /* style */)
 {
   IgCollection          *c = collections[0];
   IgProperty            LPLUS_GLOBALPOS = c->getProperty("lPlusGlobalPos");
@@ -2574,7 +2574,7 @@ make3DDTRecHits(IgCollection **collections, IgAssociationSet **,
 
 static void
 make3DRPCRecHits(IgCollection **collections, IgAssociationSet **, 
-                 SoSeparator *sep, ISpyApplication::Style * /*style*/)
+                 SoSeparator *sep, Style * /*style*/)
 {
 
   IgCollection          *c = collections[0];
@@ -2631,7 +2631,7 @@ make3DRPCRecHits(IgCollection **collections, IgAssociationSet **,
 
 static void 
 make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs, 
-                  SoSeparator *sep, ISpyApplication::Style * /* style */)
+                  SoSeparator *sep, Style * /* style */)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *points = collections[1];
@@ -5397,7 +5397,7 @@ ISpyApplication::switchView(int viewIndex)
 /** Shows the drawing limits on screen */
 void
 make3DLimits(IgCollection **collections, IgAssociationSet **, 
-             SoSeparator *sep, ISpyApplication::Style * style)
+             SoSeparator *sep, Style * style)
 {
   IgCollection           *c = collections[0];
 

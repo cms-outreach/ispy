@@ -74,6 +74,8 @@ QMAKE_INFO_PLIST = Iguana/QtGUI/src/Info.plist
 
 QT += network opengl
 
+#QMAKE_CXXFLAGS_RELEASE = -O0 -ggdb
+
 unix:!mac {
 # Statically link stdc++ and libgcc.
 LIBS += -Wl,-dn -lstdc++ -Wl,-dy -static-libgcc
