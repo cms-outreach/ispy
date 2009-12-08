@@ -62,6 +62,9 @@
 	* ISpyApplication.cc: correct units for preshower rec hits graphic
 	  cuts.
 
+	* ISpyApplication.cc: Fixes the segfault happening whenever the 
+	  filename is wrong.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

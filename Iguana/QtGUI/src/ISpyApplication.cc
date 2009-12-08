@@ -3920,7 +3920,7 @@ ISpyApplication::resetStyleStack(size_t level)
   }
 
   m_styleSpecs.resize(level);
-  m_stylesMap.resize(level);
+  m_stylesMap.resize(level, ISPY_MAX_STYLES);
 }
 
 /** Slot method which opens a new .iss file, parses it, and updates the 
