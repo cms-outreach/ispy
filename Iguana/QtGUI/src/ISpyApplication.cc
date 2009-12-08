@@ -3714,6 +3714,7 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
   QObject::connect(m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
   QObject::connect(m_mainWindow, SIGNAL(nextEvent()),     this, SLOT(nextEvent()));
+  QObject::connect(this, SIGNAL(getNewEvent()), this, SLOT(nextEvent()));
   QObject::connect(m_mainWindow, SIGNAL(previousEvent()), this, SLOT(previousEvent()));
   QObject::connect(m_mainWindow, SIGNAL(rewind()),        this, SLOT(rewind()));
   QObject::connect(m_mainWindow, SIGNAL(print()),         this, SIGNAL(print()));
@@ -4703,7 +4704,7 @@ ISpyApplication::filterEvent(void)
     // When the filtering is canceled from the dialog above,
     // the flag is set to false.
     if(m_nextEvent)
-      nextEvent();
+      getNewEvent();
   }  
   else
     m_counter = 0;
@@ -5237,12 +5238,29 @@ ISpyApplication::nextEvent(void)
   m_nextEvent = true;
   if (m_online)
   {
-    delete m_storages[0];
-    showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
-    if (! m_storages[0]->empty())
-      resetCounter();
+    if (m_consumer.hasNewEvent())
+    {      
+      delete m_storages[0];
+      showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
+      
+      if (! m_storages[0]->empty())
+      {
+	++m_counter;
+	resetCounter();
+      }      
+    }    
     else
-      m_filterProgressDialog->setLabelText("Waiting for online events...");
+    {
+      if (m_counter == 0)
+      {	
+	m_filterProgressDialog->setLabelText("Waiting for online events...");
+	usleep(1000);
+      }
+      else
+	m_filterProgressDialog->setLabelText("Filtered out " + QString::number(m_counter) +
+					     " online events which do not match\n" +
+					     m_selector->fullFilterText());
+    }    
 
     updateCollections();
     filterEvent();

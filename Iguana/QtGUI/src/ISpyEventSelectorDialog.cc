@@ -64,6 +64,12 @@ ISpyEventSelectorDialog::filterText(const QString& name)
   return QString();
 }
 
+const QString
+ISpyEventSelectorDialog::fullFilterText(void)
+{
+  return m_filterText.join(")&(").append(")").prepend("(");
+}
+
 void
 ISpyEventSelectorDialog::setModel(QAbstractItemModel * sourceModel)
 {

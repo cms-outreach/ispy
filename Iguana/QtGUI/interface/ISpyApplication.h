@@ -144,6 +144,7 @@ signals:
   void                  save(void);
   void                  print(void);
   void                  resetCounter(void);
+  void			getNewEvent(void);
 
 protected:
   int                   usage(void);

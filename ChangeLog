@@ -1,3 +1,11 @@
+2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 
+	  ISpyApplication.cc, ISpyConsumerThread.cc
+	  ISpyEventSelectorDialog.cc, ISpyEventSelectorDialog.h:
+	  stay on last event in the case no events are served from
+	  online producers.
+
 2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* default-style.css, default-views.xml: support for new _V2
