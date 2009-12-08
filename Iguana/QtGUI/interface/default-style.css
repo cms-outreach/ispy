@@ -66,6 +66,7 @@ TechTrigger_V1 {
 Products_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 Errors_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 
+
 // Default geometry style.
 Tracker3D_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.95; }
 TrackerRPhi_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.95;}
@@ -107,6 +108,13 @@ TriggerObjects_V1
 }
 
 Tracks_V1
+{
+  draw-style: lines; line-width: 3;
+  diffuse-color: rgb(1.0, 0.7, 0.1);
+  marker-style: outline;
+}
+
+Tracks_V2
 {
   draw-style: lines; line-width: 3;
   diffuse-color: rgb(1.0, 0.7, 0.1);
@@ -165,6 +173,17 @@ HERecHits_V1 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scal
 HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.005;}
 HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 0.005;}
 
+/* FIXME: we should really support wildcards */
+EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.25; energy-scale: 1.0;}
+EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.8; energy-scale: 1.0;}
+ESRecHits_V2 {diffuse-color: rgb(0.3, 0.64, 0.15); min-energy: 0.001; energy-scale: 100.; }
+HBRecHits_V2 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
+HERecHits_V2 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
+HFRecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.005;}
+HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 0.005;}
+
+
+
 CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0); diffuse-color: rgb(0, 0, 0);}
 SuperCluster_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); font-size: 14;}
 
@@ -204,6 +223,10 @@ CSCRecHit2Ds_V1 {
   line-width: 3;
 }
 
+CSCRecHit2Ds_V2 {
+  diffuse-color: rgb(0.54, 0.89, 0.63);
+  line-width: 3;
+}
 
 Muons_V1 {
   draw-style: lines; 
