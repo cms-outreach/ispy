@@ -59,6 +59,9 @@
 	* index.htm, ISpyApplication.cc, ISpySplashScreen.ui: version bumped
 	  to 1.4.3.
 
+	* ISpyApplication.cc: correct units for preshower rec hits graphic
+	  cuts.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

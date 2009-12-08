@@ -4435,8 +4435,8 @@ ISpyApplication::createStats(void)
                                 "HFRecHits_V1",
                                 "HORecHits_V1"};
 
-  double energyScales[8] = {1, 1, 1, 1000, 1, 1, 1, 1};
-  double lengthScales[8] = {1, 1, 1, 0.01, 1, 1, 1, 1};
+  double energyScales[8] = {1, 1, 1, 1, 1, 1, 1, 1};
+  double lengthScales[8] = {1, 1, 1, 1, 1, 1, 1, 1};
 
   for (size_t i = 0, e = sizeof(interestingLimits) / sizeof(char *); i != e; ++i)
   {
