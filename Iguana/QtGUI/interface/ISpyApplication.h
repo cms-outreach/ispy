@@ -15,6 +15,7 @@
 
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 # include "Iguana/QtGUI/src/Style.h"
+# include "Iguana/QtGUI/src/Projectors.h"
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -147,7 +148,7 @@ private slots:
 
 private:
   typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
-                        SoSeparator *, Style *);
+                        SoSeparator *, Style *, Projectors &);
 
   struct CollectionSpec
   {
@@ -169,6 +170,7 @@ private:
     float                       scale;
     bool                        orthographic;
     bool                        rotating;
+    Projectors                  projectors;
   };
   
   struct ViewSpec
@@ -283,7 +285,8 @@ private:
                                float *pointAt,
                                float scale,
                                bool orthographic,
-                               bool rotating);
+                               bool rotating,
+                               const std::string &projection);
 
   void                  visibilityGroup(void);
 
@@ -309,6 +312,7 @@ private:
                                           enum ISPY_MARKER_SIZE size,
                                           enum ISPY_MARKER_SHAPE shape);
   void                      style(const char *rule, const char *css);
+  void                      resetStyleStack(size_t level);
   void                      parseCss(const char *css);
   bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);

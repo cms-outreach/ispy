@@ -40,6 +40,22 @@
 	  .iss specified on command line for changes and updates
 	  the display accordingly.
 
+	* ISpyApplication.h, ISpyApplication.cc, IgDrawTowerHelper.h,
+	  default-style.css, default-style.css, default-views.xml
+	  ISpyApplication.cc, IgDrawTowerHelper.cc, Projectors.h: Introduces 
+	  a new infrastructure for generic projections. This is handled
+	  by the Projector structure that is now passed to every make3D*. Such a
+	  structure includes all the possible helper functions that make3D* can use
+	  to do the projections. This is really a poor-man, unaccelerated, vertex
+	  shader infrastructure. Adding new views should be just a matter of
+	  specifying new projectors (including stuff like the tracker view!!!).
+	  Notice that besides the "project" helper function, that transforms a
+	  single point, there is also a "projectAs" one that allows to resolve
+	  discontinuities in the mapping by projecting a point using the same map that
+	  would be used to project another one. This comes very handy for RZ.
+	  Fixes RZ view for trigger objects, jets, met, muons, tracks, DT, CSC,
+	  all generic calo rec hits and clusters, simtracks.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

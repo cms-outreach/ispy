@@ -792,7 +792,7 @@
 </visibilityGroup>
 </camera>
 
-<camera position="-1, 0, 0" pointAt="0, 0, 0" scale="8.5" orthographic="true" rotating="false">
+<camera position="-1, 0, 0" pointAt="0, 0, 0" scale="8.5" orthographic="true" rotating="false" projection="RZ">
 <visibilityGroup>
 <view label="Standard R-Z View" specialised="true">
 

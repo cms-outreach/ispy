@@ -343,6 +343,10 @@ METs_V1 {
   line-width: 3;
   line-pattern: 0x0fff;
   font-size: 14.0;
+  font-family: Arial;
+  top: 0;
+  left: 0;
+  text-align: center;
 }
 
 PSimHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}
