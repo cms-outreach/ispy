@@ -56,6 +56,9 @@
 	  Fixes RZ view for trigger objects, jets, met, muons, tracks, DT, CSC,
 	  all generic calo rec hits and clusters, simtracks.
 
+	* index.htm, ISpyApplication.cc, ISpySplashScreen.ui: version bumped
+	  to 1.4.3.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 
