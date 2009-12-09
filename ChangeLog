@@ -3,6 +3,11 @@
 	* default-views.xml, ISpyApplication.cc: new experimental
 	  sliced view which shows the various slices of CMS
 	  separately.
+	
+	* ISpyApplication.cc: optimizes the make*Box by using
+	  IgProperties rather than something else.
+
+	* default-views.xml: correct zoom factor for the sliced view.
 
 2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
 

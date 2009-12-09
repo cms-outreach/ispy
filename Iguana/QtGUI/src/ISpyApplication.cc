@@ -1058,18 +1058,26 @@ make3DAnyBox(IgCollection **collections, IgAssociationSet **,
   IgCollection *c = collections[0];
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
+  IgProperty            FRONT_1 = c->getProperty("front_1");
+  IgProperty            FRONT_2 = c->getProperty("front_2");
+  IgProperty            FRONT_3 = c->getProperty("front_3");
+  IgProperty            FRONT_4 = c->getProperty("front_4");
+  IgProperty            BACK_1 = c->getProperty("back_1");
+  IgProperty            BACK_2 = c->getProperty("back_2");
+  IgProperty            BACK_3 = c->getProperty("back_3");
+  IgProperty            BACK_4 = c->getProperty("back_4");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d f1  = ci->get<IgV3d>("front_1");
-    IgV3d f2  = ci->get<IgV3d>("front_2");
-    IgV3d f3  = ci->get<IgV3d>("front_3");
-    IgV3d f4  = ci->get<IgV3d>("front_4");
+    IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+    IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+    IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+    IgV3d f4  = ci->get<IgV3d>(FRONT_4);
 
-    IgV3d b1  = ci->get<IgV3d>("back_1");
-    IgV3d b2  = ci->get<IgV3d>("back_2");
-    IgV3d b3  = ci->get<IgV3d>("back_3");
-    IgV3d b4  = ci->get<IgV3d>("back_4");
+    IgV3d b1  = ci->get<IgV3d>(BACK_1);
+    IgV3d b2  = ci->get<IgV3d>(BACK_2);
+    IgV3d b3  = ci->get<IgV3d>(BACK_3);
+    IgV3d b4  = ci->get<IgV3d>(BACK_4);
 
     drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
   }
@@ -1082,18 +1090,27 @@ makeAnyBox(IgCollection **collections, IgAssociationSet **,
   IgCollection *c = collections[0];
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
+
+  IgProperty            FRONT_1 = c->getProperty("front_1");
+  IgProperty            FRONT_2 = c->getProperty("front_2");
+  IgProperty            FRONT_3 = c->getProperty("front_3");
+  IgProperty            FRONT_4 = c->getProperty("front_4");
+  IgProperty            BACK_1 = c->getProperty("back_1");
+  IgProperty            BACK_2 = c->getProperty("back_2");
+  IgProperty            BACK_3 = c->getProperty("back_3");
+  IgProperty            BACK_4 = c->getProperty("back_4");
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d f1  = ci->get<IgV3d>("front_1");
-    IgV3d f2  = ci->get<IgV3d>("front_2");
-    IgV3d f3  = ci->get<IgV3d>("front_3");
-    IgV3d f4  = ci->get<IgV3d>("front_4");
+    IgV3d f1  = ci->get<IgV3d>(FRONT_1);
+    IgV3d f2  = ci->get<IgV3d>(FRONT_2);
+    IgV3d f3  = ci->get<IgV3d>(FRONT_3);
+    IgV3d f4  = ci->get<IgV3d>(FRONT_4);
 
-    IgV3d b1  = ci->get<IgV3d>("back_1");
-    IgV3d b2  = ci->get<IgV3d>("back_2");
-    IgV3d b3  = ci->get<IgV3d>("back_3");
-    IgV3d b4  = ci->get<IgV3d>("back_4");
+    IgV3d b1  = ci->get<IgV3d>(BACK_1);
+    IgV3d b2  = ci->get<IgV3d>(BACK_2);
+    IgV3d b3  = ci->get<IgV3d>(BACK_3);
+    IgV3d b4  = ci->get<IgV3d>(BACK_4);
 
     drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4, b1,b2,b3,b4);
   }

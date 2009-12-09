@@ -1307,7 +1307,7 @@
 </visibilityGroup>
 </camera>
 
-<camera position="0, 0, 1" pointAt="0, 0, 0" scale="3.5" orthographic="true" rotating="false" projection="muonslices">
+<camera position="0, 0, 1" pointAt="0, 0, 0" scale="50" orthographic="true" rotating="false" projection="muonslices">
 <visibilityGroup>
 <view label="Sliced View" specialised="true" autoplay="false">
 
