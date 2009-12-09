@@ -1,0 +1,128 @@
+#page_top
+{
+    height: 150px;
+}
+
+#page_top h1
+{
+    font-weight: bold;
+    padding: 65px 0 0 0;
+    height: 85px;
+	margin-left: 155px;
+    width: 699px; /* any bigger and the title jumps to the next line in IE */
+}
+
+#page_top h1 a
+{
+	color: #333;
+}
+
+/* -------------------------------------------------------------------------------- */
+/* Left column */
+
+#page_content #content_title
+{
+    margin: 0 0 10px; padding: 0;
+    text-align: left;
+}
+
+#page_content .ccolumn #mainDescription
+{
+    font-size: 16px;
+    line-height: 1.4em;
+    color: #222;
+}
+
+/* -------------------------------------------------------------------------------- */
+/* Right column */
+#page_content .rcolumn
+{
+    float: left;
+    width: 212px;
+    padding-left: 20px;
+    border-left: 1px dotted #ccc;
+}
+
+#page_content .rcolumn h3 { margin: 0; padding: 0; color: #808080; font-size: 14px; }
+#betaBadge
+{
+    float: right; position: relative; left: 75px; top: 20px;
+}
+#download
+{
+    margin-top: 0px !important;
+    width: 182px; height: 280px;
+    padding-top: 1px; 
+    padding-right: 15px;
+    padding-left:15px;
+    padding-bottom: 19px;
+    background-image: url('images/download_background_tall.png');
+    background-repeat: no-repeat;
+}
+#download img
+{
+    float: left; margin-top: 13px;
+}
+#download p
+{
+    margin-top: 20px;
+    margin-left: 43px;
+    padding: 0;
+    line-height: 1.5em;
+    border: 1px solid transparent !important; /* a work around for firefox and opera */
+    border: 0;
+}
+#page_content .rcolumn #universal { float: left; margin-right: 10px; }
+
+#purchase { font-size: 11px; }
+#buynow
+{
+    text-align: center;
+    line-height: 40px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+    background: transparent url(images/buy_background.jpg) no-repeat;
+    width: 212px;
+    height: 41px;
+}
+
+.blockbox .top {
+    background: transparent url(images/support_background_top.jpg) no-repeat bottom;
+    width: 212px; height: 33px;
+    line-height: 35px;
+    text-indent: 20px;
+    font-weight: normal;
+}
+
+.blockbox .middle {
+    border-left: 1px solid #c2c2c2;
+    border-right: 1px solid #c2c2c2;
+    margin: 0; padding: 5px 20px;
+}
+.blockbox .bottom {
+    background: transparent url(images/support_background_bottom.jpg) no-repeat;
+    width: 212px; height: 10px;
+    margin-left: 0 !important;
+    margin-left: 2px;
+}
+
+.blockbox img { vertical-align: middle; margin-right: 5px; }
+
+#awards
+{
+    text-align: center;
+}
+
+#directEmail { font-size: 11px; }
+
+ul#slide_screenshots, #slide_screenshots li
+{
+    list-style: none;
+    margin: 0; padding: 0;
+}
+
+#slide_screenshots img
+{
+
+}

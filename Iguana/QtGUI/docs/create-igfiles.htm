@@ -1,0 +1,141 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr"><head>
+<title>iSpy | A powerful and lightweight event display.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="some.css" />
+<link type="text/css" rel="stylesheet" media="all" href="ispy.css" />
+<script type="text/javascript" src="common.js"></script>
+<!--[if lt IE 7]>
+<script language="JavaScript">window.attachEvent("onload", correctPNG);</script>
+<![endif]-->
+</head>
+
+
+
+
+<body class="sidebar-right">
+
+<!-- tpl: page-default -->
+
+
+
+
+
+<!-- Start of main page ========================================== --> 
+
+
+<div id="page" class="ispy">
+
+   <!-- Start of header  ========================================== --> 
+
+   <div id="page_top">
+      <div id="logo">
+         <a href="index.htm">
+            <img src="images/lizard-icon-very-small.png" alt="iSpy Home"/> iSpy home
+         </a>
+      </div>
+      <h1>
+         <a href="index.htm">iSpy</a>
+         <small>How to make .ig files for iSpy using CMSSW </small>
+      </h1>
+      <p>
+         <div class="tm"></div><img class="tr" src="images/rounded_tr.png" alt="rounded border"/>
+      </p>                   
+   </div>
+
+   <!-- End of header ========================================== --> 
+
+   <div id="page_content">
+      <div class="ccolumn narrow">
+         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script> 
+         <script type="text/javascript" src="fancyzoom.min.js"></script>
+         <script type="text/javascript">
+            $(document).ready(function() {
+               $('#screenshots a').fancyZoom({scaleImg: true, closeOnClick: true, directory: 'images/fancyzoom'});
+            });
+         </script>
+
+   <!-- Start of main body ========================================== --> 
+   
+
+   <p></p> <!-- small vertical space -->
+
+   <p id="mainDescription">
+
+
+<h3>The following applies to CMSSW version 3_1_x or later</h3>
+
+iSpy reads "ig files" containing event and detector data.
+These are created by running standard CMSSW analyzers, 
+as follows:
+
+<p>&nbsp;</p>
+
+<h5>1) Set-up your environment:</h5>
+<p>
+<b>For csh:</b><br>
+<pre>
+setenv CMSSW_VERSION CMSSW_3_3_X
+</pre>
+<p>
+<b>For sh:</b><br> 
+<pre>
+export CMSSW_VERSION=CMSSW_3_3_X
+</pre>
+
+<h5>2) Check out sources and build:</h5>
+<pre>
+project CMSSW
+cmsrel $CMSSW_VERSION
+cmsenv
+addpkg ISpy/Analyzers V01-01-02
+scram b
+</pre>
+
+<h5>3a) Run the test analyzer to make a Monte-Carlo .ig file:</h5>
+<pre>
+cmsenv
+cmsRun ISpy/Analyzers/python/ispy_33X_cfg.py
+</pre>
+  
+<h5>3b) Run the test analyzer to make an .ig file from real data:</h5>
+<pre>
+cmsenv
+cmsRun ISpy/Analyzers/python/ispy_Collisions09_cfg.py
+</pre>
+
+<h5>3c) Use iSpy with your custom configuration file:</h5>
+
+You only need to add the iSpy path to your process:
+
+<pre>
+process.load("ISpy/Analyzers/ISpy_Producer_cff")
+process.p1 = cms.Path(process.iSpy_sequence)
+</pre>
+
+</div>
+
+<!-- End of main page ========================================== --> 
+
+         
+
+<!-- Start of right column ========================================== --> 
+              
+<div class="rcolumn"> 
+
+</div> <!-- /rcolumn -->
+
+                                
+<div class="clear">
+</div>
+
+</div> <!-- /page_content -->
+
+<div class="clear"></div>
+</div>
+
+
+<script src="/mint/?js" type="text/javascript"></script>
+</body>
+</html>

@@ -1,0 +1,196 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>iSpy | A powerful and lightweight event display.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="some.css" />
+<link type="text/css" rel="stylesheet" media="all" href="ispy.css" />
+<script type="text/javascript" src="common.js"></script>
+<!--[if lt IE 7]>
+<script language="JavaScript">window.attachEvent("onload", correctPNG);</script>
+<![endif]-->
+</head>
+
+
+
+
+<body class="sidebar-right">
+
+<!-- Start of main page ========================================== --> 
+
+<!-- tpl: page-default -->
+
+
+
+
+
+<div id="page" class="ispy">
+
+   <!-- Start of header  ========================================== --> 
+
+   <div id="page_top">
+      <div id="logo">
+         <a href="index.htm">
+            <img src="images/lizard-icon-very-small.png" alt="iSpy Home"/> iSpy home
+         </a>
+      </div>
+      <h1>
+         <a href="index.htm">iSpy</a>
+         <small>Frequently Asked Questions</small>
+      </h1>
+      <p>
+         <div class="tm"></div><img class="tr" src="images/rounded_tr.png" alt="rounded border"/>
+      </p>                   
+   </div>
+
+   <!-- End of header ========================================== --> 
+
+   <div id="page_content">
+      <div class="ccolumn narrow">
+         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script> 
+         <script type="text/javascript" src="fancyzoom.min.js"></script>
+         <script type="text/javascript">
+            $(document).ready(function() {
+               $('#screenshots a').fancyZoom({scaleImg: true, closeOnClick: true, directory: 'images/fancyzoom'});
+            });
+         </script>
+
+   <!-- Start of main body ========================================== --> 
+   
+
+   <p></p> <!-- small vertical space -->
+
+   <p id="mainDescription">
+
+      <h2>1) What is iSpy?</h2>
+
+      <b>iSpy</b> a general-purpose visualisation program that is mainly used 
+      as a CMS event display for online detector monitoring, offline reconstruction, 
+      physics analysis, and public relations.
+      <p/>
+      The <b>iSpy</b> philosphy is to deliver a user-focussed high-quality 
+      and performant interactive application that is very easy to install 
+      and use on multiple platforms. 
+
+<hr/>
+      <h2>2) How does iSpy relate to CMSSW and Iguana?</h2>
+
+      <b>iSpy</b> is independent of the CMSSW software 
+      but re-uses many aspects of the iguana code and experience. 
+      This independence solves previous issues of "heaviness" of Iguana that were caused by 
+      its integration with CMSSW -- slow to start, large memory footprint, 
+      fragility due to rapidly-changing CMSSW code, data formats, etc.
+       <p>
+      <b>iSpy</b>  will ultimately replace the older and hard-to-maintain <b>Iguana</b> software 
+      once the simpler <b>iSpy</b> has the funtionality that meets users' needs.
+      <p/>
+
+<hr/>
+      <h2>3) How do I install and run iSpy?</h2>
+
+      Just download <b>iSpy</b> from the <a href="index.htm"><b>iSpy</b> home page</a> 
+      and double-click the icon to start (on Linux type "chmod +x ispy" then "./ispy").
+      There is no need to install any other software because 
+      <b>iSpy</b> is a fully-bound executable.
+      <p/>
+      In less than a minute you can be viewing real or 
+      simulated CMS events, served from the Web.
+
+<hr/>
+      <h2>4) How does iSpy get access to CMS data?</h2>
+
+      <b>iSpy</b> reads standalone <b>.ig files</b> containing 
+      collections of physics and other objects.
+      These are accessible to <b>iSpy</b> over the Web or from 
+      a local file system.
+      <p/>  
+      The <b>iSpy</b> team maintains a comprehensive set of CMSSW analysers 
+      that write CMS data to <b>.ig files</b>, including raw data, 
+      reconstructed objects, analysis objects and Monte-Carlo information, 
+      if available.
+      <p/>
+      <b>.ig files</b> are produced continually in the CMS online 
+      and, as needed, for selected MC samples.
+      <p/>
+
+<hr/>
+      <h2>5) Can I make my own .ig files to view with iSpy?</h2>
+
+      Yes, it is straightforward to invoke our CMSSW analysers in your own CMSSW 
+      program to create <b>.ig files</b> that can then be read by <b>iSpy</b>.
+      You can even create new analysers to write your own 
+      data to be visualised by <b>iSpy</b>. 
+      <p/>  
+      <a href="create-igfiles.htm">Show me how to create my own <b>.ig file</b></a>
+<hr/>
+
+
+
+      <h2>6) Is iSpy stable with respect to CMSSW and CMS data formats?</h2>
+
+      Yes, because it uses a very stable <b>.ig file</b> format. 
+      Multiple versions of <b>iSpy</b> can read the 
+      same data files, even if they contain different data collections produced 
+      by many different CMSSW versions. 
+
+      <h2><a name="supportedlinux">7) On which linux distribution does iSpy work on?</a></h2>
+      While we try to be as distribution agnostic as possible when building iSpy
+      on linux, only the following distributions are known to work out of the box:<br/>
+
+      <br/><i><b>For 64 bit mode</b></i>
+      <ul>
+	<li>SLC4</li>
+	<li>SLC5</li>
+	<li>Ubuntu 9.04</li>
+      </ul>
+
+      <i><b>For 32 bit mode</b></i>
+      <ul>
+        <li>SLC4</li>
+        <li>Ubuntu 8.04</li>
+        <li>Ubuntu 9.04</li>
+      </ul>
+
+      <h2>8) Can I build iSpy and change it?</h2>
+
+      Yes, you can. The <a href="build-inst.htm"> build procedure</a> is fairly
+      straightforward albeit some parts of it are still under development.
+<hr/> 
+ 
+   <p></p> <!-- small vertical space -->
+
+</div>
+
+<!-- End of main page ========================================== --> 
+
+         
+
+<!-- Start of right column ========================================== --> 
+              
+<div class="rcolumn"> 
+
+</div> <!-- /rcolumn -->
+
+                                
+<div class="clear">
+</div>
+
+</div> <!-- /page_content -->
+
+<div class="clear"></div>
+</div>
+
+
+<script src="/mint/?js" type="text/javascript"></script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-9332242-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>

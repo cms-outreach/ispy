@@ -1,3 +1,38 @@
+2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	build-inst.htm, common.js, create-igfiles.htm, fancyzoom.min.js,
+	faq.htm, favicon.ico, images/MacOSX_Universal_40px.gif,
+	images/bullet_triangle_green.png, images/developers.png,
+	images/download.png, images/download_background.png, 
+	images/download_background_tall.png,
+	images/email_support.jpg, images/email_support_letter.png,
+	images/fancyzoom/closebox.png, images/feat1.png, images/feat2.png,
+	images/feat3.png, images/feat4.png, images/feat5.png,
+	images/feat6.png,
+	images/index.htm, images/ispy-1-0.jpg, images/ispy-rphi-clip.png,
+	images/ispy-rphi-clip2.png, images/ispy-rz-clip.jpg,
+	images/ispy-rz-clip.png,
+	images/ispy-rz.jpg, images/linux.png, images/lizard-icon-rather-small.png,
+	images/lizard-icon-small.png, images/lizard-icon-very-small.png, 
+	images/lizard-icon.png, images/mac.png,
+	images/rounded_tr.png, images/support_background_bottom.jpg,
+	images/support_background_top.jpg,
+	images/supported_os.png, images/thumbs-up.png, images/twitter_32.png, 
+	images/view_faqs.png, images/windows.png,
+	index.htm, ispy-news.htm, ispy.css, make-web-area.sh, product.css,
+	release-notes.htm, release-notes.old, screenshots/ss1-old.png,
+	screenshots/ss1.png, screenshots/ss1_thumb-full.png,
+	screenshots/ss1_thumb.png, screenshots/ss2-old.png,
+	screenshots/ss2.png, screenshots/ss2_thumb-full.png, screenshots/ss2_thumb.png,
+	screenshots/ss3-old.png, screenshots/ss3.png, screenshots/ss3_thumb-full.png,
+	screenshots/ss3_thumb.png, screenshots/ss4-old.png, screenshots/ss4.png,
+	screenshots/ss4_thumb-full.png, screenshots/ss4_thumb-old.png,
+	screenshots/ss4_thumb.png, screenshots/ss4_thumb2.png,
+	screenshots/ss5-old.png, screenshots/ss5.png, screenshots/ss5_thumb.png,
+	screenshots/ss6-old.png, screenshots/ss6.png, screenshots/ss6_thumb-old.png,
+	screenshots/ss6_thumb.png, screenshots/ss6_thumb2.png, some.css, ttt:
+	documentation files added to repository.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

@@ -1,0 +1,93 @@
+@import url('./product.css');
+
+#page {
+    background-color: #edebe9;
+}
+
+#download {
+    margin-top: -60px;
+}
+
+#page_content .footnote {
+    font-size: 11px;
+    margin: 40px 0 10px; padding: 0 0 0 16px;
+}
+
+#page_bottom {
+	height: 1px;
+}
+
+div#page_content {
+    padding-bottom: 82px !important;
+}
+
+#mainss {
+	border: 1px solid #ccc;
+	margin-top: 6px;
+}
+
+#page_top h1 {
+	margin-left: 30px;
+	padding-left: 90px;
+	background: transparent url('images/lizard-icon-small.png') no-repeat left 45px;
+}
+
+#page_top h1 a {
+	color: #555;
+}
+
+#screenshots a img {
+	border: 1px solid #ccc;
+	margin-right: 25px;
+}
+
+tbody {
+	border-top: 0;
+}
+
+/* Features Table */
+
+ul#features {
+	float: left;
+	width: 555px;
+	margin: 0;
+	padding: 0;
+}
+
+#features li {
+	width: 222px;
+	height: 3.5em;
+	float:left;
+	margin: 4px 0;
+	padding: 0;
+	padding-left: 43px;
+	background-position: left 2px;
+}
+
+#features li.odd {
+	padding-right: 20px;
+}
+
+li#ispy  { background-image: url('images/bullet_triangle_green.png'); }
+
+li#feat1 { background-image: url('images/feat1.png'); }
+li#feat2 { background-image: url('images/feat2.png'); }
+li#feat3 { background-image: url('images/feat3.png'); }
+li#feat4 { background-image: url('images/feat4.png'); }
+li#feat5 { background-image: url('images/feat5.png'); }
+li#feat6 { background-image: url('images/feat6.png'); }
+li#feat7 { background-image: url('images/feat7.png'); }
+li#feat8 { background-image: url('images/feat8.png'); }
+li#feat9 { background-image: url('images/feat9.png'); }
+li#feat10 { background-image: url('images/feat10.png'); }
+
+li#os1 { background-image: url('images/linux.png'); }
+li#os2 { background-image: url('images/mac.png'); }
+li#os3 { background-image: url('images/windows.png'); }
+
+
+
+/* Screenshots (Hide from being displayed initially) */
+#screenshots div {
+	display: none;
+}
