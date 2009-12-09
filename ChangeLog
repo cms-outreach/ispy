@@ -1,3 +1,7 @@
+2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-views.xml, default-style.css: adds JETMET (PAT).
+
 2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* build-inst.htm, common.js, create-igfiles.htm, fancyzoom.min.js,
@@ -72,8 +76,6 @@
 	  as requested.
 
 	* default-style.css: fixes color for CaloClusters_V1.
-
-	* default-views.xml: adds JETMET (PAT).
 
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
