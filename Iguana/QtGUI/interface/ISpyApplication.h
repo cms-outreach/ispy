@@ -180,6 +180,7 @@ private:
     size_t                      startCollIndex;
     size_t                      endCollIndex;
     bool                        specialized;
+    bool                        autoplay;
   };
 
   struct Camera
@@ -279,7 +280,8 @@ private:
                                    Make3D make3D,
                                    Qt::CheckState visibility);
   void                  view(const char *name,
-                             bool specialized);
+                             bool specialized,
+                             bool autoplay);
 
   void                  camera(float *pos,
                                float *pointAt,

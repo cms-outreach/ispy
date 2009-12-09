@@ -1187,7 +1187,7 @@
 
 <camera position="7.2, 4.5, 2.5" pointAt="0, 0, 0" scale="6.5" orthographic="true" rotating="true">
 <visibilityGroup>
-<view label="Standard LEGO View" specialised="true">
+<view label="Standard LEGO View" specialised="true" autoplay="false">
 
   <collection label="Provenance/Event information"
               spec="Event_V1:time:run:event:ls:orbit:bx"

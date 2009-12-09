@@ -65,6 +65,12 @@
 	* ISpyApplication.cc: Fixes the segfault happening whenever the 
 	  filename is wrong.
 
+	* ISpyApplication.cc, default-views.xml, ISpyApplication.h:
+	  Configurable autoplay via iml. Adds an "autoplay" property to the 
+	  view item in the iml so that we can select which views get shown 
+	  in autoplay mode. Lego is actually turned off in autoplay,
+	  as requested.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

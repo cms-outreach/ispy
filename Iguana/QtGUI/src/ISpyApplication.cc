@@ -2799,12 +2799,14 @@ ISpyApplication::parseViewsDefinition(QByteArray &data)
       {
         QString label = "Unnamed view";
         bool specialised = true;
+        bool autoplay = true;
         
         if (attr.hasAttribute("label"))
           label = attr.value("label").toString();
         parseBooleanAttribute(specialised, attr, "specialised");
+        parseBooleanAttribute(autoplay, attr, "autoplay");
         
-        view(label.toAscii(), specialised);
+        view(label.toAscii(), specialised, autoplay);
       }
       else if (xml.name() == "camera")
       {
@@ -3220,9 +3222,14 @@ ISpyApplication::doUpdateFilterListModel(const Collection &collection)
     
     if true the view will not show in "Other" the collections that do
     not match any CollectionSpec.
+
+    @autoplay
+
+    true if the view has to be included among the ones that get shown in
+    autoplay mode.
 */
 void
-ISpyApplication::view(const char *prettyName, bool specialized)
+ISpyApplication::view(const char *prettyName, bool specialized, bool autoplay)
 {
   m_viewSpecs.resize(m_viewSpecs.size() + 1);
   ViewSpec &view = m_viewSpecs.back();
@@ -3231,6 +3238,7 @@ ISpyApplication::view(const char *prettyName, bool specialized)
   view.specialized = specialized;
   view.cameraIndex = m_cameraSpecs.size() - 1;
   view.startCollIndex = view.endCollIndex = m_specs.size();
+  view.autoplay = autoplay;
 }
 
 /** Defines a camera to be used by all the subsequent views, defined via the
@@ -5370,13 +5378,36 @@ ISpyApplication::autoEvents(void)
   }
 }
 
-/** Poor mans animation: auto-switching between the views */
+/** Poor mans animation: auto-switching between the views.
+
+    Skip views that do not have "autoplay" flag set.
+
+    In the case no views have the autoplay flag set, simply stick with the 
+    current one.
+*/
 void
 ISpyApplication::animateViews(void) 
 {
+  // Check if any view in autoplay mode. Simply exit in case none is found.
+  bool anyOn = false;
+  for (size_t i = 0, e = m_views.size(); i != e; ++i)
+    anyOn |= m_views[i].spec->autoplay;
+  if (!anyOn)
+    return;
+
+  // Rotate views that have the autoplay flag set.
   int next = (m_currentViewIndex + 1) % m_mainWindow->viewSelector->count();
-  m_mainWindow->viewSelector->setCurrentIndex (next);
-  switchView(next);
+
+  if (m_views[next].spec->autoplay)
+  {
+    m_mainWindow->viewSelector->setCurrentIndex (next);
+    switchView(next);
+  }
+  else
+  {
+    m_currentViewIndex = next;
+    animateViews();
+  }
 }
 
 /** Go to the next event. */
