@@ -71,6 +71,8 @@
 	  in autoplay mode. Lego is actually turned off in autoplay,
 	  as requested.
 
+	* default-style.css: fixes color for CaloClusters_V1.
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

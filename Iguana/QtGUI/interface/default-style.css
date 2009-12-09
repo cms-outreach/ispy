@@ -184,7 +184,7 @@ HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 
 
 
 
-CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0); diffuse-color: rgb(0, 0, 0);}
+CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0); }
 SuperCluster_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); font-size: 14;}
 
 DTDigis_V1 {
