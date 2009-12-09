@@ -3021,7 +3021,7 @@ ISpyApplication::ISpyApplication(void)
   // resizing such a vector.
   style("*", "");
   style("Background","diffuse-color: rbg(1.,0,0);");
-  bool ok = parseCssFile(":/css/default-style.css");
+  bool ok = parseCssFile(":/css/default-style.iss");
   m_defaultStyleLevel = m_styleSpecs.size();
   ASSERT(ok && "Default style not compiled as resource.");
   
@@ -4102,7 +4102,7 @@ ISpyApplication::doRun(void)
   }
   else
   {
-      bool ok = parseViewsDefinitionFile(":/views/default-views.xml");
+      bool ok = parseViewsDefinitionFile(":/views/default-views.iml");
       ASSERT(ok && "Default views are broken!!!");
       qDebug() << "Reading default views.";
   }

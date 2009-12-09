@@ -1,9 +1,9 @@
 <RCC>
   <qresource prefix="css">
-    <file>default-style.css</file>
+    <file>default-style.iss</file>
   </qresource>
   <qresource prefix="views">
-    <file>default-views.xml</file>
+    <file>default-views.iml</file>
   </qresource>
   <qresource prefix="images">
     <file>CMS-Color.png</file>

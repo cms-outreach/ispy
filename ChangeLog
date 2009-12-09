@@ -12,6 +12,10 @@
 	* IgDrawTowerHelper.cc: normalise rotation axis used by the
 	  addRotatedBox method.
 
+	* default-views.iml, default-style.iss, default-views.xml,
+	  default-style.css: .css files renamed .iss, .xml ones renamed
+	  .iml.
+
 2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* default-views.xml, default-style.css: adds JETMET (PAT).
