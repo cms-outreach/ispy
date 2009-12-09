@@ -187,6 +187,62 @@ identityThetaPhi(IgV3d &v)
   return SbVec3f(v.x(), v.y(), v.z());
 }
 
+/** Custom projection for sliced views
+  */
+
+/** Helper structure to keep track of slices.
+*/
+struct ZSlice
+{
+  ZSlice(double dZMin, double dZMax, double dX, double dY)
+  :zMin(dZMin), zMax(dZMax), x(dX), y(dY)
+  {
+  }
+  
+  double zMin, zMax, x, y;
+};
+ZSlice slices[9] = { ZSlice(-20.96, -10.83, 20 * -4, 0),
+                     ZSlice(-10.83, -6.61,  20 * -3, 0),
+                     ZSlice(-6.61 , -3.954, 20 * -2, 0),
+                     ZSlice(-3.954, -1.268, 20 * -1, 0),
+                     ZSlice(-1.268,  1.268, 20 *  0, 0),
+                     ZSlice( 1.268,  3.954, 20 *  1, 0),
+                     ZSlice( 3.954,  6.61,  20 *  2, 0), 
+                     ZSlice( 6.61,   10.83, 20 *  3, 0),
+                     ZSlice( 10.83,  20.96, 20 *  4, 0)};
+
+static SbVec3f
+projectMuonSliced(IgV3d &v)
+{
+  for (size_t i = 0; i < 9; i++)
+  {
+    ZSlice &slice = slices[i];
+    if (v.z() > slice.zMin && v.z() < slice.zMax)
+      return SbVec3f(slice.x + v.x(), slice.y + v.y(), v.z());
+  }
+  // Clip whatever is outside the slices.
+  return SbVec3f(v.x(), v.y(), 10000);
+}
+
+static SbVec3f
+projectMuonSlicedAs(IgV3d &v, IgV3d &s)
+{
+  for (size_t i = 0; i < 9; i++)
+  {
+    ZSlice &slice = slices[i];
+    if (s.z() > slice.zMin && s.z() < slice.zMax)
+      return SbVec3f(slice.x + v.x(), slice.y + v.y(), v.z());
+  }
+  // Clip whatever is outside the slices.
+  return SbVec3f(v.x(), v.y(), 10000);
+}
+
+static SbVec3f
+projectMuonThetaPhi(IgV3d &v)
+{
+  return SbVec3f(v.x(), v.y(), v.z());
+}
+
 /** Helper method to initialize our nodes.
 */
 static void initShapes(void)
@@ -1018,6 +1074,31 @@ make3DAnyBox(IgCollection **collections, IgAssociationSet **,
     drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
   }
 }
+
+static void
+makeAnyBox(IgCollection **collections, IgAssociationSet **,
+           SoSeparator *sep, Style * /* style */, Projectors &projectors)
+{
+  IgCollection *c = collections[0];
+
+  IgDrawTowerHelper drawTowerHelper(sep, projectors);
+  
+  for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  {
+    IgV3d f1  = ci->get<IgV3d>("front_1");
+    IgV3d f2  = ci->get<IgV3d>("front_2");
+    IgV3d f3  = ci->get<IgV3d>("front_3");
+    IgV3d f4  = ci->get<IgV3d>("front_4");
+
+    IgV3d b1  = ci->get<IgV3d>("back_1");
+    IgV3d b2  = ci->get<IgV3d>("back_2");
+    IgV3d b3  = ci->get<IgV3d>("back_3");
+    IgV3d b4  = ci->get<IgV3d>("back_4");
+
+    drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4, b1,b2,b3,b4);
+  }
+}
+
 
 
 static void
@@ -2415,8 +2496,9 @@ makeAnySegmentShapes(IgCollection **collections, IgAssociationSet **,
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    points.push_back(projectors.project(ci->get<IgV3d>(POS_1)));
-    points.push_back(projectors.project(ci->get<IgV3d>(POS_2)));
+    IgV3d p2 = ci->get<IgV3d>(POS_2);
+    points.push_back(projectors.projectAs(ci->get<IgV3d>(POS_1), p2));
+    points.push_back(projectors.project(p2));
     lineIndices.push_back(i);
     lineIndices.push_back(i + 1);
     lineIndices.push_back(SO_END_LINE_INDEX);
@@ -2615,7 +2697,7 @@ make3DRPCRecHits(IgCollection **collections, IgAssociationSet **,
   sep->addChild(lineSet);
 }
 
-static void 
+static void
 make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs, 
                   SoSeparator *sep, Style * /* style */, 
                   Projectors &projectors)
@@ -2630,13 +2712,29 @@ make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs,
     IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
 
     int n = 0;
+    
+    // Determine the sign of the last tracking rechit and always project the
+    // track so that the same map is used for projection.
+    //
+    // This is needed to get nice looking tracks when they cross a 
+    // discontinuity like in the case of RZ. Does not really affect anything
+    // in other views.
+    //
+    // FIXME: we should really fix the IgCollection so that an IgAssociatedSet
+    //        can be used here.
+    size_t lastExtra;
+    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+      if (ai->first().objectId() == ci->currentRow())
+        lastExtra = ai->second().objectId();
+    IgCollectionIterator signPos(points, lastExtra);
+    IgV3d lastOutPos = signPos->get<IgV3d>(POS);
 
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
     {
       if (ai->first().objectId() == ci->currentRow())
       {
         IgCollectionItem hm(points, ai->second().objectId());
-        SbVec3f pos = projectors.project(hm.get<IgV3d>(POS));
+        SbVec3f pos = projectors.projectAs(hm.get<IgV3d>(POS), lastOutPos);
         track->controlPoints.set1Value(n, pos);
         track->markerPoints.set1Value(n, pos);
         n++;
@@ -3303,6 +3401,13 @@ ISpyApplication::camera(float *position,
     camera.projectors.projectThetaPhi = prejectRZThetaPhi;
     camera.projectors.projectAs = projectRZAs;
     camera.projectors.projectAsWithOffset = projectRZAsWithOffset;
+  }
+  else if (projection == "muonslices")
+  {
+    camera.projectors.project = projectMuonSliced;
+    camera.projectors.projectThetaPhi = projectMuonSliced;
+    camera.projectors.projectAs = projectMuonSlicedAs;
+    camera.projectors.projectAsWithOffset = projectMuonSlicedAs;    
   }
 }
 
@@ -5623,6 +5728,7 @@ ISpyApplication::registerDrawFunctions(void)
 {
   ASSERT(m_drawFunctions.empty());
   m_drawFunctions.insert(std::make_pair("make3DAnyBox", make3DAnyBox));
+  m_drawFunctions.insert(std::make_pair("makeAnyBox", makeAnyBox));
   m_drawFunctions.insert(std::make_pair("make3DAnyDetId", make3DAnyDetId));
   m_drawFunctions.insert(std::make_pair("make3DAnyLine", make3DAnyLine));
   m_drawFunctions.insert(std::make_pair("make3DAnyPoint", make3DAnyPoint));
@@ -5642,8 +5748,10 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DMET", makeAnyMET));
   m_drawFunctions.insert(std::make_pair("make3DPhoton", makeAnyPhoton));
   m_drawFunctions.insert(std::make_pair("makeRZPhoton", makeAnyPhoton));
+  m_drawFunctions.insert(std::make_pair("makeAnyPhoton", makeAnyPhoton));
   m_drawFunctions.insert(std::make_pair("make3DPointSetShapes", makeAnyPointSetShapes));
   m_drawFunctions.insert(std::make_pair("makeRZPointSetShapes", makeAnyPointSetShapes));
+  m_drawFunctions.insert(std::make_pair("makeAnyPointSetShapes", makeAnyPointSetShapes));
   m_drawFunctions.insert(std::make_pair("make3DPreshowerTowers", make3DPreshowerTowers));
   m_drawFunctions.insert(std::make_pair("make3DRPCRecHits", make3DRPCRecHits));
   m_drawFunctions.insert(std::make_pair("make3DSegmentShapes", makeAnySegmentShapes));
@@ -5652,6 +5760,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("make3DTrackingParticles", make3DTrackingParticles));
   m_drawFunctions.insert(std::make_pair("make3DTracks", makeAnyTracks));
   m_drawFunctions.insert(std::make_pair("makeRZTracks", makeAnyTracks));
+  m_drawFunctions.insert(std::make_pair("makeAnyTracks", makeAnyTracks));
   m_drawFunctions.insert(std::make_pair("make3DTracksNoVertex", make3DTracksNoVertex));
   m_drawFunctions.insert(std::make_pair("make3DTriggerObject", makeAnyTriggerObject));
   m_drawFunctions.insert(std::make_pair("makeLegoCaloTowers", makeLegoCaloTowers));

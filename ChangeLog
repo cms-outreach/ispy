@@ -1,3 +1,9 @@
+2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* default-views.xml, ISpyApplication.cc: new experimental
+	  sliced view which shows the various slices of CMS
+	  separately.
+
 2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* default-views.xml, default-style.css: adds JETMET (PAT).
