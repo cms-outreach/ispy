@@ -337,6 +337,12 @@ Jets_V1 {
   marker-shape: cross;
 }
 
+PATJets_V1 {
+  transparency: 0.6; 
+  diffuse-color: rgb(1.0, 1.0, 1.0);
+  marker-shape: cross;
+}
+
 METs_V1 { 
   diffuse-color: rgb(1.0, 1.0, 0.5); 
   draw-style: lines;
@@ -347,6 +353,14 @@ METs_V1 {
   top: 0;
   left: 0;
   text-align: center;
+}
+
+PATMETs_V1 { 
+  diffuse-color: rgb(1.0, 1.0, 0.5); 
+  draw-style: lines;
+  line-width: 3;
+  line-pattern: 0x0fff;
+  font-size: 14.0;
 }
 
 PSimHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}

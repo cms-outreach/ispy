@@ -73,6 +73,8 @@
 
 	* default-style.css: fixes color for CaloClusters_V1.
 
+	* default-views.xml: adds JETMET (PAT).
+
 2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
 
 	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 

@@ -374,10 +374,21 @@
               draw="make3DJetShapes"
               visibility="none"/>
 
-  <collection label="Physics Objects/Missing Et"
+  <collection label="Physics Objects/Missing Et (Reco)"
               spec="METs_V1:pt:px:py:phi"
               draw="make3DMET"
               visibility="none"/>
+
+  <collection label="Physics Objects/Jets (PAT)"
+              spec="PATJets_V1:et:theta:phi"
+              draw="make3DJetShapes"
+              visibility="none"/>
+  
+  <collection label="Physics Objects/Missing Et (PAT)"
+              spec="PATMETs_V1:pt:px:py:phi"
+              draw="make3DMET"
+       visibility="none"/>
+
 
 <!-- ..................................................................................... -->
 
@@ -773,10 +784,21 @@
               draw="make3DJetShapes"
               visibility="none"/>
 
-  <collection label="Physics Objects/Missing Et"
+  <collection label="Physics Objects/Missing Et (Reco)"
               spec="METs_V1:pt:px:py:phi"
               draw="make3DMET"
               visibility="none"/>
+              
+  <collection label="Physics Objects/Jets (PAT)"
+              spec="PATJets_V1:et:theta:phi"
+              draw="make3DJetShapes"
+              visibility="none"/>
+  
+  <collection label="Physics Objects/Missing Et (PAT)"
+              spec="PATMETs_V1:pt:px:py:phi"
+              draw="make3DMET"
+       visibility="none"/>
+  
 
   <collection label="Monte-Carlo/Sim. tracks with hits"
               spec="TrackingParticles_V1"
@@ -1162,10 +1184,21 @@
               draw="make3DJetShapes"
               visibility="none"/>
 
-  <collection label="Physics Objects/Missing Et"
+  <collection label="Physics Objects/Missing Et (Reco)"
               spec="METs_V1:pt:px:py:phi"
               draw="make3DMET"
               visibility="none"/>
+
+  <collection label="Physics Objects/Jets (PAT)"
+              spec="PATJets_V1:et:theta:phi"
+              draw="make3DJetShapes"
+              visibility="none"/>
+  
+  <collection label="Physics Objects/Missing Et (PAT)"
+              spec="PATMETs_V1:pt:px:py:phi"
+              draw="make3DMET"
+       visibility="none"/>
+
 
 <!--  ..................................................................................... -->
 
