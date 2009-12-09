@@ -9,6 +9,9 @@
 
 	* default-views.xml: correct zoom factor for the sliced view.
 
+	* IgDrawTowerHelper.cc: normalise rotation axis used by the
+	  addRotatedBox method.
+
 2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* default-views.xml, default-style.css: adds JETMET (PAT).

@@ -638,8 +638,10 @@ IgDrawTowerHelper::addRotatedBox(IgV3d &pos, IgV3d &axis, double angle,
 
   SbVec3f tmpVertices[8];
   SbMatrix matrix;
+  SbVec3f a(axis.x(), axis.y(), axis.z());
+  a.normalize();
   matrix.setTransform(SbVec3f(pos.x(), pos.y(), pos.z()),
-                      SbRotation(SbVec3f(axis.x(), axis.y(), axis.z()), angle),
+                      SbRotation(a, angle),
                       SbVec3f(1,1,1));
 
   for (int i = 0; i < 8; ++i)
