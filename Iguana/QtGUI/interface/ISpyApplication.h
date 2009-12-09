@@ -439,6 +439,8 @@ private:
   ISpyConsumerThread    m_consumer;
   
   bool                  m_online;
+  std::string 		m_host;
+  int			m_port;
   bool                  m_autoEvents;
   bool                  m_exiting;
   QTimer                *m_animationTimer;

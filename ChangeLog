@@ -6,6 +6,9 @@
 	  stay on last event in the case no events are served from
 	  online producers.
 
+	* ISpyApplication.h, ISpyApplication.cc: ig file name
+	  (or online information) in title bar.
+
 2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* default-style.css, default-views.xml: support for new _V2

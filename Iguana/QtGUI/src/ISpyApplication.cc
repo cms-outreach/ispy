@@ -2868,6 +2868,8 @@ ISpyApplication::ISpyApplication(void)
     m_treeWidget(0),
     m_splash(0),
     m_online (false),
+    m_host("localhost"),
+    m_port(9000),
     m_autoEvents(false),
     m_exiting(false),
     m_animationTimer(new QTimer(this)),
@@ -3641,8 +3643,10 @@ ISpyApplication::onlineConfig(const char* server)
     host = opts.at(0).toStdString();
   if (opts.size() == 2)
     port = opts.at(1).toInt ();
-  
+  m_host = host;
+  m_port = port;
   m_consumer.listenTo(false, host, port);
+
   ASSERT (m_storages[0]);
   m_consumer.nextEvent(m_storages[0]);
 }
@@ -3707,7 +3711,13 @@ ISpyApplication::setupMainWindow(void)
 
   m_filterProgressDialog = new QProgressDialog(m_mainWindow);
   if(m_online)
+  {    
     m_filterProgressDialog->setMaximum(0);
+    m_mainWindow->setWindowTitle(QString("IGUANA iSpy - ONLINE %1:%2")
+				 .arg(QString::fromStdString(m_host))
+				 .arg(m_port));
+  }
+  
   m_filterProgressDialog->setModal(true);
   QObject::connect(m_filterProgressDialog, SIGNAL(canceled()), this, SLOT(stopFiltering()));
 
@@ -4830,7 +4840,9 @@ ISpyApplication::simpleOpen(const QString &fileName)
     readData(m_storages[1], file, geometry);
     update = true;
   }
-
+  else
+      m_mainWindow->setWindowTitle(QString("IGUANA iSpy - %1").arg(fileName));
+  
   if (! events.empty() || ! geometry)
   {
     if (m_archives[0] && m_archives[0] != deleted)
