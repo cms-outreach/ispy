@@ -1523,6 +1523,15 @@
               spec="CSCRecHit2Ds_V2:u1:u2:v1:v2:w1:w2"
               draw="make3DRPCRecHits"/>
 
+  <collection label="Muon/CSC Wire Digis"
+              spec="CSCWireDigis_V1:pos:length"
+              draw="make3DCSCWireDigis"/>
+  
+  <collection label="Muon/CSC Strip Digis"
+              spec="CSCStripDigis_V1:pos:length"
+              draw="make3DCSCStripDigis"/>
+  
+
 <!--  ..................................................................................... -->
 
   <collection label="Particle Flow/Rec. Tracks"

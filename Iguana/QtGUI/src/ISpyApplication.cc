@@ -201,20 +201,26 @@ struct ZSlice
   
   double zMin, zMax, x, y;
 };
-ZSlice slices[9] = { ZSlice(-20.96, -10.83, 20 * -4, 0),
-                     ZSlice(-10.83, -6.61,  20 * -3, 0),
-                     ZSlice(-6.61 , -3.954, 20 * -2, 0),
+ZSlice slices[15] = { ZSlice(-20.96, -10.83, 20 * -7, 0),
+                     ZSlice(-10.83, -9.750, 20 * -6, 0),
+                     ZSlice(-9.750, -8.495, 20 * -5, 0),
+                     ZSlice(-8.495, -7.240, 20 * -4, 0),
+                     ZSlice(-7.240, -6.610, 20 * -3, 0),
+                     ZSlice(-6.610, -3.954, 20 * -2, 0),
                      ZSlice(-3.954, -1.268, 20 * -1, 0),
                      ZSlice(-1.268,  1.268, 20 *  0, 0),
                      ZSlice( 1.268,  3.954, 20 *  1, 0),
-                     ZSlice( 3.954,  6.61,  20 *  2, 0), 
-                     ZSlice( 6.61,   10.83, 20 *  3, 0),
-                     ZSlice( 10.83,  20.96, 20 *  4, 0)};
+                     ZSlice( 3.954,  6.610, 20 *  2, 0), 
+                     ZSlice( 6.610,  7.240, 20 *  3, 0),
+                     ZSlice( 7.240,  8.495, 20 *  4, 0),
+                     ZSlice( 8.495,  9.750, 20 *  5, 0),
+                     ZSlice( 9.750,  10.83, 20 *  6, 0),
+                     ZSlice( 10.83,  20.96, 20 *  7, 0)};
 
 static SbVec3f
 projectMuonSliced(IgV3d &v)
 {
-  for (size_t i = 0; i < 9; i++)
+  for (size_t i = 0; i < 15; i++)
   {
     ZSlice &slice = slices[i];
     if (v.z() > slice.zMin && v.z() < slice.zMax)
@@ -227,7 +233,7 @@ projectMuonSliced(IgV3d &v)
 static SbVec3f
 projectMuonSlicedAs(IgV3d &v, IgV3d &s)
 {
-  for (size_t i = 0; i < 9; i++)
+  for (size_t i = 0; i < 15; i++)
   {
     ZSlice &slice = slices[i];
     if (s.z() > slice.zMin && s.z() < slice.zMax)
