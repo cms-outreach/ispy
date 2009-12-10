@@ -32,6 +32,12 @@
 	  object in a collection. Fixes the crash with 
 	  RelValHiggs200ChargedTaus.ig experienced by Ianna.
 
+	* docs/css-inst.htm, docs/faq.htm, docs/iml-inst.htm:
+	  more documentation fixes. 
+	
+	* docs/ispy-news.htm docs/release-notes.htm: improved
+	  release notes.
+
 2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-views.xml, ISpyApplication.cc: new experimental
