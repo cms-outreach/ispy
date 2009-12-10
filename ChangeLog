@@ -5,6 +5,10 @@
 	* css-inst.htm, faq.htm: initial documentation of ISS
 	  files.
 
+	* default-views.iml, default-style.iss, default-views.xml,
+	  default-style.css, ispy.qrc: .css files renamed .iss, .xml ones
+	  renamed .iml.
+
 2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-views.xml, ISpyApplication.cc: new experimental
