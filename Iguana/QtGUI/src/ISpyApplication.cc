@@ -86,6 +86,34 @@ const static size_t ISPY_MAX_STYLES = (size_t) -1;
 
 //<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
 
+/** Helper method to decide which point associated to an object should be 
+    the one that is used to project.
+    
+    @a currentId the id of the object to which many points are associated.
+    
+    @a assoc the associationset which associates objects of a given kind
+     to their points.
+     
+    @the points collection containing all the points.
+    
+    @the position property in @the points collection. 
+    
+    @return the point to be used as reference for projections.
+*/
+IgV3d
+decideProjectionPoint(int currentId, IgAssociationSet *assoc, 
+                      IgCollection *points, IgProperty &position)
+{
+  size_t lastExtra = (size_t) -1;
+  for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    if (ai->first().objectId() == currentId)
+      lastExtra = ai->second().objectId();
+  if (lastExtra == (size_t) -1)
+    return IgV3d(0, 0, 0);
+  IgCollectionIterator projPoint(points, lastExtra);
+  return projPoint->get<IgV3d>(position);
+}
+
 /** Helper method to do RZ projections.
     
     @a v the vector to be transformed.
@@ -227,7 +255,7 @@ projectMuonSliced(IgV3d &v)
       return SbVec3f(slice.x + v.x(), slice.y + v.y(), v.z());
   }
   // Clip whatever is outside the slices.
-  return SbVec3f(v.x(), v.y(), 10000);
+  return SbVec3f(v.x(), v.y(), -1000);
 }
 
 static SbVec3f
@@ -1717,12 +1745,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
     //
     // FIXME: we should really fix the IgCollection so that an IgAssociatedSet
     //        can be used here.
-    size_t lastExtra;
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-      if (ai->first().objectId() == ci->currentRow())
-        lastExtra = ai->second().objectId();
-    IgCollectionIterator signPos(hits, lastExtra);
-    IgV3d lastOutPos = signPos->get<IgV3d>(POS);
+    IgV3d lastOutPos = decideProjectionPoint(ci->currentRow(), assoc, hits, POS);
     
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
     {
@@ -1788,12 +1811,7 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs,
     //
     // FIXME: we should really fix the IgCollection so that an IgAssociatedSet
     //        can be used here.
-    size_t lastExtra;
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-      if (ai->first().objectId() == ci->currentRow())
-        lastExtra = ai->second().objectId();
-    IgCollectionIterator signExtra(extras, lastExtra);
-    IgV3d lastOutPos = signExtra->get<IgV3d>(POS2);
+    IgV3d lastOutPos = decideProjectionPoint(ci->currentRow(), assoc, extras, POS2);
 
     IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
 
@@ -1888,12 +1906,7 @@ void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs,
     //
     // FIXME: we should really fix the IgCollection so that an IgAssociatedSet
     //        can be used here.
-    size_t lastExtra;
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-      if (ai->first().objectId() == ci->currentRow())
-        lastExtra = ai->second().objectId();
-    IgCollectionIterator signExtra(extras, lastExtra);
-    IgV3d lastOutPos = signExtra->get<IgV3d>(POS2);
+    IgV3d lastOutPos = decideProjectionPoint(ci->currentRow(), assoc, extras, POS2);
 
     // Here is the actual track representation.
     IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
@@ -2768,12 +2781,7 @@ make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs,
     //
     // FIXME: we should really fix the IgCollection so that an IgAssociatedSet
     //        can be used here.
-    size_t lastExtra;
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-      if (ai->first().objectId() == ci->currentRow())
-        lastExtra = ai->second().objectId();
-    IgCollectionIterator signPos(points, lastExtra);
-    IgV3d lastOutPos = signPos->get<IgV3d>(POS);
+    IgV3d lastOutPos = decideProjectionPoint(ci->currentRow(), assoc, points, POS);
 
     for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
     {

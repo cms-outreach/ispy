@@ -26,6 +26,11 @@
 
 	* ISpyApplication.cc: project points correctly when using 
 	  make3DTracksNoVertex.
+	
+	* ISpyApplication.cc: add an helper method
+	  to decide which projection map to use for a given
+	  object in a collection. Fixes the crash with 
+	  RelValHiggs200ChargedTaus.ig experienced by Ianna.
 
 2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
 
