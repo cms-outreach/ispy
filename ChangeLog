@@ -21,6 +21,12 @@
 	  to the web page, new screenshots, initial description
 	  of iml files.
 
+	* default-views.iml: do not draw spline interpolation
+	  to the vertex for standalone muons and track in general.
+
+	* ISpyApplication.cc: project points correctly when using 
+	  make3DTracksNoVertex.
+
 2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-views.xml, ISpyApplication.cc: new experimental

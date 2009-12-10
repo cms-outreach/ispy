@@ -1765,7 +1765,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
 
 static
 void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs, 
-                          SoSeparator *sep, Style *style, Projectors &)
+                          SoSeparator *sep, Style *style, Projectors &projectors)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *extras = collections[1];
@@ -1779,6 +1779,22 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs,
 
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
+    // Determine the sign of the last tracking rechit and always project the
+    // track so that the same map is used for projection.
+    //
+    // This is needed to get nice looking tracks when they cross a 
+    // discontinuity like in the case of RZ. Does not really affect anything
+    // in other views.
+    //
+    // FIXME: we should really fix the IgCollection so that an IgAssociatedSet
+    //        can be used here.
+    size_t lastExtra;
+    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+      if (ai->first().objectId() == ci->currentRow())
+        lastExtra = ai->second().objectId();
+    IgCollectionIterator signExtra(extras, lastExtra);
+    IgV3d lastOutPos = signExtra->get<IgV3d>(POS2);
+
     IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
 
     SoVertexProperty    *tvertices = new SoVertexProperty;
@@ -1798,24 +1814,31 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs,
         IgCollectionItem m(extras, ai->second().objectId());
         p = ci->get<IgV3d>(POS1);
         IgV3d d = ci->get<IgV3d>(DIR1);
-        // If this is the first hit, then also add it to the vertex property
-        // for the dotted line which goes to the vertex. 
-        SbVec3f diri(d.x(), d.y(), d.z());
-        diri.normalize();
+        IgV3d dp1(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
 
-        trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
-        trackRep->tangents.set1Value(nVtx, diri);
-        tvertices->vertex.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        SbVec3f pProj = projectors.projectAs(p, lastOutPos);
+        SbVec3f dpProj = projectors.projectAs(dp1, lastOutPos);
+        SbVec3f dProj = dpProj - pProj;
+        dProj.normalize();
+
+        trackRep->points.set1Value(nVtx, pProj);
+        trackRep->tangents.set1Value(nVtx, dProj);
+        tvertices->vertex.set1Value(nVtx, pProj);
         ++nVtx;
 
         p = ci->get<IgV3d>(POS2);
         d = ci->get<IgV3d>(DIR2);
-        SbVec3f diro(d.x(), d.y(), d.z());
-        diro.normalize();
 
-        trackRep->points.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
-        trackRep->tangents.set1Value(nVtx, diro);
-        tvertices->vertex.set1Value(nVtx, SbVec3f(p.x(), p.y(), p.z()));
+        IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+
+        pProj = projectors.projectAs(p, lastOutPos);
+        dpProj = projectors.projectAs(dp2, lastOutPos);
+        dProj = dpProj - pProj;
+        dProj.normalize();
+
+        trackRep->points.set1Value(nVtx, pProj);
+        trackRep->tangents.set1Value(nVtx, dProj);
+        tvertices->vertex.set1Value(nVtx, pProj);
         ++nVtx;
       }
     }
