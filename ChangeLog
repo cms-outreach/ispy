@@ -2,6 +2,9 @@
 
 	* ISpyApplication.cc: separate various layers of CSC.
 
+	* css-inst.htm, faq.htm: initial documentation of ISS
+	  files.
+
 2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-views.xml, ISpyApplication.cc: new experimental
