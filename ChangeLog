@@ -9,6 +9,18 @@
 	  default-style.css, ispy.qrc: .css files renamed .iss, .xml ones
 	  renamed .iml.
 
+	* screenshots/ss1.png, screenshots/ss1_thumb.png, 
+	  screenshots/ss2.png, screenshots/ss2_thumb.png,
+	  screenshots/ss3.png, screenshots/ss3_thumb.png,
+	  screenshots/ss4.png, screenshots/ss4_thumb.png,
+	  screenshots/ss5.png, screenshots/ss5_thumb.png,
+	  screenshots/ss6.png, screenshots/ss6_thumb.png, 
+	  screenshots/ss7.png, screenshots/ss7_thumb.png,
+	  screenshots/ss8.png, screenshots/ss8_thumb.png,
+	  css-inst.htm, index.htm, iml-inst.htm: improvements 
+	  to the web page, new screenshots, initial description
+	  of iml files.
+
 2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* default-views.xml, ISpyApplication.cc: new experimental
