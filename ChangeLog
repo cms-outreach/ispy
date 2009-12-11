@@ -1,3 +1,10 @@
+2009-12-11  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* build-inst.htm: AFS build instructions back.
+
+	* images/ispy-rphi-clip2.png: updated with nice
+	  collision candidate image.
+
 2009-12-10  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: separate various layers of CSC.

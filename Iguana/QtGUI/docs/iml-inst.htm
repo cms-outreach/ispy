@@ -72,9 +72,9 @@
       <pre>
        &lt;?xml version="1.0" encoding='UTF-8'?>
        &lt;layout>
-       &lt;camera position="-18.1, 8.6, 14.0" pointAt="0, 0, 0" scale="10.6" orthographic="true" rotating="true" autoplay="true">
+       &lt;camera position="-18.1, 8.6, 14.0" pointAt="0, 0, 0" scale="10.6" orthographic="true" rotating="true">
          &lt;visibilityGroup>
-         &lt;view label="Standard 3D View" specialised="true">
+         &lt;view label="Standard 3D View" specialised="true" autoplay="true">
            &lt;collection label="Provenance/Event information"
                       spec="Event_V1:time:run:event:ls:orbit:bx"
                       draw="make3DEvent"/>
@@ -110,15 +110,17 @@
       <li><b>orthographic</b>: either true or false indicates whether the camera is orthographic or not.</li>
       <li><b>rotating</b>: either true or false, indicates whether the camera can rotate or not. False means
           that the camera is in panning mode.</li>
-      <li><b>autoplay</b>: either true or false, indicates that the views associated to this camera has to be
-          shown in autoplay mode.</li>
       </ul>
       
       <h2>Attributes of the <code>&lt;view/></code> tag</h2>
 
       <ul>
       <li><b>label</b>: the name of the view as shown in the view selector widget</li>
+
+      <li><b>autoplay</b>: either true or false, indicates whether the view has to be
+          shown in autoplay mode.</li>
       </ul>
+
 
       <h2>Attributes of the <code>&lt;collection/></code> tag</h2>
 
@@ -141,11 +143,41 @@
 
       <h2>List of draw operations</h2>
       <ul>
-      <li>make3DAnyBox</li>
-      <li>makeAnyBox</li>
-      <li>make3DAnyDetId</li>
-      <li>make3DAnyLine</li>
-      <li>make3DAnyPoint</li>
+      <li><strong>make3DAnyBox</strong>: draw a box in 3D, without any special
+          projection. Coordinates from the vertices are picked up from the
+          following columns of the collection:
+          <ul> 
+            <li>front_1</li>
+            <li>front_2</li>
+            <li>front_3</li>
+            <li>front_4</li>
+            <li>back_1</li>
+            <li>back_2</li>
+            <li>back_3</li>
+            <li>back_4</li>
+          </ul>
+      </li>
+      <li><strong>makeAnyBox</strong>: draw a box in 3D, using the projection
+          specified for the given view. Coordinates from the vertices are
+          picked up from the following columns of the collection:
+          <ul> 
+            <li>front_1</li>
+            <li>front_2</li>
+            <li>front_3</li>
+            <li>front_4</li>
+            <li>back_1</li>
+            <li>back_2</li>
+            <li>back_3</li>
+            <li>back_4</li>
+          </ul>          
+      </li>
+      <li><strong>make3DAnyLine</strong>: draws a generic set of lines using 
+        the coordinates found in the columns "pos1" and "pos2" of the given 
+        collection.
+      </li>
+      <li><strong>make3DAnyPoint</strong>: draws a generic set of points.
+      The pos column of the collection is used to draw.
+      </li>
       <li>make3DCSCStripDigis</li>
       <li>make3DCSCWireDigis</li>
       <li>make3DCaloClusters</li>
