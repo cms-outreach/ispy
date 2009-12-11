@@ -65,7 +65,7 @@
       <h1>Configuring iSpy view layout</h1>
 
       In order to configure which view are to be shown and what to show
-      in each view, iSpy uses a so called <em>IML</em> file.
+      in each view, iSpy uses a so-called <em>IML</em> file.
       
       Such a file is a normal xml file with the following structure:
       
@@ -104,38 +104,38 @@
       <h2>Attributes of the <code>&lt;camera/></code> tag</h2>
       
       <ul>
-      <li>position: the position of the camera.</li>
-      <li>pointAt: the point at which the camera points at</li>
-      <li>scale: the scale factor for elements shown<li>
-      <li>orthographic: either true or false indicates whether the camera is orthographic or not.</li>
-      <li>rotating: either true or false, indicates whether the camera can rotate or not. False means
+      <li><b>position</b>: the position of the camera.</li>
+      <li><b>pointAt</b>: the point at which the camera points at</li>
+      <li><b>scale</b>: the scale factor for elements shown<li>
+      <li><b>orthographic</b>: either true or false indicates whether the camera is orthographic or not.</li>
+      <li><b>rotating</b>: either true or false, indicates whether the camera can rotate or not. False means
           that the camera is in panning mode.</li>
-      <li>autoplay: either true or false, indicates that the views associated to this camera has to be
+      <li><b>autoplay</b>: either true or false, indicates that the views associated to this camera has to be
           shown in autoplay mode.</li>
       </ul>
       
       <h2>Attributes of the <code>&lt;view/></code> tag</h2>
 
       <ul>
-      <li>label: the name of the view as shown in the view selector widget</li>
+      <li><b>label</b>: the name of the view as shown in the view selector widget</li>
       </ul>
 
       <h2>Attributes of the <code>&lt;collection/></code> tag</h2>
 
       <ul>
-      <li>label: the name of the collection, as shown in the tree view. Use a (single) slash
+      <li><b>label</b>: the name of the collection, as shown in the tree view. Use a (single) slash
           to separate between the two levels</li>
-      <li>spec: a specification that has to be matched by the collection and its properties.
+      <li><b>spec</b>: a specification that has to be matched by the collection and its properties.
                 This is a column separated list, where the first item is the name
                 of the collection while the subsequent items are the properties
                 that have to be matched in order for the drawing method to apply.</li>
-      <li>association: the name of an association set which links the elements of the
+      <li><b>association</b>: the name of an association set which links the elements of the
                        collection specified by "spec" to those specified by "other".
                        this attribute is optional.</li>
-      <li>other: similar to spec, it defines a second collection whose items are
+      <li><b>other</b>: similar to spec, it defines a second collection whose items are
                  connected to the one specified in "spec" thanks to the associations
                  specified in "associations"</li>
-      <li>draw: the name of the drawing method to be executed on the collection
+      <li><b>draw</b>: the name of the drawing method to be executed on the collection
                 whe the specification found in spec applies.</li>
       </ul>
 
