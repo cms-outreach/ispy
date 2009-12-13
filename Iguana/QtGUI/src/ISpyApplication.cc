@@ -1715,10 +1715,6 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
     if ( pt < 0.5 )
       continue;
     
-    // FIXME: TM: eventually move the functionality of this class to here
-    IgSoSplineTrack *trackRep = new IgSoSplineTrack;
-      
-    int nt = 0;
     
     // Determine the sign of the last tracking rechit and always project the
     // track so that the same map is used for projection.
@@ -1731,30 +1727,36 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
     //        can be used here.
     IgV3d lastOutPos = decideProjectionPoint(ci->currentRow(), assoc, hits, POS);
     
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-    {
-      if (ai->first().objectId() == ci->currentRow())
-      {
-        IgCollectionItem m(hits, ai->second().objectId());
-        
-        IgV3d p = m->get<IgV3d>(POS);
-        IgV3d d = m->get<IgV3d>(DIR);
-        IgV3d dp(p.x() + d.x(), p.y() + p.y(), p.z() + d.z());
-        
-        SbVec3f pTrans = projectors.projectAs(p, lastOutPos);
-        SbVec3f dpTrans = projectors.projectAs(dp, lastOutPos);
-        SbVec3f dTrans = pTrans - dpTrans;
-        dTrans.normalize();
-        
-        trackRep->points.set1Value(nt, pTrans);
-        trackRep->tangents.set1Value(nt, dTrans);
-        
-        ++nt;
-        
-        vertices->vertex.set1Value(nv, pTrans);
+    if (!assocs[0])
+      return;
+    IgCollectionItem track = *ci;
+    IgAssociatedSet trackHits = assocs[0]->getAssociatedSet(track, BOTH_ASSOCIATED);
 
-        ++nv;
-      }
+    // FIXME: TM: eventually move the functionality of this class to here
+    IgSoSplineTrack *trackRep = new IgSoSplineTrack;
+    int nt = 0;
+    for (IgAssociatedSet::Iterator hi = trackHits.begin(), he = trackHits.end();
+         hi != he; hi++)
+    {
+      IgCollectionItem m = *hi;
+      
+      IgV3d p = m->get<IgV3d>(POS);
+      IgV3d d = m->get<IgV3d>(DIR);
+      IgV3d dp(p.x() + d.x(), p.y() + p.y(), p.z() + d.z());
+      
+      SbVec3f pTrans = projectors.projectAs(p, lastOutPos);
+      SbVec3f dpTrans = projectors.projectAs(dp, lastOutPos);
+      SbVec3f dTrans = pTrans - dpTrans;
+      dTrans.normalize();
+      
+      trackRep->points.set1Value(nt, pTrans);
+      trackRep->tangents.set1Value(nt, dTrans);
+      
+      ++nt;
+      
+      vertices->vertex.set1Value(nv, pTrans);
+      
+      ++nv;
     }
     
     if (nt >= 2)
@@ -1805,41 +1807,41 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs,
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get<double>(PT))
                         .arg(p.x()).arg(p.y()).arg(p.z());
-
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
-    {
-      if (ai->first().objectId() == ci->currentRow())
-      {
-        IgCollectionItem m(extras, ai->second().objectId());
-        p = ci->get<IgV3d>(POS1);
-        IgV3d d = ci->get<IgV3d>(DIR1);
-        IgV3d dp1(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
-
-        SbVec3f pProj = projectors.projectAs(p, lastOutPos);
-        SbVec3f dpProj = projectors.projectAs(dp1, lastOutPos);
-        SbVec3f dProj = dpProj - pProj;
-        dProj.normalize();
-
-        trackRep->points.set1Value(nVtx, pProj);
-        trackRep->tangents.set1Value(nVtx, dProj);
-        tvertices->vertex.set1Value(nVtx, pProj);
-        ++nVtx;
-
-        p = ci->get<IgV3d>(POS2);
-        d = ci->get<IgV3d>(DIR2);
-
-        IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
-
-        pProj = projectors.projectAs(p, lastOutPos);
-        dpProj = projectors.projectAs(dp2, lastOutPos);
-        dProj = dpProj - pProj;
-        dProj.normalize();
-
-        trackRep->points.set1Value(nVtx, pProj);
-        trackRep->tangents.set1Value(nVtx, dProj);
-        tvertices->vertex.set1Value(nVtx, pProj);
-        ++nVtx;
-      }
+    
+    IgCollectionItem track = *ci;
+    IgAssociatedSet associated = assoc->getAssociatedSet(track);
+    
+    for (IgAssociatedSet::Iterator ai = associated.begin(), ae = associated.end(); ai != ae; ai++)
+    {   
+      IgCollectionItem m = *ai;
+      p = m.get<IgV3d>(POS1);
+      IgV3d d = m.get<IgV3d>(DIR1);
+      IgV3d dp1(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      
+      SbVec3f pProj = projectors.projectAs(p, lastOutPos);
+      SbVec3f dpProj = projectors.projectAs(dp1, lastOutPos);
+      SbVec3f dProj = dpProj - pProj;
+      dProj.normalize();
+      
+      trackRep->points.set1Value(nVtx, pProj);
+      trackRep->tangents.set1Value(nVtx, dProj);
+      tvertices->vertex.set1Value(nVtx, pProj);
+      ++nVtx;
+      
+      p = m.get<IgV3d>(POS2);
+      d = m.get<IgV3d>(DIR2);
+      
+      IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      
+      pProj = projectors.projectAs(p, lastOutPos);
+      dpProj = projectors.projectAs(dp2, lastOutPos);
+      dProj = dpProj - pProj;
+      dProj.normalize();
+      
+      trackRep->points.set1Value(nVtx, pProj);
+      trackRep->tangents.set1Value(nVtx, dProj);
+      tvertices->vertex.set1Value(nVtx, pProj);
+      ++nVtx;
     }
 
     tvertices->vertex.setNum(nVtx);
@@ -1874,6 +1876,7 @@ void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs,
   
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
+    IgCollectionItem track = *ci;
     // Determine the sign of the last tracking rechit and always project the
     // track so that the same map is used for projection.
     //
@@ -1893,8 +1896,8 @@ void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs,
     SoMarkerSet         *tpoints   = new SoMarkerSet;
     int                 nVtx = 0;
     
-    IgV3d p = ci->get<IgV3d>(POS);
-    IgV3d d = ci->get<IgV3d>(P);
+    IgV3d p = track.get<IgV3d>(POS);
+    IgV3d d = track.get<IgV3d>(P);
     IgV3d dp1(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
     
     SbVec3f pProj = projectors.projectAs(p, lastOutPos);
@@ -1908,43 +1911,42 @@ void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs,
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get<double>(PT))
                         .arg(p[0]).arg(p[1]).arg(p[2]);
-
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    
+    IgAssociatedSet trackExtras = assoc->getAssociatedSet(track, BOTH_ASSOCIATED);
+    
+    for (IgAssociatedSet::Iterator ai = trackExtras.begin(), ae = trackExtras.end(); ai != ae; ai++)
     {
-      if (ai->first().objectId() == ci->currentRow())
-      {
-        IgCollectionItem m(extras, ai->second().objectId());
-        p = ci->get<IgV3d>(POS1);
-        d = ci->get<IgV3d>(DIR1);
-        IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
-        // If this is the first hit, then also add it to the vertex property
-        // for the dotted line which goes to the vertex. 
-        pProj = projectors.projectAs(p, lastOutPos);
-        dpProj = projectors.projectAs(dp2, lastOutPos);
-        dProj = dpProj - pProj;
-        dProj.normalize();
-
-        vertexRep->points.set1Value(1, pProj);
-        vertexRep->tangents.set1Value(1, dProj);
-
-        trackRep->points.set1Value(nVtx, pProj);
-        trackRep->tangents.set1Value(nVtx, dProj);
-        tvertices->vertex.set1Value(nVtx, pProj);
-        ++nVtx;
-
-        p = ci->get<IgV3d>(POS2);
-        d = ci->get<IgV3d>(DIR2);
-        IgV3d dp3(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
-        pProj = projectors.projectAs(p, lastOutPos);
-        dpProj = projectors.projectAs(dp3, lastOutPos);
-        dProj =  dpProj - pProj;
-        dProj.normalize();
-        
-        trackRep->points.set1Value(nVtx, pProj);
-        trackRep->tangents.set1Value(nVtx, dProj);
-        tvertices->vertex.set1Value(nVtx, pProj);
-        ++nVtx;
-      }
+      IgCollectionItem m = *ai;
+      p = m.get<IgV3d>(POS1);
+      d = m.get<IgV3d>(DIR1);
+      IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      // If this is the first hit, then also add it to the vertex property
+      // for the dotted line which goes to the vertex. 
+      pProj = projectors.projectAs(p, lastOutPos);
+      dpProj = projectors.projectAs(dp2, lastOutPos);
+      dProj = dpProj - pProj;
+      dProj.normalize();
+      
+      vertexRep->points.set1Value(1, pProj);
+      vertexRep->tangents.set1Value(1, dProj);
+      
+      trackRep->points.set1Value(nVtx, pProj);
+      trackRep->tangents.set1Value(nVtx, dProj);
+      tvertices->vertex.set1Value(nVtx, pProj);
+      ++nVtx;
+      
+      p = m.get<IgV3d>(POS2);
+      d = m.get<IgV3d>(DIR2);
+      IgV3d dp3(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      pProj = projectors.projectAs(p, lastOutPos);
+      dpProj = projectors.projectAs(dp3, lastOutPos);
+      dProj =  dpProj - pProj;
+      dProj.normalize();
+      
+      trackRep->points.set1Value(nVtx, pProj);
+      trackRep->tangents.set1Value(nVtx, dProj);
+      tvertices->vertex.set1Value(nVtx, pProj);
+      ++nVtx;
     }
 
     tvertices->vertex.setNum(nVtx);
@@ -2190,6 +2192,7 @@ make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
  
   for (IgCollectionIterator ci = clusters->begin(), ce = clusters->end(); ci != ce; ++ci)
   {
+    IgCollectionItem cluster = *ci;
     IgV3d pos = ci->get<IgV3d>(POS);
 
     double energy = ci->get<double>(E);
@@ -2207,20 +2210,17 @@ make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
     annSep->addChild(textPos);
     annSep->addChild(label);
     sep->addChild(annSep);
-
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    IgAssociatedSet clusterFracs = assoc->getAssociatedSet(cluster);
+    for (IgAssociatedSet::Iterator ai = clusterFracs.begin(), ae = clusterFracs.end(); ai != ae; ai++)
     {
-      if (ai->first().objectId() == ci->currentRow())
-      { 
-        IgCollectionItem rh(fracs, ai->second().objectId());
-
-        IgV3d f1  = rh.get<IgV3d>(FRONT_1);
-        IgV3d f2  = rh.get<IgV3d>(FRONT_2);
-        IgV3d f3  = rh.get<IgV3d>(FRONT_3);
-        IgV3d f4  = rh.get<IgV3d>(FRONT_4);
- 
-        drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4,f1,f2,f3,f4);
-      }
+      IgCollectionItem rh = *ai;
+      
+      IgV3d f1  = rh.get<IgV3d>(FRONT_1);
+      IgV3d f2  = rh.get<IgV3d>(FRONT_2);
+      IgV3d f3  = rh.get<IgV3d>(FRONT_3);
+      IgV3d f4  = rh.get<IgV3d>(FRONT_4);
+      
+      drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4,f1,f2,f3,f4);
     }
   }
 }
@@ -2697,6 +2697,7 @@ make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs,
   IgProperty POS(points, "pos");
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
+    IgCollectionItem t = *ci;
     IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
 
     int n = 0;
@@ -2711,17 +2712,16 @@ make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs,
     // FIXME: we should really fix the IgCollection so that an IgAssociatedSet
     //        can be used here.
     IgV3d lastOutPos = decideProjectionPoint(ci->currentRow(), assoc, points, POS);
-
-    for (IgAssociationSet::Iterator ai = assoc->begin(), ae = assoc->end(); ai != ae; ++ai)
+    
+    IgAssociatedSet trackPoints = assoc->getAssociatedSet(t);
+    
+    for (IgAssociatedSet::Iterator ai = trackPoints.begin(), ae = trackPoints.end(); ai != ae; ai++)
     {
-      if (ai->first().objectId() == ci->currentRow())
-      {
-        IgCollectionItem hm(points, ai->second().objectId());
-        SbVec3f pos = projectors.projectAs(hm.get<IgV3d>(POS), lastOutPos);
-        track->controlPoints.set1Value(n, pos);
-        track->markerPoints.set1Value(n, pos);
-        n++;
-      }
+      IgCollectionItem hm = *ai;
+      SbVec3f pos = projectors.projectAs(hm.get<IgV3d>(POS), lastOutPos);
+      track->controlPoints.set1Value(n, pos);
+      track->markerPoints.set1Value(n, pos);
+      n++;
     }
     sep->addChild(track);
   }

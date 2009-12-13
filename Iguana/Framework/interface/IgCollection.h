@@ -974,14 +974,19 @@ private:
   unsigned int m_propertyPosition;
 };
 
+class IgDataStorage;
+
+class IgAssociatedSet;
+
 class IgAssociationSet
 {
 public:
   typedef std::vector<IgAssociation> Associations;
   typedef Associations::iterator Iterator;
 
-  IgAssociationSet(const char *name)
-    :m_name(name)
+  IgAssociationSet(const char *name, IgDataStorage *storage)
+    :m_name(name),
+     m_storage(storage)
     { }
 
   void associate(const IgRef &a, const IgRef &b)
@@ -1015,12 +1020,15 @@ public:
     {
       return m_associations[pos];
     }
-private:
-  std::string m_name;
-  Associations m_associations;
-};
+  
+  IgAssociatedSet getAssociatedSet(IgCollectionItem &item,
+                                   AssociatedType which = BOTH_ASSOCIATED);
 
-class IgAssociatedSet;
+private:
+  std::string    m_name;
+  IgDataStorage *m_storage;
+  Associations   m_associations;
+};
 
 class IgDataStorage
 {
@@ -1064,14 +1072,6 @@ public:
     {
       return *getCollectionPtr(label);
     }
-
-  IgAssociatedSet getAssociatedSetPtr(IgAssociationSet *associations,
-                                      IgCollectionItem &item,
-                                      AssociatedType which = BOTH_ASSOCIATED);
-
-  IgAssociatedSet getAssociatedSet(const char *name,
-                                   IgCollectionItem &item,
-                                   AssociatedType which = BOTH_ASSOCIATED);
 
   IgCollection &getCollectionByIndex(unsigned int index)
     {
@@ -1128,7 +1128,7 @@ public:
                                                   label);
       if (n == m_associationSetNames.end())
       {
-        IgAssociationSet *associationSet = new IgAssociationSet(label);
+        IgAssociationSet *associationSet = new IgAssociationSet(label, this);
         m_associationSetNames.push_back(label);
         m_associationSets.push_back(associationSet);
         return associationSet;

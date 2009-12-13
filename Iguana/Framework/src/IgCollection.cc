@@ -58,22 +58,22 @@ std::ostream &operator<<(std::ostream &stream, IgCollection &collection)
   return stream;
 }
 
+/** @return the associated set for the @a item. I.e. all the associations
+    that have @a item as part of the association. The @a type of association
+    determines whether @a item can be on both side of the association or only
+    in one of the two.
+    
+    @a item the item to return the associated set of.
+    
+    @a type which indicates whether the associated objectes can be
+     on the right, the left, or any of the side of the association.
+*/
 IgAssociatedSet
-IgDataStorage::getAssociatedSetPtr(IgAssociationSet *associations,
-                                   IgCollectionItem &item,
+IgAssociationSet::getAssociatedSet(IgCollectionItem &item,
                                    enum AssociatedType type)
 {
-  return IgAssociatedSet(this, associations, &item, type);
+  return IgAssociatedSet(m_storage, this, &item, type);
 }
-
-IgAssociatedSet
-IgDataStorage::getAssociatedSet(const char *name,
-                                IgCollectionItem &item,
-                                enum AssociatedType type)
-{
-  return this->getAssociatedSetPtr(this->getAssociationSetPtr(name), item, type);
-}
-
 
 std::ostream &operator<<(std::ostream &stream, const IgRef &ref)
 {

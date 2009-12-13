@@ -23,6 +23,20 @@
 	* ISpyApplication.cc: Fixes issue with gcc 4.2 used on 
 	  Snow Leopard.
 
+	* IgCollection.h, IgCollection.cc, ISpyApplication.cc:
+	  Refactors the way IgAssociatedSets are created.
+	  In particular it is now possible to exploit IgAssociatedSets
+	  in the make* drawing methods.
+	  Notice this is only a temporary solution until we 
+	  actually rewrite the whole IgAssociation* logic
+	  so that it takes advantage of the ordered
+	  insertion order into the associations.
+	  However, given that this patch fixes a nasty bug
+	  when iterating over collections that have
+	  the same associated set, I simply commit the patch,
+	  pending a pretty much complete rewrite of 
+	  the whole thing.
+
 2009-12-13  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ig-specs.htm, faq.htm: documentation updated with
