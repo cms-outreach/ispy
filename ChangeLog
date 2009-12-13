@@ -1,3 +1,8 @@
+2009-12-13  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ig-specs.htm, faq.htm: documentation updated with
+	  ig file format description.
+
 2009-12-11  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* build-inst.htm: AFS build instructions back.
