@@ -1,3 +1,25 @@
+2009-12-16  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* IgCollection.h, IgCollection.cc, ISpyApplication.cc:
+	  Reworked IgProperty to reduce amount of code to write.
+	  At the moment the only way to construct an IgProperty
+	  is to use the IgCollection::getProperty(name) method.
+	  This patch introduces a new constructor for IgProperty
+
+	      IgProperty(IgCollection *collection, const char *name)
+
+	  which internally does the same thing, but reduces the
+	  amount of code to be written from
+
+	      IgProperty POS = collection->getProperty("position");
+
+	  to
+
+	      IgProperty POS(collection, "position");
+
+	  This allows to collapse a few lines and simplify the
+	  code.
+
 2009-12-13  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ig-specs.htm, faq.htm: documentation updated with

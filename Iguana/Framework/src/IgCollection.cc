@@ -157,3 +157,11 @@ std::ostream &operator<<(std::ostream &stream, IgDataStorage &storage)
   stream << "}\n}";
   return stream;
 }
+
+/** Creates the IgProperty with the column
+    handle named @a name of the collection @a collection
+  */
+IgProperty::IgProperty(IgCollection *collection, const char *name)
+:m_handle(collection->getProperty(name).handle())
+{
+}

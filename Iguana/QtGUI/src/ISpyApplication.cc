@@ -998,10 +998,8 @@ makeAnyTriggerObject(IgCollection **collections, IgAssociationSet **,
                      Projectors &projectors)
 {
   IgCollection         *c = collections[0];
-  IgProperty           ID = c->getProperty("VID");
-  IgProperty           PT = c->getProperty("pt");
-  IgProperty           ETA = c->getProperty("eta");
-  IgProperty           PHI = c->getProperty("phi");
+  IgProperty           ID(c, "VID"), PT(c, "pt");
+  IgProperty           ETA(c, "eta"), PHI(c, "phi");
 
   SoVertexProperty     *vertices = new SoVertexProperty;
   SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
@@ -1069,7 +1067,7 @@ makeAnyPointSetShapes(IgCollection **collections, IgAssociationSet **,
                       Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty            POS = c->getProperty("pos");
+  IgProperty            POS(c, "pos");
   SoMarkerSet           *points = new SoMarkerSet;
   SoVertexProperty      *vertices = new SoVertexProperty;
   int                   n = 0;
@@ -1092,14 +1090,10 @@ make3DAnyBox(IgCollection **collections, IgAssociationSet **,
   IgCollection *c = collections[0];
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
-  IgProperty            FRONT_1 = c->getProperty("front_1");
-  IgProperty            FRONT_2 = c->getProperty("front_2");
-  IgProperty            FRONT_3 = c->getProperty("front_3");
-  IgProperty            FRONT_4 = c->getProperty("front_4");
-  IgProperty            BACK_1 = c->getProperty("back_1");
-  IgProperty            BACK_2 = c->getProperty("back_2");
-  IgProperty            BACK_3 = c->getProperty("back_3");
-  IgProperty            BACK_4 = c->getProperty("back_4");
+  IgProperty        FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty        FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty        BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty        BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -1125,14 +1119,10 @@ makeAnyBox(IgCollection **collections, IgAssociationSet **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty            FRONT_1 = c->getProperty("front_1");
-  IgProperty            FRONT_2 = c->getProperty("front_2");
-  IgProperty            FRONT_3 = c->getProperty("front_3");
-  IgProperty            FRONT_4 = c->getProperty("front_4");
-  IgProperty            BACK_1 = c->getProperty("back_1");
-  IgProperty            BACK_2 = c->getProperty("back_2");
-  IgProperty            BACK_3 = c->getProperty("back_3");
-  IgProperty            BACK_4 = c->getProperty("back_4");
+  IgProperty        FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty        FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty        BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty        BACK_3(c, "back_3"), BACK_4(c, "back_4");
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -1157,8 +1147,7 @@ make3DAnyLine(IgCollection **collections, IgAssociationSet **,
               SoSeparator *sep, Style * /*style*/, Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty            P1 = c->getProperty("pos_1");
-  IgProperty            P2 = c->getProperty("pos_2");
+  IgProperty            P1(c, "pos_1"), P2(c, "pos_2");
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoIndexedLineSet      *lineSet = new SoIndexedLineSet;
   std::vector<SbVec3f>  corners;
@@ -1195,7 +1184,7 @@ make3DAnyPoint(IgCollection **collections, IgAssociationSet **,
                SoSeparator *sep, Style * /* style */, Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty            POS = c->getProperty("pos");
+  IgProperty            POS(c, "pos");
   SoPointSet            *points = new SoPointSet;
   SoVertexProperty      *vertices = new SoVertexProperty;
   int                   n = 0;
@@ -1231,15 +1220,11 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociationSet **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty ENERGY = c->getProperty("energy");
-  IgProperty FRONT_1 = c->getProperty("front_1");
-  IgProperty FRONT_2 = c->getProperty("front_2");
-  IgProperty FRONT_3 = c->getProperty("front_3");
-  IgProperty FRONT_4 = c->getProperty("front_4");
-  IgProperty BACK_1 = c->getProperty("back_1");
-  IgProperty BACK_2 = c->getProperty("back_2");
-  IgProperty BACK_3 = c->getProperty("back_3");
-  IgProperty BACK_4 = c->getProperty("back_4");
+  IgProperty ENERGY(c, "energy");
+  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   // FIXME: can compress the following code
   float maxEnergy = style->maxEnergy;
@@ -1589,9 +1574,9 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   
   IgCollection          *c = collections[0];
 
-  IgProperty ETA = c->getProperty("eta");
-  IgProperty PHI = c->getProperty("phi"); 
-  IgProperty ET = c->getProperty("et");
+  IgProperty ETA(c, "eta");
+  IgProperty PHI(c, "phi"); 
+  IgProperty ET(c, "et");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -1649,9 +1634,9 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty ENERGY = c->getProperty("energy");
-  IgProperty ETA = c->getProperty("eta");
-  IgProperty PHI = c->getProperty("phi");
+  IgProperty ENERGY(c, "energy");
+  IgProperty ETA(c, "eta");
+  IgProperty PHI(c, "phi");
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -1680,9 +1665,9 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty ENERGY = c->getProperty("energy");
-  IgProperty ETA = c->getProperty("eta");
-  IgProperty PHI = c->getProperty("phi");
+  IgProperty ENERGY(c, "energy");
+  IgProperty ETA(c, "eta");
+  IgProperty PHI(c, "phi");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -1719,9 +1704,8 @@ make3DTrackingParticles(IgCollection **collections, IgAssociationSet **assocs,
   SoMarkerSet         *points   = new SoMarkerSet;
   int                 nv        = 0;
 
-  IgProperty PT  = tracks->getProperty("pt");
-  IgProperty POS = hits->getProperty("pos");
-  IgProperty DIR = hits->getProperty("dir");
+  IgProperty PT(tracks, "pt");
+  IgProperty POS(hits, "pos"), DIR(hits, "dir");
   
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
@@ -1790,15 +1774,12 @@ static
 void make3DTracksNoVertex(IgCollection **collections, IgAssociationSet **assocs, 
                           SoSeparator *sep, Style *style, Projectors &projectors)
 {
-  IgCollection          *tracks = collections[0];
-  IgCollection          *extras = collections[1];
-  IgAssociationSet      *assoc = assocs[0];
-  IgProperty            PT  = tracks->getProperty("pt");
-  IgProperty            POS = tracks->getProperty("pos");
-  IgProperty            POS1 = extras->getProperty("pos_1");
-  IgProperty            DIR1 = extras->getProperty("dir_1");
-  IgProperty            POS2 = extras->getProperty("pos_2");
-  IgProperty            DIR2 = extras->getProperty("dir_2");
+  IgCollection        *tracks = collections[0];
+  IgCollection        *extras = collections[1];
+  IgAssociationSet    *assoc = assocs[0];
+  IgProperty          PT(tracks, "pt"), POS(tracks, "pos");
+  IgProperty          POS1(extras, "pos_1"), DIR1(extras, "dir_1");
+  IgProperty          POS2(extras, "pos_2"), DIR2(extras, "dir_2");
 
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
@@ -1877,17 +1858,13 @@ void makeAnyTracks(IgCollection **collections, IgAssociationSet **assocs,
                    SoSeparator *sep, Style *style, 
                    Projectors &projectors)
 {
-  IgCollection          *tracks = collections[0];
-  IgCollection          *extras = collections[1];
-  IgAssociationSet      *assoc = assocs[0];
-  IgProperty            PT  = tracks->getProperty("pt");
-  IgProperty            POS = tracks->getProperty("pos");
-  IgProperty            P = tracks->getProperty("dir");
-  IgProperty            POS1 = extras->getProperty("pos_1");
-  IgProperty            DIR1 = extras->getProperty("dir_1");
-  IgProperty            POS2 = extras->getProperty("pos_2");
-  IgProperty            DIR2 = extras->getProperty("dir_2");
-  SoSeparator           *vsep = new SoSeparator;
+  IgCollection      *tracks = collections[0];
+  IgCollection      *extras = collections[1];
+  IgAssociationSet  *assoc = assocs[0];
+  IgProperty        PT(tracks, "pt"), POS(tracks, "pos"), P(tracks, "dir");
+  IgProperty        POS1(extras, "pos_1"), DIR1(extras, "dir_1");
+  IgProperty        POS2(extras, "pos_2"), DIR2(extras, "dir_2");
+  SoSeparator       *vsep = new SoSeparator;
 
   SoDrawStyle *vertexLinesStyle = new SoDrawStyle;
   vertexLinesStyle->style = style->drawStyle->style;
@@ -1991,16 +1968,11 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociationSet **,
   IgCollection          *c = collections[0];
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
-  IgProperty ENERGY = c->getProperty("energy");
-  IgProperty FRONT_1 = c->getProperty("front_1");
-  IgProperty FRONT_2 = c->getProperty("front_2");
-  IgProperty FRONT_3 = c->getProperty("front_3");
-  IgProperty FRONT_4 = c->getProperty("front_4");
-
-  IgProperty BACK_1 = c->getProperty("back_1");
-  IgProperty BACK_2 = c->getProperty("back_2");
-  IgProperty BACK_3 = c->getProperty("back_3");
-  IgProperty BACK_4 = c->getProperty("back_4");
+  IgProperty ENERGY(c, "energy");
+  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2056,15 +2028,10 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociationSet **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1 = c->getProperty("front_1");
-  IgProperty FRONT_2 = c->getProperty("front_2");
-  IgProperty FRONT_3 = c->getProperty("front_3");
-  IgProperty FRONT_4 = c->getProperty("front_4");
-
-  IgProperty BACK_1 = c->getProperty("back_1");
-  IgProperty BACK_2 = c->getProperty("back_2");
-  IgProperty BACK_3 = c->getProperty("back_3");
-  IgProperty BACK_4 = c->getProperty("back_4");
+  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2096,17 +2063,11 @@ make3DEnergyTowers(IgCollection **collections, IgAssociationSet **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1 = c->getProperty("front_1");
-  IgProperty FRONT_2 = c->getProperty("front_2");
-  IgProperty FRONT_3 = c->getProperty("front_3");
-  IgProperty FRONT_4 = c->getProperty("front_4");
-
-  IgProperty BACK_1 = c->getProperty("back_1");
-  IgProperty BACK_2 = c->getProperty("back_2");
-  IgProperty BACK_3 = c->getProperty("back_3");
-  IgProperty BACK_4 = c->getProperty("back_4");
-
-  IgProperty ENERGY = c->getProperty("energy");
+  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgProperty ENERGY(c, "energy");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2144,17 +2105,11 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1 = c->getProperty("front_1");
-  IgProperty FRONT_2 = c->getProperty("front_2");
-  IgProperty FRONT_3 = c->getProperty("front_3");
-  IgProperty FRONT_4 = c->getProperty("front_4");
-
-  IgProperty BACK_1 = c->getProperty("back_1");
-  IgProperty BACK_2 = c->getProperty("back_2");
-  IgProperty BACK_3 = c->getProperty("back_3");
-  IgProperty BACK_4 = c->getProperty("back_4");
-
-  IgProperty ENERGY = c->getProperty("emEnergy");
+  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgProperty ENERGY(c, "emEnergy");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2188,18 +2143,11 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociationSet **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1 = c->getProperty("front_1");
-  IgProperty FRONT_2 = c->getProperty("front_2");
-  IgProperty FRONT_3 = c->getProperty("front_3");
-  IgProperty FRONT_4 = c->getProperty("front_4");
-
-  IgProperty BACK_1 = c->getProperty("back_1");
-  IgProperty BACK_2 = c->getProperty("back_2");
-  IgProperty BACK_3 = c->getProperty("back_3");
-  IgProperty BACK_4 = c->getProperty("back_4");
-
-  IgProperty EMENERGY = c->getProperty("emEnergy");
-  IgProperty HADENERGY = c->getProperty("hadEnergy");
+  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
+  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
+  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
+  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgProperty EMENERGY(c, "emEnergy"), HADENERGY(c, "hadEnergy");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2236,13 +2184,9 @@ make3DCaloClusters(IgCollection **collections, IgAssociationSet **assocs,
   
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty POS = clusters->getProperty("pos");
-  IgProperty E   = clusters->getProperty("energy");
-
-  IgProperty FRONT_1 = fracs->getProperty("front_1");
-  IgProperty FRONT_2 = fracs->getProperty("front_2");
-  IgProperty FRONT_3 = fracs->getProperty("front_3");
-  IgProperty FRONT_4 = fracs->getProperty("front_4");
+  IgProperty POS(clusters, "pos"), E(clusters, "energy");
+  IgProperty FRONT_1(fracs, "front_1"), FRONT_2(fracs, "front_2");
+  IgProperty FRONT_3(fracs, "front_3"), FRONT_4(fracs, "front_4");
  
   for (IgCollectionIterator ci = clusters->begin(), ce = clusters->end(); ci != ce; ++ci)
   {
@@ -2376,11 +2320,9 @@ makeAnyPhoton(IgCollection **collections, IgAssociationSet **,
               SoSeparator *sep, Style * /*style*/,
               Projectors &projectors)
 {
-  IgCollection         *c = collections[0];
-  IgProperty           E = c->getProperty("energy");
-  IgProperty           ETA = c->getProperty("eta");
-  IgProperty           PHI = c->getProperty("phi");
-  IgProperty           POS = c->getProperty("pos");
+  IgCollection  *c = collections[0];
+  IgProperty    E(c, "energy"), ETA(c, "eta");
+  IgProperty    PHI(c, "phi"), POS(c, "pos");
 
   SoVertexProperty     *vertices = new SoVertexProperty;
   SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
@@ -2444,9 +2386,7 @@ makeAnyJetShapes(IgCollection **collections, IgAssociationSet **,
                 SoSeparator *sep, Style * style, Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty ET = c->getProperty("et");
-  IgProperty THETA = c->getProperty("theta");
-  IgProperty PHI = c->getProperty("phi");
+  IgProperty ET(c, "et"), THETA(c, "theta"), PHI(c, "phi");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2486,8 +2426,7 @@ makeAnyMET(IgCollection **collections, IgAssociationSet **,
   SbVec3f direction(0.,0.,0.);
   float etMiss = -999.;
 
-  IgProperty PX = c->getProperty("px");
-  IgProperty PY = c->getProperty("py");
+  IgProperty PX(c, "px"), PY(c, "py");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2550,8 +2489,7 @@ makeAnySegmentShapes(IgCollection **collections, IgAssociationSet **,
   std::vector<SbVec3f>  points;
   int                   i = 0;
 
-  IgProperty POS_1 = c->getProperty("pos_1");
-  IgProperty POS_2 = c->getProperty("pos_2");
+  IgProperty POS_1(c, "pos_1"), POS_2(c, "pos_2");
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2578,8 +2516,7 @@ make3DCSCDigis(IgCollection **collections, IgAssociationSet **, SoSeparator *sep
                double width, double depth, double rotate, Projectors &projectors)
 {
   IgCollection  *c = collections[0];
-  IgProperty    POS = c->getProperty("pos");
-  IgProperty    LEN = c->getProperty("length");
+  IgProperty    POS(c, "pos"), LEN(c, "length");
   IgDrawTowerHelper helper(sep, projectors);
   
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
@@ -2616,13 +2553,10 @@ static void
 make3DDTDigis(IgCollection **collections, IgAssociationSet **, 
               SoSeparator *sep, Style * /*style*/, Projectors &projectors)
 {
-  IgCollection          *c = collections[0];
-  IgProperty            POS = c->getProperty("pos");
-  IgProperty            AXIS = c->getProperty("axis");
-  IgProperty            ANGLE = c->getProperty("angle");
-  IgProperty            CELL_L = c->getProperty("cellLength");
-  IgProperty            CELL_W = c->getProperty("cellWidth");
-  IgProperty            CELL_H = c->getProperty("cellHeight");
+  IgCollection   *c = collections[0];
+  IgProperty     POS(c, "pos"), AXIS(c, "axis"), ANGLE(c, "angle"),
+                 CELL_L(c, "cellLength"), CELL_W(c, "cellWidth"), 
+                 CELL_H(c, "cellHeight");
 
   IgDrawTowerHelper      helper(sep, projectors);
   
@@ -2639,19 +2573,17 @@ static void
 make3DDTRecHits(IgCollection **collections, IgAssociationSet **, 
                 SoSeparator *sep, Style * style, Projectors &projectors)
 {
-  IgCollection          *c = collections[0];
-  IgProperty            LPLUS_GLOBALPOS = c->getProperty("lPlusGlobalPos");
-  IgProperty            LMINUS_GLOBALPOS = c->getProperty("lMinusGlobalPos");
-  IgProperty            RPLUS_GLOBALPOS = c->getProperty("rPlusGlobalPos");
-  IgProperty            RMINUS_GLOBALPOS = c->getProperty("rMinusGlobalPos");
-  IgProperty            LGLOBALPOS = c->getProperty("lGlobalPos");
-  IgProperty            RGLOBALPOS = c->getProperty("rGlobalPos");
-  IgProperty            WPOS = c->getProperty("wirePos");
-  IgProperty            AXIS = c->getProperty("axis");
-  IgProperty            ANGLE = c->getProperty("angle");
-  IgProperty            CELL_L = c->getProperty("cellLength");
-  IgProperty            CELL_W = c->getProperty("cellWidth");
-  IgProperty            CELL_H = c->getProperty("cellHeight");
+  IgCollection    *c = collections[0];
+  IgProperty      LPLUS_GLOBALPOS(c, "lPlusGlobalPos");
+  IgProperty      LMINUS_GLOBALPOS(c, "lMinusGlobalPos");
+  IgProperty      RPLUS_GLOBALPOS(c, "rPlusGlobalPos");
+  IgProperty      RMINUS_GLOBALPOS(c, "rMinusGlobalPos");
+  IgProperty      LGLOBALPOS(c, "lGlobalPos");
+  IgProperty      RGLOBALPOS(c, "rGlobalPos");
+  IgProperty      WPOS(c, "wirePos"), AXIS(c, "axis"), ANGLE(c, "angle"),
+                  CELL_L(c, "cellLength"), CELL_W(c, "cellWidth"), 
+                  CELL_H(c, "cellHeight");
+
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoIndexedMarkerSet    *points = new SoIndexedMarkerSet;
   SoIndexedLineSet      *indexedLineSet = new SoIndexedLineSet;
@@ -2711,12 +2643,9 @@ make3DRPCRecHits(IgCollection **collections, IgAssociationSet **,
   std::vector<SbVec3f>  points;
   int                   i = 0;
 
-  IgProperty U1 = c->getProperty("u1");
-  IgProperty U2 = c->getProperty("u2");
-  IgProperty V1 = c->getProperty("v1");
-  IgProperty V2 = c->getProperty("v2");
-  IgProperty W1 = c->getProperty("w1");
-  IgProperty W2 = c->getProperty("w2");
+  IgProperty U1(c, "u1"), U2(c, "u2");
+  IgProperty V1(c, "v1"), V2(c, "v2");
+  IgProperty W1(c, "w1"), W2(c, "w2");
 
   for (IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
@@ -2765,7 +2694,7 @@ make3DTrackPoints(IgCollection **collections, IgAssociationSet **assocs,
   IgCollection          *points = collections[1];
   IgAssociationSet      *assoc = assocs[0];
 
-  IgProperty POS = points->getProperty("pos");
+  IgProperty POS(points, "pos");
   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
     IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;

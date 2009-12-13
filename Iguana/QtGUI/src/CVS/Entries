@@ -18,7 +18,6 @@
 /ISpySplashScreen.ui/1.15/Wed Dec  9 17:26:33 2009//
 /IgDrawTowerHelper.cc/1.12/Wed Dec  9 18:10:29 2009//
 /COPYING.LGPL/1.1/Wed Oct  7 17:22:50 2009//
-/ISpyApplication.cc/1.178/Sun Dec 13 18:27:08 2009//
 /ISpyDigitalClock.cc/1.1/Wed Oct  7 17:22:50 2009//
 /ISpyEventFilter.cc/1.3/Wed Oct  7 17:22:50 2009//
 /ISpyMainWindow.cc/1.21/Wed Oct  7 17:22:50 2009//
@@ -50,4 +49,5 @@
 /IgVariantDelegate.cc/1.2/Wed Oct  7 17:22:50 2009//
 /Info.plist/1.1/Wed Oct  7 17:22:50 2009//
 /ispy.icns/1.1/Wed Oct  7 17:22:50 2009//
+/ISpyApplication.cc/1.179/Wed Dec 16 21:24:59 2009//
 D

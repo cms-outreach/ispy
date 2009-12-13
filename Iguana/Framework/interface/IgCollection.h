@@ -475,9 +475,25 @@ private:
   ColumnType m_type;
 };
 
+
+class IgCollection;
+
+/** An IgProperty is used to index 
+    a given column inside an IgCollection.
+  
+    FIXME: is this really a good idea?
+          Why not using IgColumnHandle directly???
+  */
 class IgProperty
 {
 public:
+  IgProperty(IgCollection *collection, const char *name);
+
+  IgProperty(const IgProperty &property)
+    :m_handle(property.m_handle)
+  {
+  }
+
   IgProperty(IgColumnHandle &handle)
     : m_handle(handle)
     { }
