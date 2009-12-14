@@ -4522,14 +4522,14 @@ ISpyApplication::createStats(void)
   IgProperty MAXENERGY = limits.addProperty("maxEnergy", 0.);
   IgProperty ENERGYSCALE = limits.addProperty("energyScale", 0.);
   
-  char *interestingLimits[8] = {"EcalRecHits_V1",
-                                "EBRecHits_V1",
-                                "EERecHits_V1",
-                                "ESRecHits_V1",
-                                "HBRecHits_V1",
-                                "HERecHits_V1",
-                                "HFRecHits_V1",
-                                "HORecHits_V1"};
+  const char *interestingLimits[8] = {"EcalRecHits_V1",
+                                      "EBRecHits_V1",
+                                      "EERecHits_V1",
+                                      "ESRecHits_V1",
+                                      "HBRecHits_V1",
+                                      "HERecHits_V1",
+                                      "HFRecHits_V1",
+                                      "HORecHits_V1"};
 
   double energyScales[8] = {1, 1, 1, 1, 1, 1, 1, 1};
   double lengthScales[8] = {1, 1, 1, 1, 1, 1, 1, 1};
@@ -4537,7 +4537,7 @@ ISpyApplication::createStats(void)
   for (size_t i = 0, e = sizeof(interestingLimits) / sizeof(char *); i != e; ++i)
   {
     IgCollectionItem item = limits.create();
-    char *collectionName = interestingLimits[i];
+    const char *collectionName = interestingLimits[i];
     item[NAME] = std::string(collectionName);
     Style &style = m_styles[findStyle(collectionName)];
     item[MINENERGY] = (double) style.minEnergy * energyScales[i];

@@ -19,6 +19,9 @@
 
 	  This allows to collapse a few lines and simplify the
 	  code.
+	
+	* ISpyApplication.cc: Fixes issue with gcc 4.2 used on 
+	  Snow Leopard.
 
 2009-12-13  Giulio Eulisse <giulio.eulisse@cern.ch>
 
