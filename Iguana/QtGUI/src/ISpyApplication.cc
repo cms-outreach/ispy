@@ -1562,10 +1562,10 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   SoSeparator *top = new SoSeparator;
   sep->addChild(top);
   SoMaterial *mat = new SoMaterial;
-  mat->ambientColor = SbColor(1.0, 0.0, 0.0);
-  mat->diffuseColor = SbColor(1.0, 0.0, 0.0);
-  mat->specularColor = SbColor(1.0, 0.0, 0.0);
-  mat->emissiveColor = SbColor(1.0, 0.0, 0.0);
+  mat->ambientColor = SbColor(1.0, 1.0, 0.0);
+  mat->diffuseColor = SbColor(1.0, 1.0, 0.0);
+  mat->specularColor = SbColor(1.0, 1.0, 0.0);
+  mat->emissiveColor = SbColor(1.0, 1.0, 0.0);
   top->addChild(mat);
   SoDrawStyle *sty = new SoDrawStyle;
   sty->style = SoDrawStyle::LINES;

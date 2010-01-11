@@ -9,6 +9,10 @@
 
 	* ISpyApplication.cc, default-views.iml: add photons to lego
 
+	* ISpyApplication.cc: change jet color so that it's the same as default
+	
+	* default-style.iss: change jet color and add PFJet
+
 2009-12-16  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* IgCollection.h, IgCollection.cc, ISpyApplication.cc:

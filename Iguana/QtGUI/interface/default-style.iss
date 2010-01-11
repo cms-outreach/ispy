@@ -333,13 +333,19 @@ PATPhotons_V1 {
 
 Jets_V1 {
   transparency: 0.6; 
-  diffuse-color: rgb(1.0, 1.0, 1.0);
+  diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
 }
 
 PATJets_V1 {
   transparency: 0.6; 
-  diffuse-color: rgb(1.0, 1.0, 1.0);
+  diffuse-color: rgb(1.0, 1.0, 0.0);
+  marker-shape: cross;
+}
+
+PFJets_V1 {
+  transparency: 0.6; 
+  diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
 }
 
