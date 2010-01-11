@@ -1687,6 +1687,80 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   }
 }
 
+static void
+makeLegoTracks(IgCollection **collections, IgAssociationSet **assocs,
+               SoSeparator *sep, Style *style, 
+               Projectors &projectors)
+{       
+   IgCollection           *tracks = collections[0];
+   IgCollection           *extras = collections[1];
+   IgAssociationSet       *assoc = assocs[0];
+   IgProperty             PT(tracks, "pt");
+   IgProperty             DIR2(extras, "dir_2");   
+   SoSeparator            *top = new SoSeparator; 
+   SoVertexProperty       *vertices = new SoVertexProperty;
+   SoIndexedLineSet       *lineSet = new SoIndexedLineSet;
+   std::vector<int>       lineIndices;
+   std::vector<SbVec3f>   points;
+   int i = 0;
+   
+   SoDrawStyle *vertexLinesStyle = new SoDrawStyle;
+   vertexLinesStyle->style = style->drawStyle->style;
+   vertexLinesStyle->lineWidth = style->drawStyle->lineWidth.getValue() - 1;
+   top->addChild(vertexLinesStyle);
+
+   for (IgCollectionIterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
+   {
+     IgCollectionItem track = *ci;
+     
+     double pt = track.get<double>(PT);
+ 
+     IgAssociatedSet trackExtras = assoc->getAssociatedSet(track, BOTH_ASSOCIATED);
+     
+     for (IgAssociatedSet::Iterator ai = trackExtras.begin(), ae = trackExtras.end(); ai != ae; ai++)
+     {
+       IgCollectionItem m = *ai;
+       
+       // Determine eta and phi from the direction of the outermost state
+       IgV3d d = m.get<IgV3d>(DIR2);
+       SbVec3f dir(d.x(),d.y(),d.z());
+       dir.normalize();
+       double phi = atan2(dir[1],dir[0]);
+       double theta = acos(dir[2]);
+       double tanThetaOverTwo = tan(theta/2);
+       double eta = -log(tanThetaOverTwo);
+
+       if (phi < 0) phi += 2 * M_PI;
+
+       SoMarkerSet *marker = new SoMarkerSet;
+       SoVertexProperty *mvtx = new SoVertexProperty;
+       mvtx->vertex.set1Value (0, SbVec3f (phi, 0, eta));
+       marker->vertexProperty = mvtx;
+       marker->markerIndex = style->markerType;
+       marker->numPoints = 1;
+       marker->startIndex = 0;
+       top->addChild(marker);
+
+       points.push_back(SbVec3f(phi, 0.0, eta));
+       points.push_back(SbVec3f(phi, -pt,  eta));
+       lineIndices.push_back(i);
+       lineIndices.push_back(i + 1);
+       lineIndices.push_back(SO_END_LINE_INDEX);
+       i += 2;
+      
+       vertices->vertex.setValues(0, points.size(), &points [0]);
+       vertices->vertex.setNum(points.size());
+
+       lineSet->coordIndex.setValues(0, lineIndices.size(), &lineIndices [0]);
+       lineSet->vertexProperty = vertices;
+
+       top->addChild(lineSet);
+     }
+   }
+
+   sep->addChild(top);
+}
+
 // ------------------------------------------------------
 // Draw Tracker data
 // ------------------------------------------------------
@@ -5751,6 +5825,7 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("makeLegoGrid", makeLegoGrid));
   m_drawFunctions.insert(std::make_pair("makeLegoHcalRecHits", makeLegoHcalRecHits));
   m_drawFunctions.insert(std::make_pair("makeLegoJets", makeLegoJets));
+  m_drawFunctions.insert(std::make_pair("makeLegoTracks", makeLegoTracks));
   m_drawFunctions.insert(std::make_pair("makeRZECalRecHits", makeRZECalRecHits));
   m_drawFunctions.insert(std::make_pair("makeRZEPRecHits", makeRZEPRecHits));
   m_drawFunctions.insert(std::make_pair("makeRZHCalRecHits", makeRZHCalRecHits));

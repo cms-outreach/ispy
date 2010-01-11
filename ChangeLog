@@ -2,6 +2,9 @@
 
 	* default-views.iml: add rec hits V2 to lego view
 
+	* ISpyApplication.cc, default-views.iml: add reco Tracks to Lego view
+	  by finding eta,phi from the outermost state of the track
+
 2009-12-16  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* IgCollection.h, IgCollection.cc, ISpyApplication.cc:
