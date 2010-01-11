@@ -22,7 +22,7 @@
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
 class IgCollection;
-class IgAssociationSet;
+class IgAssociations;
 class ISpyEventSelectorDialog;
 class ISpyMainWindow;
 class IgDataStorage;
@@ -147,7 +147,7 @@ private slots:
   void			stopFiltering(void);
 
 private:
-  typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
+  typedef void(*Make3D)(IgCollection **, IgAssociations **,
                         SoSeparator *, Style *, Projectors &);
 
   struct CollectionSpec
@@ -199,7 +199,7 @@ private:
   {
     CollectionSpec              *spec;
     IgCollection                *data[2];
-    IgAssociationSet            *assoc;
+    IgAssociations            *assoc;
     QTreeWidgetItem             *item;
     SoSwitch                    *node;
     SoSeparator                 *sep;

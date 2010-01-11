@@ -4,18 +4,21 @@
 # include <IgCollection.h>
 #endif
 #include <iostream>
-int
-main()
+
+#include <QtTest/QtTest>
+
+void
+doTestCreateSimpleAssociations02()
 {
   for (int e = 0; e < 2; e++)
   {
   IgDataStorage storage;
-  assert(storage.collectionNames().size() == 0);
+  QVERIFY(storage.collectionNames().size() == 0);
 
   // Create a collection of tracks.
   IgCollection &tracks = storage.getCollection("Tracks/V1");
-  if (e == 0) assert (tracks.id() == 0);
-  if (e == 1) assert (tracks.id() == 0);
+  if (e == 0) QVERIFY(tracks.id() == 0);
+  if (e == 1) QVERIFY(tracks.id() == 0);
   IgProperty X = tracks.addProperty("x", 0.0);
   IgProperty Y = tracks.addProperty("y", 0.0);
   IgProperty Z = tracks.addProperty("z", 0.0);
@@ -54,33 +57,37 @@ main()
 
   // One to one associations
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters/V1");
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters/V1");
 
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
     IgRef tRef = *t;
-    assert (tracks.id() == 0);
-    assert (tRef.collectionId() == 0);
+    QVERIFY(tracks.id() == 0);
+    QVERIFY(tRef.collectionId == 0);
 
     while((c != clusters.end()) && (t != tracks.end()))
     {
       trackClusters.associate (*t, *c);
-      t++;
-      c++;
+      ++t;
+      ++c;
     }
-    assert(trackClusters.size() == 10);
+    QVERIFY(trackClusters.size() == 10);
   }
   // One to many
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters2/V1");
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters2/V1");
 
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
-    while((c != clusters.end()) && (t != tracks.end()))
+    while((t != tracks.end()))
     {
-      trackClusters.associate (*t, *c);
+      while((c != clusters.end()))
+      {
+        trackClusters.associate (*t, *c);
+        c++;
+      }
       t++;
     }
   }

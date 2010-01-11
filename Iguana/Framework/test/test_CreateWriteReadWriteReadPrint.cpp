@@ -10,6 +10,8 @@
 #include <sstream>
 #include <string>
 
+#include <QtTest/QtTest>
+
 
 void
 validateStorage(IgDataStorage &storage)
@@ -21,8 +23,8 @@ validateStorage(IgDataStorage &storage)
   tmpParser.parse(os.str().c_str());
 }
 
-int
-main(int argc, char **argv)
+void
+doTestCreateReadWriteReadPrint()
 {
   IgDataStorage storage;
   validateStorage(storage);
@@ -63,7 +65,7 @@ main(int argc, char **argv)
     t[P_Y] = static_cast<double>(i);
     t[P_Z] = static_cast<double>(i);
   }
-  assert(tracks.size() == 10);
+  QVERIFY(tracks.size() == 10);
 
   // Add a few clusters.
   for (int i = 0; i < 10 ; i++)
@@ -75,7 +77,7 @@ main(int argc, char **argv)
     c[C_E] = static_cast<double>(i);
   }
 
-  assert(clusters.size() == 10);
+  QVERIFY(clusters.size() == 10);
 
   // Add a few points
   for (int i = 0; i < 10 ; i++)
@@ -86,13 +88,13 @@ main(int argc, char **argv)
     p[POINT_4D] = IgV4d(1*i, 2*i, 3*i, 4*i);
   }
 
-  assert(points.size() == 10);
+  QVERIFY(points.size() == 10);
 
   // One to one associations
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters/V1");
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters/V1");
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
     while((c != clusters.end()) && (t != tracks.end()))
     {
@@ -103,10 +105,10 @@ main(int argc, char **argv)
   }
   // One to many
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters2/V1");
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters2/V1");
 
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
     while((c != clusters.end()) && (t != tracks.end()))
     {
@@ -137,6 +139,6 @@ main(int argc, char **argv)
   os3 << storage3 << std::endl;
 
   // Check it is always the same.
-  assert (os2.str() == os1.str());
-  assert (os3.str() == os1.str());
+  QVERIFY(os2.str() == os1.str());
+  QVERIFY(os3.str() == os1.str());
 }

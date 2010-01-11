@@ -1,6 +1,45 @@
 2010-01-28 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: version bumped to 1.4.4.
+	
+	* Framework/bin/igdumpstats.cpp 
+	  Framework/interface/IgCollection.h 
+	  Framework/interface/IgParser.h 
+	  Framework/src/IgCollection.cc 
+	  Framework/test/test_CollectionIOPerformance.cpp
+	  Framework/test/test_CreateSimpleAssociations.cpp
+	  Framework/test/test_CreateSimpleAssociations02.cpp
+	  Framework/test/test_CreateSimpleCollection.cpp
+	  Framework/test/test_CreateWriteReadWriteReadPrint.cpp
+	  Framework/test/test_CreateWriteReadWriteReadPrintNoAssociations.cpp
+	  Framework/test/test_NavigateAssociations.cpp
+	  Iguana/Framework/test/test_driver.cpp
+	  Iguana/QtGUI/interface/ISpyApplication.h
+	  Iguana/QtGUI/src/ISpyApplication.cc
+	  Iguana/QtGUI/src/IgCollectionTableModel.cc
+	  ispy-test.pro: Refactoring of the way associations in ig files are
+	  created / iterated.
+
+	  There is now a new iteration syntax that removes the need for an
+	  IgAssociatedSet by exploiting the fact that associations are always
+	  created in order.
+	  
+	  Notice that now associations are monodirectionally, i.e.,
+	  if you want to have the old behavior, you need to associate a to b
+	  and b to a.
+
+	  All the code using associations, including test, were redone to use 
+	  the new implementation.
+	  
+	  Tests now also employ the QtTest framework.
+	  
+	* QtGUI/test/test_CreateSimpleAssociations.cpp  
+	  QtGUI/test/test_CreateSimpleCollection.cpp
+	  QtGUI/test/test_CreateWriteReadWriteReadPrint.cpp
+	  QtGUI/test/test_CreateWriteReadWriteReadPrintNoAssociations.cpp
+	  QtGUI/test/test_NavigateAssociations.cpp: old test removed
+	  as more uptodate equivalent exists in Framework.
+
 
 2010-01-28 Tom McCauley <thomas.mccauley@cern.ch>
 	

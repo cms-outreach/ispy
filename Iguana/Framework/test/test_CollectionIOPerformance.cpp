@@ -85,9 +85,9 @@ main(int argc, char **argv)
 
   // One to one associations
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters/V1");
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters/V1");
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
     while((c != clusters.end()) && (t != tracks.end()))
     {
@@ -98,10 +98,10 @@ main(int argc, char **argv)
   }
   // One to many
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters2/V1");
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters2/V1");
 
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
     while((c != clusters.end()) && (t != tracks.end()))
     {

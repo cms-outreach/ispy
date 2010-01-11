@@ -99,6 +99,16 @@ public:
       m_buffer = endbuf;
     }
 
+  void parseInt(size_t &result)
+    {
+      char *endbuf;
+      result = strtol(m_buffer, &endbuf, 10);
+      if (!endbuf)
+      { throwParseError(m_buffer-m_initialBuffer); }
+      m_buffer = endbuf;
+    }
+
+
   void parseDouble(double &result)
     {
       char *endbuf;
@@ -138,49 +148,43 @@ public:
       }
     }
 
-  void parseAssociation(IgAssociation &result)
+  void parseAssociation(void)
     {
-      int collectionIdA, objectIdA;
-      int collectionIdB, objectIdB;
+      IgRef a, b;
 
       skipChar('[');
       skipChar('[');
-      parseInt(collectionIdA);
+      parseInt(a.collectionId);
       skipChar(',');
-      parseInt(objectIdA);
+      parseInt(a.objectId);
       skipChar(']');
       skipChar(',');
       skipChar('[');
-      parseInt(collectionIdB);
+      parseInt(b.collectionId);
       skipChar(',');
-      parseInt(objectIdB);
+      parseInt(b.objectId);
       skipChar(']');
       skipChar(']');
-      result.set(collectionIdA, objectIdA, collectionIdB, objectIdB);
+      m_currentAssociations->associate(a, b);
     }
 
-  void parseAssociationSet(void)
+  /** Parses an association set tuple from the file, storing associations
+      them in an IgAssociations.
+  */
+  void parseAssociations(void)
     {
       std::string name;
       parseString(name);
-      m_currentAssociationSet = m_storage->getAssociationSetPtr(name.c_str());
-      m_currentAssociationSet->reserve(1000000);
+      m_currentAssociations = m_storage->getAssociationsPtr(name.c_str());
+      m_currentAssociations->reserve(100000);
       skipChar(':');
       skipChar('[');
       if (checkChar(']')) return;
-      int currentRow = 0;
-      int maxSize = 0;
       do
       {
-        if (currentRow >= maxSize)
-        {
-          maxSize += 100;
-          m_currentAssociationSet->resize(maxSize);
-        }
-        parseAssociation((*m_currentAssociationSet)[currentRow++]);
+        parseAssociation();
       } while(checkChar(','));
-      m_currentAssociationSet->resize(currentRow);
-      m_currentAssociationSet->compress();
+      m_currentAssociations->reserve(m_currentAssociations->size());
       skipChar(']');
     }
 
@@ -193,7 +197,7 @@ public:
     }
 
 
-  void parseAssociationSets(void)
+  void parseAssociationss(void)
     {
       checkMagic("Associations");
       skipChar(':');
@@ -201,7 +205,7 @@ public:
       if (checkChar('}')) return;
       do
       {
-        parseAssociationSet();
+        parseAssociations();
       } while(checkChar(','));
       skipChar('}');
     }
@@ -341,7 +345,7 @@ public:
         skipChar(',');
         parseCollections();
         skipChar(',');
-        parseAssociationSets();
+        parseAssociationss();
         skipChar('}');
       }
       catch(ParseError &e)
@@ -362,7 +366,7 @@ public:
 private:
   IgDataStorage *m_storage;
   IgCollection *m_currentCollection;
-  IgAssociationSet *m_currentAssociationSet;
+  IgAssociations *m_currentAssociations;
   const char *m_buffer;
   const char *m_initialBuffer;
   std::string m_currentCollectionName;

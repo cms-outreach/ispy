@@ -113,7 +113,7 @@ IgCollectionTableModel::headerData(int section, Qt::Orientation orientation,
   if ((unsigned int) (section - 1) >= m_collection->columnLabels().size())
     return QVariant();
 
-  return QString(m_collection->columnLabels()[section - 1].first);
+  return QString(m_collection->columnLabels()[section - 1].label.c_str());
 }
 
 int
