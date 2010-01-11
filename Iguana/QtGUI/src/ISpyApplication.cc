@@ -1597,7 +1597,7 @@ makeLegoJets(IgCollection **collections, IgAssociationSet ** /*assocs*/,
       double              cx = phi;
       double              cz = eta;
       int i = 0;
-
+      
       for (i = 0; i < segments; ++i)
         vtx->vertex.set1Value (i, SbVec3f (r * cos (i * segAngle) + cx,
                                            0.01,
@@ -1685,6 +1685,75 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
                                    0.0174f);
     }
   }
+}
+
+static void 
+makeLegoTriggerObjects(IgCollection **collections, IgAssociationSet **,
+                       SoSeparator *sep, Style *style,
+                       Projectors &projectors)
+{
+  IgCollection         *c = collections[0];
+  IgProperty           ID(c, "VID"), PT(c, "pt");
+  IgProperty           ETA(c, "eta"), PHI(c, "phi");
+  SoSeparator          *top = new SoSeparator;
+  SoVertexProperty     *vertices = new SoVertexProperty;
+  SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
+  std::vector<int>     lineIndices;
+  std::vector<SbVec3f> points;
+  int                  i = 0;
+
+  for ( IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
+  {    
+    int id = ci->get<int>(ID);
+    double eta = ci->get<double>(ETA);
+    double phi = ci->get<double>(PHI);  
+    if ( phi < 0 ) phi += 2*M_PI;
+    double pt = ci->get<double>(PT);
+
+    // A marker is nice as the lines disappear from view when 
+    // viewed from the top
+    SoMarkerSet *marker = new SoMarkerSet;
+    SoVertexProperty *mvtx = new SoVertexProperty;
+    mvtx->vertex.set1Value (0, SbVec3f (phi, 0, eta));
+    marker->vertexProperty = mvtx;
+    marker->markerIndex = SoMarkerSet::CROSS_5_5;
+    marker->numPoints = 1;
+    marker->startIndex = 0;
+    top->addChild(marker);
+
+    points.push_back(SbVec3f(phi, 0.0, eta));
+    SbVec3f direction(phi, pt, eta);
+    points.push_back(direction);
+    lineIndices.push_back(i);
+    lineIndices.push_back(i + 1);
+    lineIndices.push_back(SO_END_LINE_INDEX);
+    i += 2;
+
+    vertices->vertex.setValues(0, points.size(), &points [0]);
+    vertices->vertex.setNum(points.size());
+
+    lineSet->coordIndex.setValues(0, lineIndices.size(), &lineIndices [0]);
+    lineSet->vertexProperty = vertices;
+
+    top->addChild(lineSet);
+
+    SoSeparator *annSep = new SoSeparator;
+    SoTranslation *textPos = new SoTranslation;
+    textPos->translation = 1.05*direction;
+
+    SoText2 *label = new SoText2;
+    label->justification.setValue(SoText2::CENTER);
+
+    char buf[128];
+    std::string text = std::string("id = ") + (sprintf(buf, "%i", id), buf);
+    label->string = text.c_str();
+
+    annSep->addChild(textPos);
+    annSep->addChild(label);
+    sep->addChild(annSep);
+  }
+
+  sep->addChild(top);
 }
 
 static void 
@@ -5752,6 +5821,7 @@ ISpyApplication::restartPlay (void)
       autoEvents();
     }
     else 
+  m_drawFunctions.insert(std::make_pair("makeLegoTriggerObjects", makeLegoTriggerObjects));
     {
       m_idleTimer->stop();
       m_idleTimer->disconnect();

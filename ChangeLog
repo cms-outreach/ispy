@@ -1,7 +1,5 @@
 2010-01-12 Tom McCauley <thomas.mccauley@cern.ch>
 
-	* ISpyApplication.cc, default-views.iml: add photons to lego
-
 	* default-views.iml: add rec hits V2 to lego view
 
 	* ISpyApplication.cc, default-views.iml: add reco Tracks to Lego view
@@ -12,6 +10,9 @@
 	* ISpyApplication.cc: change jet color so that it's the same as default
 	
 	* default-style.iss: change jet color and add PFJet
+	
+	* ISpyApplication.cc, default-views.iml: add TriggerObjects to
+	  lego
 
 2009-12-16  Giulio Eulisse <giulio.eulisse@cern.ch>
 

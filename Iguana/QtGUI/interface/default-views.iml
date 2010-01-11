@@ -1242,7 +1242,7 @@
 
   <collection label="Provenance/Trigger Objects"
               spec="TriggerObjects_V1:VID:pt:eta:phi"
-              draw="make3DTriggerObject"
+              draw="makeLegoTriggerObjects"
               visibility="none"/>
 
   <collection label="Provenance/Data Products found"
