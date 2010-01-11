@@ -1270,6 +1270,10 @@
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeLegoCaloTowers"/>
 -->
+ <collection label="Physics Objects/Photons (Reco)"
+              spec="Photons_V1:energy:eta:phi:pos"
+              draw="makeLegoPhotons"/>
+
   <collection label="Physics Objects/Jets"
               spec="Jets_V1:et:eta:phi"
               draw="makeLegoJets"/>

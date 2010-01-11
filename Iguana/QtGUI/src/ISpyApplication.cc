@@ -1687,6 +1687,56 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociationSet ** /*assocs*/,
   }
 }
 
+static void 
+makeLegoPhotons(IgCollection **collections, IgAssociationSet **,
+                SoSeparator *sep, Style *style,
+                Projectors &projectors)
+{
+  IgCollection         *c = collections[0];
+  IgProperty           E(c, "energy"), ETA(c, "eta"), PHI(c, "phi");
+  SoSeparator          *top = new SoSeparator;
+  SoVertexProperty     *vertices = new SoVertexProperty;
+  SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
+  std::vector<int>     lineIndices;
+  std::vector<SbVec3f> points;
+  int                  i = 0;
+
+  for ( IgCollectionIterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
+  {    
+    double eta = ci->get<double>(ETA);
+    double phi = ci->get<double>(PHI);  
+    if ( phi < 0 ) phi += 2*M_PI;      
+    double energy = ci->get<double>(E);
+    double et = energy*sin(2*atan(exp(-eta)));
+
+    SoMarkerSet *marker = new SoMarkerSet;
+    SoVertexProperty *mvtx = new SoVertexProperty;
+    mvtx->vertex.set1Value (0, SbVec3f (phi, 0, eta));
+    marker->vertexProperty = mvtx;
+    marker->markerIndex = SoMarkerSet::CROSS_5_5;
+    marker->numPoints = 1;
+    marker->startIndex = 0;
+    top->addChild(marker);
+
+    points.push_back(SbVec3f(phi, 0.0, eta));
+    points.push_back(SbVec3f(phi, -et, eta));
+    lineIndices.push_back(i);
+    lineIndices.push_back(i + 1);
+    lineIndices.push_back(SO_END_LINE_INDEX);
+    i += 2;
+
+    vertices->vertex.setValues(0, points.size(), &points [0]);
+    vertices->vertex.setNum(points.size());
+
+    lineSet->coordIndex.setValues(0, lineIndices.size(), &lineIndices [0]);
+    lineSet->vertexProperty = vertices;
+
+    top->addChild(lineSet);
+  }
+
+  sep->addChild(top);
+}
+
 static void
 makeLegoTracks(IgCollection **collections, IgAssociationSet **assocs,
                SoSeparator *sep, Style *style, 
@@ -5829,4 +5879,5 @@ ISpyApplication::registerDrawFunctions(void)
   m_drawFunctions.insert(std::make_pair("makeRZECalRecHits", makeRZECalRecHits));
   m_drawFunctions.insert(std::make_pair("makeRZEPRecHits", makeRZEPRecHits));
   m_drawFunctions.insert(std::make_pair("makeRZHCalRecHits", makeRZHCalRecHits));
+  m_drawFunctions.insert(std::make_pair("makeLegoPhotons", makeLegoPhotons));
 }
