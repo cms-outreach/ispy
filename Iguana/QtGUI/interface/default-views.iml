@@ -1303,6 +1303,31 @@
               draw="makeLegoHcalRecHits"
               visibility="none"/>
 
+  <collection label="HCAL/Barrel Rec. Hits"
+              spec="HBRecHits_V2:energy:eta:phi"
+              draw="makeLegoHcalRecHits"/>
+  
+  <collection label="ECAL/Barrel Rec. Hits"
+              spec="EBRecHits_V2:energy:eta:phi"
+              draw="makeLegoEcalRecHits"/>
+  
+  <collection label="ECAL/Endcap Rec. Hits"
+              spec="EERecHits_V2:energy:eta:phi"
+              draw="makeLegoEcalRecHits"/>
+  
+  <collection label="HCAL/Endcap Rec. Hits"
+              spec="HERecHits_V2:energy:eta:phi"
+              draw="makeLegoHcalRecHits"/>
+  
+  <collection label="HCAL/Forward Rec. Hits"
+              spec="HFRecHits_V2:energy:eta:phi"
+              draw="makeLegoHcalRecHits"/>
+  
+  <collection label="HCAL/Outer Rec. Hits"
+              spec="HORecHits_V2:energy:eta:phi"
+              draw="makeLegoHcalRecHits"
+              visibility="none"/>
+ 
 </view>
 </visibilityGroup>
 </camera>
