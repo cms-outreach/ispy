@@ -3,6 +3,8 @@
 	* build-inst.htm, create-igfiles.htm, release-notes.htm, index.htm:
 	update docs for new release
 
+	* default-views.iml: add GsfTracks, PAT & GSF electrons to lego
+
 2010-01-12 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* default-views.iml: add rec hits V2 to lego view

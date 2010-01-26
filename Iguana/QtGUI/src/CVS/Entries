@@ -8,14 +8,12 @@
 /IgCollectionListModel.cc/1.1/Sun Nov 29 19:01:48 2009//
 /IgCollectionListModel.h/1.1/Sun Nov 29 19:01:48 2009//
 /IgMainWindowMDI.1.0.ui/1.16/Sun Nov 29 19:01:48 2009//
-/ISpy3DView.cc/1.31/Mon Nov 30 20:59:45 2009//
 /Ig3DBaseModel.cc/1.7/Thu Dec  3 13:38:40 2009//
 /ISpyConsumerThread.cc/1.8/Wed Dec  9 15:17:43 2009//
 /ISpyEventSelectorDialog.cc/1.2/Wed Dec  9 15:17:43 2009//
 /ISpyEventSelectorDialog.h/1.2/Wed Dec  9 15:17:43 2009//
 /Style.h/1.1/Wed Dec  9 16:33:00 2009//
 /Projectors.h/1.1/Wed Dec  9 17:18:16 2009//
-/ISpySplashScreen.ui/1.15/Wed Dec  9 17:26:33 2009//
 /IgDrawTowerHelper.cc/1.12/Wed Dec  9 18:10:29 2009//
 /COPYING.LGPL/1.1/Wed Oct  7 17:22:50 2009//
 /ISpyDigitalClock.cc/1.1/Wed Oct  7 17:22:50 2009//
@@ -24,7 +22,6 @@
 /ISpyRestartPlayDialog.cc/1.1/Wed Oct  7 17:22:50 2009//
 /ISpyRestartPlayDialog.ui/1.1/Wed Oct  7 17:22:50 2009//
 /ISpySplashScreen.cc/1.8/Wed Oct  7 17:22:50 2009//
-/IgCollectionTableModel.cc/1.5/Wed Oct  7 17:22:50 2009//
 /IgDataStorageTableModel.cc/1.4/Wed Oct  7 17:22:50 2009//
 /IgLocationDialog.cc/1.3/Wed Oct  7 17:22:50 2009//
 /IgMultiStorageTreeModel.cc/1.2/Wed Oct  7 17:22:50 2009//
@@ -49,5 +46,8 @@
 /IgVariantDelegate.cc/1.2/Wed Oct  7 17:22:50 2009//
 /Info.plist/1.1/Wed Oct  7 17:22:50 2009//
 /ispy.icns/1.1/Wed Oct  7 17:22:50 2009//
-/ISpyApplication.cc/1.185/Wed Jan 13 15:44:22 2010//
+/ISpy3DView.cc/1.31/Wed Dec 16 09:14:46 2009//
+/ISpyApplication.cc/1.185/Wed Jan 27 08:41:23 2010//
+/ISpySplashScreen.ui/1.15/Wed Jan 27 08:41:19 2010//
+/IgCollectionTableModel.cc/1.5/Tue Jan 26 17:50:18 2010//
 D

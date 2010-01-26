@@ -40,7 +40,7 @@
 
 
   <!--  For now, draw the detector with the default "make3DAnyBox" code but explicit state -->
-  <!--  this in each case so lables in visibility widget a nice than default ones -->
+  <!--  this in each case so lables in visibility widget a nice than default ones  -->
   
   <collection label="Detector/Tracker"
               spec="Tracker3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
@@ -1318,7 +1318,13 @@
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
               draw="makeLegoTracks"/>
-             
+  
+  <collection label="Tracking/Tracks (GSF)"
+              spec="GsfTracks_V1:pt:pos:dir"
+              other="GsfExtras_V1:pos_1:dir_1:pos_2:dir_2"
+              associations="GsfTrackExtras_V1"
+              draw="makeLegoTracks"/>
+           
   <collection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V2:energy:eta:phi"
               draw="makeLegoHcalRecHits"/>
@@ -1343,6 +1349,18 @@
               spec="HORecHits_V2:energy:eta:phi"
               draw="makeLegoHcalRecHits"
               visibility="none"/>
+
+  <collection label="Physics Objects/Electrons (GSF)"
+              spec="GsfElectrons_V1:pt:pos:dir"
+              other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
+              associations="GsfElectronExtras_V1"
+              draw="makeLegoTracks"/>
+
+  <collection label="Physics Objects/Electrons (PAT)"
+              spec="PATElectrons_V1:pt:pos:dir"
+              other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
+              associations="PATElectronExtras_V1"
+              draw="makeLegoTracks"/>
  
 </view>
 </visibilityGroup>
