@@ -1,5 +1,9 @@
-2010-01-28 Tom McCauley <thomas.mccauley@cern.ch>
+2010-01-28 Giulio Eulisse <giulio.eulisse@cern.ch>
 
+	* ISpyApplication.cc: version bumped to 1.4.4.
+
+2010-01-28 Tom McCauley <thomas.mccauley@cern.ch>
+	
 	* build-inst.htm, create-igfiles.htm, release-notes.htm, index.htm:
 	update docs for new release
 
