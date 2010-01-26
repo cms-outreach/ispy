@@ -4715,27 +4715,38 @@ ISpyApplication::createStats(void)
   IgProperty MAXENERGY = limits.addProperty("maxEnergy", 0.);
   IgProperty ENERGYSCALE = limits.addProperty("energyScale", 0.);
   
-  const char *interestingLimits[8] = {"EcalRecHits_V1",
-                                      "EBRecHits_V1",
-                                      "EERecHits_V1",
-                                      "ESRecHits_V1",
-                                      "HBRecHits_V1",
-                                      "HERecHits_V1",
-                                      "HFRecHits_V1",
-                                      "HORecHits_V1"};
+  const char *interestingLimits[15] = {"EcalRecHits_V1",
+                                       "EBRecHits_V1",
+                                       "EERecHits_V1",
+                                       "ESRecHits_V1",
+                                       "HBRecHits_V1",
+                                       "HERecHits_V1",
+                                       "HFRecHits_V1",
+                                       "HORecHits_V1",
+                                       "EBRecHits_V2",
+                                       "EERecHits_V2",
+                                       "ESRecHits_V2",
+                                       "HBRecHits_V2",
+                                       "HERecHits_V2",
+                                       "HFRecHits_V2",
+                                       "HORecHits_V2"};
 
-  double energyScales[8] = {1, 1, 1, 1, 1, 1, 1, 1};
-  double lengthScales[8] = {1, 1, 1, 1, 1, 1, 1, 1};
+  double energyScales[15] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
+  double lengthScales[15] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1};
 
   for (size_t i = 0, e = sizeof(interestingLimits) / sizeof(char *); i != e; ++i)
   {
-    IgCollectionItem item = limits.create();
     const char *collectionName = interestingLimits[i];
-    item[NAME] = std::string(collectionName);
-    Style &style = m_styles[findStyle(collectionName)];
-    item[MINENERGY] = (double) style.minEnergy * energyScales[i];
-    item[MAXENERGY] = (double) style.maxEnergy * energyScales[i];
-    item[ENERGYSCALE] = (double) style.energyScale * lengthScales[i];
+
+    if ( es->hasCollection(collectionName) )
+    {
+      IgCollectionItem item = limits.create();
+      item[NAME] = std::string(collectionName);
+      Style &style = m_styles[findStyle(collectionName)];
+      item[MINENERGY] = (double) style.minEnergy * energyScales[i];
+      item[MAXENERGY] = (double) style.maxEnergy * energyScales[i];
+      item[ENERGYSCALE] = (double) style.energyScale * lengthScales[i];
+    }
   }
 }
 

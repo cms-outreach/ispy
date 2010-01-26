@@ -5,6 +5,8 @@
 
 	* default-views.iml: add GsfTracks, PAT & GSF electrons to lego
 
+	* ISpyApplication.cc: add V2 collections to drawing limits and only show collections that exist in event
+
 2010-01-12 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* default-views.iml: add rec hits V2 to lego view
