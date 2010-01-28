@@ -321,6 +321,8 @@ private:
   // Helper methods to handle views layouts.
   void                      parseViewsDefinition(QByteArray &data);
   bool                      parseViewsDefinitionFile(const char *filename);
+
+  void                      registerDrawFunction(const char *name, Make3D func);
   void                      registerDrawFunctions(void);
 
   int                   m_argc;

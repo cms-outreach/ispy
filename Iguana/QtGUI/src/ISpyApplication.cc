@@ -5870,6 +5870,14 @@ make3DLimits(IgCollection **collections, IgAssociations **,
   helper.endBox();  
 }
 
+/** Helper function that registers a given draw function*/
+
+void
+ISpyApplication::registerDrawFunction(const char *name, Make3D func)
+{
+  m_drawFunctions.insert(std::make_pair(name, func));
+}
+
 /** Register functions that are to be used for drawing.
     TODO: for the moment, given it's not really time critical,
           we simply relay on std::map. In future we might want to 
@@ -5880,50 +5888,51 @@ void
 ISpyApplication::registerDrawFunctions(void)
 {
   ASSERT(m_drawFunctions.empty());
-  m_drawFunctions.insert(std::make_pair("make3DAnyBox", make3DAnyBox));
-  m_drawFunctions.insert(std::make_pair("makeAnyBox", makeAnyBox));
-  m_drawFunctions.insert(std::make_pair("make3DAnyDetId", make3DAnyDetId));
-  m_drawFunctions.insert(std::make_pair("make3DAnyLine", make3DAnyLine));
-  m_drawFunctions.insert(std::make_pair("make3DAnyPoint", make3DAnyPoint));
-  m_drawFunctions.insert(std::make_pair("make3DCSCStripDigis", make3DCSCStripDigis));
-  m_drawFunctions.insert(std::make_pair("make3DCSCWireDigis", make3DCSCWireDigis));
-  m_drawFunctions.insert(std::make_pair("make3DCaloClusters", make3DCaloClusters));
-  m_drawFunctions.insert(std::make_pair("make3DCaloTowers", make3DCaloTowers));
-  m_drawFunctions.insert(std::make_pair("make3DDTDigis", make3DDTDigis));
-  m_drawFunctions.insert(std::make_pair("make3DDTRecHits", make3DDTRecHits));
-  m_drawFunctions.insert(std::make_pair("make3DEnergyBoxes", make3DEnergyBoxes));
-  m_drawFunctions.insert(std::make_pair("make3DEnergyTowers", make3DEnergyTowers));
-  m_drawFunctions.insert(std::make_pair("make3DEvent", make3DEvent));
-  m_drawFunctions.insert(std::make_pair("make3DHLTrigger", make3DHLTrigger));
-  m_drawFunctions.insert(std::make_pair("make3DJetShapes", makeAnyJetShapes));
-  m_drawFunctions.insert(std::make_pair("make3DL1Trigger", make3DL1Trigger));
-  m_drawFunctions.insert(std::make_pair("make3DLimits", make3DLimits));
-  m_drawFunctions.insert(std::make_pair("make3DMET", makeAnyMET));
-  m_drawFunctions.insert(std::make_pair("make3DPhoton", makeAnyPhoton));
-  m_drawFunctions.insert(std::make_pair("makeRZPhoton", makeAnyPhoton));
-  m_drawFunctions.insert(std::make_pair("makeAnyPhoton", makeAnyPhoton));
-  m_drawFunctions.insert(std::make_pair("make3DPointSetShapes", makeAnyPointSetShapes));
-  m_drawFunctions.insert(std::make_pair("makeRZPointSetShapes", makeAnyPointSetShapes));
-  m_drawFunctions.insert(std::make_pair("makeAnyPointSetShapes", makeAnyPointSetShapes));
-  m_drawFunctions.insert(std::make_pair("make3DPreshowerTowers", make3DPreshowerTowers));
-  m_drawFunctions.insert(std::make_pair("make3DRPCRecHits", make3DRPCRecHits));
-  m_drawFunctions.insert(std::make_pair("make3DSegmentShapes", makeAnySegmentShapes));
-  m_drawFunctions.insert(std::make_pair("make3DTechTrigger", make3DTechTrigger));
-  m_drawFunctions.insert(std::make_pair("make3DTrackPoints", make3DTrackPoints));
-  m_drawFunctions.insert(std::make_pair("make3DTrackingParticles", make3DTrackingParticles));
-  m_drawFunctions.insert(std::make_pair("make3DTracks", makeAnyTracks));
-  m_drawFunctions.insert(std::make_pair("makeRZTracks", makeAnyTracks));
-  m_drawFunctions.insert(std::make_pair("makeAnyTracks", makeAnyTracks));
-  m_drawFunctions.insert(std::make_pair("make3DTracksNoVertex", make3DTracksNoVertex));
-  m_drawFunctions.insert(std::make_pair("make3DTriggerObject", makeAnyTriggerObject));
-  m_drawFunctions.insert(std::make_pair("makeLegoCaloTowers", makeLegoCaloTowers));
-  m_drawFunctions.insert(std::make_pair("makeLegoEcalRecHits", makeLegoEcalRecHits));
-  m_drawFunctions.insert(std::make_pair("makeLegoGrid", makeLegoGrid));
-  m_drawFunctions.insert(std::make_pair("makeLegoHcalRecHits", makeLegoHcalRecHits));
-  m_drawFunctions.insert(std::make_pair("makeLegoJets", makeLegoJets));
-  m_drawFunctions.insert(std::make_pair("makeLegoTracks", makeLegoTracks));
-  m_drawFunctions.insert(std::make_pair("makeRZECalRecHits", makeRZECalRecHits));
-  m_drawFunctions.insert(std::make_pair("makeRZEPRecHits", makeRZEPRecHits));
-  m_drawFunctions.insert(std::make_pair("makeRZHCalRecHits", makeRZHCalRecHits));
-  m_drawFunctions.insert(std::make_pair("makeLegoPhotons", makeLegoPhotons));
+  registerDrawFunction("make3DAnyBox", make3DAnyBox);
+  registerDrawFunction("makeAnyBox", makeAnyBox);
+  registerDrawFunction("make3DAnyDetId", make3DAnyDetId);
+  registerDrawFunction("make3DAnyLine", make3DAnyLine);
+  registerDrawFunction("make3DAnyPoint", make3DAnyPoint);
+  registerDrawFunction("make3DCSCStripDigis", make3DCSCStripDigis);
+  registerDrawFunction("make3DCSCWireDigis", make3DCSCWireDigis);
+  registerDrawFunction("make3DCaloClusters", make3DCaloClusters);
+  registerDrawFunction("make3DCaloTowers", make3DCaloTowers);
+  registerDrawFunction("make3DDTDigis", make3DDTDigis);
+  registerDrawFunction("make3DDTRecHits", make3DDTRecHits);
+  registerDrawFunction("make3DEnergyBoxes", make3DEnergyBoxes);
+  registerDrawFunction("make3DEnergyTowers", make3DEnergyTowers);
+  registerDrawFunction("make3DEvent", make3DEvent);
+  registerDrawFunction("make3DHLTrigger", make3DHLTrigger);
+  registerDrawFunction("make3DJetShapes", makeAnyJetShapes);
+  registerDrawFunction("make3DL1Trigger", make3DL1Trigger);
+  registerDrawFunction("make3DLimits", make3DLimits);
+  registerDrawFunction("make3DMET", makeAnyMET);
+  registerDrawFunction("make3DPhoton", makeAnyPhoton);
+  registerDrawFunction("makeRZPhoton", makeAnyPhoton);
+  registerDrawFunction("makeAnyPhoton", makeAnyPhoton);
+  registerDrawFunction("make3DPointSetShapes", makeAnyPointSetShapes);
+  registerDrawFunction("makeRZPointSetShapes", makeAnyPointSetShapes);
+  registerDrawFunction("makeAnyPointSetShapes", makeAnyPointSetShapes);
+  registerDrawFunction("make3DPreshowerTowers", make3DPreshowerTowers);
+  registerDrawFunction("make3DRPCRecHits", make3DRPCRecHits);
+  registerDrawFunction("make3DSegmentShapes", makeAnySegmentShapes);
+  registerDrawFunction("make3DTechTrigger", make3DTechTrigger);
+  registerDrawFunction("make3DTrackPoints", make3DTrackPoints);
+  registerDrawFunction("make3DTrackingParticles", make3DTrackingParticles);
+  registerDrawFunction("make3DTracks", makeAnyTracks);
+  registerDrawFunction("makeRZTracks", makeAnyTracks);
+  registerDrawFunction("makeAnyTracks", makeAnyTracks);
+  registerDrawFunction("make3DTracksNoVertex", make3DTracksNoVertex);
+  registerDrawFunction("make3DTriggerObject", makeAnyTriggerObject);
+  registerDrawFunction("makeLegoTriggerObjects", makeLegoTriggerObjects);
+  registerDrawFunction("makeLegoCaloTowers", makeLegoCaloTowers);
+  registerDrawFunction("makeLegoEcalRecHits", makeLegoEcalRecHits);
+  registerDrawFunction("makeLegoGrid", makeLegoGrid);
+  registerDrawFunction("makeLegoHcalRecHits", makeLegoHcalRecHits);
+  registerDrawFunction("makeLegoJets", makeLegoJets);
+  registerDrawFunction("makeLegoTracks", makeLegoTracks);
+  registerDrawFunction("makeRZECalRecHits", makeRZECalRecHits);
+  registerDrawFunction("makeRZEPRecHits", makeRZEPRecHits);
+  registerDrawFunction("makeRZHCalRecHits", makeRZHCalRecHits);
+  registerDrawFunction("makeLegoPhotons", makeLegoPhotons);
 }
