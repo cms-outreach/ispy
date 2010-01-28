@@ -1,3 +1,7 @@
+2010-01-28 Ianna Osborne <ianna.osborne@cern.ch>
+
+	* default-views.iml: support for splitted tracker geometry.
+
 2010-01-28 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: version bumped to 1.4.4.
