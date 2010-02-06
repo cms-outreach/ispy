@@ -60,6 +60,7 @@ IgCollectionListModel::data(const QModelIndex &index, int role) const
   default:
     assert(false);
   }
+  return QVariant();
 }
 
 QVariant

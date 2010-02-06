@@ -276,12 +276,6 @@ projectMuonSlicedAs(IgV3d &v, IgV3d &s)
   return SbVec3f(v.x(), v.y(), 10000);
 }
 
-static SbVec3f
-projectMuonThetaPhi(IgV3d &v)
-{
-  return SbVec3f(v.x(), v.y(), v.z());
-}
-
 /** Helper method to initialize our nodes.
 */
 static void initShapes(void)
@@ -1688,8 +1682,8 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociations ** /*assocs*/,
 
 static void 
 makeLegoTriggerObjects(IgCollection **collections, IgAssociations **,
-                       SoSeparator *sep, Style *style,
-                       Projectors &projectors)
+                       SoSeparator *sep, Style * /*style*/,
+                       Projectors & /*projectors*/)
 {
   IgCollection         *c = collections[0];
   IgProperty           ID(c, "VID"), PT(c, "pt");
@@ -1757,8 +1751,8 @@ makeLegoTriggerObjects(IgCollection **collections, IgAssociations **,
 
 static void 
 makeLegoPhotons(IgCollection **collections, IgAssociations **,
-                SoSeparator *sep, Style *style,
-                Projectors &projectors)
+                SoSeparator *sep, Style * /*style*/,
+                Projectors &/*projectors*/)
 {
   IgCollection         *c = collections[0];
   IgProperty           E(c, "energy"), ETA(c, "eta"), PHI(c, "phi");
@@ -1808,7 +1802,7 @@ makeLegoPhotons(IgCollection **collections, IgAssociations **,
 static void
 makeLegoTracks(IgCollection **collections, IgAssociations **assocs,
                SoSeparator *sep, Style *style, 
-               Projectors &projectors)
+               Projectors & /*projectors*/)
 {       
    IgCollection           *tracks = collections[0];
    IgCollection           *extras = collections[1];
@@ -2402,6 +2396,7 @@ make3DCaloTowers(IgCollection **collections, IgAssociations **assocs,
   make3DEmCaloTowerShapes(collections, assocs, sep, style, projectors);
 }
 
+/*
 static void
 make3DJet(SoGroup* sep, double et, double theta, double phi)
 {
@@ -2479,6 +2474,7 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
   sep->addChild(hatCone);
 
 }
+*/
 
 static void
 makeAnyPhoton(IgCollection **collections, IgAssociations **,
@@ -4399,7 +4395,7 @@ ISpyApplication::handleGroupsClicking(QTreeWidgetItem *current)
   int index = m_treeWidget->indexOfTopLevelItem(current);
   if (index < 0)
     return;
-  ASSERT(index < m_groupIndex.size());
+  ASSERT((size_t) index < m_groupIndex.size());
   size_t groupIndex = m_groupIndex[index];
   ASSERT(groupIndex < m_groups.size());
   Group &group = m_groups[groupIndex];
@@ -4426,13 +4422,13 @@ ISpyApplication::getCollectionIndex(QTreeWidgetItem *item)
   int parentIndex = m_treeWidget->indexOfTopLevelItem(parent);
   if (parentIndex < 0)
     return -1;
-  ASSERT(parentIndex < m_groupIndex.size());
+  ASSERT((size_t)(parentIndex) < m_groupIndex.size());
   size_t groupIndex = m_groupIndex[parentIndex];
-  ASSERT(groupIndex < m_groups.size());
+  ASSERT((size_t)(groupIndex) < m_groups.size());
   Group &group = m_groups[groupIndex];
   int childIndex = parent->indexOfChild(item);
   ASSERT(childIndex >= 0);
-  ASSERT(childIndex < group.children.size());
+  ASSERT((size_t)(childIndex) < group.children.size());
   size_t index = group.children[childIndex];
   Collection &c = m_collections[index];
   ASSERT(c.item == item);

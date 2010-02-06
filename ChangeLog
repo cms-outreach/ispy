@@ -2,6 +2,10 @@
 
 	* ISpyApplication.cc: reworked the way maker function get registered.
 
+	* ISpyApplication.cc, ispy.cpp, ISpyApplication.cc,
+	  IgCollectionListModel.cc, IgCollectionTableModel.cc: remove all
+	  warnings.
+
 2010-01-28 Ianna Osborne <ianna.osborne@cern.ch>
 
 	* default-views.iml: support for splitted tracker geometry.

@@ -5,7 +5,6 @@
 /ISpyPicturePublishingDialog.cc/1.1/Sun Nov 29 19:01:48 2009//
 /ISpyPicturePublishingDialog.h/1.1/Sun Nov 29 19:01:48 2009//
 /ISpyPicturePublishingDialog.ui/1.1/Sun Nov 29 19:01:48 2009//
-/IgCollectionListModel.cc/1.1/Sun Nov 29 19:01:48 2009//
 /IgCollectionListModel.h/1.1/Sun Nov 29 19:01:48 2009//
 /IgMainWindowMDI.1.0.ui/1.16/Sun Nov 29 19:01:48 2009//
 /Ig3DBaseModel.cc/1.7/Thu Dec  3 13:38:40 2009//
@@ -48,6 +47,7 @@
 /ispy.icns/1.1/Wed Oct  7 17:22:50 2009//
 /ISpy3DView.cc/1.31/Wed Dec 16 09:14:46 2009//
 /ISpySplashScreen.ui/1.16/Thu Jan 28 20:15:18 2010//
-/IgCollectionTableModel.cc/1.6/Thu Jan 28 20:17:08 2010//
-/ISpyApplication.cc/1.189/Thu Feb 25 17:07:59 2010//
+/ISpyApplication.cc/1.190/Thu Feb 25 17:10:29 2010//
+/IgCollectionListModel.cc/1.2/Thu Feb 25 17:10:29 2010//
+/IgCollectionTableModel.cc/1.7/Thu Feb 25 17:10:29 2010//
 D
