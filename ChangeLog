@@ -1,3 +1,9 @@
+2010-02-27 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy-news.htm, release-notes.htm: documentation updates for 1.4.4
+
+	* ispy.pro: build as release, not debug.
+
 2010-02-27 Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* default-style.iss, default-views.iml: support for CaloTowers_V2.
