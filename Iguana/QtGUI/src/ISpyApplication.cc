@@ -5793,7 +5793,6 @@ ISpyApplication::restartPlay (void)
       autoEvents();
     }
     else 
-  m_drawFunctions.insert(std::make_pair("makeLegoTriggerObjects", makeLegoTriggerObjects));
     {
       m_idleTimer->stop();
       m_idleTimer->disconnect();
