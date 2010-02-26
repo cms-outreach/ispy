@@ -66,7 +66,7 @@ LIBS += -L$$EXPAT_BASE/lib -lexpatstatic
 
 unix:!mac { LIBS += -L$$EXPAT_BASE/lib -lexpat }
 
-QMAKE_CXXFLAGS_RELEASE="-O0 -ggdb"
+#QMAKE_CXXFLAGS_RELEASE="-O0 -ggdb"
 
 mac {
 LIBS += -framework QuickTime
