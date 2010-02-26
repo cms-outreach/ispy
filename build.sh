@@ -4,6 +4,13 @@
 export PATH=$PREFIX/bin:$PATH
 which qmake
 ln -sf Iguana/QtGUI/scripts/ispy.pro ispy.pro
+case `uname`:`uname -m`
+  Linux:x86_64)
+    ln -sf /usr/lib64/libSM.so.6.0.0 $PREFIX/lib/libSM.so
+  ;;
+  *)
+  ;;
+esac
 
 qmake
 make -j 2
