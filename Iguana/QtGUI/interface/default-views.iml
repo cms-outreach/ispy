@@ -414,6 +414,11 @@
               draw="make3DCaloTowers"
               visibility="none"/>
 
+  <collection label="Physics Objects/Calorimeter Energy Towers"
+              spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DCaloTowers"
+              visibility="none"/>
+
   <collection label="Physics Objects/Jets"
               spec="Jets_V1:et:theta:phi"
               draw="make3DJetShapes"
@@ -824,6 +829,11 @@
               draw="make3DCaloTowers"
               visibility="none"/>
 
+  <collection label="Physics Objects/Calorimeter Energy Towers"
+              spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DCaloTowers"
+              visibility="none"/>
+
   <collection label="Physics Objects/Jets"
               spec="Jets_V1:et:theta:phi"
               draw="make3DJetShapes"
@@ -1224,6 +1234,11 @@
               draw="make3DCaloTowers"
               visibility="none"/>
 
+  <collection label="Physics Objects/Calorimeter Energy Towers"
+              spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DCaloTowers"
+              visibility="none"/>
+
   <collection label="Physics Objects/Jets"
               spec="Jets_V1:et:theta:phi"
               draw="make3DJetShapes"
@@ -1314,6 +1329,12 @@
   <collection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeLegoCaloTowers"/>
+
+  <collection label="Physics Objects/Calorimeter Energy Towers"
+              spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DCaloTowers"
+              visibility="none"/>
+
 -->
  <collection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"
@@ -1736,6 +1757,11 @@
 
   <collection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DCaloTowers"
+              visibility="none"/>
+
+  <collection label="Physics Objects/Calorimeter Energy Towers"
+              spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
               visibility="none"/>
 

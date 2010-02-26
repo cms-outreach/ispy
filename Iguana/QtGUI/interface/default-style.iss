@@ -319,6 +319,11 @@ CaloTowers_V1 {
   diffuse-color: rgb(0.1, 1.0, 0.2);
 }
 
+CaloTowers_V2 {
+  transparency: 0.75;
+  diffuse-color: rgb(0.1, 1.0, 0.2);
+}
+
 Photons_V1 { 
   diffuse-color: rgb(1.0, 1.0, 0.0); 
   draw-style: lines;

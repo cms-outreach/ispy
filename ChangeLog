@@ -1,3 +1,7 @@
+2010-02-27 Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-style.iss, default-views.iml: support for CaloTowers_V2.
+
 2010-02-26 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: reworked the way maker function get registered.
