@@ -4,6 +4,8 @@
 
 	* ISpyApplication.cc: use helvetica for MET.
 
+	* ISpyApplication.cc: do not show calo clusters.
+
 2010-02-27 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy-news.htm, release-notes.htm: documentation updates for 1.4.4

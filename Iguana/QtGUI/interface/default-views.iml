@@ -222,7 +222,7 @@
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters"/>
+              draw="make3DCaloClusters" visibility="none"/>
 
   <collection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
@@ -666,7 +666,7 @@
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters"/>
+              draw="make3DCaloClusters" visibility="none"/>
 
   <collection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
@@ -1042,7 +1042,7 @@
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters"/>
+              draw="make3DCaloClusters" visibility="none"/>
 
   <collection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
@@ -1590,7 +1590,7 @@
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters"/>
+              draw="make3DCaloClusters" visibility="none"/>
 
   <collection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
