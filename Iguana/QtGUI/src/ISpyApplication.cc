@@ -5847,16 +5847,6 @@ make3DLimits(IgCollection **collections, IgAssociations **,
   helper.beginBox(style->left + 0.45,  style->top, style->textAlign);
   helper.createTextLine("");
   helper.indentText(0, 0.7);
-  helper.createTextLine("Max energy (GeV):");
-  helper.indentText(0, 0.9);
-
-  for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-    helper.createTextLine((sprintf(buf, "%.3f", ci->get<double>("maxEnergy")), buf));
-
-  helper.endBox();
-  helper.beginBox(style->left + 0.65,  style->top, style->textAlign);
-  helper.createTextLine("");
-  helper.indentText(0, 0.7);
   helper.createTextLine("Energy scale (m/GeV):");
   helper.indentText(0, 0.9);
   

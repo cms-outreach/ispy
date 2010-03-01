@@ -1,3 +1,7 @@
+2010-03-01 Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc: remove max energy display.
+
 2010-02-27 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy-news.htm, release-notes.htm: documentation updates for 1.4.4
