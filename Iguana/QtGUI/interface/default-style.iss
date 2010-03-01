@@ -360,7 +360,7 @@ METs_V1 {
   line-width: 3;
   line-pattern: 0x0fff;
   font-size: 14.0;
-  font-family: Arial;
+  font-family: Helvetica;
   top: 0;
   left: 0;
   text-align: center;

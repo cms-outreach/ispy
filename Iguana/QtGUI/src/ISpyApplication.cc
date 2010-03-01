@@ -2627,7 +2627,7 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
 
     char buf [128];
 
-    label->string = (sprintf(buf, "Et miss=%4.1f", etMiss), buf);
+    label->string = (sprintf(buf, "Et miss=%4.1f (GeV)", etMiss), buf);
 
     sep->addChild(textPos);
     sep->addChild(label);

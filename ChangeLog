@@ -2,6 +2,8 @@
 
 	* ISpyApplication.cc: remove max energy display.
 
+	* ISpyApplication.cc: use helvetica for MET.
+
 2010-02-27 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ispy-news.htm, release-notes.htm: documentation updates for 1.4.4
