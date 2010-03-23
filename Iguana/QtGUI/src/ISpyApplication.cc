@@ -848,13 +848,11 @@ private:
 };
 
 static void
-make3DEvent(IgCollection **collections, IgAssociations **, 
-            SoSeparator *sep, Style * style, Projectors &)
-{
-  IgCollection          *c = collections[0];
-  IgCollectionItem      e = *c->begin();
-
-  std::string           time  = e.get<std::string>("time");
+make3DEvent(IgCollectionItem& e, 
+            SoSeparator *sep, 
+            Style *style,
+            std::string& time)
+{  
   OverlayCreatorHelper helper(sep, style);
   char buf[1024];
 
@@ -921,14 +919,45 @@ make3DEvent(IgCollection **collections, IgAssociations **,
   }
 }
 
+static void 
+make3DEventV1(IgCollection** collections, IgAssociations**,
+              SoSeparator *sep, Style *style, Projectors&)
+{
+  IgCollection      *c = collections[0];
+  IgCollectionItem   e = *c->begin();
+  std::string        time  = e.get<std::string>("time");
+ 
+  make3DEvent(e, sep, style, time);
+}
+
+static void 
+make3DEventV2(IgCollection** collections, IgAssociations**,
+              SoSeparator *sep, Style *style, Projectors&)
+{
+  IgCollection      *c = collections[0];
+  IgCollectionItem   e = *c->begin();
+  std::string        time  = e.get<std::string>("time");
+  std::string        localtime = e.get<std::string>("localtime");
+  
+  std::string buf;
+  std::stringstream ss(localtime);
+  std::vector<std::string> subs;
+
+  while ( ss >> buf )
+    subs.push_back(buf);
+  if ( subs.size() == 6 )
+    time += "(" + subs[3] + " " + subs[5] +")";
+
+  make3DEvent(e, sep, style, time);
+}
 
 static void
 make3DL1Trigger(IgCollection **collections, IgAssociations **, 
                 SoSeparator *sep, Style * style, Projectors &)
 {
   IgCollection           *c = collections[0];
-
   char                  buf [256];
+
   OverlayCreatorHelper  helper(sep, style);
 
   helper.beginBox(style->left,  style->top, style->textAlign);
@@ -5902,7 +5931,8 @@ ISpyApplication::registerDrawFunctions(void)
   registerDrawFunction("make3DDTRecHits", make3DDTRecHits);
   registerDrawFunction("make3DEnergyBoxes", make3DEnergyBoxes);
   registerDrawFunction("make3DEnergyTowers", make3DEnergyTowers);
-  registerDrawFunction("make3DEvent", make3DEvent);
+  registerDrawFunction("make3DEventV1", make3DEventV1);
+  registerDrawFunction("make3DEventV2", make3DEventV2);
   registerDrawFunction("make3DHLTrigger", make3DHLTrigger);
   registerDrawFunction("make3DJetShapes", makeAnyJetShapes);
   registerDrawFunction("make3DL1Trigger", make3DL1Trigger);

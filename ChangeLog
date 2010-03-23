@@ -1,8 +1,21 @@
+2010-03-24 Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-views.iml, default-style.iss, ISpyApplication.cc: add
+	  support for Event_V2 collection.
+
 2010-03-24 Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.h, ISpyApplication.cc, ISpy3DView.h, ISpy3DView.cc:
 	  add event, run number and view name to the filename of 
 	  automatically printed pictures.
+
+2010-03-16 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc, default-views.iml, default-style.iss: add support for Event_V2
+
+2010-03-05 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* default-views.iml: add support for Vertices_V1
 
 2010-03-01 Thomas McCauley <thomas.mccauley@cern.ch>
 

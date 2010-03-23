@@ -40,6 +40,15 @@ Event_V1 {
   top: 0.025;
 }
 
+Event_V2 {
+  diffuse-color: rgb(1.0, 1.0, 1.0); 
+  font-size: 24.0; 
+  font-family: Arial;
+  background: :/images/cms-logo-small.png;
+  left: 0.125;
+  top: 0.025;
+}
+
 L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); 
   text-align: right;
   left: 0.985;  
