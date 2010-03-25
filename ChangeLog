@@ -6,6 +6,8 @@
 	* cms-color-medium.png, cms-logo-medium.png, ispy.qrc: bigger versions
 	  of the logo added.
 
+	* IgCollection.cc: fix the way associations are streamed out.
+
 2010-03-24 Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* default-views.iml, default-style.iss, ISpyApplication.cc: add

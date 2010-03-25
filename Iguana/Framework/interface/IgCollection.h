@@ -1234,8 +1234,8 @@ public:
       {
         AssociationRef &assoc = m_associations[i];
         s << "[" << "[" << assoc.key.collectionId << ","
-                        << assoc.value.objectId << "],"
-                 << "[" << assoc.key.collectionId << ","
+                        << assoc.key.objectId << "],"
+                 << "[" << assoc.value.collectionId << ","
                         << assoc.value.objectId << "]]";
         if (i+1 != e)
           s << ",";
