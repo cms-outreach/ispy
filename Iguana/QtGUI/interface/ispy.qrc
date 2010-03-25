@@ -7,6 +7,8 @@
   </qresource>
   <qresource prefix="images">
     <file>CMS-Color.png</file>
+    <file>cms-color-medium.png</file>
+    <file>cms-bw-medium.png</file>
     <file>cms-bw-small.png</file>
     <file>cms-logo-small.png</file>
     <file>Play1Normal.png</file>
