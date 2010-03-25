@@ -71,7 +71,7 @@ public slots:
   virtual void viewPlaneZ(void);
   virtual void toggleCameraType(void);
   virtual void invertCamera(void);
-
+  void         setEventMessage(const QString&);
 signals:
   void  cameraToggled(void);
 
@@ -98,6 +98,7 @@ private:
   bool                  m_oldView;
   bool                  m_oldSeek;
   enum Mode             m_viewMode;
+  QString               m_currentEvent;
 
 #ifndef QT_NO_PRINTER
   QPrinter 		m_printer;

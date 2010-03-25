@@ -324,6 +324,9 @@ private:
 
   void                      registerDrawFunction(const char *name, Make3D func);
   void                      registerDrawFunctions(void);
+  
+  // Tells the viewer that the label to be used for autoprinting is changed.
+  void                      updateEventMessage(void);
 
   int                   m_argc;
   char                  **m_argv;
@@ -437,6 +440,9 @@ private:
   // Name of the view layout file to read. The file has to contain the full 
   // view description.
   std::string             m_viewsLayoutFilename;
+  
+  // Hold the name of the current event.
+  QString                 m_eventName;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

@@ -575,6 +575,8 @@ ISpy3DView::toggleCameraType(void)
   cameraToggled();
 }
 
+
+
 void
 ISpy3DView::setCameraType(QAction * /*action*/)
 {
@@ -594,11 +596,19 @@ ISpy3DView::invertCamera(void)
 }
 
 void
+ISpy3DView::setEventMessage(const QString &message)
+{ 
+  m_currentEvent = message;
+}
+
+
+void
 ISpy3DView::autoPrint(QString text)
 {
   QDateTime dt = QDateTime::currentDateTime();
-  QString fName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
-  QString dName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
+  qDebug() << m_currentEvent << "--";
+  QString fName = "iSpy-" + m_currentEvent + dt.toString("-hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
+  QString dName = "iSpy-" + m_currentEvent + dt.toString("-hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
 
   SbColor c = getBackgroundColor();
   SbViewportRegion    outvr = this->getViewportRegion();
@@ -633,6 +643,7 @@ ISpy3DView::autoPrint(QString text)
   if  (file.open(QIODevice::WriteOnly))
   {
     QTextStream stream(&file);
+    stream << m_currentEvent << "\n";
     stream << dt.toString("ddd MMM d hh:mm:ss.zzz yyyy") << "\n";
     stream << text << "\n";
     file.close();

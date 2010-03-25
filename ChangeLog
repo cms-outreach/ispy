@@ -1,3 +1,9 @@
+2010-03-24 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc, ISpy3DView.h, ISpy3DView.cc:
+	  add event, run number and view name to the filename of 
+	  automatically printed pictures.
+
 2010-03-01 Thomas McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyApplication.cc: remove max energy display.

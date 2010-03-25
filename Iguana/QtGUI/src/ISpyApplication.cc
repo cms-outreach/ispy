@@ -3109,7 +3109,8 @@ ISpyApplication::ISpyApplication(void)
     m_fileWatcher(new QFileSystemWatcher),
     m_printTimer(new QTimer(this)),
     m_filterProgressDialog(0),
-    m_counter(0)
+    m_counter(0),
+    m_eventName("NOEVENT")
 {
   m_archives[0] = m_archives[1] = 0;
   m_storages[0] = new IgDataStorage;
@@ -4102,6 +4103,16 @@ ISpyApplication::showPublish(void)
 }
 
 void
+ISpyApplication::updateEventMessage()
+{
+  QString eventMessage = m_eventName;
+  eventMessage += QString::fromStdString("-" + m_views[m_currentViewIndex].spec->name);
+  eventMessage.replace("/", "-");
+  eventMessage.replace(" ", "_");
+  m_viewer->setEventMessage(eventMessage);
+}
+
+void
 ISpyApplication::stopFiltering(void)
 {
   m_counter = 0;
@@ -4249,7 +4260,10 @@ ISpyApplication::doRun(void)
                    this, SLOT(cameraToggled()));
   QObject::connect(m_printTimer, SIGNAL(timeout()), this, SLOT(autoPrint()));
   QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
-  QObject::connect(this, SIGNAL(showMessage(const QString &)), m_mainWindow->statusBar(), SLOT(showMessage(const QString &)));
+  QObject::connect(this, SIGNAL(showMessage(const QString &)), 
+                   m_mainWindow->statusBar(), 
+                   SLOT(showMessage(const QString &)));
+  
   QObject::connect(&filter, SIGNAL(open(const QString &)),
                    this, SLOT(openWithFallbackGeometry(const QString &)));
   app.installEventFilter(&filter);
@@ -5075,6 +5089,10 @@ ISpyApplication::newEvent(void)
 	   m_events[m_eventIndex].contents);
   
   updateCollections();
+
+  m_eventName = m_events[m_eventIndex].contents->name().name();
+  showMessage(m_eventName);
+  updateEventMessage();
 }
 
 /* Run current event through the filters */
@@ -5673,28 +5691,29 @@ ISpyApplication::nextEvent(void)
     if (m_consumer.hasNewEvent())
     {      
       delete m_storages[0];
-      showMessage (QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage)));
+      m_eventName = QString::fromStdString(m_consumer.nextEvent(m_storages[0] = new IgDataStorage));
+      showMessage(m_eventName);
       
       if (! m_storages[0]->empty())
       {
-	++m_counter;
-	resetCounter();
+        ++m_counter;
+        resetCounter();
       }      
     }    
     else
     {
       if (m_counter == 0)
       {	
-	m_filterProgressDialog->setLabelText("Waiting for online events...");
-	usleep(1000);
+        m_filterProgressDialog->setLabelText("Waiting for online events...");
+        usleep(1000);
       }
       else
-	m_filterProgressDialog->setLabelText("Filtered out " + QString::number(m_counter) +
-					     " online events which do not match\n" +
-					     m_selector->fullFilterText());
-    }    
-
+        m_filterProgressDialog->setLabelText("Filtered out " + QString::number(m_counter) +
+                                             " online events which do not match\n" +
+                                             m_selector->fullFilterText());
+    }
     updateCollections();
+    updateEventMessage();
     filterEvent();
   }
   if (++m_eventIndex < m_events.size())
@@ -5702,7 +5721,6 @@ ISpyApplication::nextEvent(void)
     m_filterProgressDialog->setMaximum(m_events.size() - m_eventIndex);
     m_filterProgressDialog->setValue(++m_counter);
     m_filterProgressDialog->setLabelText("Filtered out " + QString::number(m_counter) + " events.");
-    showMessage(m_events[m_eventIndex].contents->name().name());
     newEvent();
     filterEvent();
   }
@@ -5719,17 +5737,17 @@ ISpyApplication::previousEvent(void)
   {
     delete m_storages[0];
 
-    showMessage (QString::fromStdString(m_consumer.previousEvent(m_storages[0] = new IgDataStorage)));
+    m_eventName = QString::fromStdString(m_consumer.previousEvent(m_storages[0] = new IgDataStorage));
+    showMessage(m_eventName);
+    
     if (! m_storages[0]->empty())
       resetCounter();
 
     updateCollections();
+    updateEventMessage();
   }
   else if (m_eventIndex > 0 && --m_eventIndex < m_events.size())
-  {
-    showMessage(m_events[m_eventIndex].contents->name().name());
     newEvent();
-  }
   else
     m_eventIndex = 0;
 }
@@ -5740,10 +5758,7 @@ ISpyApplication::rewind(void)
 {
   m_eventIndex = 0;
   if (m_eventIndex < m_events.size())
-  {
-    showMessage(m_events[m_eventIndex].contents->name().name());
     newEvent();
-  }
 }
 
 /** SLOT to make sure we update the camera when we toggle perspective / 
@@ -5812,6 +5827,7 @@ ISpyApplication::switchView(int viewIndex)
   m_mainWindow->viewSelector->clearFocus();
   m_treeWidget->setFocus(Qt::MouseFocusReason);
   m_mainWindow->viewSelector->setFocusPolicy(Qt::ClickFocus);
+  updateEventMessage();
 }
 
 /** Shows the drawing limits on screen */
