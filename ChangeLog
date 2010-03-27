@@ -1,3 +1,8 @@
+2010-03-29 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpy3DView.cc: ISPY_HD_PRINT environment variable forces 
+	  1080p resolution when saving images.
+
 2010-03-24 Giulio Eulisse <giulio.eulisse@cern.ch>
 	
 	* ISpyApplication.cc, index.htm, ispy-news.htm, release-notes.htm,

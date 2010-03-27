@@ -125,6 +125,11 @@ ISpy3DView::printBitmap(const QString &file,
 
   SbVec2s             pixels(outvr.getViewportSizePixels());
   SbVec2s             size((short)(pixels[0] + 0.5), (short)(pixels[1] + 0.5));
+  if (getenv("ISPY_HD_PRINT"))
+  {
+    size[0] = 1920;
+    size[1] = 1080;
+  }
   SbVec2s             origin = outvr.getViewportOriginPixels();
   outvr.setViewportPixels(origin, size);
 
