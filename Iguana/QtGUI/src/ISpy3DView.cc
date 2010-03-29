@@ -133,18 +133,10 @@ ISpy3DView::printBitmap(const QString &file,
   SbVec2s             origin = outvr.getViewportOriginPixels();
   outvr.setViewportPixels(origin, size);
 
-  // Set up a custom GL render action for the offscreen rendered.
-  // Do *not* use the one returned by `getGLRenderAction()': doing
-  // so leaves the display in a confused state and doesn't produce
-  // an output file.  This way we also avoid issues with having to
-  // mess and then later reset antialiasing and related parameters.
-  SoGLRenderAction    *ra = new SoGLRenderAction(outvr);
   SoOffscreenRenderer *renderer = new SoOffscreenRenderer(outvr);
 
   getSceneManager()->getBackgroundColor().getValue(r, g, b);
   renderer->setBackgroundColor(SbColor(r, g, b));
-  renderer->setGLRenderAction(ra);
-  ra->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
 
   // Want to render from above the SceneGraph so we get what the
   // camera sees; SoQtViewer uses the following code.(FIXME:
@@ -180,7 +172,6 @@ ISpy3DView::printBitmap(const QString &file,
 			 "Ok");
   }
   delete renderer;
-  delete ra;
 }
 
 void

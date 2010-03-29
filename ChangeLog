@@ -2,6 +2,8 @@
 
 	* ISpy3DView.cc: ISPY_HD_PRINT environment variable forces 
 	  1080p resolution when saving images.
+	
+	* ISpy3DView.cc: reduces freezing when printing on linux.
 
 2010-03-24 Giulio Eulisse <giulio.eulisse@cern.ch>
 	
