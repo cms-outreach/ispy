@@ -16,6 +16,7 @@
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
 # include "Iguana/QtGUI/src/Style.h"
 # include "Iguana/QtGUI/src/Projectors.h"
+# include "Iguana/QtGUI/src/DrawHelpers.h"
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -147,9 +148,6 @@ private slots:
   void			stopFiltering(void);
 
 private:
-  typedef void(*Make3D)(IgCollection **, IgAssociations **,
-                        SoSeparator *, Style *, Projectors &);
-
   struct CollectionSpec
   {
     std::string                 friendlyName;

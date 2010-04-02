@@ -5,6 +5,7 @@
 # include <Inventor/SbLinear.h>
 # include <cmath>
 # include "Iguana/Framework/interface/IgLinearAlgebra.h"
+# include <string>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -35,6 +36,8 @@ struct Projectors
   ProjectorAsPoint projectAs;
   ProjectorAsPoint projectAsWithOffset;
 };
+
+void getProjectors(const std::string &projectionType, Projectors &projectors);
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
 
