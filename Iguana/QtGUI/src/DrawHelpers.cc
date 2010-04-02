@@ -2,8 +2,8 @@
 #include "Iguana/QtGUI/src/Style.h"
 #include "Iguana/QtGUI/src/IgSoJet.h"
 #include "Iguana/QtGUI/src/IgSoSimpleTrajectory.h"
-#include "Iguana/QtGUI/src/IgSoSplineTrack.h"
 #include "Iguana/QtGUI/interface/IgDrawTowerHelper.h"
+#include "Iguana/QtGUI/src/IgDrawSplinesHelper.h"
 #include "Iguana/Framework/interface/IgCollection.h"
 
 #include <Inventor/nodes/SoAnnotation.h>
@@ -72,7 +72,6 @@ void initHelpers(void)
   IgSoShapeKit::initClass();
   IgSoJet::initClass();
   IgSoSimpleTrajectory::initClass();
-  IgSoSplineTrack::initClass();
 }
 
 // ------------------------------------------------------
@@ -1288,6 +1287,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociations **assocs,
   SoVertexProperty    *vertices = new SoVertexProperty;
   SoMarkerSet         *points   = new SoMarkerSet;
   int                 nv        = 0;
+  IgDrawSplinesHelper splineDrawHelper;
 
   IgProperty PT(tracks, "pt");
   IgProperty POS(hits, "pos"), DIR(hits, "dir");
@@ -1309,7 +1309,9 @@ make3DTrackingParticles(IgCollection **collections, IgAssociations **assocs,
     IgV3d lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS);
     
     // FIXME: TM: eventually move the functionality of this class to here
-    IgSoSplineTrack *trackRep = new IgSoSplineTrack;
+    SoMFVec3f points;
+    SoMFVec3f tangents;
+
     int nt = 0;
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end();
          ai != ae; ++ai)
@@ -1323,8 +1325,8 @@ make3DTrackingParticles(IgCollection **collections, IgAssociations **assocs,
       SbVec3f dTrans = pTrans - dpTrans;
       dTrans.normalize();
       
-      trackRep->points.set1Value(nt, pTrans);
-      trackRep->tangents.set1Value(nt, dTrans);
+      points.set1Value(nt, pTrans);
+      tangents.set1Value(nt, dTrans);
       
       ++nt;
       
@@ -1334,7 +1336,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociations **assocs,
     }
     
     if (nt >= 2)
-      sep->addChild(trackRep);
+      splineDrawHelper.create(sep, points, tangents);
   }
   
   vertices->vertex.setNum(nv);
@@ -1357,6 +1359,7 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
   IgProperty          PT(tracks, "pt"), POS(tracks, "pos");
   IgProperty          POS1(extras, "pos_1"), DIR1(extras, "dir_1");
   IgProperty          POS2(extras, "pos_2"), DIR2(extras, "dir_2");
+  IgDrawSplinesHelper helper;
 
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
@@ -1368,7 +1371,8 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
     // in other views.
     IgV3d lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS2);
 
-    IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
+    SoMFVec3f points;
+    SoMFVec3f tangents;
 
     SoVertexProperty    *tvertices = new SoVertexProperty;
     SoMarkerSet         *tpoints   = new SoMarkerSet;
@@ -1392,8 +1396,8 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
       SbVec3f dProj = dpProj - pProj;
       dProj.normalize();
       
-      trackRep->points.set1Value(nVtx, pProj);
-      trackRep->tangents.set1Value(nVtx, dProj);
+      points.set1Value(nVtx, pProj);
+      tangents.set1Value(nVtx, dProj);
       tvertices->vertex.set1Value(nVtx, pProj);
       ++nVtx;
       
@@ -1407,8 +1411,8 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
       dProj = dpProj - pProj;
       dProj.normalize();
       
-      trackRep->points.set1Value(nVtx, pProj);
-      trackRep->tangents.set1Value(nVtx, dProj);
+      points.set1Value(nVtx, pProj);
+      tangents.set1Value(nVtx, dProj);
       tvertices->vertex.set1Value(nVtx, pProj);
       ++nVtx;
     }
@@ -1418,7 +1422,7 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
     tpoints->vertexProperty = tvertices;
     tpoints->numPoints.setValue(nVtx);
 
-    sep->addChild(trackRep);
+    helper.create(sep, points, tangents);
     sep->addChild(tpoints);
   }
 }
@@ -1436,6 +1440,7 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
   IgProperty        POS1(extras, "pos_1"), DIR1(extras, "dir_1");
   IgProperty        POS2(extras, "pos_2"), DIR2(extras, "dir_2");
   SoSeparator       *vsep = new SoSeparator;
+  IgDrawSplinesHelper helper;
 
   SoDrawStyle *vertexLinesStyle = new SoDrawStyle;
   vertexLinesStyle->style = style->drawStyle->style;
@@ -1454,8 +1459,10 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     IgV3d lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS2);
 
     // Here is the actual track representation.
-    IgSoSplineTrack     *trackRep  = new IgSoSplineTrack;
-    IgSoSplineTrack     *vertexRep = new IgSoSplineTrack;
+    SoMFVec3f tsPoints;
+    SoMFVec3f tsTangents;
+    SoMFVec3f vPoints;
+    SoMFVec3f vTangents;
 
     SoVertexProperty    *tvertices = new SoVertexProperty;
     SoMarkerSet         *tpoints   = new SoMarkerSet;
@@ -1470,8 +1477,8 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     SbVec3f dProj = dpProj - pProj;
     dProj.normalize();
     
-    vertexRep->points.set1Value(0, pProj);
-    vertexRep->tangents.set1Value(0, dProj);
+    vPoints.set1Value(0, pProj);
+    vTangents.set1Value(0, dProj);
 
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get<double>(PT))
@@ -1490,11 +1497,11 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
       dProj = dpProj - pProj;
       dProj.normalize();
       
-      vertexRep->points.set1Value(1, pProj);
-      vertexRep->tangents.set1Value(1, dProj);
+      vPoints.set1Value(1, pProj);
+      vTangents.set1Value(1, dProj);
       
-      trackRep->points.set1Value(nVtx, pProj);
-      trackRep->tangents.set1Value(nVtx, dProj);
+      tsPoints.set1Value(nVtx, pProj);
+      tsTangents.set1Value(nVtx, dProj);
       tvertices->vertex.set1Value(nVtx, pProj);
       ++nVtx;
       
@@ -1506,8 +1513,8 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
       dProj =  dpProj - pProj;
       dProj.normalize();
       
-      trackRep->points.set1Value(nVtx, pProj);
-      trackRep->tangents.set1Value(nVtx, dProj);
+      tsPoints.set1Value(nVtx, pProj);
+      tsTangents.set1Value(nVtx, dProj);
       tvertices->vertex.set1Value(nVtx, pProj);
       ++nVtx;
     }
@@ -1517,8 +1524,8 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     tpoints->vertexProperty = tvertices;
     tpoints->numPoints.setValue(nVtx);
 
-    vsep->addChild(vertexRep);
-    sep->addChild(trackRep);
+    helper.create(vsep, vPoints, vTangents);
+    helper.create(sep, tsPoints, tsTangents);
     sep->addChild(tpoints);
   }
 
