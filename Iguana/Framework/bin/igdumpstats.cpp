@@ -58,9 +58,9 @@ main(int argc, char **argv)
     std::cerr << "  "<< *i << "\n";
   }
 
-  std::cerr << "N. of associations:" << storage.associationSetNames().size() << "\n";
-  for (IgDataStorage::AssociationSetNames::const_iterator i = storage.associationSetNames().begin();
-       i != storage.associationSetNames().end();
+  std::cerr << "N. of associations:" << storage.associationsNames().size() << "\n";
+  for (IgDataStorage::AssociationsNames::const_iterator i = storage.associationsNames().begin();
+       i != storage.associationsNames().end();
        i++)
   {
     std::cerr << "  "<< *i << "\n";
@@ -71,7 +71,7 @@ main(int argc, char **argv)
   if (dumpTracks)
   {
     IgCollection *tracks = storage.getCollectionPtr ("Tracks_V1");
-    for (IgCollectionIterator i = tracks->begin();
+    for (IgCollection::iterator i = tracks->begin();
          i != tracks->end();
          i++)
     {

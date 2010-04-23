@@ -14,69 +14,51 @@
 #include <iostream>
 #include <algorithm>
 
-enum AssociatedType
+/** A reference to a particular row in a particular collection */
+struct IgRef
 {
-  LEFT_ASSOCIATED = 1,
-  RIGHT_ASSOCIATED = 2,
-  BOTH_ASSOCIATED = 3
-};
-
-class IgRef
-{
-public:
+  /** Builds a default IgRef. The reason why we use MAX_SIZE as index is 
+      because this way we can make sure that when an Association, is created
+      using one default IgRef, such an Association ends up after all the
+      other Associations if the same kind.
+  */
   IgRef()
+    :collectionId((size_t) -1), objectId((size_t)-1)
     {}
 
-  IgRef(int collectionId, int objectId)
-    : m_collectionId(collectionId), m_objectId(objectId)
+  IgRef(size_t iCollectionId, size_t iObjectId)
+    : collectionId(iCollectionId), objectId(iObjectId)
     {}
 
   IgRef(const IgRef &ref)
-    : m_collectionId(ref.collectionId()),
-      m_objectId(ref.objectId())
+    :collectionId(ref.collectionId), objectId(ref.objectId)
     {}
 
-  int collectionId(void) const
-    {return m_collectionId;}
-
-  int objectId(void) const
-    {return m_objectId;}
-
-  void set(int collectionId, int objectId)
+  /** Order for IgRefs, first by collection, then by object
+      This is the natural order in which objects are inserted in associations.
+  */
+  bool operator<(const IgRef& other) const
     {
-      m_collectionId = collectionId;
-      m_objectId = objectId;
+      if (collectionId == other.collectionId)
+        return objectId < other.objectId;
+      return collectionId < other.collectionId;
     }
-private:
-  int m_collectionId;
-  int m_objectId;
+
+  /** Equality of two refs is really equality of its members.
+  */
+  bool operator==(const IgRef& other) const
+    {
+      if (objectId != other.objectId)
+        return false;
+      if (collectionId != other.collectionId)
+        return false;
+      return true;
+    }
+
+  size_t collectionId;
+  size_t objectId;
 };
 
-class IgAssociation
-{
-public:
-  IgAssociation(const IgRef &a, const IgRef &b)
-    :m_refA(a), m_refB(b)
-    {}
-
-  IgAssociation()
-    {}
-
-  const IgRef &first(void) const
-    {return m_refA; };
-
-  const IgRef &second(void) const
-    {return m_refB; };
-
-  void set(int cA, int oA, int cB, int oB)
-    {
-      m_refA.set(cA, oA);
-      m_refB.set(cB, oB);
-    }
-private:
-  IgRef m_refA;
-  IgRef m_refB;
-};
 
 enum ColumnType {
   INT_COLUMN = 0,           // int
@@ -85,7 +67,8 @@ enum ColumnType {
   VECTOR_2D,                // A 2vector of doubles
   VECTOR_3D,                // A 3vector of doubles
   VECTOR_4D,                // A 4vector of doubles
-  NUMBER_OF_BASE_TYPES
+  NUMBER_OF_BASE_TYPES,
+  INVALID
 };
 
 // Helper class to generate associate a given type with its id.
@@ -150,6 +133,10 @@ struct ColumnTypeHelper<IgV4d>
 class IgColumnHandle
 {
 public:
+  IgColumnHandle(void)
+    :m_data(0), m_type(INVALID)
+    {}
+  
   IgColumnHandle(void *data, ColumnType type)
     :m_data(data), m_type(type)
     { }
@@ -194,7 +181,7 @@ public:
       }
     }
 
-  void stream(std::ostream &stream, int position)
+  void stream(std::ostream &stream, size_t position)
     {
       switch (type())
       {
@@ -229,32 +216,17 @@ public:
         assert(false);
       }
     }
-
-  void streamType(std::ostream &stream)
+    
+  const char *typeName()
     {
-      switch (type())
-      {
-      case INT_COLUMN:
-        stream << "int";
-        break;
-      case STRING_COLUMN:
-        stream << "string";
-        break;
-      case DOUBLE_COLUMN:
-        stream << "double";
-        break;
-      case VECTOR_2D:
-        stream << "v2d";
-        break;
-      case VECTOR_3D:
-        stream << "v3d";
-        break;
-      case VECTOR_4D:
-        stream << "v4d";
-        break;
-      default:
-        assert(false);
-      }
+      static const char *typenames[] = {
+        "int",
+        "string",
+        "double",
+        "v2d",
+        "v3d",
+        "v4d"};
+      return typenames[type()];
     }
 
   void extend()
@@ -285,7 +257,7 @@ public:
       }
     }
 
-  void resize(unsigned int newSize)
+  void resize(size_t newSize)
     {
       switch (m_type)
       {
@@ -313,7 +285,7 @@ public:
       }
     }
 
-  void reserve(unsigned int size)
+  void reserve(size_t size)
     {
       switch (m_type)
       {
@@ -475,9 +447,27 @@ private:
   ColumnType m_type;
 };
 
+
+class IgCollection;
+
+/** An IgProperty is used to index 
+    a given column inside an IgCollection.
+  
+    FIXME: is this really a good idea?
+          Why not using IgColumnHandle directly???
+  */
 class IgProperty
 {
 public:
+  IgProperty(IgCollection *collection, const char *name);
+
+  IgProperty(IgCollection &collection, const char *name);
+
+  IgProperty(const IgProperty &property)
+    :m_handle(property.m_handle)
+  {
+  }
+
   IgProperty(IgColumnHandle &handle)
     : m_handle(handle)
     { }
@@ -490,81 +480,6 @@ private:
 };
 
 class IgCollectionItem;
-class IgCollection;
-
-class IgCollectionIterator
-{
-public:
-  IgCollectionIterator(IgCollection *collection, int rowPosition)
-    :m_collection(collection), m_rowPosition(rowPosition)
-    { }
-
-  IgCollectionItem operator*();
-  IgCollectionItem operator->(void);
-
-  IgCollectionIterator operator++(int /*dummy*/)
-    {
-      IgCollectionIterator tmp(m_collection, m_rowPosition);
-      m_rowPosition++;
-      return tmp;
-    }
-
-  IgCollectionIterator& operator++(void)
-    {
-      m_rowPosition++;
-      return *this;
-    }
-
-  IgCollectionIterator operator--(int /*dummy*/)
-    {
-      IgCollectionIterator tmp(m_collection, m_rowPosition);
-      m_rowPosition--;
-      return tmp;
-    }
-
-  IgCollectionIterator& operator--(void)
-    {
-      m_rowPosition--;
-      return *this;
-    }
-
-  IgCollectionIterator& operator+=(int delta)
-    {
-      m_rowPosition += delta;
-      return *this;
-    }
-
-  IgCollectionIterator& operator-=(int delta)
-    {
-      m_rowPosition -= delta;
-      return *this;
-    }
-
-  IgCollectionIterator& operator=(int value)
-    {
-      m_rowPosition = value;
-      return *this;
-    }
-
-  bool operator==(const IgCollectionIterator& other)
-    {
-      return m_rowPosition == other.m_rowPosition;
-    }
-
-  bool operator!=(const IgCollectionIterator& other)
-    {
-      return m_rowPosition != other.m_rowPosition;
-    }
-
-  IgCollectionIterator operator+(int value)
-    {
-      return IgCollectionIterator(m_collection, m_rowPosition + value);
-    }
-
-private:
-  IgCollection *m_collection;
-  int m_rowPosition;
-};
 
 /** Throw this error whenever the schema differs from what you
  *  were expecting.
@@ -577,9 +492,95 @@ struct IgSchemaError
 //       This is actually bad in the case we are merging files and should be
 //       somehow replaced by some hash(maybe using some combination of
 //       column name-column type for all the columns).
+
+struct ColumnInfo
+{
+  std::string     label;
+  IgColumnHandle  handle;
+};
+
 class IgCollection
 {
 public:
+  class iterator
+  {
+  public:
+    iterator(IgCollection *collection, size_t rowPosition)
+      :m_collection(collection), m_rowPosition(rowPosition)
+      { }
+
+    IgCollectionItem operator*() const;
+    IgCollectionItem operator->(void);
+
+    size_t pos(void)
+    {
+      return m_rowPosition;
+    }
+    
+    iterator operator++(int /*dummy*/)
+      {
+        iterator tmp(m_collection, m_rowPosition);
+        m_rowPosition++;
+        return tmp;
+      }
+
+    iterator& operator++(void)
+      {
+        m_rowPosition++;
+        return *this;
+      }
+
+    iterator operator--(int /*dummy*/)
+      {
+        iterator tmp(m_collection, m_rowPosition);
+        m_rowPosition--;
+        return tmp;
+      }
+
+    iterator& operator--(void)
+      {
+        m_rowPosition--;
+        return *this;
+      }
+
+    iterator& operator+=(int delta)
+      {
+        m_rowPosition += delta;
+        return *this;
+      }
+
+    iterator& operator-=(int delta)
+      {
+        m_rowPosition -= delta;
+        return *this;
+      }
+
+    iterator& operator=(int value)
+      {
+        m_rowPosition = value;
+        return *this;
+      }
+
+    bool operator==(const iterator& other)
+      {
+        return m_rowPosition == other.m_rowPosition;
+      }
+
+    bool operator!=(const iterator& other)
+      {
+        return m_rowPosition != other.m_rowPosition;
+      }
+
+    iterator operator+(int value)
+      {
+        return iterator(m_collection, m_rowPosition + value);
+      }
+
+  private:
+    IgCollection *m_collection;
+    size_t m_rowPosition;
+  };
+
   typedef std::vector<std::string> Labels;
   typedef std::pair<const char *, IgColumnHandle> LabelColumn;
   typedef std::pair<ColumnType, IgColumnHandle> TypeColumn;
@@ -590,29 +591,35 @@ public:
     {
       Labels::iterator l;
       if (doHasProperty(label, &l))
-      {
         return m_properties[std::distance(m_labels.begin(), l)];
-      }
 
       m_labels.push_back(label);
       std::vector<T> *columnData = new std::vector<T>;
       IgColumnHandle handle((void *)columnData, ColumnTypeHelper<T>::typeId());
-      m_columnLabelsIndex.push_back(LabelColumn(m_labels.back().c_str(), handle));
+      m_columnLabelsIndex.resize(m_columnLabelsIndex.size() + 1);
+      ColumnInfo &info = m_columnLabelsIndex.back();
+      info.label = m_labels.back();
+      info.handle = handle;
       m_columnTypesIndex[ColumnTypeHelper<T>::typeId()].push_back(handle);
       m_properties.push_back(IgProperty(handle));
       return m_properties.back();
     }
 
-  IgCollectionIterator begin(void);
-  IgCollectionIterator end(void);
+  iterator begin(void)    
+    {
+      return iterator(this, 0);
+    }
+  
+  iterator end(void)
+    {
+      return iterator(this, m_rowCount);
+    }
 
   IgProperty &getProperty(const char *label)
     {
       Labels::iterator l;
       if (!doHasProperty(label, &l))
-      {
         throw IgSchemaError();
-      }
 
       return m_properties[std::distance(m_labels.begin(), l)];
     }
@@ -636,15 +643,10 @@ public:
 
   IgColumnHandle &getHandleByLabel(const char *label)
     {
-      for (std::vector<LabelColumn>::iterator i = m_columnLabelsIndex.begin();
-           i != m_columnLabelsIndex.end();
-           i++)
-      {
-        if (strcmp(i->first, label) == 0)
-        {
-          return i->second;
-        }
-      }
+      for (size_t i = 0, e = m_columnLabelsIndex.size(); i != e; ++i)
+        if (m_columnLabelsIndex[i].label == label)
+          return m_columnLabelsIndex[i].handle;
+
       std::cout << "IgColumnHandle::getHandleByLabel " << label << " from " << m_name << std::endl;
 
       assert(false && "Column not found. Did you create it?");
@@ -655,45 +657,29 @@ public:
       return m_properties[position].handle();
     }
 
-  void reserve(unsigned int size)
+  void reserve(size_t size)
     {
-      for (Properties::iterator i = m_properties.begin();
-           i != m_properties.end();
-           i++)
-      {
-        i->handle().reserve(size);
-      }
+      for (size_t i = 0, e = m_properties.size(); i != e; ++i)
+        m_properties[i].handle().reserve(size);
     }
 
   void resize(unsigned int size)
     {
-      for (Properties::iterator i = m_properties.begin();
-           i != m_properties.end();
-           i++)
-      {
-        i->handle().resize(size);
-      }
+      for (size_t i = 0, e = m_properties.size(); i != e; ++i)
+        m_properties[i].handle().resize(size);
       m_rowCount = size;
     }
 
   void compress(void)
     {
-      for (Properties::iterator i = m_properties.begin();
-           i != m_properties.end();
-           i++)
-      {
-        i->handle().compress();
-      }
+      for (size_t i = 0, e = m_properties.size(); i != e; ++i)
+        m_properties[i].handle().compress();
     }
 
   void clear(void)
     {
-      for (Properties::iterator i = m_properties.begin();
-           i != m_properties.end();
-           i++)
-      {
-        i->handle().clear();
-      }
+      for (size_t i = 0, e = m_properties.size(); i != e; ++i)
+        m_properties[i].handle().clear();
     }
 
   Properties &properties(void)
@@ -702,6 +688,7 @@ public:
     }
 
   IgCollectionItem create();
+  
   const char *name(void) const
     {
       return m_name.c_str();
@@ -712,9 +699,11 @@ public:
       return m_id;
     }
 
-  std::vector<LabelColumn> &columnLabels(void)
+  std::vector<ColumnInfo> &columnLabels(void)
     { return m_columnLabelsIndex; };
 
+  IgCollectionItem operator[](size_t i);
+  
 protected:
   IgCollection(const char *name, int id)
     : m_name(name), m_id(id), m_rowCount(0)
@@ -735,14 +724,14 @@ private:
       return l != m_labels.end();
     }
 
-  typedef std::vector<LabelColumn> ColumnLabels;
+  typedef std::vector<ColumnInfo> ColumnLabels;
   typedef std::vector<TypeColumn> ColumnTypes;
   typedef std::map<ColumnType, std::vector<IgColumnHandle> > ColumnTypeIndex;
   std::vector<std::string>  m_labels;
   std::vector<int>          m_primaryKeys;
-  std::vector<LabelColumn>  m_columnLabelsIndex;
-  Properties   m_properties;
-  ColumnTypeIndex m_columnTypesIndex;
+  ColumnLabels              m_columnLabelsIndex;
+  Properties                m_properties;
+  ColumnTypeIndex           m_columnTypesIndex;
   std::string m_name;
   int m_id;
   int m_rowCount;
@@ -912,16 +901,12 @@ public:
 
   void stream(std::ostream &stream)
     {
-      for (IgCollection::Properties::iterator i = m_collection->properties().begin();
-           i != m_collection->properties().end();
-           i++)
+      for (size_t i = 0, e = m_collection->properties().size(); i != e; ++i)
       {
-        IgColumnHandle &handle = i->handle();
+        IgColumnHandle &handle = m_collection->properties()[i].handle();
         handle.stream(stream, m_position);
-        if (i+1 != m_collection->properties().end())
-        {
+        if (i + 1 != e)
           stream << ", ";
-        }
       }
     }
 
@@ -958,73 +943,330 @@ private:
   unsigned int m_propertyPosition;
 };
 
-class IgAssociationSet
-{
-public:
-  typedef std::vector<IgAssociation> Associations;
-  typedef Associations::iterator Iterator;
+class IgDataStorage;
 
-  IgAssociationSet(const char *name)
-    :m_name(name)
+class IgAssociations
+{
+  struct AssociationRef
+  {
+    /** Constructor an association between two references. 
+        Notice that if the @a iB ref is not given, such an association
+        will always be stored after all the Associations sharing the same
+        iA.
+
+        Also notice that iA is effectively used as a key of the association,
+        while iB is the actual retrievable. I.e. if you do:
+        
+            associations.associate(a, b);
+        
+        If you do:
+            
+            associations.begin(a);
+        
+        you will get an iterator pointing to b, while if you do:
+        
+            associations.begin(b);
+        
+        you will *NOT* get an iterator pointing to a. If you want such a 
+        behavior you need to do:
+        
+            associations.associate(a, b);
+            associations.associate(b, a);
+        
+        @a iKey an IgRef to the object to associate which acts as a key.
+        
+        @a iValue an IgRef to the object that acts as a value.
+    */
+    AssociationRef(const IgRef &iKey = IgRef(), const IgRef &iValue = IgRef())
+    :key(iKey), value(iValue)
+    {}
+    
+    /** Order for Association, first by key ref, then by value ref,
+        This is the natural order in which objects are inserted in
+        associations.
+    */
+    bool operator<(const AssociationRef& other) const
+      {
+        if (key == other.key)
+          return value < other.value;
+        return key < other.key;
+      }
+
+    IgRef key;
+    IgRef value;
+  };
+
+  typedef std::vector<AssociationRef> Associations;
+
+public:
+  class iterator
+  {
+  public:
+    /** An end iterator. Both m_i and m_end will be initialised to 
+        end(). */
+    iterator(void)
+      :m_isOutOfRange(true)
+    {
+    }
+    /** Constructs an iterator over a given set of associations. 
+      
+        @a first is the first element in the range.
+        
+        @a last is the last element in the range.
+        
+        @a storage is the storage of the collections being associated,
+                   so that we can retrieve objects directly. 
+     */
+    iterator(const Associations::iterator &first,
+             const Associations::iterator &last,
+             IgDataStorage *storage)
+    :m_i(first),
+     m_end(last),
+     m_isOutOfRange(first == last),
+     m_storage(storage)
+    {
+    }
+    
+    IgCollectionItem operator*();
+
+    IgCollectionItem operator->(void)
+    {
+      return **this;
+    }
+
+    iterator operator++(int /*dummy*/)
+    {
+      IgAssociations::iterator tmp(m_i, m_end, m_storage);
+      ++(*this);
+      return tmp;
+    }
+    
+    iterator &operator++(void)
+    {
+      m_i++;
+      if (m_i == m_end)
+        m_isOutOfRange = true;
+      return *this;
+    }
+
+    iterator operator--(int /*dummy*/)
+    {
+      IgAssociations::iterator tmp(m_i, m_end, m_storage);
+      --(*this);
+      return tmp;
+    }
+    
+    iterator &operator--(void)
+    {
+      m_i--;
+      return *this;
+    }
+
+    iterator& operator+=(int delta)
+      {
+        m_i += delta;
+        if (m_i >= m_end)
+          m_isOutOfRange = true;
+        
+        return *this;
+      }
+
+    iterator& operator-=(int delta)
+      {
+        m_i -= delta;
+        if (m_i <= m_end)
+          m_isOutOfRange = false;
+        return *this;
+      }
+    
+    /** Compares two iterators. They are the same also if  we reached
+        the end of the range. They are different if one of the two is out of 
+        range.
+     */
+    bool operator==(const iterator& other)
+      {
+        if (m_isOutOfRange && other.m_isOutOfRange)
+          return true;
+        else if ((!m_isOutOfRange) && (!other.m_isOutOfRange))
+          return true;
+        else if (m_isOutOfRange || other.m_isOutOfRange)
+          return false;
+        return m_i == other.m_i;
+      }
+    
+    bool operator!=(const iterator& other)
+      {
+        if (m_isOutOfRange && other.m_isOutOfRange)
+          return false;
+        else if ((!m_isOutOfRange) && (!other.m_isOutOfRange))
+          return false;
+        else if (m_isOutOfRange || other.m_isOutOfRange)
+          return true;
+        return m_i != other.m_i;
+      }
+    
+    iterator operator+(int value)
+      {
+        if (m_i + value >= m_end)
+          return iterator();
+
+        return iterator(m_i + value, m_end, m_storage);
+      }
+      
+    size_t distance(iterator &other)
+    {
+      return std::distance(m_i, other.m_i);
+    }
+
+  private:
+    Associations::iterator  m_i;
+    Associations::iterator  m_end;
+    bool                    m_isOutOfRange;
+    IgDataStorage          *m_storage;
+  };
+
+  IgAssociations(IgDataStorage *storage)
+    :m_storage(storage),
+     m_resetIterators(true)
     { }
 
-  void associate(const IgRef &a, const IgRef &b)
-    { m_associations.push_back(IgAssociation(a, b)); }
+  void associate(const IgRef &a, const IgRef &b);
 
-  const char *name(void)
-    {return m_name.c_str(); }
+  /** @return an iterator to the first IgCollectionItem associated with
+      the one pointed by @a i.
+      
+      @a i an iterator to an IgCollectionItem of which we want to get the 
+           associated items.
+    */
+  iterator begin(const IgCollection::iterator &i)
+    { return begin(*i); }
 
-  Iterator begin(void)
-    { return m_associations.begin(); }
+  /** @return an iterator to the first IgCollectionItem associated with @a ref.
+  
+     @a ref an IgRef of which we want to get the associated items.
+  */
+  iterator begin(const IgRef &ref)
+    {
+      // Resets all the cached iterators in case this is marked as necessary.
+      if (m_resetIterators)
+      {
+        m_rangeBegin = m_associations.begin();
+        m_rangeEnd = m_associations.begin();
+        m_cachedRef = IgRef();
+        m_resetIterators = false;
+      }
+      
+      // If the ref is the same as the last one cached we simply
+      // return it again.
+      if (ref == m_cachedRef)
+        return m_cachedRangeIterator;
+      m_cachedRef = ref;
+      
+      // First possible association for a given collection.
+      // In general associations are navigated in order, which
+      // means we can short circuit finding the begin(i+1) reusing end(i).
+      AssociationRef first(ref, IgRef(0, 0));
+      
+      // Given the fact that begin(i+1) is likely to follow up begin(i),
+      // we exploit this fact by reusing the old range end as new rangeBegin.
+      // In case the above was not the case, we simply fallback to
+      // a full binary search of the starting point.
+      if (m_rangeEnd != m_associations.end()
+          && m_rangeEnd + 1 != m_associations.end()
+          && *m_rangeEnd < first 
+          && first < *(m_rangeEnd + 1))
+        m_rangeBegin = m_rangeEnd;
+      else
+        m_rangeBegin = std::lower_bound(m_associations.begin(),
+                                        m_associations.end(),
+                                        first);
 
-  Iterator end(void)
-    { return m_associations.end(); }
+      // We then search for the end of the range and return the iterator
+      // associated to the range. To do so we look for the lower_bound of the 
+      // last possible association for a given ref.
+      AssociationRef last(ref);
+      m_rangeEnd = std::upper_bound(m_rangeBegin, m_associations.end(), last);
 
-  int size(void)
-    { return m_associations.size(); }
+      m_cachedRangeIterator = iterator(m_rangeBegin, m_rangeEnd, m_storage);
+      return m_cachedRangeIterator;
+    }
+  
+  /** @return the end iterator for all the associations related to @a ref.
+      Notice that the end iterator is always the same regardless of the 
+      IgRef that was used for begin.
+  */
+  iterator end(void)
+    {
+      return iterator();
+    }
 
+  /** Return the number of associations */
+  size_t size(void)
+    { 
+      return m_associations.size();
+    }
+
+  /** Clears all the associations*/
   void clear(void)
-    { m_associations.clear(); }
+    { 
+      m_associations.clear();
+      m_resetIterators = true;
+    }
 
-  void reserve(unsigned int capacity)
+  /** Reserves enough space in the storage to hold @a capacity Associations.
+    */
+  void reserve(size_t capacity)
     { m_associations.reserve(capacity);}
 
-  void resize(unsigned int newSize)
-    { m_associations.resize(newSize);}
-
-  void compress(void)
-    { m_associations.reserve(m_associations.size());}
-
-  IgAssociation &operator[](unsigned int pos)
-    {
-      return m_associations[pos];
+  /** Resizes the storage to @a newSize elements. Notice that those elements
+      will be invalid associations, but the order in the storage will be 
+      maintained.
+    */
+  void resize(size_t newSize)
+    { 
+      m_associations.resize(newSize);
+      m_resetIterators = true;
     }
-private:
-  std::string m_name;
-  Associations m_associations;
-};
 
-class IgAssociatedSet;
+  void stream(std::ostream &s)
+    {
+      for (size_t i = 0, e = m_associations.size(); i != e; ++i)
+      {
+        AssociationRef &assoc = m_associations[i];
+        s << "[" << "[" << assoc.key.collectionId << ","
+                        << assoc.key.objectId << "],"
+                 << "[" << assoc.value.collectionId << ","
+                        << assoc.value.objectId << "]]";
+        if (i+1 != e)
+          s << ",";
+      }
+    }
+
+private:
+  std::string              m_name;
+  IgDataStorage           *m_storage;
+  Associations             m_associations;
+  Associations::iterator   m_rangeBegin;
+  Associations::iterator   m_rangeEnd;
+  IgRef                    m_cachedRef;
+  iterator                 m_cachedRangeIterator;
+  bool                     m_resetIterators;
+};
 
 class IgDataStorage
 {
 public:
   // FIXME: quick and dirty...
   typedef std::vector<std::string> CollectionNames;
-  typedef std::vector<std::string> AssociationSetNames;
+  typedef std::vector<std::string> AssociationsNames;
   typedef std::vector<IgCollection *> Collections;
-  typedef std::vector<IgAssociationSet *> AssociationSets;
 
   // Data storage is responsible for destroying all its collections
   // and their contents.
   ~IgDataStorage(void)
     {
-      for (AssociationSets::iterator i = m_associationSets.begin();
-           i != m_associationSets.end();
-           i++)
-      {
-        delete *i;
-      }
+      for (size_t ai = 0, ae = m_associationsStorage.size(); ai != ae; ++ai)
+        delete m_associationsStorage[ai];
 
       for (Collections::iterator i = m_collections.begin();
            i != m_collections.end();
@@ -1041,21 +1283,13 @@ public:
     }
 
   // FIXME: for the time being a little bit of duplication does not harm.
-  //        Maybe in future getCollection and getAssociationSet could be
+  //        Maybe in future getCollection and getAssociations could be
   //        put in a templated get<T> function. This needs some template magic
   //        which I rather avoid for the time being.
   IgCollection &getCollection(const char *label)
     {
       return *getCollectionPtr(label);
     }
-
-  IgAssociatedSet getAssociatedSetPtr(IgAssociationSet *associations,
-                                      IgCollectionItem &item,
-                                      AssociatedType which = BOTH_ASSOCIATED);
-
-  IgAssociatedSet getAssociatedSet(const char *name,
-                                   IgCollectionItem &item,
-                                   AssociatedType which = BOTH_ASSOCIATED);
 
   IgCollection &getCollectionByIndex(unsigned int index)
     {
@@ -1090,40 +1324,39 @@ public:
       return m_collections[std::distance(m_collectionNames.begin(), n)];
     }
 
-  IgAssociationSet &getAssociationSet(const char *label)
+  IgAssociations &getAssociations(const char *label)
     {
-      return *getAssociationSetPtr(label);
+      return *getAssociationsPtr(label);
     }
 
-  IgAssociationSet *getAssociationSetPtr(size_t indexInASetNames)
+  IgAssociations *getAssociationsPtr(size_t indexInASetNames)
     {
-      return m_associationSets[indexInASetNames];
+      return m_associationsStorage[indexInASetNames];
     }
 
-  IgAssociationSet *getAssociationSetPtr(const std::string &label)
+  IgAssociations *getAssociationsPtr(const std::string &label)
     {
-      return getAssociationSetPtr(label.c_str());
+      return getAssociationsPtr(label.c_str());
     }
 
-  IgAssociationSet *getAssociationSetPtr(const char * label)
+  IgAssociations *getAssociationsPtr(const char * label)
     {
-      AssociationSetNames::iterator n = std::find(m_associationSetNames.begin(),
-                                                  m_associationSetNames.end(),
+      AssociationsNames::iterator n = std::find(m_associationsNames.begin(),
+                                                  m_associationsNames.end(),
                                                   label);
-      if (n == m_associationSetNames.end())
+      if (n == m_associationsNames.end())
       {
-        IgAssociationSet *associationSet = new IgAssociationSet(label);
-        m_associationSetNames.push_back(label);
-        m_associationSets.push_back(associationSet);
-        return associationSet;
+        IgAssociations *associations = new IgAssociations(this);
+        m_associationsNames.push_back(label);
+        m_associationsStorage.push_back(associations);
+        return associations;
       }
-      return m_associationSets[std::distance(m_associationSetNames.begin(), n)];
+      return m_associationsStorage[std::distance(m_associationsNames.begin(), n)];
     }
 
   IgCollectionItem deref(const IgRef &ref)
     {
-      return IgCollectionItem(m_collections[ref.collectionId()],
-                              ref.objectId());
+      return IgCollectionItem(m_collections[ref.collectionId], ref.objectId);
     }
 
   CollectionNames &collectionNames(void)
@@ -1131,9 +1364,9 @@ public:
       return m_collectionNames;
     }
 
-  AssociationSetNames &associationSetNames(void)
+  AssociationsNames &associationsNames(void)
     {
-      return m_associationSetNames;
+      return m_associationsNames;
     }
 
   bool empty(void)
@@ -1147,124 +1380,25 @@ public:
     }
 private:
   CollectionNames m_collectionNames;
-  AssociationSetNames m_associationSetNames;
+  AssociationsNames m_associationsNames;
   Collections m_collections;
-  AssociationSets m_associationSets;
+  std::vector<IgAssociations *>   m_associationsStorage;
 };
-
-class IgAssociatedSet
-{
-public:
-  class Iterator
-  {
-  public:
-    // FIXME: IgCollectionItem should have an objectId method.
-    Iterator(IgDataStorage *storage, IgAssociationSet::Iterator current,
-             IgAssociationSet::Iterator end,
-             const IgRef &item,
-             enum AssociatedType associatedType = BOTH_ASSOCIATED)
-      :m_storage(storage),
-       m_cur(current),
-       m_end(end),
-       m_ref(item),
-       m_associatedType(associatedType)
-      {
-        find();
-      }
-
-    void operator++(int /*dummy*/)
-      {
-        m_cur++;
-        find();
-      }
-
-    void find(void)
-      {
-        while(m_cur != m_end)
-        {
-          if ((m_associatedType & RIGHT_ASSOCIATED)
-              && m_cur->first().objectId() == m_ref.objectId()
-              && m_cur->first().collectionId() == m_ref.collectionId())
-          {
-            m_pos = 0;
-            return;
-          }
-          if ((m_associatedType & LEFT_ASSOCIATED)
-              && m_cur->second().objectId() == m_ref.objectId()
-              && m_cur->second().collectionId() == m_ref.collectionId())
-          {
-            m_pos = 1;
-            return;
-          }
-          m_cur++;
-        }
-      }
-
-    bool operator==(const Iterator &other)
-      {
-        return other.m_cur == this->m_cur;
-      }
-
-    bool operator!=(const Iterator &other)
-      {
-        return other.m_cur != this->m_cur;
-      }
-
-    IgCollectionItem operator*(void)
-      {
-        return m_storage->deref(m_pos ? m_cur->first() : m_cur->second());
-      }
-
-  private:
-    IgDataStorage *m_storage;
-    IgAssociationSet::Iterator m_cur;
-    IgAssociationSet::Iterator m_end;
-    const IgRef m_ref;
-    int   m_pos;
-    enum AssociatedType m_associatedType;
-  };
-
-  IgAssociatedSet(IgDataStorage *storage,
-                  IgAssociationSet *associations,
-                  IgCollectionItem *item,
-                  enum AssociatedType associatedType = BOTH_ASSOCIATED)
-    : m_storage(storage),
-      m_associations(associations),
-      m_item(item),
-      m_associatedType(associatedType)
-    { }
-
-  Iterator begin(void)
-    {
-      Iterator result(m_storage,
-                      m_associations->begin(),
-                      m_associations->end(),
-                      static_cast<IgRef>(*m_item), m_associatedType);
-      return result;
-    }
-
-  Iterator end(void)
-    { return Iterator(m_storage, m_associations->end(),
-                      m_associations->end(),
-                      static_cast<const IgRef>(*m_item), m_associatedType); }
-private:
-  IgDataStorage *m_storage;
-  IgAssociationSet *m_associations;
-  IgCollectionItem *m_item;
-  enum AssociatedType m_associatedType;
-};
-
 
 std::ostream &operator<<(std::ostream &stream, IgCollection &collection);
-std::ostream &operator<<(std::ostream &stream, const IgRef &ref);
-std::ostream &operator<<(std::ostream &stream, const IgAssociation &association);
-std::ostream &operator<<(std::ostream &stream, IgAssociationSet &associationSet);
 std::ostream &operator<<(std::ostream &stream, IgDataStorage &storage);
 
 inline IgCollectionItem
-IgCollectionIterator::operator->(void)
+IgCollection::iterator::operator->(void)
 {
   return **this;
+}
+
+inline IgCollectionItem 
+IgAssociations::iterator::operator*()
+{
+  assert(!m_isOutOfRange);
+  return m_storage->deref(m_i->value);
 }
 
 #endif /* IGUANA_IG_COLLECTION_H */

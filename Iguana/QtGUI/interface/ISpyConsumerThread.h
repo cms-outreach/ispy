@@ -19,6 +19,7 @@ public:
   ~ISpyConsumerThread(void);
 
   void  listenTo(bool verbose, const std::string &host, int port);
+  bool hasNewEvent(void);
   std::string nextEvent(IgDataStorage *storage);
   std::string previousEvent(IgDataStorage *storage);
   void finalize(void);

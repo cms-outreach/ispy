@@ -1,3 +1,418 @@
+2010-03-29 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpy3DView.cc: ISPY_HD_PRINT environment variable forces 
+	  1080p resolution when saving images.
+	
+	* ISpy3DView.cc: reduces freezing when printing on linux.
+
+2010-03-24 Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* ISpyApplication.cc, index.htm, ispy-news.htm, release-notes.htm,
+	  ISpyApplication.cc, ISpySplashScreen.ui: version bumped to 1.4.5.
+
+	* cms-color-medium.png, cms-logo-medium.png, ispy.qrc: bigger versions
+	  of the logo added.
+
+	* IgCollection.cc: fix the way associations are streamed out.
+
+2010-03-24 Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-views.iml, default-style.iss, ISpyApplication.cc: add
+	  support for Event_V2 collection.
+
+2010-03-24 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.h, ISpyApplication.cc, ISpy3DView.h, ISpy3DView.cc:
+	  add event, run number and view name to the filename of 
+	  automatically printed pictures.
+
+2010-03-16 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc, default-views.iml, default-style.iss: add support for Event_V2
+
+2010-03-05 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* default-views.iml: add support for Vertices_V1
+
+2010-03-01 Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc: remove max energy display.
+
+	* ISpyApplication.cc: use helvetica for MET.
+
+	* ISpyApplication.cc: do not show calo clusters.
+
+2010-02-27 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy-news.htm, release-notes.htm: documentation updates for 1.4.4
+
+	* ispy.pro: build as release, not debug.
+
+2010-02-27 Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-style.iss, default-views.iml: support for CaloTowers_V2.
+
+	* ISpyApplication.cc: makeLegoTriggerObjects back among the available
+	  functions.
+
+2010-02-26 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: reworked the way maker function get registered.
+
+	* ISpyApplication.cc, ispy.cpp, ISpyApplication.cc,
+	  IgCollectionListModel.cc, IgCollectionTableModel.cc: remove all
+	  warnings.
+
+2010-01-28 Ianna Osborne <ianna.osborne@cern.ch>
+
+	* default-views.iml: support for splitted tracker geometry.
+
+2010-01-28 Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: version bumped to 1.4.4.
+	
+	* Framework/bin/igdumpstats.cpp 
+	  Framework/interface/IgCollection.h 
+	  Framework/interface/IgParser.h 
+	  Framework/src/IgCollection.cc 
+	  Framework/test/test_CollectionIOPerformance.cpp
+	  Framework/test/test_CreateSimpleAssociations.cpp
+	  Framework/test/test_CreateSimpleAssociations02.cpp
+	  Framework/test/test_CreateSimpleCollection.cpp
+	  Framework/test/test_CreateWriteReadWriteReadPrint.cpp
+	  Framework/test/test_CreateWriteReadWriteReadPrintNoAssociations.cpp
+	  Framework/test/test_NavigateAssociations.cpp
+	  Iguana/Framework/test/test_driver.cpp
+	  Iguana/QtGUI/interface/ISpyApplication.h
+	  Iguana/QtGUI/src/ISpyApplication.cc
+	  Iguana/QtGUI/src/IgCollectionTableModel.cc
+	  ispy-test.pro: Refactoring of the way associations in ig files are
+	  created / iterated.
+
+	  There is now a new iteration syntax that removes the need for an
+	  IgAssociatedSet by exploiting the fact that associations are always
+	  created in order.
+	  
+	  Notice that now associations are monodirectionally, i.e.,
+	  if you want to have the old behavior, you need to associate a to b
+	  and b to a.
+
+	  All the code using associations, including test, were redone to use 
+	  the new implementation.
+	  
+	  Tests now also employ the QtTest framework.
+	  
+	* QtGUI/test/test_CreateSimpleAssociations.cpp  
+	  QtGUI/test/test_CreateSimpleCollection.cpp
+	  QtGUI/test/test_CreateWriteReadWriteReadPrint.cpp
+	  QtGUI/test/test_CreateWriteReadWriteReadPrintNoAssociations.cpp
+	  QtGUI/test/test_NavigateAssociations.cpp: old test removed
+	  as more uptodate equivalent exists in Framework.
+
+
+2010-01-28 Tom McCauley <thomas.mccauley@cern.ch>
+	
+	* build-inst.htm, create-igfiles.htm, release-notes.htm, index.htm:
+	update docs for new release
+
+	* default-views.iml: add GsfTracks, PAT & GSF electrons to lego
+
+	* ISpyApplication.cc: add V2 collections to drawing limits and only show collections that exist in event
+
+2010-01-12 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* default-views.iml: add rec hits V2 to lego view
+
+	* ISpyApplication.cc, default-views.iml: add reco Tracks to Lego view
+	  by finding eta,phi from the outermost state of the track
+
+	* ISpyApplication.cc, default-views.iml: add photons to lego
+
+	* ISpyApplication.cc: change jet color so that it's the same as default
+	
+	* default-style.iss: change jet color and add PFJet
+	
+	* ISpyApplication.cc, default-views.iml: add TriggerObjects to
+	  lego
+
+2009-12-16  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* IgCollection.h, IgCollection.cc, ISpyApplication.cc:
+	  Reworked IgProperty to reduce amount of code to write.
+	  At the moment the only way to construct an IgProperty
+	  is to use the IgCollection::getProperty(name) method.
+	  This patch introduces a new constructor for IgProperty
+
+	      IgProperty(IgCollection *collection, const char *name)
+
+	  which internally does the same thing, but reduces the
+	  amount of code to be written from
+
+	      IgProperty POS = collection->getProperty("position");
+
+	  to
+
+	      IgProperty POS(collection, "position");
+
+	  This allows to collapse a few lines and simplify the
+	  code.
+	
+	* ISpyApplication.cc: Fixes issue with gcc 4.2 used on 
+	  Snow Leopard.
+
+	* IgCollection.h, IgCollection.cc, ISpyApplication.cc:
+	  Refactors the way IgAssociatedSets are created.
+	  In particular it is now possible to exploit IgAssociatedSets
+	  in the make* drawing methods.
+	  Notice this is only a temporary solution until we 
+	  actually rewrite the whole IgAssociation* logic
+	  so that it takes advantage of the ordered
+	  insertion order into the associations.
+	  However, given that this patch fixes a nasty bug
+	  when iterating over collections that have
+	  the same associated set, I simply commit the patch,
+	  pending a pretty much complete rewrite of 
+	  the whole thing.
+
+2009-12-13  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ig-specs.htm, faq.htm: documentation updated with
+	  ig file format description.
+
+2009-12-11  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* build-inst.htm: AFS build instructions back.
+
+	* images/ispy-rphi-clip2.png: updated with nice
+	  collision candidate image.
+
+2009-12-10  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: separate various layers of CSC.
+
+	* css-inst.htm, faq.htm: initial documentation of ISS
+	  files.
+
+	* default-views.iml, default-style.iss, default-views.xml,
+	  default-style.css, ispy.qrc: .css files renamed .iss, .xml ones
+	  renamed .iml.
+
+	* screenshots/ss1.png, screenshots/ss1_thumb.png, 
+	  screenshots/ss2.png, screenshots/ss2_thumb.png,
+	  screenshots/ss3.png, screenshots/ss3_thumb.png,
+	  screenshots/ss4.png, screenshots/ss4_thumb.png,
+	  screenshots/ss5.png, screenshots/ss5_thumb.png,
+	  screenshots/ss6.png, screenshots/ss6_thumb.png, 
+	  screenshots/ss7.png, screenshots/ss7_thumb.png,
+	  screenshots/ss8.png, screenshots/ss8_thumb.png,
+	  css-inst.htm, index.htm, iml-inst.htm: improvements 
+	  to the web page, new screenshots, initial description
+	  of iml files.
+
+	* default-views.iml: do not draw spline interpolation
+	  to the vertex for standalone muons and track in general.
+
+	* ISpyApplication.cc: project points correctly when using 
+	  make3DTracksNoVertex.
+	
+	* ISpyApplication.cc: add an helper method
+	  to decide which projection map to use for a given
+	  object in a collection. Fixes the crash with 
+	  RelValHiggs200ChargedTaus.ig experienced by Ianna.
+
+	* docs/css-inst.htm, docs/faq.htm, docs/iml-inst.htm:
+	  more documentation fixes. 
+	
+	* docs/ispy-news.htm docs/release-notes.htm: improved
+	  release notes.
+
+2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* default-views.xml, ISpyApplication.cc: new experimental
+	  sliced view which shows the various slices of CMS
+	  separately.
+	
+	* ISpyApplication.cc: optimizes the make*Box by using
+	  IgProperties rather than something else.
+
+	* default-views.xml: correct zoom factor for the sliced view.
+
+	* IgDrawTowerHelper.cc: normalise rotation axis used by the
+	  addRotatedBox method.
+
+	* default-views.iml, default-style.iss, default-views.xml,
+	  default-style.css: .css files renamed .iss, .xml ones renamed
+	  .iml.
+
+2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-views.xml, default-style.css: adds JETMET (PAT).
+
+2009-12-09  Giulio Eulisse <giulio.eulisse@cern.ch>
+	
+	* build-inst.htm, common.js, create-igfiles.htm, fancyzoom.min.js,
+	  faq.htm, favicon.ico, images/MacOSX_Universal_40px.gif,
+	  images/bullet_triangle_green.png, images/developers.png,
+	  images/download.png, images/download_background.png, 
+	  images/download_background_tall.png,
+	  images/email_support.jpg, images/email_support_letter.png,
+	  images/fancyzoom/closebox.png, images/feat1.png, images/feat2.png,
+	  images/feat3.png, images/feat4.png, images/feat5.png,
+	  images/feat6.png,
+	  images/index.htm, images/ispy-1-0.jpg, images/ispy-rphi-clip.png,
+	  images/ispy-rphi-clip2.png, images/ispy-rz-clip.jpg,
+	  images/ispy-rz-clip.png,
+	  images/ispy-rz.jpg, images/linux.png, images/lizard-icon-rather-small.png,
+	  images/lizard-icon-small.png, images/lizard-icon-very-small.png, 
+	  images/lizard-icon.png, images/mac.png,
+	  images/rounded_tr.png, images/support_background_bottom.jpg,
+	  images/support_background_top.jpg,
+	  images/supported_os.png, images/thumbs-up.png, images/twitter_32.png, 
+	  images/view_faqs.png, images/windows.png,
+	  index.htm, ispy-news.htm, ispy.css, make-web-area.sh, product.css,
+	  release-notes.htm, release-notes.old, screenshots/ss1-old.png,
+	  screenshots/ss1.png, screenshots/ss1_thumb-full.png,
+	  screenshots/ss1_thumb.png, screenshots/ss2-old.png,
+	  screenshots/ss2.png, screenshots/ss2_thumb-full.png, screenshots/ss2_thumb.png,
+	  screenshots/ss3-old.png, screenshots/ss3.png, screenshots/ss3_thumb-full.png,
+	  screenshots/ss3_thumb.png, screenshots/ss4-old.png, screenshots/ss4.png,
+	  screenshots/ss4_thumb-full.png, screenshots/ss4_thumb-old.png,
+	  screenshots/ss4_thumb.png, screenshots/ss4_thumb2.png,
+	  screenshots/ss5-old.png, screenshots/ss5.png, screenshots/ss5_thumb.png,
+	  screenshots/ss6-old.png, screenshots/ss6.png, screenshots/ss6_thumb-old.png,
+	  screenshots/ss6_thumb.png, screenshots/ss6_thumb2.png, some.css, ttt:
+	  documentation files added to repository.
+	  
+	* ISpyApplication.h, ispy.pro, ISpyApplication.cc, Style.h: Separates 
+	  the style class in a different header.
+
+	* ISpyApplication.h, ispy.pro, ISpyApplication.cc: Watches the 
+	  .iss specified on command line for changes and updates
+	  the display accordingly.
+
+	* ISpyApplication.h, ISpyApplication.cc, IgDrawTowerHelper.h,
+	  default-style.css, default-style.css, default-views.xml
+	  ISpyApplication.cc, IgDrawTowerHelper.cc, Projectors.h: Introduces 
+	  a new infrastructure for generic projections. This is handled
+	  by the Projector structure that is now passed to every make3D*. Such a
+	  structure includes all the possible helper functions that make3D* can use
+	  to do the projections. This is really a poor-man, unaccelerated, vertex
+	  shader infrastructure. Adding new views should be just a matter of
+	  specifying new projectors (including stuff like the tracker view!!!).
+	  Notice that besides the "project" helper function, that transforms a
+	  single point, there is also a "projectAs" one that allows to resolve
+	  discontinuities in the mapping by projecting a point using the same map that
+	  would be used to project another one. This comes very handy for RZ.
+	  Fixes RZ view for trigger objects, jets, met, muons, tracks, DT, CSC,
+	  all generic calo rec hits and clusters, simtracks.
+
+	* index.htm, ISpyApplication.cc, ISpySplashScreen.ui: version bumped
+	  to 1.4.3.
+
+	* ISpyApplication.cc: correct units for preshower rec hits graphic
+	  cuts.
+
+	* ISpyApplication.cc: Fixes the segfault happening whenever the 
+	  filename is wrong.
+
+	* ISpyApplication.cc, default-views.xml, ISpyApplication.h:
+	  Configurable autoplay via iml. Adds an "autoplay" property to the 
+	  view item in the iml so that we can select which views get shown 
+	  in autoplay mode. Lego is actually turned off in autoplay,
+	  as requested.
+
+	* default-style.css: fixes color for CaloClusters_V1.
+
+2009-12-09  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.h, ISpyConsumer.h, ISpyConsumerThread.h, 
+	  ISpyApplication.cc, ISpyConsumerThread.cc
+	  ISpyEventSelectorDialog.cc, ISpyEventSelectorDialog.h:
+	  stay on last event in the case no events are served from
+	  online producers.
+
+	* ISpyApplication.h, ISpyApplication.cc: ig file name
+	  (or online information) in title bar.
+
+2009-12-09  Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* default-style.css, default-views.xml: support for new _V2
+	  rechits.
+
+2009-12-04  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* default-views.xml, ISpyApplication.cc: Initial attempt at proper 
+	  RZ projection for tracks.
+
+	* ISpyApplication.h, default-style.css, default-views.xml
+	  ISpyApplication.cc: Display graphical client cuts on screen.
+
+	* default-views.xml, ISpyApplication.cc: photons are now (almost)
+	  correctly projected in RZ.
+
+2009-12-04  Ianna Osborne <ianna.osborne@cern.ch>
+	
+	* ISpyApplication.cc: Fixes the crash introduced by 
+	  filtering online stream.
+
+2009-12-04  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* CMS-Color.png, ISpyApplication.h, cms-bw-medium.png,
+	  ispy.qrc, ISpyApplication.cc: sharper logo and more 
+	  embedded logos.
+
+2009-12-03  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpyApplication.h, default-style.css: top 
+	  and left properies added to control position of annotations.
+
+	* Ig3DBaseModel.cc: fixes leak in setCamera reported by Ianna.
+
+2009-12-02  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc, ISpyApplication.h: enable online filtering.
+
+2009-12-01  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc, ISpySplashScreen.ui: version number changed to
+	  be 1.4.2.
+
+2009-12-01  Thomas McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyApplication.cc, default-views.xml: do not extrapolate
+	  muon tracks to the vertex.
+
+	* default-views.xml, default-style.css: draw CSS Rec Hits (2D).
+
+	* ISpyApplication.cc, default-views.xml, default-style.css:
+	  draw HLT information.
+
+2009-12-01  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ISpyApplication.cc: trap schema errors when they occur
+	  while rendering.
+
+2009-12-01  Ianna Osborne <ianna.osborne@cern.ch>
+
+	* ISpyApplication.cc, default-views.xml: display 
+	  of technical triggers.
+
+2009-11-30  Giulio Eulisse <giulio.eulisse@cern.ch>
+
+	* ispy.cpp: silence COIN complaints about indirect rendering
+	  when running remotely.
+
+	* ISpyApplication.cc, ISpyApplication.h: adds a new CSS property
+	  "annotation" to control annotation level. The property can be 
+	  either: "none", "normal", "full" or "press" and controls
+	  the amount of information that a given rendering method
+	  will show. This is useful, for example, to show the full event
+	  information while still being	able to quickly produce images 
+	  for the press.
+
+	* ISpyApplication.cc: fixes Lego views scaling. This fixes a
+	  regression which was introduced by the styles.
+
 2009-11-26  Giulio Eulisse <giulio.eulisse@cern.ch>
 
 	* ISpyApplication.cc: fixes bug when the logo is for some

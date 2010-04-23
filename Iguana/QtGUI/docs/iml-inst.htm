@@ -1,0 +1,259 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>iSpy | A powerful and lightweight event display.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="some.css" />
+<link type="text/css" rel="stylesheet" media="all" href="ispy.css" />
+<script type="text/javascript" src="common.js"></script>
+<!--[if lt IE 7]>
+<script language="JavaScript">window.attachEvent("onload", correctPNG);</script>
+<![endif]-->
+</head>
+
+
+
+
+<body class="sidebar-right">
+
+<!-- Start of main page ========================================== --> 
+
+<!-- tpl: page-default -->
+
+
+
+
+
+<div id="page" class="ispy">
+
+   <!-- Start of header  ========================================== --> 
+
+   <div id="page_top">
+      <div id="logo">
+         <a href="index.htm">
+            <img src="images/lizard-icon-very-small.png" alt="iSpy Home"/> iSpy home
+         </a>
+      </div>
+      <h1>
+         <a href="index.htm">iSpy</a>
+         <small>Configuring iSpy view layout (.iml files)</small>
+      </h1>
+      <p>
+         <div class="tm"></div><img class="tr" src="images/rounded_tr.png" alt="rounded border"/>
+      </p>                   
+   </div>
+
+   <!-- End of header ========================================== --> 
+
+   <div id="page_content">
+      <div class="ccolumn narrow">
+         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script> 
+         <script type="text/javascript" src="fancyzoom.min.js"></script>
+         <script type="text/javascript">
+            $(document).ready(function() {
+               $('#screenshots a').fancyZoom({scaleImg: true, closeOnClick: true, directory: 'images/fancyzoom'});
+            });
+         </script>
+
+   <!-- Start of main body ========================================== --> 
+   
+
+   <p></p> <!-- small vertical space -->
+
+   <p id="mainDescription"></p>
+      <h1>Configuring iSpy view layout</h1>
+
+      In order to configure which view are to be shown and what to show
+      in each view, iSpy uses a so-called <em>IML</em> file.
+      
+      Such a file is a normal xml file with the following structure:
+      
+      <pre>
+       &lt;?xml version="1.0" encoding='UTF-8'?>
+       &lt;layout>
+       &lt;camera position="-18.1, 8.6, 14.0" pointAt="0, 0, 0" scale="10.6" orthographic="true" rotating="true">
+         &lt;visibilityGroup>
+         &lt;view label="Standard 3D View" specialised="true" autoplay="true">
+           &lt;collection label="Provenance/Event information"
+                      spec="Event_V1:time:run:event:ls:orbit:bx"
+                      draw="make3DEvent"/>
+         &lt;/view>
+         &lt;/visibilityGroup>
+       &lt;/camera>
+       &lt;/layout>
+      </pre>
+      
+      The <code>&lt;layout/></code> tag is just the toplevel container.<br><br>
+      
+      The <code>&lt;camera/></code> tag specifies where the default camera
+      should be put for the contained views.<br><br>
+
+      The <code>&lt;visibilityGroup/></code> tag specifies where the default camera
+      should be put for the contained views.<br><br>
+      
+      The <code>&lt;view/></code> tag specifies properties of the a page view.
+      It contains a set of <code>&lt;collection/></code> tags, as many as one
+      per collection to be displayed.<br><br>
+
+      As for ISS files, a default IML file is compiled in the application
+      but the user can specify his own by passing it on the command line.<br><br>
+      The default IML can be found 
+      <a href="http://isscvs.cern.ch/cgi-bin/cvsweb.cgi/IGUANA/Iguana/QtGUI/interface/default-views.iml?rev=HEAD;content-type=text%2Fplain;cvsroot=iguana;only_with_tag=HEAD">here</a>.
+
+      <h2>Attributes of the <code>&lt;camera/></code> tag</h2>
+      
+      <ul>
+      <li><b>position</b>: the position of the camera.</li>
+      <li><b>pointAt</b>: the point at which the camera points at</li>
+      <li><b>scale</b>: the scale factor for elements shown<li>
+      <li><b>orthographic</b>: either true or false indicates whether the camera is orthographic or not.</li>
+      <li><b>rotating</b>: either true or false, indicates whether the camera can rotate or not. False means
+          that the camera is in panning mode.</li>
+      </ul>
+      
+      <h2>Attributes of the <code>&lt;view/></code> tag</h2>
+
+      <ul>
+      <li><b>label</b>: the name of the view as shown in the view selector widget</li>
+
+      <li><b>autoplay</b>: either true or false, indicates whether the view has to be
+          shown in autoplay mode.</li>
+      </ul>
+
+
+      <h2>Attributes of the <code>&lt;collection/></code> tag</h2>
+
+      <ul>
+      <li><b>label</b>: the name of the collection, as shown in the tree view. Use a (single) slash
+          to separate between the two levels</li>
+      <li><b>spec</b>: a specification that has to be matched by the collection and its properties.
+                This is a column separated list, where the first item is the name
+                of the collection while the subsequent items are the properties
+                that have to be matched in order for the drawing method to apply.</li>
+      <li><b>association</b>: the name of an association set which links the elements of the
+                       collection specified by "spec" to those specified by "other".
+                       this attribute is optional.</li>
+      <li><b>other</b>: similar to spec, it defines a second collection whose items are
+                 connected to the one specified in "spec" thanks to the associations
+                 specified in "associations"</li>
+      <li><b>draw</b>: the name of the drawing method to be executed on the collection
+                whe the specification found in spec applies.</li>
+      </ul>
+
+      <h2>List of draw operations</h2>
+      <ul>
+      <li><strong>make3DAnyBox</strong>: draw a box in 3D, without any special
+          projection. Coordinates from the vertices are picked up from the
+          following columns of the collection:
+          <ul> 
+            <li>front_1</li>
+            <li>front_2</li>
+            <li>front_3</li>
+            <li>front_4</li>
+            <li>back_1</li>
+            <li>back_2</li>
+            <li>back_3</li>
+            <li>back_4</li>
+          </ul>
+      </li>
+      <li><strong>makeAnyBox</strong>: draw a box in 3D, using the projection
+          specified for the given view. Coordinates from the vertices are
+          picked up from the following columns of the collection:
+          <ul> 
+            <li>front_1</li>
+            <li>front_2</li>
+            <li>front_3</li>
+            <li>front_4</li>
+            <li>back_1</li>
+            <li>back_2</li>
+            <li>back_3</li>
+            <li>back_4</li>
+          </ul>          
+      </li>
+      <li><strong>make3DAnyLine</strong>: draws a generic set of lines using 
+        the coordinates found in the columns "pos1" and "pos2" of the given 
+        collection.
+      </li>
+      <li><strong>make3DAnyPoint</strong>: draws a generic set of points.
+      The pos column of the collection is used to draw.
+      </li>
+      <li>make3DCSCStripDigis</li>
+      <li>make3DCSCWireDigis</li>
+      <li>make3DCaloClusters</li>
+      <li>make3DCaloTowers</li>
+      <li>make3DDTDigis</li>
+      <li>make3DDTRecHits</li>
+      <li>make3DEnergyBoxes</li>
+      <li>make3DEnergyTowers</li>
+      <li>make3DEvent</li>
+      <li>make3DHLTrigger</li>
+      <li>make3DJetShapes</li>
+      <li>make3DL1Trigger</li>
+      <li>make3DLimits</li>
+      <li>make3DMET</li>
+      <li>make3DPhoton</li>
+      <li>makeRZPhoton</li>
+      <li>makeAnyPhoton</li>
+      <li>make3DPointSetShapes</li>
+      <li>makeRZPointSetShapes</li>
+      <li>makeAnyPointSetShapes</li>
+      <li>make3DPreshowerTowers</li>
+      <li>make3DRPCRecHits</li>
+      <li>make3DSegmentShapes</li>
+      <li>make3DTechTrigger</li>
+      <li>make3DTrackPoints</li>
+      <li>make3DTrackingParticles</li>
+      <li>make3DTracks</li>
+      <li>makeRZTracks</li>
+      <li>makeAnyTracks</li>
+      <li>make3DTracksNoVertex</li>
+      <li>make3DTriggerObject</li>
+      <li>makeLegoCaloTowers</li>
+      <li>makeLegoEcalRecHits</li>
+      <li>makeLegoGrid</li>
+      <li>makeLegoHcalRecHits</li>
+      <li>makeLegoJets</li>
+      <li>makeRZECalRecHits</li>
+      <li>makeRZEPRecHits</li>
+      <li>makeRZHCalRecHits</li>
+      </ul>
+      </h2>
+<hr/> 
+ 
+   <p></p> <!-- small vertical space -->
+
+</div>
+
+<!-- End of main page ========================================== --> 
+
+         
+
+<!-- Start of right column ========================================== --> 
+              
+<div class="rcolumn"> 
+
+</div> <!-- /rcolumn -->
+
+                                
+<div class="clear">
+</div>
+
+</div> <!-- /page_content -->
+
+<div class="clear"></div>
+</div>
+
+
+<script src="/mint/?js" type="text/javascript"></script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-9332242-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>

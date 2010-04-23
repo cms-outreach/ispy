@@ -12,18 +12,17 @@
 # include <vector>
 # include <map>
 # include <Inventor/nodes/SoMarkerSet.h>
-# include <Inventor/nodes/SoDrawStyle.h>
-# include <Inventor/nodes/SoText2.h>
-# include <Inventor/SbViewportRegion.h>
 
 # include "Iguana/QtGUI/interface/ISpyConsumerThread.h"
+# include "Iguana/QtGUI/src/Style.h"
+# include "Iguana/QtGUI/src/Projectors.h"
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
 class IgCollection;
-class IgAssociationSet;
+class IgAssociations;
 class ISpyEventSelectorDialog;
 class ISpyMainWindow;
 class IgDataStorage;
@@ -47,10 +46,10 @@ class QProgressDialog;
 class QSortFilterProxyModel;
 class SoCamera;
 class SoMaterial;
-class SoDrawStyle;
 class SoFont;
 class ISpyPicturePublishingDialog;
-class SoTexture2;
+class SoImage;
+class QFileSystemWatcher;
 
 namespace lat
 {
@@ -85,26 +84,6 @@ class ISpyApplication : public QObject
 {
   Q_OBJECT
 public:
-
-  // The style structure is used to keep track of the context used to render
-  // a collection. It includes stuff that is graphics related (like the font
-  // and the material) and stuff which is physics related (like min-energy, 
-  // max-pt, etc).
-  struct Style
-  {
-    size_t                      spec;
-    SoMaterial                  *material;
-    SoDrawStyle                 *drawStyle;
-    SoFont                      *font;
-    SoMarkerSet::MarkerType     markerType;
-    SbViewportRegion            viewport;
-    SoText2::Justification      textAlign;
-    double                      minEnergy;
-    double                      maxEnergy;
-    double                      energyScale;
-    SoTexture2                  *background;
-  };
-
   ISpyApplication(void);
   ~ISpyApplication(void);
 
@@ -125,7 +104,11 @@ public slots:
   void                  previousEvent(void);
   void                  showAbout(void);
   void                  newEvent(void);
-  void 			autoPrint(void);
+  void                  updateCollections(void);
+  void                  openCss(const QString &filename);
+  void                  cssDirChanged(const QString &cssDir);
+  void                  checkCss(void);
+  void                  autoPrint(void);
 
 signals:
   void                  showMessage(const QString &fileName);
@@ -134,6 +117,8 @@ signals:
   void                  save(void);
   void                  print(void);
   void                  resetCounter(void);
+  void			getNewEvent(void);
+  void                  styleChanged(void);
 
 protected:
   int                   usage(void);
@@ -159,10 +144,11 @@ private slots:
   void                  restartPlay(void);
   void			updateFilterListModel(const QString& title);
   void			showPublish(void);
+  void			stopFiltering(void);
 
 private:
-  typedef void(*Make3D)(IgCollection **, IgAssociationSet **,
-                        SoSeparator *, Style *);
+  typedef void(*Make3D)(IgCollection **, IgAssociations **,
+                        SoSeparator *, Style *, Projectors &);
 
   struct CollectionSpec
   {
@@ -184,6 +170,7 @@ private:
     float                       scale;
     bool                        orthographic;
     bool                        rotating;
+    Projectors                  projectors;
   };
   
   struct ViewSpec
@@ -193,6 +180,7 @@ private:
     size_t                      startCollIndex;
     size_t                      endCollIndex;
     bool                        specialized;
+    bool                        autoplay;
   };
 
   struct Camera
@@ -206,67 +194,12 @@ private:
     ViewSpec                    *spec;
     Camera                      *camera;
   };
-
-  enum ISPY_DRAW_STYLE {
-    ISPY_SOLID_DRAW_STYLE = SoDrawStyle::FILLED,
-    ISPY_LINES_DRAW_STYLE = SoDrawStyle::LINES,
-    ISPY_POINTS_DRAW_STYLE = SoDrawStyle::POINTS
-  };
-
-  static const size_t ISPY_MARKER_STYLES = 2;
-
-  enum ISPY_MARKER_STYLE {
-    ISPY_OUTLINE_MARKER_STYLE = 0,
-    ISPY_FILLED_MARKER_STYLE  = 1
-  };
-
-  static const size_t ISPY_MARKER_SIZES  = 3;
-
-  enum ISPY_MARKER_SIZE {
-    ISPY_NORMAL_MARKER_SIZE = 0,
-    ISPY_BIG_MARKER_SIZE    = 1 * ISPY_MARKER_STYLES,
-    ISPY_HUGE_MARKER_SIZE   = 2 * ISPY_MARKER_STYLES,
-  };
-
-  enum ISPY_MARKER_SHAPE {
-    ISPY_SQUARE_MARKER_SHAPE = 0 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES),
-    ISPY_CROSS_MARKER_SHAPE  = 1 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES),
-    ISPY_PLUS_MARKER_SHAPE   = 2 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES),
-    ISPY_CIRCLE_MARKER_SHAPE = 3 * (ISPY_MARKER_SIZES * ISPY_MARKER_STYLES)
-  };
-
-  enum ISPY_TEXT_ALIGN {
-    ISPY_TEXT_ALIGN_LEFT,
-    ISPY_TEXT_ALIGN_RIGHT,
-    ISPY_TEXT_ALIGN_CENTER
-  };
-
-  struct StyleSpec
-  {
-    std::string                 viewName;
-    std::string                 collectionName;
-    std::string                 background;
-    float                       diffuseColor[3];
-    float                       transparency;
-    float                       lineWidth;
-    unsigned int                linePattern;
-    float                       fontSize;
-    std::string                 fontFamily;
-    ISPY_DRAW_STYLE             drawStyle;
-    ISPY_MARKER_SHAPE           markerShape;
-    ISPY_MARKER_SIZE            markerSize;
-    ISPY_MARKER_STYLE           markerStyle;
-    ISPY_TEXT_ALIGN             textAlign;
-    double                      minEnergy;
-    double                      maxEnergy;
-    double                      energyScale; 
-  };
   
   struct Collection
   {
     CollectionSpec              *spec;
     IgCollection                *data[2];
-    IgAssociationSet            *assoc;
+    IgAssociations            *assoc;
     QTreeWidgetItem             *item;
     SoSwitch                    *node;
     SoSeparator                 *sep;
@@ -347,18 +280,20 @@ private:
                                    Make3D make3D,
                                    Qt::CheckState visibility);
   void                  view(const char *name,
-                             bool specialized);
+                             bool specialized,
+                             bool autoplay);
 
   void                  camera(float *pos,
                                float *pointAt,
                                float scale,
                                bool orthographic,
-                               bool rotating);
+                               bool rotating,
+                               const std::string &projection);
 
   void                  visibilityGroup(void);
 
   void                  displayCollection(Collection &c);
-  void                  updateCollections(void);
+  void                  createStats(void);
   lat::ZipArchive *     loadFile(const QString &fileName);
   void                  readData(IgDataStorage *to,
                                  lat::ZipArchive *archive,
@@ -371,6 +306,7 @@ private:
   void                  filter(const char *friendlyName,
 			       const char *collectionSpec);
   bool                  filter(void);
+  void			filterEvent(void);
   bool                  doFilterCollection(const Collection &collection, const char *algoName, const char *result);
   void                  doUpdateFilterListModel(const Collection &collection);
   // Helper methods to handle rendering styles.
@@ -378,14 +314,19 @@ private:
                                           enum ISPY_MARKER_SIZE size,
                                           enum ISPY_MARKER_SHAPE shape);
   void                      style(const char *rule, const char *css);
+  void                      resetStyleStack(size_t level);
   void                      parseCss(const char *css);
   bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);
-  
   // Helper methods to handle views layouts.
   void                      parseViewsDefinition(QByteArray &data);
   bool                      parseViewsDefinitionFile(const char *filename);
+
+  void                      registerDrawFunction(const char *name, Make3D func);
   void                      registerDrawFunctions(void);
+  
+  // Tells the viewer that the label to be used for autoprinting is changed.
+  void                      updateEventMessage(void);
 
   int                   m_argc;
   char                  **m_argv;
@@ -422,6 +363,8 @@ private:
   ISpyConsumerThread    m_consumer;
   
   bool                  m_online;
+  std::string 		m_host;
+  int			m_port;
   bool                  m_autoEvents;
   bool                  m_exiting;
   QTimer                *m_animationTimer;
@@ -436,9 +379,12 @@ private:
   QFont                 *m_itemFont;
   QActionGroup          *m_viewPlaneGroup;
   QActionGroup          *m_viewModeGroup;
+  QFileSystemWatcher    *m_fileWatcher;
   ISpyPicturePublishingDialog *m_pubDialog;
   QTimer		*m_printTimer;
   QString		m_metaData;
+  QProgressDialog       *m_filterProgressDialog;
+  int			m_counter;
 
   class MatchByName {
   public:
@@ -461,7 +407,7 @@ private:
   //
   typedef std::vector<StyleSpec> StyleSpecs;
   typedef std::vector<Style>     Styles;
-  typedef std::map<size_t, size_t> StylesMap;
+  typedef std::vector<size_t>    StylesMap;
 
 
   // Storage for all the available styles.
@@ -470,10 +416,19 @@ private:
   Styles                m_styles;
   // Mapping between a StyleSpec and an active style, so that we avoid
   // creating the latter more than once.
+  // We use MAX_SIZE to indicate that there is no mapping yet.
   StylesMap             m_stylesMap;
+
   // Name of the css file to use to read style information from. Since
   // it's cascading it's contents get appended at the end of the default ones.
   std::string           m_cssFilename;
+  // The index of the last StyleSpec which was created by the default style
+  // sheet. This is used to revert to defaults in case the style passed on 
+  // command line is not correct.
+  // Reverting to defaults only implies resizing m_styleSpecs to this
+  // value. All the rest is handled automatically in findStyle.
+  size_t                m_defaultStyleLevel;
+  
   
   //
   // Data concerning the view layout definition.
@@ -485,6 +440,9 @@ private:
   // Name of the view layout file to read. The file has to contain the full 
   // view description.
   std::string             m_viewsLayoutFilename;
+  
+  // Hold the name of the current event.
+  QString                 m_eventName;
 };
 
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>

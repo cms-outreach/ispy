@@ -32,6 +32,12 @@ ISpyConsumerThread::listenTo(bool verbose, const std::string &host, int port)
   m_mutex.unlock();
 }
 
+bool
+ISpyConsumerThread::hasNewEvent(void)
+{
+  return m_consumer->hasNewEvent();
+}
+
 std::string
 ISpyConsumerThread::nextEvent(IgDataStorage *storage) 
 {

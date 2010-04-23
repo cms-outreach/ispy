@@ -18,6 +18,7 @@ public:
 
   void			setModel(QAbstractItemModel * model);
   const QString 	filterText(const QString &page);
+  const QString 	fullFilterText(void);
 
 public slots:
   void 			updateDialog(void);

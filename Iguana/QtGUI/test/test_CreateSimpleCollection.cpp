@@ -73,7 +73,7 @@ main()
   assert(tracks.size() == 4);
 
   // Reading it back and printing everything to screen.
-  for (IgCollectionIterator i = tracks.begin();
+  for (IgCollection::iterator i = tracks.begin();
        i != tracks.end();
        i++)
   {

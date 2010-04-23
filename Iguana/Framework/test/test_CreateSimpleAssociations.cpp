@@ -4,8 +4,11 @@
 # include <IgCollection.h>
 #endif
 #include <iostream>
-int
-main()
+
+#include <QtTest/QtTest>
+
+void
+doTestCreateSimpleAssociations()
 {
   IgDataStorage storage;
   // Create a collection of tracks.
@@ -48,10 +51,10 @@ main()
 
   // One to one associations
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters/V1");
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters/V1");
 
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
     while((c != clusters.end()) && (t != tracks.end()))
     {
@@ -59,14 +62,14 @@ main()
       t++;
       c++;
     }
-    assert(trackClusters.size() == 10);
+    QVERIFY(trackClusters.size() == 10);
   }
   // One to many
   {
-    IgAssociationSet &trackClusters = storage.getAssociationSet("TrackClusters2/V1");
+    IgAssociations &trackClusters = storage.getAssociations("TrackClusters2/V1");
 
-    IgCollectionIterator c = clusters.begin();
-    IgCollectionIterator t = tracks.begin();
+    IgCollection::iterator c = clusters.begin();
+    IgCollection::iterator t = tracks.begin();
 
     while((c != clusters.end()) && (t != tracks.end()))
     {

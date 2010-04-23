@@ -7,6 +7,7 @@
 #include <Inventor/nodes/SoGroup.h>
 #include <Inventor/nodes/SoIndexedFaceSet.h>
 #include <Inventor/nodes/SoIndexedLineSet.h>
+#include "Iguana/QtGUI/src/Projectors.h"
 #include <vector>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
@@ -38,7 +39,7 @@ class IgDrawTowerHelper
 
 public:
 
-  IgDrawTowerHelper(SoGroup *);
+  IgDrawTowerHelper(SoGroup *, Projectors &);
 
   ~IgDrawTowerHelper();
 
@@ -49,11 +50,17 @@ public:
   void addTower(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
                 IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
 
+  void addTowerProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
+                         IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
+
   /**
       Add a single tower outline whose height does not scale(i.e. tower floor is front face, roof is back face)
   */
   void addTowerOutline(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-		       IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
+                       IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
+
+  void addTowerOutlineProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
+                                IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
 
   /**
       Add a single tower whose floor is the front face and whose height scales according to
@@ -64,6 +71,11 @@ public:
                 float heightContent,
                 float heightScale);
 
+  void addTowerProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
+                         IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+                         float heightContent,
+                         float heightScale);
+
   /**
       Add a single tower whose floor is offset(heightOffset) from the front face
       and whose height scales according to
@@ -73,6 +85,12 @@ public:
                 IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
                 float heightContent, float heightOffset,
                 float heightScale);
+
+  void addTowerProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
+                         IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+                         float heightContent, float heightOffset,
+                         float heightScale);
+
   /**
      Add a single lego tower with two energy fractions 
    */
@@ -84,6 +102,13 @@ public:
   void addScaledBox(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
                     IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
                     float scaleFraction);
+
+  void addScaledBoxProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
+                             IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+                             float scaleFraction);
+
+  void addRotatedBox(IgV3d &pos, IgV3d &axis, double angle,
+                     double w, double h, double d);
 
 private:
 
@@ -98,13 +123,15 @@ private:
   std::vector<int>      m_faceIndices;
   std::vector<int>      m_lineIndices;
   std::vector<SbVec3f>  m_corners;
+  Projectors           &m_projectors;
+
 
   void setLineIndices(int p1, int p2, int p3, int p4, int p5);
   void setLineIndices(int p1, int p2);
   void setFaceIndices(int p1, int p2, int p3, int p4);
   void drawTower(SbVec3f *vertices);
-  void drawTowerOutline(SbVec3f &sf1, SbVec3f &sf2, SbVec3f &sf3, SbVec3f &sf4,
-			SbVec3f &sb1, SbVec3f &sb2, SbVec3f &sb3, SbVec3f &sb4);
+  void drawTowerOutline(SbVec3f *vertices);
+  SbVec3f *projectVertices(SbVec3f *vertices);
 };
 
 

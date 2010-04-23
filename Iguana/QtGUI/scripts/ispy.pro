@@ -66,6 +66,8 @@ LIBS += -L$$EXPAT_BASE/lib -lexpatstatic
 
 unix:!mac { LIBS += -L$$EXPAT_BASE/lib -lexpat }
 
+#QMAKE_CXXFLAGS_RELEASE="-O0 -ggdb"
+
 mac {
 LIBS += -framework QuickTime
 ICON = Iguana/QtGUI/src/ispy.icns
@@ -73,6 +75,8 @@ QMAKE_INFO_PLIST = Iguana/QtGUI/src/Info.plist
 }
 
 QT += network opengl
+
+#QMAKE_CXXFLAGS_RELEASE = -O0 -ggdb
 
 unix:!mac {
 # Statically link stdc++ and libgcc.

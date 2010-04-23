@@ -19,11 +19,12 @@ interrupt(int /* sig */)
 class ISpyConsumer : public IgNet
 {
 public:
-  static const uint32_t MAX_EVENT_BUFFER = 50;
+  static const uint32_t MAX_EVENT_BUFFER = 10;
 
   ISpyConsumer(bool verbose, const std::string &host, int port)
     : IgNet("ispy-consumer"),
-      m_eventIndex(0)
+      m_eventIndex(0),
+      m_newEvent(false)
     {
       logme() << "INFO: listening for data from " << host << ':' << port << '\n';
       debug(verbose);
@@ -36,24 +37,22 @@ public:
       return ! m_events.empty ();
     }
   
+  bool
+  hasNewEvent(void)
+    {
+      return m_newEvent;
+    }
+  
   IgNet::Object&
   newEvent(void)
     {
-      bool newEvent = false;
-      
       if(m_events.back().lastreq == 0)
       {
 	m_eventIndex = m_events.size()-1;
-	newEvent = true;
-      }
-      else if (++m_eventIndex > m_events.size()-1)
-      {
-	m_eventIndex = 0;
+	m_newEvent = true;
       }
       m_events[m_eventIndex].lastreq = Time::current();
-
-      if(! newEvent)
-	m_events[m_eventIndex].name.append("*");
+      m_newEvent = false;
 	  
       return m_events[m_eventIndex];
     }
@@ -79,6 +78,7 @@ public:
 	    }
 	    x << self->m_events.size();
 	    self->m_events.push_back(o);
+	    self->m_newEvent = true;
 
 	    x << "\n";
 	  }
@@ -104,6 +104,7 @@ public:
 private:
   size_t			m_eventIndex;
   std::deque<IgNet::Object>	m_events;
+  bool				m_newEvent;
 };
 
 #endif // QT_GUI_ISPY_CONSUMER_H

@@ -22,6 +22,8 @@
   min-energy: 0.2;
   max-energy: 5.0;
   energy-scale: 1.0;
+  left: 0.;
+  top: 0.;
 }
 
 Background {
@@ -34,12 +36,45 @@ Event_V1 {
   font-size: 24.0; 
   font-family: Arial;
   background: :/images/cms-logo-small.png;
+  left: 0.125;
+  top: 0.025;
 }
 
-L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); text-align: right;}
-TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
+Event_V2 {
+  diffuse-color: rgb(1.0, 1.0, 1.0); 
+  font-size: 24.0; 
+  font-family: Arial;
+  background: :/images/cms-logo-small.png;
+  left: 0.125;
+  top: 0.025;
+}
+
+L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); 
+  text-align: right;
+  left: 0.985;  
+  top: 0.025;
+  }
+
+TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); 
+                  text-align: right; 
+                  left: 0.125;
+                  top: 0.5;
+}
+
+Internal_Limits_V1 {
+  left: 0.35;
+  top: 0.8;
+}
+
+TechTrigger_V1 {
+  text-align: left; 
+  left: 0.70;
+  top: 0.025;
+}
+
 Products_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 Errors_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
+
 
 // Default geometry style.
 Tracker3D_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.95; }
@@ -82,6 +117,13 @@ TriggerObjects_V1
 }
 
 Tracks_V1
+{
+  draw-style: lines; line-width: 3;
+  diffuse-color: rgb(1.0, 0.7, 0.1);
+  marker-style: outline;
+}
+
+Tracks_V2
 {
   draw-style: lines; line-width: 3;
   diffuse-color: rgb(1.0, 0.7, 0.1);
@@ -140,7 +182,18 @@ HERecHits_V1 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scal
 HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.005;}
 HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 0.005;}
 
-CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0); diffuse-color: rgb(0, 0, 0);}
+/* FIXME: we should really support wildcards */
+EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.25; energy-scale: 1.0;}
+EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.8; energy-scale: 1.0;}
+ESRecHits_V2 {diffuse-color: rgb(0.3, 0.64, 0.15); min-energy: 0.001; energy-scale: 100.; }
+HBRecHits_V2 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
+HERecHits_V2 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
+HFRecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.005;}
+HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 0.005;}
+
+
+
+CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0); }
 SuperCluster_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); font-size: 14;}
 
 DTDigis_V1 {
@@ -171,6 +224,16 @@ CSCStripDigis_V1 {diffuse-color: rgb(1.0, 0.2, 1.0);}
 
 RPCRecHits_V1 {
   diffuse-color: rgb(1.0, 1.0, 0.2);
+  line-width: 3;
+}
+
+CSCRecHit2Ds_V1 {
+  diffuse-color: rgb(0.54, 0.89, 0.63);
+  line-width: 3;
+}
+
+CSCRecHit2Ds_V2 {
+  diffuse-color: rgb(0.54, 0.89, 0.63);
   line-width: 3;
 }
 
@@ -265,6 +328,11 @@ CaloTowers_V1 {
   diffuse-color: rgb(0.1, 1.0, 0.2);
 }
 
+CaloTowers_V2 {
+  transparency: 0.75;
+  diffuse-color: rgb(0.1, 1.0, 0.2);
+}
+
 Photons_V1 { 
   diffuse-color: rgb(1.0, 1.0, 0.0); 
   draw-style: lines;
@@ -279,11 +347,35 @@ PATPhotons_V1 {
 
 Jets_V1 {
   transparency: 0.6; 
-  diffuse-color: rgb(1.0, 1.0, 1.0);
+  diffuse-color: rgb(1.0, 1.0, 0.0);
+  marker-shape: cross;
+}
+
+PATJets_V1 {
+  transparency: 0.6; 
+  diffuse-color: rgb(1.0, 1.0, 0.0);
+  marker-shape: cross;
+}
+
+PFJets_V1 {
+  transparency: 0.6; 
+  diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
 }
 
 METs_V1 { 
+  diffuse-color: rgb(1.0, 1.0, 0.5); 
+  draw-style: lines;
+  line-width: 3;
+  line-pattern: 0x0fff;
+  font-size: 14.0;
+  font-family: Helvetica;
+  top: 0;
+  left: 0;
+  text-align: center;
+}
+
+PATMETs_V1 { 
   diffuse-color: rgb(1.0, 1.0, 0.5); 
   draw-style: lines;
   line-width: 3;

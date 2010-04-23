@@ -6,12 +6,13 @@
 # include <IgParser.h>
 #endif
 
+#include <QtTest/QtTest>
 #include <iostream>
 #include <sstream>
 #include <string>
 
-int
-main(int argc, char **argv)
+void
+doTestCreateWriteReadWriteReadPrintNoAssociations(void)
 {
   IgDataStorage storage;
   // Create a collection of tracks.
@@ -75,6 +76,6 @@ main(int argc, char **argv)
   os3 << storage3 << std::endl;
 
   // Check it is always the same.
-  assert (os2.str() == os1.str());
-  assert (os3.str() == os1.str());
+  QVERIFY(os2.str() == os1.str());
+  QVERIFY(os3.str() == os1.str());
 }

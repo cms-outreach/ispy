@@ -125,21 +125,18 @@ ISpy3DView::printBitmap(const QString &file,
 
   SbVec2s             pixels(outvr.getViewportSizePixels());
   SbVec2s             size((short)(pixels[0] + 0.5), (short)(pixels[1] + 0.5));
+  if (getenv("ISPY_HD_PRINT"))
+  {
+    size[0] = 1920;
+    size[1] = 1080;
+  }
   SbVec2s             origin = outvr.getViewportOriginPixels();
   outvr.setViewportPixels(origin, size);
 
-  // Set up a custom GL render action for the offscreen rendered.
-  // Do *not* use the one returned by `getGLRenderAction()': doing
-  // so leaves the display in a confused state and doesn't produce
-  // an output file.  This way we also avoid issues with having to
-  // mess and then later reset antialiasing and related parameters.
-  SoGLRenderAction    *ra = new SoGLRenderAction(outvr);
   SoOffscreenRenderer *renderer = new SoOffscreenRenderer(outvr);
 
   getSceneManager()->getBackgroundColor().getValue(r, g, b);
   renderer->setBackgroundColor(SbColor(r, g, b));
-  renderer->setGLRenderAction(ra);
-  ra->setTransparencyType(SoGLRenderAction::SORTED_OBJECT_BLEND);
 
   // Want to render from above the SceneGraph so we get what the
   // camera sees; SoQtViewer uses the following code.(FIXME:
@@ -175,7 +172,6 @@ ISpy3DView::printBitmap(const QString &file,
 			 "Ok");
   }
   delete renderer;
-  delete ra;
 }
 
 void
@@ -575,6 +571,8 @@ ISpy3DView::toggleCameraType(void)
   cameraToggled();
 }
 
+
+
 void
 ISpy3DView::setCameraType(QAction * /*action*/)
 {
@@ -594,11 +592,19 @@ ISpy3DView::invertCamera(void)
 }
 
 void
+ISpy3DView::setEventMessage(const QString &message)
+{ 
+  m_currentEvent = message;
+}
+
+
+void
 ISpy3DView::autoPrint(QString text)
 {
   QDateTime dt = QDateTime::currentDateTime();
-  QString fName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
-  QString dName = "iSpy-" + dt.toString("hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
+  qDebug() << m_currentEvent << "--";
+  QString fName = "iSpy-" + m_currentEvent + dt.toString("-hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
+  QString dName = "iSpy-" + m_currentEvent + dt.toString("-hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
 
   SbColor c = getBackgroundColor();
   SbViewportRegion    outvr = this->getViewportRegion();
@@ -633,6 +639,7 @@ ISpy3DView::autoPrint(QString text)
   if  (file.open(QIODevice::WriteOnly))
   {
     QTextStream stream(&file);
+    stream << m_currentEvent << "\n";
     stream << dt.toString("ddd MMM d hh:mm:ss.zzz yyyy") << "\n";
     stream << text << "\n";
     file.close();

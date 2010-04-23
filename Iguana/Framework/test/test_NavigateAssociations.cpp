@@ -6,8 +6,95 @@
 #include <iostream>
 #include <sstream>
 
-int
-main()
+#include <QtTest/QtTest>
+
+void
+foo()
+{
+  std::cerr << "debug" << std::endl;
+}
+
+void
+doTestNavigateOneAssociation()
+{
+  IgDataStorage storage;
+  IgCollection &a = storage.getCollection("A/V1");
+  IgCollection &b = storage.getCollection("B/V1");
+  IgProperty A = a.addProperty("a", 0);
+  IgProperty B = b.addProperty("b", 0);
+  IgAssociations &ba = storage.getAssociations("AB/V1");
+
+  IgCollectionItem t1 = a.create();
+  IgCollectionItem t2 = b.create();
+  t1[A] = 1;
+  t2[B] = 2;
+  ba.associate(t2, t1);    
+  bool found = false;
+  for (IgCollection::iterator ci = b.begin(), ce = b.end(); ci != ce; ++ci)
+  {
+    QVERIFY(ci->get<int>(B) == 2);
+    for (IgAssociations::iterator ai = ba.begin(ci), ae = ba.end(); ai != ae; ++ai)
+    {
+      QVERIFY(ai->get<int>(A) == 1);
+      found = true;
+    }
+  }
+  QVERIFY(found);
+}
+
+void
+doTestNavigateAssociationsOneToOne()
+{
+  IgDataStorage storage;
+  IgCollection &a = storage.getCollection("A/V1");
+  IgCollection &b = storage.getCollection("B/V1");
+  IgProperty A = a.addProperty("a", 0);
+  IgProperty B = b.addProperty("b", 0);
+  IgAssociations &ab = storage.getAssociations("AB/V1");
+  IgAssociations &ba = storage.getAssociations("BA/V1");
+  for (int i = 0; i < 10 ; ++i)
+  {
+    IgCollectionItem t1 = a.create();
+    IgCollectionItem t2 = b.create();
+    t1[A] = i;
+    t2[B] = i;
+    ab.associate(t1, t2);
+    ba.associate(t2, t1);    
+  }
+
+  QVERIFY(ab.size() == 10);
+  size_t count = 0;
+  for (IgCollection::iterator ci = a.begin(), ce = a.end(); ci != ce; ++ci)
+  {
+    QVERIFY(ci->get<int>(A) == count);
+    for (IgAssociations::iterator ai = ab.begin(ci), ae = ab.end(); ai != ae; ++ai)
+    {
+      QVERIFY(ai->get<int>(B) == count);
+      count++;
+    }
+  }
+  std::cerr << count << std::endl;
+  QVERIFY(count == 10);
+  
+  QVERIFY(ab.size() == 10);
+  count = 0;
+  for (IgCollection::iterator ci = b.begin(), ce = b.end(); ci != ce; ++ci)
+  {
+    QVERIFY(ci->get<int>(B) == count);
+    for (IgAssociations::iterator ai = ba.begin(ci), ae = ba.end(); ai != ae; ++ai)
+    {
+      if (count == 8)
+        foo();
+      QVERIFY(ai->get<int>(A) == count);
+      count++;
+    }
+  }
+  std::cerr << count << std::endl;
+  QVERIFY(count == 10);
+}
+
+void
+doTestNavigateAssociations()
 {
   IgDataStorage storage;
 
@@ -40,11 +127,17 @@ main()
   IgProperty M_Y = measurements.addProperty("y", 0.0);
   IgProperty M_Z = measurements.addProperty("z", 0.0);
 
-  IgAssociationSet &trackMeasurements = storage.getAssociationSet("TrackMeasurements/V1");
+  IgAssociations &trackMeasurements = storage.getAssociations("TrackMeasurements/V1");
+  // We also create an empty association to test that iteration works also in 
+  // case no objects are found.
+  storage.getAssociations("EmptyAssociations/V1");
+  std::vector<double> expectedResults;
 
-  for (int i = 0; i < 10 ; i++)
+  int k = 0;
+  for (int i = 0; i < 10 ; ++i)
   {
     IgCollectionItem t = tracks.create();
+    QVERIFY(t.currentRow() == i);
     t[P_T] = static_cast<double>(i*10);
     t[X] = static_cast<double>(i*10);
     t[Y] = static_cast<double>(i*10);
@@ -52,153 +145,155 @@ main()
     t[P_X] = static_cast<double>(i*10);
     t[P_Y] = static_cast<double>(i*10);
     t[P_Z] = static_cast<double>(i*10);
-      for (int j = 0; j < i ; j++)
-      {
-        IgCollectionItem m = measurements.create();
-        m[M_X] = static_cast<double>(j);
-        m[M_Y] = static_cast<double>(j);
-        m[M_Z] = static_cast<double>(j);
-        trackMeasurements.associate(t, m);
-      }
+    // Notice that the first track does not have any associations!
+    for (int j = 0; j < i ; ++j)
+    {
+      IgCollectionItem m = measurements.create();
+      QVERIFY(m.currentRow() == k++);
+      m[M_X] = static_cast<double>(i);
+      m[M_Y] = static_cast<double>(i);
+      m[M_Z] = static_cast<double>(i);
+      trackMeasurements.associate(t, m);
+      expectedResults.push_back(i);
+    }
   }
-
-  // Debug stuff... print out the result.
-  std::cerr << storage << std::endl;
-
-  std::vector<double> expectedResults;
-  expectedResults.push_back(0);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(2);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(2);
-  expectedResults.push_back(3);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(2);
-  expectedResults.push_back(3);
-  expectedResults.push_back(4);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(2);
-  expectedResults.push_back(3);
-  expectedResults.push_back(4);
-  expectedResults.push_back(5);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(2);
-  expectedResults.push_back(3);
-  expectedResults.push_back(4);
-  expectedResults.push_back(5);
-  expectedResults.push_back(6);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(2);
-  expectedResults.push_back(3);
-  expectedResults.push_back(4);
-  expectedResults.push_back(5);
-  expectedResults.push_back(6);
-  expectedResults.push_back(7);
-  expectedResults.push_back(0);
-  expectedResults.push_back(1);
-  expectedResults.push_back(2);
-  expectedResults.push_back(3);
-  expectedResults.push_back(4);
-  expectedResults.push_back(5);
-  expectedResults.push_back(6);
-  expectedResults.push_back(7);
-  expectedResults.push_back(8);
-
+  std::cerr << storage;
+  
   std::ostringstream os1;
   std::ostringstream os2;
 
   // Real part of the test, we iterate on tracks their measurements.
   {
     int n = 0;
-    IgCollection & myTracks = storage.getCollection("Tracks/V1");
-    IgCollection & myMeasurements = storage.getCollection("Measurements/V1");
+    IgCollection &myTracks = storage.getCollection("Tracks/V1");
+    IgCollection &myMeasurements = storage.getCollection("Measurements/V1");
+    IgAssociations &views = storage.getAssociations("TrackMeasurements/V1");
+    IgAssociations &empty = storage.getAssociations("EmptyAssociations/V1");
+    
     std::vector<double>::iterator eri = expectedResults.begin();
-    std::vector<double>::iterator eri2 = expectedResults.begin();
+    
+    IgProperty X(myMeasurements, "x");
+    IgProperty Y(myMeasurements, "y");
+    IgProperty Z(myMeasurements, "z");
 
-    for (IgCollectionIterator t = myTracks.begin();
-         t != myTracks.end();
-         t++)
+    for (IgCollection::iterator ti = myTracks.begin(), te = myTracks.end();
+         ti != te;
+         ++ti)
     {
-      IgCollectionItem track = *t;
-      os1 << "Hits for track n. " << track.currentRow() << std::endl;
+      std::cerr << "Hits for track n. " << ti->currentRow() << std::endl;
 
-      IgAssociatedSet view = storage.getAssociatedSet("TrackMeasurements/V1", track);
-      IgAssociatedSet view2 = storage.getAssociatedSet("TrackMeasurements/V1", track, LEFT_ASSOCIATED);
-      IgAssociatedSet view3 = storage.getAssociatedSet("TrackMeasurements/V1", track, RIGHT_ASSOCIATED);
-      for (IgAssociatedSet::Iterator a = view.begin();
-           a != view.end();
-           a++)
+      for (IgAssociations::iterator ai = views.begin(ti), ae = views.end();
+           ai != ae; ++ai)
       {
-         IgCollectionItem m = *a;
-         os1 << "  " << m.get<double>("x")
-             << " " << m.get<double>("y")
-             << " " << m.get<double>("z") << std::endl;
-         assert(*eri == m.get<double>("x"));
-         assert(*eri == m.get<double>("y"));
-         assert(*eri++ == m.get<double>("z"));
-         assert(n++ < 55);
+        std::cerr << "  " << ai->get<double>(X)
+                  << " == " << *eri << std::endl;
+                  
+        QVERIFY(*eri == ai->get<double>(X));
+        QVERIFY(*eri == ai->get<double>(Y));
+        QVERIFY(*eri++ == ai->get<double>(Z));
+        QVERIFY(n++ < 55);
       }
+      
+      bool notExecuted = true;
+      for (IgAssociations::iterator ei = empty.begin(ti), ee = empty.end();
+           ei != ee;
+           ++ei)
+        notExecuted = false;
+      QVERIFY(notExecuted);
+    }
 
-      for (IgAssociatedSet::Iterator a = view2.begin();
-           a != view2.end();
-           a++)
+    n = 0;
+    eri = expectedResults.begin();
+
+    // There was an issue with the ai++ operator. Let's check it gives the
+    // same results. 
+    for (IgCollection::iterator ti = myTracks.begin(), te = myTracks.end();
+         ti != te;
+         ++ti)
+    {
+      std::cerr << "Hits for track n. " << ti->currentRow() << std::endl;
+
+      for (IgAssociations::iterator ai = views.begin(ti), ae = views.end();
+           ai != ae; ai++)
       {
-        assert(false);
+        std::cerr << "  " << ai->get<double>(X)
+                  << " == " << *eri << std::endl;
+                  
+        QVERIFY(*eri == ai->get<double>(X));
+        QVERIFY(*eri == ai->get<double>(Y));
+        QVERIFY(*eri++ == ai->get<double>(Z));
+        QVERIFY(n++ < 55);
       }
-
-      for (IgAssociatedSet::Iterator a = view3.begin();
-           a != view3.end();
-           a++)
-      {
-         IgCollectionItem m = *a;
-         assert(*eri2 == m.get<double>("x"));
-         assert(*eri2 == m.get<double>("y"));
-         assert(*eri2++ == m.get<double>("z"));
-      }
-
     }
   }
 
-  // Explicit way of doing the navigation, this is here only for reference
-  // while the above way should be preferred.
+
+  // Twice! But starting halfway...
   {
-    int n = 0;
-    IgCollection & myTracks = storage.getCollection("Tracks/V1");
-    IgCollection & myMeasurements = storage.getCollection("Measurements/V1");
-    IgAssociationSet & myAssociations = storage.getAssociationSet("TrackMeasurements/V1");
-    std::vector<double>::iterator eri = expectedResults.begin();
+    IgCollection &myTracks = storage.getCollection("Tracks/V1");
+    IgCollection &myMeasurements = storage.getCollection("Measurements/V1");
+    IgAssociations &views = storage.getAssociations("TrackMeasurements/V1");
+    
+    std::vector<double>::iterator eri = expectedResults.begin() + 0 + 1 + 2 + 3 + 4;
+    
+    IgProperty X(myMeasurements, "x");
+    IgProperty Y(myMeasurements, "y");
+    IgProperty Z(myMeasurements, "z");
 
-    for (IgCollectionIterator t = myTracks.begin();
-         t != myTracks.end();
-         t++)
+    for (IgCollection::iterator ti = myTracks.begin() + 5, te = myTracks.end();
+         ti != te;
+         ++ti)
     {
-      IgCollectionItem track = *t;
-      os2 << "Hits for track n. " << track.currentRow() << std::endl;
-      for (IgAssociationSet::Iterator a = myAssociations.begin();
-           a != myAssociations.end();
-           a++)
+      std::cerr << "Hits for track n. " << ti->currentRow() << std::endl;
+
+      for (IgAssociations::iterator ai = views.begin(ti), ae = views.end();
+           ai != ae; ++ai)
       {
-        if(a->first().objectId() == track.currentRow())
-        {
-           IgCollectionItem m(&myMeasurements, a->second().objectId());
-           os2 << "  " << m.get<double>("x")
-               << " " << m.get<double>("y")
-               << " " << m.get<double>("z") << std::endl;
-           assert(*eri == m.get<double>("x"));
-           assert(*eri == m.get<double>("y"));
-           assert(*eri++ == m.get<double>("z"));
-           assert(n++ < 55);
-        }
+        std::cerr << "  " << ai->get<double>(X)
+                  << " == " << *eri << std::endl;
+                  
+        QVERIFY(*eri == ai->get<double>(X));
+        QVERIFY(*eri == ai->get<double>(Y));
+        QVERIFY(*eri++ == ai->get<double>(Z));
       }
     }
   }
-  assert(os1.str() == os2.str());
+  
+  // Twice! But starting halfway...and skipping a few...
+  {
+    IgCollection &myTracks = storage.getCollection("Tracks/V1");
+    IgCollection &myMeasurements = storage.getCollection("Measurements/V1");
+    IgAssociations &views = storage.getAssociations("TrackMeasurements/V1");
+    
+    std::vector<double>::iterator eri = expectedResults.begin() + 0 + 1 + 2 + 3 + 4;
+    
+    IgProperty X(myMeasurements, "x");
+    IgProperty Y(myMeasurements, "y");
+    IgProperty Z(myMeasurements, "z");
+
+    for (IgCollection::iterator ti = myTracks.begin() + 5, te = myTracks.end();
+         ti != te;
+         ++ti)
+    {
+      std::cerr << "Hits for track n. " << ti->currentRow() << std::endl;
+
+      if (ti->currentRow() % 2)
+      {
+        eri += ti->currentRow();
+        continue;
+      }
+      
+      for (IgAssociations::iterator ai = views.begin(ti), ae = views.end();
+           ai != ae; ++ai)
+      {
+        std::cerr << "  " << ai->get<double>(X)
+                  << " == " << *eri << std::endl;
+                  
+        QVERIFY(*eri == ai->get<double>(X));
+        QVERIFY(*eri == ai->get<double>(Y));
+        QVERIFY(*eri++ == ai->get<double>(Z));
+      }
+    }
+  }
+
 }

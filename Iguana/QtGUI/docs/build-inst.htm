@@ -1,0 +1,222 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
+<head>
+<title>iSpy | A powerful and lightweight event display.</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<link type="text/css" rel="stylesheet" media="all" href="some.css" />
+<link type="text/css" rel="stylesheet" media="all" href="ispy.css" />
+<script type="text/javascript" src="common.js"></script>
+<!--[if lt IE 7]>
+<script language="JavaScript">window.attachEvent("onload", correctPNG);</script>
+<![endif]-->
+</head>
+
+
+
+
+<body class="sidebar-right">
+
+<!-- Start of main page ========================================== --> 
+
+<!-- tpl: page-default -->
+
+
+
+
+
+<div id="page" class="ispy">
+
+   <!-- Start of header  ========================================== --> 
+
+   <div id="page_top">
+      <div id="logo">
+         <a href="index.htm">
+            <img src="images/lizard-icon-very-small.png" alt="iSpy Home"/> iSpy home
+         </a>
+      </div>
+      <h1>
+         <a href="index.htm">iSpy</a>
+         <small>Build Instructions</small>
+      </h1>
+      <p>
+         <div class="tm"></div><img class="tr" src="images/rounded_tr.png" alt="rounded border"/>
+      </p>                   
+   </div>
+
+   <!-- End of header ========================================== --> 
+
+   <div id="page_content">
+      <div class="ccolumn narrow">
+         <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script> 
+         <script type="text/javascript" src="fancyzoom.min.js"></script>
+         <script type="text/javascript">
+            $(document).ready(function() {
+               $('#screenshots a').fancyZoom({scaleImg: true, closeOnClick: true, directory: 'images/fancyzoom'});
+            });
+         </script>
+
+   <!-- Start of main body ========================================== --> 
+   
+
+   <p></p> <!-- small vertical space -->
+
+   <p id="mainDescription"></p>
+      First of all make sure you send a message to our support mailing list
+      saying what you want to accomplish, to see how that fits our plans.<br><br>
+
+      With a bit of luck you might actually be able to find the feature you want
+      to implement in the next release of iSpy.<br><br>
+      
+      Having said that, if you really want to compile iSpy you have several
+      possibilities. However you should keep in mind that, due to 
+      its self-contained nature, in order to compile iSpy you might end up
+      recompiling your own version of gcc.
+
+      <br><br>
+      <i><b>Linux version, both 32 and 64 bit, at CERN. </b></i>
+      <br><br>
+     
+      This is the easiest way to compile your own iSpy. 
+      Simply ssh to lxplus and do the following:<br>
+      <br>
+      set up the environment using csh
+      <pre>
+setenv CVSROOT :gserver:`whoami`@isscvs.cern.ch/local/reps/iguana
+# If you don't need to commit you can use pserver:
+# setenv CVSROOT :pserver:anonymous@isscvs.cern.ch/local/reps/iguana
+# cvs login # Usual CMS password. 
+
+# Uncomment to build 32 bit	
+#setenv PATH /afs/cern.ch/cms/IGUANA/externals/sdk/Linux-i686/bin:$PATH
+# Uncomment to build 64 bit.
+setenv PATH /afs/cern.ch/cms/IGUANA/externals/sdk/Linux-x86_64/bin:$PATH
+</pre>
+
+or using bash
+
+<pre>
+export CVSROOT=:gserver:`whoami`@isscvs.cern.ch/local/reps/iguana
+# If you don't need to commit you can use pserver:
+# export CVSROOT=:pserver:anonymous@isscvs.cern.ch/local/reps/iguana
+# cvs login # Usual CMS password. 
+
+# Uncomment to build 32 bit
+#export PATH=/afs/cern.ch/cms/IGUANA/externals/sdk/Linux-i686/bin:$PATH
+# Uncomment to build 64 bit.
+export PATH=/afs/cern.ch/cms/IGUANA/externals/sdk/Linux-x86_64/bin:$PATH
+</pre>
+
+then check out the sources and prepare the area:
+
+<pre>
+cvs login # Usual CMS password.
+# You can also fetch:
+#
+# http://isscvs.cern.ch/cgi-bin/cvsweb.cgi/IGUANA/IGUANA.tar.gz?cvsroot=iguana;tarball=1
+#
+cvs co -P -d ispy IGUANA
+cd ispy
+ln -sf Iguana/QtGUI/scripts/ispy.pro ispy.pro
+qmake
+</pre>
+
+Finally, to compile:
+
+<pre>
+make -j 2
+</pre>
+
+you should then find ispy in your current directory.<br>
+Notice that every time you add or remove a file from your area, you might have 
+to run qmake again to update your makefile.
+
+      <br><br>
+      <i><b>Build everything from sources</b></i>
+      <br><br>
+
+Building iSpy and all its dependencies from sources is straightforward, albeit it
+could take a little bit of time since you will have to recompile gcc, Qt and so on.
+
+In order to simplify the procedure as much as possible, we have created a tar ball with 
+all the sources needed, included those of all the externals, building everything then 
+is as simple as:
+
+<pre>
+export PREFIX=&lt;some-destination-directory>
+# Or for tcsh 
+# setenv PREFIX &lt;some-destination-directory>
+curl -O http://iguana.web.cern.ch/iguana/ispy/ispy-sdk.tgz
+tar xzvf ispy-sdk.tgz
+cd ispy-sdk-builder
+./build.sh
+</pre>
+
+after a while, depending on your machine, you will find an installation area in $PREFIX and
+iSpy compiled in <pre>src/ispy</pre> (src/ispy/iSpy.app for Mac)
+
+After you have built all the externals, you can modify and rebuild iSpy by doing:
+
+<pre>
+export PATH=$PREFIX/bin:$PATH 
+export CVSROOT=:pserver:anonymous@isscvs.cern.ch/local/reps/iguana
+# Or for tcsh
+# setenv PATH $PREFIX/bin:$PATH
+# setenv CVSROOT :pserver:anonymous@isscvs.cern.ch/local/reps/iguana
+</pre>
+
+and then following the instructions already shown in the previous point:
+
+<pre>
+cvs login # Usual CMS password 
+cvs co -P -d ispy IGUANA
+cd ispy
+ln -sf Iguana/QtGUI/scripts/ispy.pro ispy.pro
+qmake
+</pre>
+
+to prepare the area and then to compile:
+
+<pre>
+make -j 2
+</pre>
+
+
+<hr/> 
+ 
+   <p></p> <!-- small vertical space -->
+
+</div>
+
+<!-- End of main page ========================================== --> 
+
+         
+
+<!-- Start of right column ========================================== --> 
+              
+<div class="rcolumn"> 
+
+</div> <!-- /rcolumn -->
+
+                                
+<div class="clear">
+</div>
+
+</div> <!-- /page_content -->
+
+<div class="clear"></div>
+</div>
+
+
+<script src="/mint/?js" type="text/javascript"></script>
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-9332242-1");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>

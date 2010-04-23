@@ -122,6 +122,7 @@ Ig3DBaseModel::setCamera(SoCamera *camera)
     ASSERT(group);
     group->replaceChild(currentCamera, camera);
   }
+  delete cameraAction;
 }
 
 std::string

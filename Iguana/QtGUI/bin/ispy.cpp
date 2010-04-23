@@ -34,11 +34,22 @@ template class __default_alloc_template<1, 0>;
 int
 main (int argc, char *argv[])
 {
-  putenv("LANG=C");
+  putenv(strdup("LANG=C"));
 
   #ifdef Q_WS_MAC
-  putenv("COIN_FORCE_FONTCONFIG_OFF=1");
+  putenv(strdup("COIN_FORCE_FONTCONFIG_OFF=1"));
   #endif
+
+  // Do not inform when COIN is running using indirect rendering
+  // because it simply confuses things and there is not
+  // much the user can really do since
+  //
+  // COIN_FULL_INDIRECT_RENDERING=1
+  //
+  // most likely will cause even more user feedback.
+  //
+  // TODO: check the actual impact of COIN_FULL_INDIRECT_RENDERING=1
+  putenv(strdup("COIN_DONT_INFORM_INDIRECT_RENDERING=1"));
 
   ISpyApplication app;
   return app.run (argc, argv);

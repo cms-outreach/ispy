@@ -4,11 +4,14 @@
 # include <IgCollection.h>
 #endif
 #include <iostream>
-int
-main()
+
+#include <QtTest/QtTest>
+
+void
+doTestCreateSimpleCollection()
 {
   IgDataStorage *storage = new IgDataStorage;
-  assert(storage->empty() == true);
+  QVERIFY(storage->empty() == true);
 
   // Create an in memory collection for tracks.
   // We define it by hand, in principle its definition can be read from an ig
@@ -16,9 +19,9 @@ main()
   IgCollection &tracks = storage->getCollection("Tracks/V1");
 
   IgProperty SOMETHING = tracks.addProperty("someInt" /*label*/, 0 /*default value*/);
-  assert (SOMETHING.handle().type() == INT_COLUMN);
+  QVERIFY(SOMETHING.handle().type() == INT_COLUMN);
   IgProperty SOMESTRING = tracks.addProperty("someString",std::string());
-  assert (SOMESTRING.handle().type() == STRING_COLUMN);
+  QVERIFY(SOMESTRING.handle().type() == STRING_COLUMN);
   IgProperty X = tracks.addProperty("x", 0.0);
   IgProperty Y = tracks.addProperty("y", 0.0);
   IgProperty Z = tracks.addProperty("z", 0.0);
@@ -29,11 +32,11 @@ main()
   // Creating a some tracks in the tracks collection.
   // First way of doing it: by label.
   IgCollectionItem t1 = tracks.create();
-  assert(t1.currentColumn() == 0);
+  QVERIFY(t1.currentColumn() == 0);
   t1["someInt"] = 1;
-  assert(t1.currentColumn() == 0);
+  QVERIFY(t1.currentColumn() == 0);
   t1["someString"] = std::string("foo");
-  assert(t1.currentColumn() == 1);
+  QVERIFY(t1.currentColumn() == 1);
   t1["x"] = 2.0;
   t1["y"] = 2.0;
   t1["z"] = 2.0;
@@ -72,21 +75,19 @@ main()
   t4[P] = 5.0, p;
   t4[P] = p, 5.0;
 
-  assert(tracks.size() == 4);
+  QVERIFY(tracks.size() == 4);
 
   // Reading it back and printing everything to screen.
-  for (IgCollectionIterator i = tracks.begin();
-       i != tracks.end();
-       i++)
+  for (IgCollection::iterator i = tracks.begin(), e = tracks.end(); i != e; ++i)
   {
-    std::cerr << "someInt" << ":" << (*i).get<int>("someInt") << ","
-              << "someString" << ":" << (*i).get<std::string>("someString") << ","
-              << "X" << ":" << (*i).get<double>("x") << ","
-              << "Y" << ":" << (*i).get<double>("y") << ","
-              << "Z" << ":" << (*i).get<double>("z") << ","
-              << "P_X" << ":" << (*i).get<double>("px") << ","
-              << "P_Y" << ":" << (*i).get<double>("py") << ","
-              << "P_Z" << ":" << (*i).get<double>("pz") << ","
+    std::cerr << "someInt" << ":" << i->get<int>("someInt") << ","
+              << "someString" << ":" << i->get<std::string>("someString") << ","
+              << "X" << ":" << i->get<double>("x") << ","
+              << "Y" << ":" << i->get<double>("y") << ","
+              << "Z" << ":" << i->get<double>("z") << ","
+              << "P_X" << ":" << i->get<double>("px") << ","
+              << "P_Y" << ":" << i->get<double>("py") << ","
+              << "P_Z" << ":" << i->get<double>("pz") << ","
               << std::endl;
   }
 
@@ -98,9 +99,9 @@ main()
   IgProperty C_E = clusters.addProperty("e", 0.0);
 
   // Checks getProperty / hasProperty API.
-  assert(clusters.hasProperty ("e"));
-  assert(!clusters.hasProperty ("foo"));
-  assert(clusters.getProperty ("e").handle().data() == C_E.handle().data());
+  QVERIFY(clusters.hasProperty ("e"));
+  QVERIFY(!clusters.hasProperty ("foo"));
+  QVERIFY(clusters.getProperty ("e").handle().data() == C_E.handle().data());
   bool didThrow = false;
   try {
     clusters.getProperty("foo");
@@ -109,7 +110,7 @@ main()
   {
     didThrow = true;
   }
-  assert (didThrow);
+  QVERIFY(didThrow);
 
   IgCollectionItem c1 = clusters.create();
   c1["e"] = 5.4;
@@ -130,9 +131,9 @@ main()
     m[P] = IgV4d(1,0,0,0);
   }
 
-  assert(storage->empty() == false);
-  assert(storage->hasCollection("TestMeasurement/V1") == true);
-  assert(storage->hasCollection("TestMeasurement/V2") == false);
+  QVERIFY(storage->empty() == false);
+  QVERIFY(storage->hasCollection("TestMeasurement/V1") == true);
+  QVERIFY(storage->hasCollection("TestMeasurement/V2") == false);
 // Writing out in Ig JSON based format.
   std::cerr << *storage << std::endl;
   delete storage;

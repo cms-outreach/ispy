@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 #include <iostream>
+#include <iterator>
 
 IgCollectionItem IgCollection::create(void)
 {
@@ -23,81 +24,27 @@ IgCollectionItem IgCollection::create(void)
   return IgCollectionItem(this, m_rowCount++);
 }
 
-IgCollectionItem IgCollectionIterator::operator*()
+IgCollectionItem IgCollection::iterator::operator*() const
 {
   return IgCollectionItem(m_collection, m_rowPosition);
 }
 
-IgCollectionIterator IgCollection::begin(void)
+IgCollectionItem IgCollection::operator[](size_t pos)
 {
-  return IgCollectionIterator(this, 0);
-}
-
-IgCollectionIterator IgCollection::end(void)
-{
-  return IgCollectionIterator(this, m_rowCount);
+  return IgCollectionItem(this, pos);
 }
 
 std::ostream &operator<<(std::ostream &stream, IgCollection &collection)
 {
   stream << "\""<< collection.name() << "\": [";
 
-  for(IgCollectionIterator i = collection.begin();
-      i != collection.end();
-      i++)
+  for(size_t i = 0, e = collection.size(); i != e; ++i)
   {
     stream << "[";
-    (*i).stream(stream);
+    collection[i].stream(stream);
     stream << "]";
-    if(i + 1 != collection.end())
-    {stream << ", "; }
-    stream << "\n";
-  }
-
-  stream << "]\n";
-  return stream;
-}
-
-IgAssociatedSet
-IgDataStorage::getAssociatedSetPtr(IgAssociationSet *associations,
-                                   IgCollectionItem &item,
-                                   enum AssociatedType type)
-{
-  return IgAssociatedSet(this, associations, &item, type);
-}
-
-IgAssociatedSet
-IgDataStorage::getAssociatedSet(const char *name,
-                                IgCollectionItem &item,
-                                enum AssociatedType type)
-{
-  return this->getAssociatedSetPtr(this->getAssociationSetPtr(name), item, type);
-}
-
-
-std::ostream &operator<<(std::ostream &stream, const IgRef &ref)
-{
-  stream << "[" << ref.collectionId() << ", " << ref.objectId() << "]";
-  return stream;
-}
-
-std::ostream &operator<<(std::ostream &stream, const IgAssociation &association)
-{
-  stream << "[" << association.first() << ", " << association.second() << "]";
-  return stream;
-}
-
-std::ostream &operator<<(std::ostream &stream, IgAssociationSet &associationSet)
-{
-  stream << "\""<< associationSet.name() << "\": [";
-
-  for(IgAssociationSet::Iterator i = associationSet.begin();
-      i != associationSet.end();
-      i++)
-  {
-    stream << *i;
-    if(i + 1 != associationSet.end())
-    {stream << ", "; }
+    if (i + 1 != e)
+      stream << ", ";
     stream << "\n";
   }
 
@@ -107,53 +54,85 @@ std::ostream &operator<<(std::ostream &stream, IgAssociationSet &associationSet)
 
 std::ostream &operator<<(std::ostream &stream, IgDataStorage &storage)
 {
+  // Stream the types.
   stream << "{"
          << "'Types': {";
-  for (IgDataStorage::CollectionNames::iterator i = storage.collectionNames().begin();
-       i != storage.collectionNames().end();
-       i++)
+  for (size_t cni = 0, cne = storage.collectionNames().size(); cni != cne; ++cni)
   {
-    stream << "\"" << *i << "\": [";
-    IgCollection &collection = storage.getCollection(i->c_str());
-    for(std::vector<IgCollection::LabelColumn>::iterator j = collection.columnLabels().begin();
-        j != collection.columnLabels().end();
-        j++)
+    const char *collectionName = storage.collectionNames()[cni].c_str();
+    IgCollection &collection = storage.getCollection(collectionName);
+    
+    stream << "\"" << collectionName << "\": [";
+    for(size_t cti = 0, cte = collection.columnLabels().size(); cti != cte; ++cti)
     {
-      stream << "[\"" << j->first << "\", ";
-      stream << "\"";
-      j->second.streamType(stream);
-      stream << "\"]";
-      if (j+1 != collection.columnLabels().end())
+      ColumnInfo &info = collection.columnLabels()[cti];
+      stream << "[\"" << info.label << "\", \"" << info.handle.typeName() << "\"]";
+      if (cti + 1 != cte)
         stream << ",";
     }
     stream << "]\n";
-    if(i+1 != storage.collectionNames().end())
+    if(cni + 1 != cne)
       stream << ",\n";
   }
   stream << "},\n";
+
+  // Stream the collection contents.
   stream << "'Collections': {";
-  for (IgDataStorage::CollectionNames::iterator i = storage.collectionNames().begin();
-       i != storage.collectionNames().end();
-       i++)
+  for (size_t cni = 0, cne = storage.collectionNames().size(); cni != cne; ++cni)
   {
-    stream << storage.getCollection(i->c_str());
-    if(i+1 != storage.collectionNames().end())
-    {
+    const char *collectionName = storage.collectionNames()[cni].c_str();
+    stream << storage.getCollection(collectionName);
+    if (cni + 1 != cne)
       stream << ",\n";
-    }
   }
   stream << "},\n";
+  
+  // Stream the associations.
   stream << "'Associations': {";
-  for (IgDataStorage::CollectionNames::iterator i = storage.associationSetNames().begin();
-       i != storage.associationSetNames().end();
-       i++)
+  for (size_t ai = 0, ae = storage.associationsNames().size(); ai != ae; ++ai)
   {
-    stream << storage.getAssociationSet(i->c_str());
-    if(i+1 != storage.associationSetNames().end())
-    {
+    const char *associationsName = storage.associationsNames()[ai].c_str();
+    IgAssociations &assoc = storage.getAssociations(associationsName);
+    stream << "\"" << associationsName << "\": [";
+    assoc.stream(stream);
+    stream << "]";
+    if (ai + 1 != ae)
       stream << ",\n";
-    }
   }
   stream << "}\n}";
   return stream;
+}
+
+/** Creates the IgProperty with the column
+    handle named @a name of the collection @a collection
+  */
+IgProperty::IgProperty(IgCollection *collection, const char *name)
+:m_handle(collection->getProperty(name).handle())
+{}
+
+IgProperty::IgProperty(IgCollection &collection, const char *name)
+:m_handle(collection.getProperty(name).handle())
+{}
+
+/** Associate two references @a a and @a b between themselves,
+    effectively creating an association between the two.
+    
+    Given that we are most likely inserting associations so that reference
+    @a and @b are ordered we exploit this fact to make sure that their store
+    is maintained that way.
+
+    @a a a reference to an object in one of the collections in the IgDataStorage.
+    
+    @a b a reference to an object in one of the collections in the IgDataStorage.
+ */
+void
+IgAssociations::associate(const IgRef &a, const IgRef &b)
+{
+  // Hopefully the upper_bound will always be the vector tail, so that
+  // we can insert at full speed.
+  AssociationRef cur(a, b);
+  Associations::iterator insertionPoint = std::upper_bound(m_associations.begin(),
+                                                           m_associations.end(),
+                                                           cur);
+  m_associations.insert(insertionPoint, cur);
 }
