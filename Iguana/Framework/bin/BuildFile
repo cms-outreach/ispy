@@ -1,4 +1,0 @@
-<bin file=igdumpstats.cpp>
-  <flags CXXFLAGS="-O2 -ggdb">
-  <use name=Iguana/Framework>
-</bin>

@@ -1,3 +1,0 @@
-<use name=Qt>
-
-<bin file=test_IgSettingsEditor.cpp></bin>
