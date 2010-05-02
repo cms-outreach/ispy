@@ -1,7 +1,6 @@
 #include "QtGUI/DrawHelpers.h"
 #include "QtGUI/Style.h"
 #include "QtGUI/IgSoJet.h"
-#include "QtGUI/IgSoSimpleTrajectory.h"
 #include "QtGUI/IgDrawTowerHelper.h"
 #include "QtGUI/IgDrawSplinesHelper.h"
 #include "Framework/IgCollection.h"
@@ -71,7 +70,6 @@ void initHelpers(void)
 {
   IgSoShapeKit::initClass();
   IgSoJet::initClass();
-  IgSoSimpleTrajectory::initClass();
 }
 
 // ------------------------------------------------------
@@ -2266,8 +2264,7 @@ make3DTrackPoints(IgCollection **collections, IgAssociations **assocs,
   IgProperty POS(points, "pos");
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
-    IgSoSimpleTrajectory *track = new IgSoSimpleTrajectory;
-
+    SoVertexProperty      *properties = new SoVertexProperty;
     int n = 0;
     
     // Determine the sign of the last tracking rechit and always project the
@@ -2281,11 +2278,18 @@ make3DTrackPoints(IgCollection **collections, IgAssociations **assocs,
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
       SbVec3f pos = projectors.projectAs(ai->get<IgV3d>(POS), lastOutPos);
-      track->controlPoints.set1Value(n, pos);
-      track->markerPoints.set1Value(n, pos);
+      properties->vertex.set1Value(n, pos);
       n++;
     }
-    sep->addChild(track);
+
+    SoLineSet     *line = new SoLineSet; // FIXME: SoNurbsCurve
+    SoPointSet    *markers = new SoPointSet;
+
+    line->vertexProperty = properties;
+    markers->vertexProperty = properties;
+    
+    sep->addChild(line);
+    sep->addChild(markers);
   }
 }
 
