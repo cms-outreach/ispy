@@ -1,18 +1,12 @@
-#ifdef PROJECT_NAME
-# include <Iguana/Framework/interface/IgCollection.h>
-# include <Iguana/Framework/interface/IgParser.h>
-#else
-# include <IgCollection.h>
-# include <IgParser.h>
-#endif
+#include <Framework/IgCollection.h>
+#include <Framework/IgParser.h>
 
 #include <iostream>
 #include <sstream>
 #include <string>
 
-
 void
-validateStorage(IgDataStorage &storage)
+_validateStorage(IgDataStorage &storage)
 {
   std::ostringstream os;
   os << storage << std::flush;
@@ -22,14 +16,14 @@ validateStorage(IgDataStorage &storage)
 }
 
 int
-main(int argc, char **argv)
+doTestCollectionPerformance(int argc, char **argv)
 {
   IgDataStorage storage;
-  validateStorage(storage);
+  _validateStorage(storage);
 
   // Create a collection of tracks.
   IgCollection &tracks = storage.getCollection("Tracks/V1");
-  validateStorage(storage);
+  _validateStorage(storage);
 
   IgProperty X = tracks.addProperty("x", 0.0);
   IgProperty Y = tracks.addProperty("y", 0.0);
@@ -50,7 +44,7 @@ main(int argc, char **argv)
   IgProperty POINT_2D = points.addProperty("pos2d", IgV2d());
   IgProperty POINT_3D = points.addProperty("pos3d", IgV3d());
   IgProperty POINT_4D = points.addProperty("pos4d", IgV4d());
-  validateStorage(storage);
+  _validateStorage(storage);
 
   // Add a few tracks.
   for (int i = 0; i < 500000 ; i++)

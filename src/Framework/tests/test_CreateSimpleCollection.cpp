@@ -1,8 +1,4 @@
-#ifdef PROJECT_NAME
-# include <Iguana/Framework/interface/IgCollection.h>
-#else
-# include <IgCollection.h>
-#endif
+# include <Framework/IgCollection.h>
 #include <iostream>
 
 #include <QtTest/QtTest>

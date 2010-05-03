@@ -1,3 +1,4 @@
+#include <QtCore/QObject>
 #include <QtTest/QtTest>
 
 extern void doTestCreateSimpleCollection();
@@ -8,6 +9,8 @@ extern void doTestCreateWriteReadWriteReadPrintNoAssociations();
 extern void doTestCreateReadWriteReadPrint();
 extern void doTestNavigateAssociationsOneToOne();
 extern void doTestNavigateOneAssociation();
+extern void doTestCollectionPerformance();
+extern void doTestLinearAlgebra();
 
 class IgCollectionTest: public QObject
 {
@@ -25,10 +28,11 @@ private slots:
     {doTestCreateWriteReadWriteReadPrintNoAssociations();}
     void testCreateReadWriteReadPrint(){doTestCreateReadWriteReadPrint();}
     void testNavigateAssociationsOneToOne(){doTestNavigateAssociationsOneToOne();}
-
+    void testCollectionPerformance(){doTestCollectionPerformance();}
+    void testLinearAlgebra(){doTestLinearAlgebra();}
     void cleanupTestCase()
     { qDebug("Cleanup"); }
 };
 
 QTEST_MAIN(IgCollectionTest)
-#include "tests/tmp/test_driver.moc"
+#include "Framework/tests/moc_test_driver.cxx"
