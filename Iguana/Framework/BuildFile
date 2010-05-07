@@ -1,5 +1,0 @@
-<use name=Iguana/Utilities>
-<export>
- <lib name=IguanaFramework>
- <use name=Iguana/Utilities>
-</export>

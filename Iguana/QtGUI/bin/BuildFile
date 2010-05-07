@@ -1,3 +1,0 @@
-<Bin name=ispy file=ispy.cpp>
- <Use name=Iguana/QtGUI>
-</Bin>
