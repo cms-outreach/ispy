@@ -51,7 +51,7 @@
               spec="Tracker3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
-
+  
   <collection label="Detector/Pixel Barrel"
               spec="PixelBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
@@ -215,10 +215,18 @@
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"/>
 
+ <collection label="ECAL/Barrel Digis"
+              spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DEnergyTowers" visibility="none"/>
+
   <collection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"/>
   
+  <collection label="ECAL/Endcap Digis"
+              spec="EEDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DEnergyTowers" visibility="none"/>
+
   <collection label="ECAL/Preshower Rec. Hits"
               spec="ESRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DPreshowerTowers"/>
@@ -671,6 +679,10 @@
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"/>
 
+  <collection label="ECAL/Barrel Digis"
+              spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DEnergyTowers" visibility="none"/>
+
  <collection label="ECAL/CaloClusters"
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
@@ -1038,15 +1050,22 @@
               spec="ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeRZEPRecHits"/>
 
-
   <collection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeRZECalRecHits"/>
+
+  <collection label="ECAL/Barrel Digis"
+              spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="makeRZECalRecHits" visibility="none"/>
 
   <collection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeRZECalRecHits"/>
   
+  <collection label="ECAL/Endcap Digis"
+              spec="EEDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="makeRZECalRecHits" visibility="none"/>
+
   <collection label="ECAL/Preshower Rec. Hits"
               spec="ESRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeRZEPRecHits"/>
@@ -1415,10 +1434,18 @@
   <collection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:eta:phi"
               draw="makeLegoEcalRecHits"/>
+
+  <collection label="ECAL/Barrel Digis"
+              spec="EBDigis_V1:energy:eta:phi"
+              draw="makeLegoEcalRecHits" visibility="none"/>
   
   <collection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V2:energy:eta:phi"
               draw="makeLegoEcalRecHits"/>
+
+  <collection label="ECAL/Endcap Digis"
+              spec="EEDigis_V1:energy:eta:phi"
+              draw="makeLegoEcalRecHits" visibility="none"/>
   
   <collection label="HCAL/Endcap Rec. Hits"
               spec="HERecHits_V2:energy:eta:phi"
@@ -1606,6 +1633,10 @@
   <collection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"/>
+
+  <collection label="ECAL/Barrel Digis"
+              spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DEnergyTowers" visibility="none"/>
 
  <collection label="ECAL/CaloClusters"
               spec="CaloClusters_V1:pos:energy"

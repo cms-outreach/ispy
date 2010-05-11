@@ -191,7 +191,8 @@ HERecHits_V2 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scal
 HFRecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.005;}
 HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 0.005;}
 
-
+EBDigis_V1 {min-energy: 0.25; energy-scale: 1.0;}
+EEDigis_V1 {min-energy: 0.8; energy-scale: 1.0;}
 
 CaloClusters_V1 {diffuse-color: rgb(1.0, 0.5, 0.0); }
 SuperCluster_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); font-size: 14;}
