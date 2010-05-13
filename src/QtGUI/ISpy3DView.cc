@@ -15,7 +15,6 @@
 #include <Inventor/Qt/SoQtCursor.h>
 
 #include <QtGui>
-#include "classlib/utils/DebugAids.h"
 #include <iostream>
 #include <typeinfo>
 

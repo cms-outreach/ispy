@@ -60,6 +60,7 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <cassert>
 
 using namespace lat;
 const static size_t ISPY_MAX_STYLES = (size_t) -1;
@@ -479,7 +480,7 @@ ISpyApplication::parseCss(const char *css)
   for (size_t i = 0, e = classes.size(); i != e; ++i)
   {
     StringList parts = StringOps::split(classes[i], "{", StringOps::TrimEmpty);
-    ASSERT(parts.size() == 2);
+    assert(parts.size() == 2);
     style(parts[0].c_str(), parts[1].c_str());
   }
 }
@@ -747,7 +748,7 @@ ISpyApplication::ISpyApplication(void)
   style("Background","diffuse-color: rbg(1.,0,0);");
   bool ok = parseCssFile(":/css/default-style.iss");
   m_defaultStyleLevel = m_styleSpecs.size();
-  ASSERT(ok && "Default style not compiled as resource.");
+  assert(ok && "Default style not compiled as resource.");
   
   // Register draw functions which will be later used to draw various 
   // collections.
@@ -780,7 +781,7 @@ ISpyApplication::parseCssFile(const char *filename)
     return false;
   
   QByteArray cssData = cssFile.readAll();
-  ASSERT(cssData.size());
+  assert(cssData.size());
   try 
   {
     parseCss(cssData.data());
@@ -812,7 +813,7 @@ ISpyApplication::parseViewsDefinitionFile(const char *filename)
     return false;
 
   QByteArray viewData = viewsDefinitionFile.readAll();
-  ASSERT(viewData.size());
+  assert(viewData.size());
   try
   {
     parseViewsDefinition(viewData);
@@ -884,7 +885,7 @@ ISpyApplication::collection(const char *friendlyName,
                             Make3D make3D,
                             Qt::CheckState visibility)
 {
-  ASSERT(collectionSpec);
+  assert(collectionSpec);
 
   m_specs.resize(m_specs.size() + 1);
   CollectionSpec &spec = m_specs.back();
@@ -894,7 +895,7 @@ ISpyApplication::collection(const char *friendlyName,
     spec.friendlyName = friendlyName;
   
   parts = StringOps::split(collectionSpec, ':');
-  ASSERT(! parts.empty());
+  assert(! parts.empty());
   spec.collection = parts[0];
     
   spec.requiredFields.insert(spec.requiredFields.end(),
@@ -903,7 +904,7 @@ ISpyApplication::collection(const char *friendlyName,
   if (otherCollectionSpec)
   {
     parts = StringOps::split(otherCollectionSpec, ':');
-    ASSERT(! parts.empty());
+    assert(! parts.empty());
     spec.otherCollection = parts[0];
     spec.otherRequiredFields.insert(spec.otherRequiredFields.end(),
                                     parts.begin()+1, parts.end());
@@ -912,7 +913,7 @@ ISpyApplication::collection(const char *friendlyName,
   if (associationSpec)
   {
     parts = StringOps::split(associationSpec, ':');
-    ASSERT(parts.size() == 1);
+    assert(parts.size() == 1);
     spec.otherAssociation = parts[0];
   }
 
@@ -935,7 +936,7 @@ ISpyApplication::collection(const char *friendlyName,
   }
   
   // Update the view to include one more CollectionSpec.
-  ASSERT(!m_viewSpecs.empty());
+  assert(!m_viewSpecs.empty());
   ViewSpec &view = m_viewSpecs.back();
   view.endCollIndex++;
 }
@@ -947,7 +948,7 @@ void
 ISpyApplication::filter(const char *friendlyName,
 			const char *collectionSpec)
 {
-  ASSERT(collectionSpec);
+  assert(collectionSpec);
   
   m_filterSpecs.resize(m_filterSpecs.size() + 1);
   FilterSpec &spec = m_filterSpecs.back();
@@ -958,7 +959,7 @@ ISpyApplication::filter(const char *friendlyName,
   
   parts = StringOps::split(collectionSpec, ':');
   
-  ASSERT(! parts.empty());
+  assert(! parts.empty());
   spec.collection = parts[0];
   spec.requiredFields.insert(spec.requiredFields.end(),
                              parts.begin()+1, parts.end());
@@ -1073,7 +1074,7 @@ ISpyApplication::view(const char *prettyName, bool specialized, bool autoplay)
   m_viewSpecs.resize(m_viewSpecs.size() + 1);
   ViewSpec &view = m_viewSpecs.back();
   view.name = prettyName;
-  ASSERT(!m_cameraSpecs.empty());
+  assert(!m_cameraSpecs.empty());
   view.specialized = specialized;
   view.cameraIndex = m_cameraSpecs.size() - 1;
   view.startCollIndex = view.endCollIndex = m_specs.size();
@@ -1711,7 +1712,7 @@ ISpyApplication::resetStyleStack(size_t level)
 {
   // We should never pop more levels than there are in the stack!
   // If this happens it means that the logic is broken.
-  ASSERT(level <= m_styleSpecs.size());
+  assert(level <= m_styleSpecs.size());
 
   // Process all the Styles to be popped and unref any SoNode that they 
   // define. This means that when all the scenegraphs referring to the style
@@ -1786,7 +1787,7 @@ ISpyApplication::doRun(void)
   else
   {
       bool ok = parseViewsDefinitionFile(":/views/default-views.iml");
-      ASSERT(ok && "Default views are broken!!!");
+      assert(ok && "Default views are broken!!!");
       qDebug() << "Reading default views.";
   }
   
@@ -1961,9 +1962,9 @@ ISpyApplication::handleGroupsClicking(QTreeWidgetItem *current)
   int index = m_treeWidget->indexOfTopLevelItem(current);
   if (index < 0)
     return;
-  ASSERT((size_t) index < m_groupIndex.size());
+  assert((size_t) index < m_groupIndex.size());
   size_t groupIndex = m_groupIndex[index];
-  ASSERT(groupIndex < m_groups.size());
+  assert(groupIndex < m_groups.size());
   Group &group = m_groups[groupIndex];
   group.expanded = m_treeWidget->isItemExpanded(current);
 }
@@ -1988,16 +1989,16 @@ ISpyApplication::getCollectionIndex(QTreeWidgetItem *item)
   int parentIndex = m_treeWidget->indexOfTopLevelItem(parent);
   if (parentIndex < 0)
     return -1;
-  ASSERT((size_t)(parentIndex) < m_groupIndex.size());
+  assert((size_t)(parentIndex) < m_groupIndex.size());
   size_t groupIndex = m_groupIndex[parentIndex];
-  ASSERT((size_t)(groupIndex) < m_groups.size());
+  assert((size_t)(groupIndex) < m_groups.size());
   Group &group = m_groups[groupIndex];
   int childIndex = parent->indexOfChild(item);
-  ASSERT(childIndex >= 0);
-  ASSERT((size_t)(childIndex) < group.children.size());
+  assert(childIndex >= 0);
+  assert((size_t)(childIndex) < group.children.size());
   size_t index = group.children[childIndex];
   Collection &c = m_collections[index];
-  ASSERT(c.item == item);
+  assert(c.item == item);
   return index;
 }
 
@@ -2016,7 +2017,7 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
   if (index < 0)
     return;
   Collection &c = m_collections[index];
-  ASSERT(c.item == current);
+  assert(c.item == current);
   
   // Record visibility state in the assigned position in the m_visibility
   // vector. 
@@ -2056,10 +2057,10 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
 void
 ISpyApplication::displayCollection(Collection &c)
 {
-  ASSERT(c.data[0]);
-  ASSERT(c.item);
-  ASSERT(c.node);
-  ASSERT(c.sep);
+  assert(c.data[0]);
+  assert(c.item);
+  assert(c.node);
+  assert(c.sep);
   // Get the current view in order to know which projector to use.
   View &view = m_views[m_currentViewIndex];
   Projectors &projectors = view.camera->spec->projectors;
@@ -2077,7 +2078,7 @@ ISpyApplication::displayCollection(Collection &c)
         && c.spec->make3D)
     {
       Style *style = &(m_styles[c.style]);
-      ASSERT(style);
+      assert(style);
       c.sep->enableNotify(FALSE);
       style->viewport = m_viewer->getViewportRegion();
       c.sep->addChild(style->material);
@@ -2215,7 +2216,7 @@ ISpyApplication::findStyle(const char *pattern)
     return styleIndex;
   }
   qDebug() << "Could not find any matching style for " << pattern;
-  ASSERT(false && "Could not find any matching style ");
+  assert(false && "Could not find any matching style ");
   return 0;
 }
 
@@ -2350,7 +2351,7 @@ ISpyApplication::updateCollections(void)
 
       // Get the current view and iterate on all the specs found there.
       // FIXME: pick up something different from the first one.
-      ASSERT(m_currentViewIndex < m_views.size());
+      assert(m_currentViewIndex < m_views.size());
 
       for (size_t spi = view.spec->startCollIndex, spe = view.spec->endCollIndex; 
            spi != spe && !spec;
@@ -2621,7 +2622,7 @@ ISpyApplication::updateCollections(void)
       f.collectionName = (*cit).collectionName;
       
       // There must be two fields
-      ASSERT(f.spec->requiredFields.size() == 2);
+      assert(f.spec->requiredFields.size() == 2);
       f.result = doFilterCollection(*cit, f.spec->requiredFields[0].c_str(), f.spec->requiredFields[1].c_str());
     }
   }
@@ -2635,7 +2636,7 @@ ISpyApplication::newEvent(void)
 {
   delete m_storages[0];
 
-  ASSERT(m_eventIndex < m_events.size());
+  assert(m_eventIndex < m_events.size());
   readData(m_storages[0] = new IgDataStorage,
 	   m_events[m_eventIndex].archive,
 	   m_events[m_eventIndex].contents);
