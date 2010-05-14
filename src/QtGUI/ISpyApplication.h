@@ -1,8 +1,6 @@
 #ifndef IGUANA_ISPY_APPLICATION_H
 # define IGUANA_ISPY_APPLICATION_H
 
-//<<<<<< INCLUDES                                                       >>>>>>
-
 # include <QObject>
 # include <QStringList>
 # include <QTimer>
@@ -17,9 +15,6 @@
 # include "QtGUI/Projectors.h"
 # include "QtGUI/DrawHelpers.h"
 
-//<<<<<< PUBLIC DEFINES                                                 >>>>>>
-//<<<<<< PUBLIC CONSTANTS                                               >>>>>>
-//<<<<<< PUBLIC TYPES                                                   >>>>>>
 
 class IgCollection;
 class IgAssociations;
@@ -56,10 +51,6 @@ namespace lat
   class ZipArchive;
   class ZipMember;
 }
-
-//<<<<<< PUBLIC VARIABLES                                               >>>>>>
-//<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
-//<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
 struct ViewSpecParseError
 {
@@ -439,8 +430,5 @@ private:
   // Hold the name of the current event.
   QString                 m_eventName;
 };
-
-//<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
-//<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 
 #endif // IGUANA_ISPY_APPLICATION_H

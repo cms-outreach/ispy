@@ -1,4 +1,3 @@
-//<<<<<< INCLUDES                                                       >>>>>>
 #define QT_NO_EMIT
 #include "QtGUI/ISpyApplication.h"
 #include "QtGUI/ISpy3DView.h"
@@ -65,7 +64,6 @@
 using namespace lat;
 const static size_t ISPY_MAX_STYLES = (size_t) -1;
 
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
 
 
 void
@@ -485,8 +483,6 @@ ISpyApplication::parseCss(const char *css)
   }
 }
 
-//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
-//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 /** Helper method to parse attributes that contain a 3-vector where components
     are comma separated, e. g.: "1.0, 0.0, 2.0".
