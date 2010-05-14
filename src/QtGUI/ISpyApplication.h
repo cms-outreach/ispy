@@ -244,7 +244,7 @@ private:
   typedef std::vector<Event>            Events;
   typedef std::vector<Group>            Groups;
   typedef std::vector<size_t>           GroupIndex;
-  typedef std::vector<Qt::CheckState>   Visibilities;
+  typedef std::vector<bool>             Visibilities;
   typedef std::map<std::string, size_t> VisibilityGroupMap;
   typedef std::vector<Filter>           Filters;
   typedef std::vector<FilterSpec>       FilterSpecs;
@@ -275,7 +275,7 @@ private:
                                    const char *otherCollectionSpec,
                                    const char *associationSpec,
                                    Make3D make3D,
-                                   Qt::CheckState visibility);
+                                   bool visibility);
   void                  view(const char *name,
                              bool specialized,
                              bool autoplay);

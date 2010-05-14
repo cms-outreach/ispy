@@ -632,7 +632,7 @@ ISpyApplication::parseViewsDefinition(QByteArray &data)
                    otherCollectionSpec.toStdString().c_str(),
                    associationSpec.toStdString().c_str(),
                    df,
-                   visibility ? Qt::Checked : Qt::Unchecked);
+                   visibility);
       }
       else if (xml.name() == "view")
       {
@@ -873,7 +873,7 @@ ISpyApplication::parseViewsDefinitionFile(const char *filename)
  
     @the visibility
  
-    Either Qt::Checked (i.e. collection visible) or Qt::Unchecked 
+    Either true (i.e. collection visible) or false 
     (i.e. collection invisible). This option controls the 
     visibility of the collection at startup. It matters only in 
     the case @a make3D is provided. */
@@ -883,7 +883,7 @@ ISpyApplication::collection(const char *friendlyName,
                             const char *otherCollectionSpec,
                             const char *associationSpec,
                             Make3D make3D,
-                            Qt::CheckState visibility)
+                            bool visibility)
 {
   assert(collectionSpec);
 
@@ -2523,8 +2523,10 @@ ISpyApplication::updateCollections(void)
     group.item->addChild(coll.item);
     
     // Finish setting up the tree items and append them to the tree widget.
+    bool visibility = m_visibility[coll.spec->visibilityIndex];
+    
     if (coll.spec && coll.spec->make3D)
-      coll.item->setCheckState(2, m_visibility[coll.spec->visibilityIndex]);
+      coll.item->setCheckState(2, visibility ? Qt::Checked : Qt::Unchecked);
     else
       coll.item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
     
