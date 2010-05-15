@@ -160,34 +160,61 @@ parseColor(const char *rgb, float *color)
   
   // Case for rgb (r, g , b) format.
   //
-  // Make sure the syntax is correct.
   // Split string into components and make sure we have 3 of them.
-  // Convert each component one by one, making sure they are normalized.
-  if (strncmp(rgb, "rgb(", 4) == 0)
-  {
-    if (rgb[strlen(rgb)-1] != ')')
-      return;
-    
-    std::string s(rgb, 4, strlen(rgb) - 6);
-    StringList components = StringOps::split(s, ",");
-    if (components.size() != 3)
-      return;
+  // We check:
+  // * that at least part of the string was parsed.
+  // * that the part of the string that was not parsed is composed only of
+  //   white spaces. 
+  // * that the components read are normalised betwee 0 and 1.
+  if (strncmp(rgb, "rgb(", 4) != 0)
+    throw CssParseError("Color definition expected", rgb);
 
-    for (int i = 0, e = 3; i != e; i++)
+  char *component, *brkb, *colorString;
+  const char *sep = ",";
+  
+  colorString = strdup(rgb + 4);
+  size_t i = 0;
+  for (component = strtok_r(colorString, sep, &brkb);
+       component;
+       component = strtok_r(NULL, sep, &brkb))
+  {
+    if (i > 2)
     {
-      color[i] = strtod(components[i].c_str(), &endptr);
-      if (*endptr)
-      {
-        defaultColor(color);
-        throw CssParseError("Unable to parse color.", rgb);
-      }
-      if (color[i] < 0. || color[i] > 1.0)
-      {
-        defaultColor(color);
-        throw CssParseError("Color not normalized.", rgb);
-      }
+      defaultColor(color);
+      free(colorString);
+      throw CssParseError("Too many components in color definition", rgb);
     }
+    
+    color[i] = strtod(component, &endptr);
+
+    if (endptr == component)
+    { 
+      free(colorString);
+      defaultColor(color);
+      throw CssParseError("Unable to parse color.", rgb);
+    }
+
+    char lastChar = 0;
+    if (endptr && *endptr)
+      lastChar = *(endptr + strspn(endptr, " \t\n)"));
+      
+    if (endptr && lastChar)
+    {
+      defaultColor(color);        
+      free(colorString);
+      std::string err = "Expected ',' found ";
+      throw CssParseError((err + &lastChar).c_str(), rgb);
+    }
+    
+    if (color[i] < 0. || color[i] > 1.0)
+    {
+      free(colorString);
+      defaultColor(color);
+      throw CssParseError("Color not normalized.", rgb);
+    }
+    ++i;
   }
+  free(colorString);
 }
 
 /** Defines a new cascading style.
@@ -741,7 +768,7 @@ ISpyApplication::ISpyApplication(void)
   // specifications is, so that we can revert back to default simply by 
   // resizing such a vector.
   style("*", "");
-  style("Background","diffuse-color: rbg(1.,0,0);");
+  style("Background","diffuse-color: rgb(1.,  0,0);");
   bool ok = parseCssFile(":/css/default-style.iss");
   m_defaultStyleLevel = m_styleSpecs.size();
   assert(ok && "Default style not compiled as resource.");
