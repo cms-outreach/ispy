@@ -2443,13 +2443,16 @@ ISpyApplication::updateCollections(void)
       // Actual addition of the children to a group is done later on, so that
       // we can make sure that the group ordering is the same as the 
       // one in which the collections where declared.
-      lat::StringList parts = lat::StringOps::split(name, '/');
-      name = parts.back();
+      //
+      // Remember that divPos + 1 is always 0 because std::string::npos := 1.
+      size_t divPos = name.find_first_of('/');
       std::string groupName;
-      if (parts.size() == 2)
-        groupName = parts.front();
-      else
+      if (!divPos || divPos == std::string::npos)
         groupName = "Other";
+      else
+        groupName = std::string(name, 0, divPos);
+
+      name = std::string(name, divPos + 1);
       
       int groupIdx = -1;
       for (size_t gi = 0, ge = m_groups.size(); gi != ge; gi++)
