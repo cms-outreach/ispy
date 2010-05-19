@@ -850,6 +850,26 @@ ISpyApplication::parseViewsDefinitionFile(const char *filename)
   return true;
 }
 
+/**Helper method which splits a given path like collection specification as
+   found in @a spec into n components and puts them in @a parts.
+ */
+void
+splitCollectionSpec(const char *spec, std::vector<std::string> &parts)
+{
+  char *component = 0, *brkb = 0;
+  char *tmp = strdup(spec);
+  const char *sep = ":";
+  parts.clear();
+  parts.reserve(10);
+ 
+  for (component = strtok_r(tmp, sep, &brkb);
+       component;
+       component = strtok_r(0, sep, &brkb))
+     parts.push_back(component);
+ 
+  free(tmp);
+}
+
 /** Specify a new collection.  Call this during the application
     initialisation to register known collection handlers.
 
@@ -912,30 +932,30 @@ ISpyApplication::collection(const char *friendlyName,
 
   m_specs.resize(m_specs.size() + 1);
   CollectionSpec &spec = m_specs.back();
-  StringList parts;
-
+  std::vector<std::string> parts;
+  
   if (friendlyName)
     spec.friendlyName = friendlyName;
   
-  parts = StringOps::split(collectionSpec, ':');
-  assert(! parts.empty());
-  spec.collection = parts[0];
+  splitCollectionSpec(collectionSpec, parts);
+  assert(!parts.empty());
     
+  spec.collection = parts[0];
   spec.requiredFields.insert(spec.requiredFields.end(),
                              parts.begin()+1, parts.end());
 
-  if (otherCollectionSpec)
+  if (otherCollectionSpec && *otherCollectionSpec)
   {
-    parts = StringOps::split(otherCollectionSpec, ':');
+    splitCollectionSpec(otherCollectionSpec, parts);
     assert(! parts.empty());
     spec.otherCollection = parts[0];
     spec.otherRequiredFields.insert(spec.otherRequiredFields.end(),
                                     parts.begin()+1, parts.end());
   }
 
-  if (associationSpec)
+  if (associationSpec && *associationSpec)
   {
-    parts = StringOps::split(associationSpec, ':');
+    splitCollectionSpec(associationSpec, parts);
     assert(parts.size() == 1);
     spec.otherAssociation = parts[0];
   }
