@@ -476,9 +476,13 @@ makeAnyPointSetShapes(IgCollection **collections, IgAssociations **,
   sep->addChild(points);
 }
 
+/** Helper function to draw different kind of boxes 
+    FIXME: we should probably have the line style in the Style struct.
+  */
 static void
-make3DAnyBox(IgCollection **collections, IgAssociations **,
-             SoSeparator *sep, Style * /* style */, Projectors &projectors)
+makeAnyBoxHelper(IgCollection **collections, IgAssociations **,
+                 SoSeparator *sep, Style * /* style */, Projectors &projectors,
+                 bool solid, bool projected)
 {
   IgCollection *c = collections[0];
 
@@ -499,41 +503,45 @@ make3DAnyBox(IgCollection **collections, IgAssociations **,
     IgV3d b2  = ci->get<IgV3d>(BACK_2);
     IgV3d b3  = ci->get<IgV3d>(BACK_3);
     IgV3d b4  = ci->get<IgV3d>(BACK_4);
-
-    drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
+    
+    if (solid && projected)
+      drawTowerHelper.addTowerProjected(f1,f2,f3,f4, b1,b2,b3,b4);
+    else if (solid && !projected)
+      drawTowerHelper.addTower(f1,f2,f3,f4, b1,b2,b3,b4);
+    else if (!solid && projected)
+      drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4, b1,b2,b3,b4);
+    else if (!solid && !projected)
+      drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
   }
 }
 
 static void
-makeAnyBox(IgCollection **collections, IgAssociations **,
-           SoSeparator *sep, Style * /* style */, Projectors &projectors)
+make3DAnyBox(IgCollection **collections, IgAssociations **assoc,
+             SoSeparator *sep, Style * style, Projectors &projectors)
 {
-  IgCollection *c = collections[0];
-
-  IgDrawTowerHelper drawTowerHelper(sep, projectors);
-
-  IgProperty        FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty        FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty        BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty        BACK_3(c, "back_3"), BACK_4(c, "back_4");
-  
-  for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-  {
-    IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-    IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-    IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-    IgV3d f4  = ci->get<IgV3d>(FRONT_4);
-
-    IgV3d b1  = ci->get<IgV3d>(BACK_1);
-    IgV3d b2  = ci->get<IgV3d>(BACK_2);
-    IgV3d b3  = ci->get<IgV3d>(BACK_3);
-    IgV3d b4  = ci->get<IgV3d>(BACK_4);
-
-    drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4, b1,b2,b3,b4);
-  }
+  makeAnyBoxHelper(collections, assoc, sep, style, projectors, false, false);
 }
 
+static void
+makeAnyBox(IgCollection **collections, IgAssociations **assoc,
+           SoSeparator *sep, Style * style, Projectors &projectors)
+{
+  makeAnyBoxHelper(collections, assoc, sep, style, projectors, false, true);
+}
 
+static void
+make3DAnyBoxSolid(IgCollection **collections, IgAssociations **assoc,
+                  SoSeparator *sep, Style * style, Projectors &projectors)
+{
+  makeAnyBoxHelper(collections, assoc, sep, style, projectors, true, false);
+}
+
+static void
+makeAnyBoxSolid(IgCollection **collections, IgAssociations **assoc,
+                SoSeparator *sep, Style * style, Projectors &projectors)
+{
+  makeAnyBoxHelper(collections, assoc, sep, style, projectors, true, true);
+}
 
 static void
 make3DAnyLine(IgCollection **collections, IgAssociations **, 
@@ -2339,6 +2347,8 @@ registerDrawHelpers(std::map<std::string, Make3D> &helpers)
 {
   helpers.insert(std::make_pair("make3DAnyBox", make3DAnyBox));
   helpers.insert(std::make_pair("makeAnyBox", makeAnyBox));
+  helpers.insert(std::make_pair("make3DAnyBoxSolid", make3DAnyBoxSolid));
+  helpers.insert(std::make_pair("makeAnyBoxSolid", makeAnyBoxSolid));
   helpers.insert(std::make_pair("make3DAnyDetId", make3DAnyDetId));
   helpers.insert(std::make_pair("make3DAnyLine", make3DAnyLine));
   helpers.insert(std::make_pair("make3DAnyPoint", make3DAnyPoint));
