@@ -989,18 +989,18 @@ ISpyApplication::collection(const char *friendlyName,
  */
 void
 ISpyApplication::filter(const char *friendlyName,
-			const char *collectionSpec)
+                        const char *collectionSpec)
 {
   assert(collectionSpec);
   
   m_filterSpecs.resize(m_filterSpecs.size() + 1);
   FilterSpec &spec = m_filterSpecs.back();
-  StringList parts;
+  std::vector<std::string> parts;
 
   if (friendlyName)
     spec.friendlyName = friendlyName;
   
-  parts = StringOps::split(collectionSpec, ':');
+  splitCollectionSpec(collectionSpec, parts);
   
   assert(! parts.empty());
   spec.collection = parts[0];
