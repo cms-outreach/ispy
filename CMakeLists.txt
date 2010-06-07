@@ -19,4 +19,6 @@ file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/*.cpp")
 qt4_wrap_cpp(FRAMEWORK_TESTS_MOCS src/Framework/tests/test_driver.cpp)
 include_directories(${QT_INCLUDE_DIR})
 add_executable(ISpyFrameworkTests ${FRAMEWORK_TESTS_SOURCES})
-target_link_libraries(ISpyFrameworkTests ISpyFramework ${QT_LIBRARIES})
+target_link_libraries(ISpyFrameworkTests ISpyFramework ${QT_LIBRARIES} ${QT_QTTEST_LIBRARIES})
+
+add_test(SimpleTest ${EXECUTABLE_OUTPUT_PATH}/ISpyFrameworkTests Hello)
