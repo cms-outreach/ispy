@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(iSpy)
 include(FindQt4)
+enable_testing()
 
 find_package(Qt4 REQUIRED)
 
@@ -27,4 +28,4 @@ include_directories(${QT_INCLUDE_DIR})
 add_executable(ISpyFrameworkTests ${FRAMEWORK_TESTS_SOURCES})
 target_link_libraries(ISpyFrameworkTests ISpyFramework ${QT_LIBRARIES} ${QT_QTTEST_LIBRARIES})
 
-add_test(SimpleTest ${EXECUTABLE_OUTPUT_PATH}/ISpyFrameworkTests Hello)
+add_test(SimpleTest ${EXECUTABLE_OUTPUT_PATH}/ISpyFrameworkTests)
