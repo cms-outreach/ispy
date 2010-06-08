@@ -14,6 +14,12 @@ include(${QT_USE_FILE})
 add_executable(igdumpstats src/Framework/bin/igdumpstats.cpp)
 target_link_libraries(igdumpstats ISpyFramework)
 
+# Build iSpy Qt client.
+file(GLOB QTGUI_SOURCES "src/QtGUI/*.cc")
+include_directories("src" "src/QtGUI")
+add_executable(iSpy ${QTGUI_SOURCES})
+target_link_libraries(iSpy ISpyFramework ${QT_LIBRARIES})
+
 # Build unit tests for Framework.
 file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/*.cpp")
 qt4_wrap_cpp(FRAMEWORK_TESTS_MOCS src/Framework/tests/test_driver.cpp)
