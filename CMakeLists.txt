@@ -9,6 +9,8 @@ file(GLOB FRAMEWORK_SOURCES "src/Framework/*.cc")
 include_directories("src" "src/Framework")
 add_library(ISpyFramework STATIC ${FRAMEWORK_SOURCES})
 find_package(Qt4 4.5.0)
+find_package(Coin3d)
+
 include(${QT_USE_FILE})
 
 # Build igdumpstats
