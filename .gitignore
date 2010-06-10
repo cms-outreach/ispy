@@ -9,3 +9,12 @@ Makefile
 ui
 ispy.app
 src/Framework/tests/moc_*.cxx
+ui_*
+*/*/moc_*
+CMakeCache.txt
+CMakeFiles
+qrc_*
+*.a
+Testing
+CTestTestfile.cmake
+cmake_install.cmake
