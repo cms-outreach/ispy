@@ -49,7 +49,7 @@ find_library(CLASSLIB_LIBRARY classlib REQUIRED)
 find_library(FREETYPE_LIBRARY freetype REQUIRED)
 find_library(FONTCONFIG_LIBRARY fontconfig REQUIRED)
 find_library(SOQT_LIBRARY SoQt REQUIRED)
-find_library(ZLIB_LIBRARY z REQUIRED)
+find_library(ZLIB_LIBRARY z REQUIRED NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 if(APPLE)
    find_library(EXPAT_LIBRARY expatstatic REQUIRED)
    find_library(SECURITY_LIBRARY Security)
@@ -72,20 +72,27 @@ file(GLOB QTGUI_MOC_FILES "src/QtGUI/*.h")
 qt4_add_resources(QTGUI_RESOURCES ${QTRC_FILES})
 ispy_wrap_ui(QTGUI_UIC_PROCESSED_FILES ${QTGUI_UIC_FILES})
 qt4_wrap_cpp(QTGUI_MOC_PROCESSED_FILES ${QTGUI_MOC_FILES})
-message(${QTGUI_UIC_PROCESSED_FILES})
 include_directories("src" "src/QtGUI" ${QT_INCLUDE_DIR} 
                     ${QT_QTNETWORK_INCLUDE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-add_executable(iSpy "src/QtGUI/bin/ispy.cpp" ${QTGUI_SOURCES} 
-                    ${QTGUI_RESOURCES} 
-                    ${QTGUI_UIC_PROCESSED_FILES}
-                    ${QTGUI_MOC_PROCESSED_FILES})
+set (ISPY_SOURCES "src/QtGUI/bin/ispy.cpp" ${QTGUI_SOURCES} 
+                  ${QTGUI_RESOURCES} 
+                  ${QTGUI_UIC_PROCESSED_FILES}
+                  ${QTGUI_MOC_PROCESSED_FILES})
+
+if(APPLE)
+   add_executable(iSpy MACOSX_BUNDLE ${ISPY_SOURCES})
+   set_target_properties(iSpy PROPERTIES 
+                              MACOSX_BUNDLE_INFO_PLIST "src/QtGUI/resources/Info.plist")
+else(APPLE)
+   add_executable(ispy ${ISPY_SOURCES})
+endif(APPLE)
+
 target_link_libraries(iSpy ISpyFramework ${QT_LIBRARIES} 
                       ${QT_QTNETWORK_LIBRARIES}
                       ${QT_QTOPENGL_LIBRARIES} ${PCRE_LIBRARY}
                       ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}
                       ${FREETYPE_LIBRARY} ${FONTCONFIG_LIBRARY} 
-                      ${CLASSLIB_LIBRARY})
-
+                      ${CLASSLIB_LIBRARY} ${ZLIB_LIBRARY})
 
 # Build unit tests for Framework.
 file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/*.cpp")
@@ -93,5 +100,15 @@ qt4_wrap_cpp(FRAMEWORK_TESTS_MOCS src/Framework/tests/test_driver.cpp)
 add_executable(ISpyFrameworkTests ${FRAMEWORK_TESTS_SOURCES})
 target_link_libraries(ISpyFrameworkTests ISpyFramework ${QT_LIBRARIES} 
                       ${QT_QTTEST_LIBRARIES} ${SECURITY_LIBRARY})
+
+# Build .app on mac.
+if (APPLE)
+set(APPS ${CMAKE_CURRENT_BINARY_DIR}/iSpy)  # paths to executables
+set(DIRS ${CMAKE_CURRENT_BINARY_DIR})   # directories to search for prerequisites
+INSTALL(CODE "
+   include(BundleUtilities)
+   fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
+   " COMPONENT Runtime)
+endif(APPLE)
 
 add_test(SimpleTest ${EXECUTABLE_OUTPUT_PATH}/ISpyFrameworkTests)
