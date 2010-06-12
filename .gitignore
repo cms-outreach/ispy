@@ -18,3 +18,7 @@ qrc_*
 Testing
 CTestTestfile.cmake
 cmake_install.cmake
+CMakeScripts
+Debug
+iSpy.app
+igdumpstats
