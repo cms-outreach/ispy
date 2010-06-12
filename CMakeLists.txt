@@ -3,6 +3,8 @@ project(iSpy)
 include(FindQt4)
 enable_testing()
 
+set(CMAKE_OSX_ARCHITECTURES "ppc;i386")
+
 # Improved wrap ui macro. Now output files are in ui/
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ui)
 MACRO (ISPY_WRAP_UI outfiles )
@@ -36,8 +38,8 @@ find_package(Qt4 4.5.0)
 # By default CMake uses the framework installed from the official package.
 # We want to use the static library we compiled.
 if(APPLE)
-   find_path(COIN3D_INCLUDE_DIRS Inventor/So.h)
    find_library(COIN3D_LIBRARIES Coin)
+   find_path(COIN3D_INCLUDE_DIRS Inventor/So.h NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 else(APPLE)
    find_package(Coin3d REQUIRED)
 endif(APPLE)
