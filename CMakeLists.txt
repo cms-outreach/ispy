@@ -4,6 +4,8 @@ include(FindQt4)
 enable_testing()
 
 set(CMAKE_OSX_ARCHITECTURES "ppc;i386")
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.5)
+set(CMAKE_OSX_SYSROOT /Developer/SDKs/MacOSX10.5.sdk)
 
 # Improved wrap ui macro. Now output files are in ui/
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ui)
