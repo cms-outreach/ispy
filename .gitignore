@@ -25,3 +25,4 @@ igdumpstats
 install_manifest.txt
 ISpyFrameworkTests
 Info.plist
+test_*

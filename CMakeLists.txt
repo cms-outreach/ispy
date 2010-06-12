@@ -99,10 +99,10 @@ target_link_libraries(iSpy ISpyFramework ${QT_LIBRARIES}
                       ${CLASSLIB_LIBRARY} ${ZLIB_LIBRARY})
 
 # Build unit tests for Framework.
-file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/*.cpp")
-qt4_wrap_cpp(FRAMEWORK_TESTS_MOCS src/Framework/tests/test_driver.cpp)
-add_executable(ISpyFrameworkTests ${FRAMEWORK_TESTS_SOURCES})
-target_link_libraries(ISpyFrameworkTests ISpyFramework ${QT_LIBRARIES} 
+file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/test_igfiles-*.cpp")
+qt4_wrap_cpp(FRAMEWORK_TESTS_MOCS src/Framework/tests/test_igfiles-driver.cpp)
+add_executable(test_igfiles ${FRAMEWORK_TESTS_SOURCES})
+target_link_libraries(test_igfiles ISpyFramework ${QT_LIBRARIES} 
                       ${QT_QTTEST_LIBRARIES} ${SECURITY_LIBRARY})
 
 # Build .app on mac.
