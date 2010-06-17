@@ -15,6 +15,7 @@
 
 #include "Framework/IgCollection.h"
 #include "Framework/IgParser.h"
+#include "Framework/IgStyleParser.h"
 
 // FIXME : these should be migrated from shapes into draw functions
 
@@ -217,119 +218,85 @@ parseColor(const char *rgb, float *color)
   free(colorString);
 }
 
-/** Defines a new cascading style.
-    
-    @a rule
-
-    the rule to be matched in order to apply the style. For the moment this
-    only means either "*" (matches anything) or the collection name.
-    
-    @a css
-    
-    a set of property definitions in the form:
-    
-    key1:value1;key2:value2;...
-    
-    see ISpyApplication::parseCss for a description of the changeable 
-    properties.
-*/
-void
-ISpyApplication::style(const char *rule, const char *css)
+class ISpyStyleParser : public IgStyleParser
 {
-  m_styleSpecs.resize(m_styleSpecs.size() + 1);
-  StyleSpec &spec = m_styleSpecs.back();
-
-  // Define the defaults.
-  spec.viewName = "*";
-  spec.collectionName = "*";
-  spec.background = "";
-  defaultColor(spec.diffuseColor);
-  spec.transparency = 0.0;
-  spec.lineWidth = 1.0;
-  spec.linePattern = 0xffff;
-  spec.fontSize = 12;
-  spec.fontFamily = "Helvetica";
-  spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
-  spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
-  spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
-  spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
-  spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
-  spec.minEnergy = 0.2;   // Default value is 0.2 GeV
-  spec.maxEnergy = 5.;    // Default value is 5.0 GeV
-  spec.energyScale = 1.;  // Default value is 0.1 m/GeV
-  spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
-  // Default position it top left corner. Coordinate system
-  // is like the web one.
-  spec.left = 0;
-  spec.top = 0;
+public:
+  ISpyStyleParser(std::istream &in, std::vector<StyleSpec> &specs)
+    : IgStyleParser(in),
+      m_styleSpecs(specs)
+  {}
   
-  // Parse the rule.
-  StringList ruleParts = StringOps::split(rule, "::");
-  if (ruleParts.size() == 1)
-    spec.collectionName = ruleParts[0];
-  else if (!ruleParts.size() || ruleParts.size() > 2)
-    throw CssParseError("Wrong syntax for rule!", rule);
-  else
+  void ruleSpec(const std::string &name)
   {
-    spec.viewName = ruleParts[0];
-    spec.collectionName = ruleParts[1];
+    m_styleSpecs.resize(m_styleSpecs.size() + 1);
+    StyleSpec &spec = m_styleSpecs.back();    
+    // Define the defaults.
+    spec.viewName = "*";
+    spec.collectionName = "*";
+    spec.background = "";
+    defaultColor(spec.diffuseColor);
+    spec.transparency = 0.0;
+    spec.lineWidth = 1.0;
+    spec.linePattern = 0xffff;
+    spec.fontSize = 12;
+    spec.fontFamily = "Helvetica";
+    spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
+    spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
+    spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
+    spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
+    spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
+    spec.minEnergy = 0.2;   // Default value is 0.2 GeV
+    spec.maxEnergy = 5.;    // Default value is 5.0 GeV
+    spec.energyScale = 1.;  // Default value is 0.1 m/GeV
+    spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
+    // Default position it top left corner. Coordinate system
+    // is like the web one.
+    spec.left = 0;
+    spec.top = 0;
+
+    // FIXME: For the moment we ignore different views. We should have a rule
+    // spec parser.
+    spec.collectionName = name;
+
+    // Copy over properties from previously matching specs.
+    for (size_t ssi = 0, sse = m_styleSpecs.size() - 1; ssi != sse; ++ssi)
+    {
+      StyleSpec &previous = m_styleSpecs[ssi];
+  
+      if (previous.viewName != "*"
+          && previous.viewName != spec.viewName)
+        continue;
+       
+      if (previous.collectionName != "*" &&
+          previous.collectionName != spec.collectionName)
+        continue;
+  
+      memcpy(spec.diffuseColor, previous.diffuseColor, 3*sizeof(float));
+      spec.transparency = previous.transparency;
+      spec.lineWidth = previous.lineWidth;
+      spec.linePattern = previous.linePattern;
+      spec.fontSize = previous.fontSize;
+      spec.fontFamily = previous.fontFamily;
+      spec.drawStyle = previous.drawStyle;
+      spec.markerShape = previous.markerShape;
+      spec.markerSize = previous.markerSize;
+      spec.markerStyle = previous.markerStyle;
+      spec.textAlign = previous.textAlign;
+      spec.minEnergy = previous.minEnergy;
+      spec.maxEnergy = previous.maxEnergy;
+      spec.energyScale = previous.energyScale;
+      spec.background = previous.background;
+      spec.annotationLevel = previous.annotationLevel;
+      spec.top = previous.top;
+      spec.left = previous.left;
+    }
   }
 
-  // Copy over properties from previously matching specs.
-  for (size_t ssi = 0, sse = m_styleSpecs.size() - 1; ssi != sse; ++ssi)
+  void propertySpec(const std::string &key, const std::string &value)
   {
-    StyleSpec &previous = m_styleSpecs[ssi];
-
-    if (previous.viewName != "*"
-        && previous.viewName != spec.viewName)
-      continue;
-     
-    if (previous.collectionName != "*" &&
-        previous.collectionName != spec.collectionName)
-      continue;
-
-    memcpy(spec.diffuseColor, previous.diffuseColor, 3*sizeof(float));
-    spec.transparency = previous.transparency;
-    spec.lineWidth = previous.lineWidth;
-    spec.linePattern = previous.linePattern;
-    spec.fontSize = previous.fontSize;
-    spec.fontFamily = previous.fontFamily;
-    spec.drawStyle = previous.drawStyle;
-    spec.markerShape = previous.markerShape;
-    spec.markerSize = previous.markerSize;
-    spec.markerStyle = previous.markerStyle;
-    spec.textAlign = previous.textAlign;
-    spec.minEnergy = previous.minEnergy;
-    spec.maxEnergy = previous.maxEnergy;
-    spec.energyScale = previous.energyScale;
-    spec.background = previous.background;
-    spec.annotationLevel = previous.annotationLevel;
-    spec.top = previous.top;
-    spec.left = previous.left;
-  }
-
-  // Parse the property declarations and deposit new value on top of those
-  // coming from previous declarations.
-  // Remove trailing spaces
-  //
-  // FIXME: converting to a string is lame, but effective...
-  // FIXME: move bracket parsing one level up.
-  std::string cssString = css;
-  stripWhitespaces(cssString);
-  
-  StringList properties = StringOps::split(cssString.c_str(), ";", StringOps::TrimEmpty);
-  
-  std::string key, value;
-
-  for (size_t pi = 0, pe = properties.size(); pi != pe; pi++)
-  {
+    StyleSpec &spec = m_styleSpecs.back();    
     // Split a string at the first ":" and use the first part as property key,
     // the second as value.
-    std::string &property = properties[pi];
-    size_t sep_pos = property.find(':');
-    key.assign(property.c_str(), 0, sep_pos);
-    value.assign(property.c_str(), sep_pos + 1, property.size());
-
     char *endptr;
     
     if (key == "diffuse-color")
@@ -445,7 +412,9 @@ ISpyApplication::style(const char *rule, const char *css)
       throw CssParseError("Unknown property", key);
     }
   }
-}
+private:
+  std::vector<StyleSpec> &m_styleSpecs;
+};
 
 /** Parses a string contain a CSS to be used for rendering...
 
@@ -487,27 +456,9 @@ ISpyApplication::style(const char *rule, const char *css)
 void 
 ISpyApplication::parseCss(const char *css)
 {
-  // The parsing works by first removing all the comments and spaces,
-  // then it divides up different CSS statements by splitting at the final
-  // } found in every definition and then divides the rule from the
-  // property by splitting at the {. 
-  // FIXME: the parsing is somewhat rudimentary but does its job.
-  //        Write a better one when you have time.
-  // FIXME: remove the ASSERT and have proper error handling, once
-  //        we start having user specified css.
-  std::string cssStr;
-  cssStr = StringOps::remove(css, Regexp("//.*\n"));
-  stripWhitespaces(cssStr);
-  cssStr = StringOps::remove(cssStr, Regexp("/\\*.*?\\*/"));
-  
-  StringList classes = StringOps::split(cssStr, "}", StringOps::TrimEmpty); 
-  
-  for (size_t i = 0, e = classes.size(); i != e; ++i)
-  {
-    StringList parts = StringOps::split(classes[i], "{", StringOps::TrimEmpty);
-    assert(parts.size() == 2);
-    style(parts[0].c_str(), parts[1].c_str());
-  }
+  std::stringstream in(css);
+  ISpyStyleParser styleParser(in, m_styleSpecs);
+  styleParser.parse();
 }
 
 
@@ -767,8 +718,11 @@ ISpyApplication::ISpyApplication(void)
   // Notice that we keep track of how big the vector containing the style
   // specifications is, so that we can revert back to default simply by 
   // resizing such a vector.
-  style("*", "");
-  style("Background","diffuse-color: rgb(1.,  0,0);");
+  std::stringstream str("* {diffuse-color: rgb(.7,.7,.7); }"
+                        "Background {diffuse-color: rgb(1., 0, 0);}");
+  ISpyStyleParser styleParser(str, m_styleSpecs);
+  styleParser.parse();
+  
   bool ok = parseCssFile(":/css/default-style.iss");
   m_defaultStyleLevel = m_styleSpecs.size();
   assert(ok && "Default style not compiled as resource.");
