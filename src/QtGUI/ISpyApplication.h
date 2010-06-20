@@ -45,12 +45,8 @@ class SoFont;
 class ISpyPicturePublishingDialog;
 class SoImage;
 class QFileSystemWatcher;
-
-namespace lat
-{
-  class ZipArchive;
-  class ZipMember;
-}
+class IgArchive;
+class IgMember;
 
 struct ViewSpecParseError
 {
@@ -207,8 +203,8 @@ private:
   struct Event
   {
     size_t                      index;
-    lat::ZipArchive             *archive;
-    lat::ZipMember              *contents;
+    IgArchive                   *archive;
+    IgMember                    *contents;
   };
 
   struct FilterSpec
@@ -282,10 +278,9 @@ private:
 
   void                  displayCollection(Collection &c);
   void                  createStats(void);
-  lat::ZipArchive *     loadFile(const QString &fileName);
-  void                  readData(IgDataStorage *to,
-                                 lat::ZipArchive *archive,
-                                 lat::ZipMember *source);
+  IgArchive *           loadFile(const char *fileName);
+  void                  readData(IgDataStorage *to, IgArchive *archive,
+                                 IgMember *source);
   void                  downloadFile(const QUrl &url);
   void                  downloadGeometry(void);
   bool                  simpleOpen(const QString &fileName);
@@ -319,7 +314,7 @@ private:
   int                   m_argc;
   char                  **m_argv;
   char                  *m_appname;
-  lat::ZipArchive       *m_archives[2];
+  IgArchive             *m_archives[2];
   IgDataStorage         *m_storages[2];
   CollectionSpecs       m_specs;
   ViewSpecs             m_viewSpecs;
