@@ -49,7 +49,6 @@ endif(APPLE)
 find_package(OpenGL REQUIRED)
 
 find_library(PCRE_LIBRARY pcre REQUIRED)
-find_library(CLASSLIB_LIBRARY classlib REQUIRED)
 find_library(FREETYPE_LIBRARY freetype REQUIRED)
 find_library(FONTCONFIG_LIBRARY fontconfig REQUIRED)
 find_library(SOQT_LIBRARY SoQt REQUIRED)
@@ -96,7 +95,7 @@ target_link_libraries(iSpy ISpyFramework ${QT_LIBRARIES}
                       ${QT_QTOPENGL_LIBRARIES} ${PCRE_LIBRARY}
                       ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}
                       ${FREETYPE_LIBRARY} ${FONTCONFIG_LIBRARY} 
-                      ${CLASSLIB_LIBRARY} ${ZLIB_LIBRARY})
+                      ${ZLIB_LIBRARY})
 
 # Build unit tests for igfiles.
 file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/test_igfiles-*.cpp")

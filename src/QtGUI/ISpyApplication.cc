@@ -16,19 +16,9 @@
 #include "Framework/IgCollection.h"
 #include "Framework/IgParser.h"
 #include "Framework/IgStyleParser.h"
+#include "Framework/IgArchive.h"
 
 // FIXME : these should be migrated from shapes into draw functions
-
-
-#include "classlib/iobase/File.h"
-#include "classlib/iobase/Filename.h"
-#include "classlib/iotools/InputStream.h"
-#include "classlib/utils/ShellEnvironment.h"
-#include "classlib/utils/StringOps.h"
-#include "classlib/utils/Error.h"
-#include "classlib/utils/Regexp.h"
-#include "classlib/zip/ZipMember.h"
-#include "classlib/zip/ZipArchive.h"
 
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
@@ -62,10 +52,7 @@
 #include <string>
 #include <cassert>
 
-using namespace lat;
 const static size_t ISPY_MAX_STYLES = (size_t) -1;
-
-
 
 void
 stripWhitespaces(std::string &s)
@@ -2336,7 +2323,7 @@ ISpyApplication::updateCollections(void)
     // if it qualifies all stated requirements.  If it matches, use
     // the "friendly" collection name from the spec and its drawing
     // utility.
-    StringList &names = m_storages[sti]->collectionNames();
+    std::vector<std::string> &names = m_storages[sti]->collectionNames();
     for (size_t ci = 0, ce = names.size(); ci != ce; ++ci, ++i)
     {
       std::string       collectionName = names[ci];
@@ -2639,13 +2626,10 @@ ISpyApplication::newEvent(void)
   delete m_storages[0];
 
   assert(m_eventIndex < m_events.size());
-  readData(m_storages[0] = new IgDataStorage,
-	   m_events[m_eventIndex].archive,
-	   m_events[m_eventIndex].contents);
-  
+  Event &event = m_events[m_eventIndex];
+  readData(m_storages[0] = new IgDataStorage, event.archive, event.contents);
   updateCollections();
-
-  m_eventName = m_events[m_eventIndex].contents->name().name();
+  m_eventName = event.contents->name();
   showMessage(m_eventName);
   updateEventMessage();
 }
@@ -2754,19 +2738,20 @@ ISpyApplication::simpleOpen(const QString &fileName)
   showMessage(QString("Opening ") + fileName + tr("..."));
 
   // Read the file in.
-  ZipArchive *file = loadFile(fileName);
+  IgArchive *file = loadFile(fileName.toStdString().c_str());
   if (! file)
     return false;
 
   // See what the file contains.
   Events                        events;
-  lat::ZipMember                *geometry = 0;
-  lat::ZipArchive::Iterator     zi, ze;
+  IgMember                      *geometry = 0;
+  IgArchive::Members::const_iterator     zi, ze;
   size_t                        index = 0;
 
-  events.reserve(file->size());
-  for (zi = file->begin(), ze = file->end(); zi != ze; ++zi, ++index)
-    if ((*zi)->isDirectory() ||(*zi)->size(ZipMember::UNCOMPRESSED) == 0)
+  events.reserve(file->members().size());
+  for (zi = file->members().begin(), ze = file->members().end(); 
+       zi != ze; ++zi, ++index)
+    if ((*zi)->isDirectory() || (*zi)->empty())
       continue;
     else if (! strncmp((*zi)->name(), "Geometry/", 9))
     {
@@ -2789,7 +2774,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
   // the file has events and geometry, take both from it.  If the file
   // has no geometry, take event list from it, whether it had any
   // events or not.
-  ZipArchive *deleted = 0;
+  IgArchive *deleted = 0;
   bool update = false;
   if (geometry)
   {
@@ -2861,24 +2846,22 @@ ISpyApplication::downloadGeometry(void)
 }
 
 /** Helper function to load zip archive index contents. */
-ZipArchive *
-ISpyApplication::loadFile(const QString &filename)
+IgArchive *
+ISpyApplication::loadFile(const char *filename)
 {
-  ZipArchive *file = 0;
+  IgArchive *file = 0;
   try
   {
-    file = new ZipArchive(Filename(filename.toStdString())
-                          .substitute(ShellEnvironment()),
-                          IOFlags::OpenRead);
+    file = new IgArchive(filename);
   }
-  catch(lat::Error &e)
+  catch(IgArchive::Exception &e)
   {
     std::ostringstream str;
-    str << "Unable parse file: " << filename.toStdString() << ".\nMaybe it got truncated?";
+    str << "Unable parse file: " << filename << ".\nMaybe it got truncated?";
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
 
-    std::cerr << (const char *) filename.toAscii()
+    std::cerr << filename
               << ": error: cannot read: "
               << e.explain() << std::endl;
   }
@@ -2892,20 +2875,15 @@ ISpyApplication::loadFile(const QString &filename)
     @a archive  Archive file containing @a source.
     @a source   The source data file to read in. */
 void
-ISpyApplication::readData(IgDataStorage *to, ZipArchive *archive, ZipMember *source)
+ISpyApplication::readData(IgDataStorage *to, IgArchive *archive, IgMember *source)
 {
   qDebug() << QString("Reading ") << source->name() << tr("...");
   showMessage(QString("Reading ") + source->name() + tr("..."));
 
   try
   {
-    InputStream *is = archive->input(source);
-    IOSize length = source->size(ZipMember::UNCOMPRESSED);
-    std::vector<char> buffer(length+1, 0);
-    is->xread(&buffer[0], length);
-    is->close();
-    delete is;
-
+    IgArchiveReader ar(archive);
+    std::string buffer = ar.read(source);
     IgParser parser(to);
     parser.parse(&buffer[0]);
   }
@@ -2916,7 +2894,7 @@ ISpyApplication::readData(IgDataStorage *to, ZipArchive *archive, ZipMember *sou
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
   }
-  catch(lat::Error &e)
+  catch(IgArchive::Exception &e)
   {
     std::ostringstream str;
     str << "Unable parse file: " << source->name() 
