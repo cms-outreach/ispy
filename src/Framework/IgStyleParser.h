@@ -193,7 +193,6 @@ public:
       case IN_END_STYLE:
         skipDelim('}');
         stripWhitespaces();
-        std::cerr << m_nextChar << std::endl;
         if (m_nextChar == EOF)
           return IN_END_DOCUMENT;
         return IN_RULE_SPEC;
