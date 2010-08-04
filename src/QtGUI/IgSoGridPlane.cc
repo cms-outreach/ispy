@@ -12,7 +12,7 @@
 
 #ifdef __APPLE__
 # include <OpenGL/gl.h>
-#else
+#elif !defined(WIN32)
 # include <GL/gl.h>
 #endif
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
