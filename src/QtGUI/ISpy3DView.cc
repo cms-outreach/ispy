@@ -13,6 +13,7 @@
 #include <Inventor/nodes/SoPerspectiveCamera.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/Qt/SoQtCursor.h>
+#include <Inventor/errors/SoDebugError.h>
 
 #include <QtGui>
 #include <iostream>
@@ -602,7 +603,7 @@ ISpy3DView::autoPrint(QString text)
 {
   QDateTime dt = QDateTime::currentDateTime();
   qDebug() << m_currentEvent << "--";
-  QString fName = "iSpy-" + m_currentEvent + dt.toString("-hh:mm:ss.zzz-dd.MM.yyyy") + ".png";
+  QString fName = "iSpy-" + dt.toString("hh-mm-ss-zzz-dd-MM-yyyy") + ".png";
   QString dName = "iSpy-" + m_currentEvent + dt.toString("-hh:mm:ss.zzz-dd.MM.yyyy") + ".date";
 
   SbColor c = getBackgroundColor();
