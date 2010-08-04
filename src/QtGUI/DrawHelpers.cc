@@ -1002,9 +1002,9 @@ makeLegoJets(IgCollection **collections, IgAssociations ** /*assocs*/,
                                            0.01,
                                            r * sin (i * segAngle) + cz));
 
-      vtx->vertex.set1Value (i, SbVec3f (r * cos (0) + cx,
+      vtx->vertex.set1Value (i, SbVec3f (r * cos (0.F) + cx,
                                          0.01,
-                                         r * sin (0) + cz));
+                                         r * sin (0.F) + cz));
       vtx->normal = SbVec3f (0, 0, 1);
       vtx->normalBinding = SoVertexProperty::OVERALL;
       vtx->materialBinding = SoVertexProperty::OVERALL;
