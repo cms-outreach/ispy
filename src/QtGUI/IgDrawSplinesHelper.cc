@@ -16,36 +16,24 @@ namespace {
 #endif
 }
 //<<<<<< PRIVATE TYPES                                                  >>>>>>
-namespace { //blank namespace is eqivalent to file scope static
-  // rootFunction evaluates the formula for the equation defining
-  // the opening angle of a helical curve in terms of the invariants.
-  // The argument x represents
-  // the possible values of the angle.
 
-  class RootFunction : public std::unary_function<float,float>
-  {
-  public:
-    RootFunction(float paramA, float paramC, float paramF) :
-      a(paramA), c(paramC), f(paramF)
-      {};
-    float operator()(const float x) const
-      {
-        double denom = -2*(1-cos(x))*(1-a) +x*x*(cos(x)-a);
-        double numerator = c * (cos(x)-a);
-        double radical = numerator / denom; //might as well return INF if denom=0
-        if (radical > 0) {
-          radical = sqrt(radical);}  //return Re part
-        else {
-          radical = 0; //-sqrt(-radical); //return -Im part
-        }
 
-        return static_cast<float>(f + radical * (1-a)*(-2+2*cos(x)+x*sin(x))/(cos(x)-1));
-      }
-  private:
-    const double a, c, f;
-  };
+IgDrawSplinesHelper::RootFunction::RootFunction(float paramA, float paramC, float paramF) :
+a(paramA), c(paramC), f(paramF)
+{};
+float IgDrawSplinesHelper::RootFunction::operator()(const float x) const
+{
+	double denom = -2*(1-cos(x))*(1-a) +x*x*(cos(x)-a);
+	double numerator = c * (cos(x)-a);
+	double radical = numerator / denom; //might as well return INF if denom=0
+	if (radical > 0) {
+		radical = sqrt(radical);}  //return Re part
+	else {
+		radical = 0; //-sqrt(-radical); //return -Im part
+	}
+
+	return static_cast<float>(f + radical * (1-a)*(-2+2*cos(x)+x*sin(x))/(cos(x)-1));
 }
-
 //<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
 //<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
 //<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
@@ -53,7 +41,6 @@ namespace { //blank namespace is eqivalent to file scope static
 const float M_SQRT3_2 =  0.8660254037844F; // sqrt(3)/2 for sin(60 degrees)
 const int IgDrawSplinesHelper::NORDER = 3;
 
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
 float
 IgDrawSplinesHelper::findRoot(const RootFunction func, float x1, float x2, 
                               float xacc, bool &err)
