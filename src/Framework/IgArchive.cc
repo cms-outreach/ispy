@@ -1,58 +1,67 @@
 #include "Framework/IgArchive.h"
+#include "QtGUI/IgSubProcess.h"
 #include <string>
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include "QString"
+#include "QRegExp"
+#include "QStringBuilder"
+#include "QTextStream"
+#include "QProcess"
 
 void
 IgArchive::readMembers()
 {
-  std::string cmd = "unzip -Z -1 " + m_filename;
-  FILE *f = popen(cmd.c_str(), "r");
-  if (!f)
-    throw IgArchive::Exception();
-  std::string string;
+  QStringList args;
 
-  char buffer[1024*128];
+  IgSubProcess subprocess;
+
+#ifdef WIN32
+//  QString command("C:/Graphics/unzip/win32/vc8/unzip__Win32_Release/unzip");
+  QString command("unzip");
+  args << "-Z" << "-1";
+#else
+  QString command("unzip");
+  args << "-Z" << "-1";
+#endif
+
+  args << m_filename;
+  subprocess.start(command, args);
+  if (!subprocess.waitForFinished()) throw IgArchive::Exception();
+
+  QTextStream ss(subprocess.getBuffer());
   
-  while (!feof(f))
+  while(!ss.atEnd())
   {
-    size_t s = fread(buffer, 1, 1024*128-1, f);
-    buffer[s] = 0;
-    string += buffer;
-  }
-
-  if (pclose(f))
-    throw IgArchive::Exception();
-
-  std::istringstream ss(string);
-  
-  while(ss)
-  {
-    std::string memberName;
-    getline(ss, memberName);
-    m_members.push_back(new IgMember(memberName));
+    QString memberName = ss.readLine();
+	m_members.push_back(new IgMember(memberName));
   }
 }
 
-const std::string
+const QByteArray&
 IgArchiveReader::read(IgMember *member)
 {
-  FILE *f = popen((std::string("unzip -q -c ") + m_archive->name() + " " + member->name()).c_str(), "r");
-  if (!f)
-    throw IgArchive::Exception();
-  std::string string;
-  char buffer[1024*128];
-  
-  while (!feof(f))
-  {
-    size_t s = fread(buffer, 1, 1024*128-1, f);
-    buffer[s] = 0;
-    string += buffer;
-  }
+  QStringList args;
 
-  if (pclose(f))
-    throw IgArchive::Exception();
+  IgSubProcess subprocess;
 
-  return string;  
+#ifdef WIN32
+//  QString command("C:/Graphics/unzip/win32/vc8/unzip__Win32_Release/unzip");
+  QString command("unzip");
+  args << "-p";
+#else
+  QString command("unzip");
+  args << "-p";
+#endif
+
+  args << m_archive->name();
+  args << member->name();
+  subprocess.start(command, args);
+
+  if (!subprocess.waitForFinished(120000)) throw IgArchive::Exception();
+
+
+  m_stream.append(subprocess.getBuffer());
+  return m_stream;
 }

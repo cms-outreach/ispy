@@ -52,6 +52,10 @@
 #include <string>
 #include <cassert>
 
+#ifdef WIN32
+#define strtok_r strtok_s
+#endif
+
 const static size_t ISPY_MAX_STYLES = (size_t) -1;
 
 void
@@ -1271,8 +1275,8 @@ ISpyApplication::run(int argc, char *argv[])
     }
     else if (!strcmp(*argv, "--online"))
     {      
-#ifdef Q_WS_MAC
-      std::cerr << "Option --online is not currently supported on MacOSX.\n" << std::endl;
+#if  defined(Q_WS_MAC) || defined(Q_WS_WIN)
+      std::cerr << "Option --online is not currently supported on MacOSX or Windows.\n" << std::endl;
       return EXIT_FAILURE;
 #endif
       if (! *++argv)
@@ -1297,7 +1301,10 @@ ISpyApplication::run(int argc, char *argv[])
 
   return doRun();
 }
-
+// This method is missing! This is only a temporary stand-in.
+void ISpyApplication::onlineConfig(const char *server)
+{
+}
 /** Default application settings will be set to
     default values if a user has not saved them
     yet.
@@ -2729,17 +2736,17 @@ ISpyApplication::openWithFallbackGeometry(const QString &fileName)
     rebuild the in-memory event list.
 */
 bool
-ISpyApplication::simpleOpen(const QString &fileName)
+ISpyApplication::simpleOpen(const QString& filename)
 {
-  if (fileName.isEmpty())
+  if (filename.isEmpty())
     return false;
 
-  qDebug() << "Try to open " << fileName;
-  showMessage(QString("Opening ") + fileName + tr("..."));
+  qDebug() << "Try to open " << filename;
+  showMessage(QString("Opening ") + filename + tr("..."));
 
   // Read the file in.
-  IgArchive *file = loadFile(fileName.toStdString().c_str());
-  if (! file)
+  IgArchive *archiveFile = loadFile(filename);
+  if (! archiveFile)
     return false;
 
   // See what the file contains.
@@ -2748,25 +2755,23 @@ ISpyApplication::simpleOpen(const QString &fileName)
   IgArchive::Members::const_iterator     zi, ze;
   size_t                        index = 0;
 
-  events.reserve(file->members().size());
-  for (zi = file->members().begin(), ze = file->members().end(); 
+  events.reserve(archiveFile->members().size());
+  for (zi = archiveFile->members().begin(), ze = archiveFile->members().end(); 
        zi != ze; ++zi, ++index)
     if ((*zi)->isDirectory() || (*zi)->empty())
       continue;
-    else if (! strncmp((*zi)->name(), "Geometry/", 9))
+    else if (((*zi)->name().left(9) == "Geometry/") || ((*zi)->name().left(9) == "Geometry\\"))
     {
       if (geometry)
-      {
         qDebug() << "Oopsla, multiple geometries, keeping last one.";
-      }
       geometry = *zi;
     }
-    else if (! strncmp((*zi)->name(), "Events/", 7))
+    else if ( ((*zi)->name().left(7) == "Events/") || ((*zi)->name().left(7) == "Events\\"))
     {
       events.resize(events.size()+1);
       Event &e = events.back();
       e.index = index;
-      e.archive = file;
+      e.archive = archiveFile;
       e.contents = *zi;
     }
 
@@ -2791,12 +2796,12 @@ ISpyApplication::simpleOpen(const QString &fileName)
     }
     delete m_storages[1];
     m_storages[1] = new IgDataStorage;
-    m_archives[1] = file;
-    readData(m_storages[1], file, geometry);
+    m_archives[1] = archiveFile;
+    readData(m_storages[1], archiveFile, geometry);
     update = true;
   }
   else
-      m_mainWindow->setWindowTitle(QString("IGUANA iSpy - %1").arg(fileName));
+      m_mainWindow->setWindowTitle(QString("IGUANA iSpy - %1").arg(filename));
   
   if (! events.empty() || ! geometry)
   {
@@ -2808,7 +2813,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
     delete m_storages[0];
     events.swap(m_events);
     m_storages[0] = new IgDataStorage;
-    m_archives[0] = file;
+    m_archives[0] = archiveFile;
     m_eventIndex = 0;
     if (m_events.empty())
       update = true;
@@ -2840,6 +2845,7 @@ ISpyApplication::downloadGeometry(void)
 {
   QNetworkReply *reply = getUrl(QUrl("http://iguana.web.cern.ch/iguana/ispy/igfiles/other/cms-geometry.ig"));
   QTemporaryFile *tmpFile = new QTemporaryFile();
+  tmpFile->setAutoRemove(false);
   IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(reply, tmpFile);
   QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),
                    this, SLOT(backgroundFileDownloaded(IgNetworkReplyHandler *)));
@@ -2847,25 +2853,25 @@ ISpyApplication::downloadGeometry(void)
 
 /** Helper function to load zip archive index contents. */
 IgArchive *
-ISpyApplication::loadFile(const char *filename)
+ISpyApplication::loadFile(const QString &filename)
 {
-  IgArchive *file = 0;
+  IgArchive *archiveFile = 0;
   try
   {
-    file = new IgArchive(filename);
+    archiveFile = new IgArchive(filename);
   }
   catch(IgArchive::Exception &e)
   {
-    std::ostringstream str;
-    str << "Unable parse file: " << filename << ".\nMaybe it got truncated?";
+    QString str;
+    str = "Unable parse file: " % filename % ".\nMaybe it got truncated?";
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
-                          str.str().c_str());
+                          str);
 
-    std::cerr << filename
+    std::cerr << (const char *) filename.toLatin1()
               << ": error: cannot read: "
               << e.explain() << std::endl;
   }
-  return file;
+  return archiveFile;
 }
 
 /** Read an object out of a zip file: an individual event or geometry.
@@ -2883,38 +2889,42 @@ ISpyApplication::readData(IgDataStorage *to, IgArchive *archive, IgMember *sourc
   try
   {
     IgArchiveReader ar(archive);
-    std::string buffer = ar.read(source);
-    IgParser parser(to);
-    parser.parse(&buffer[0]);
+    const QByteArray buffer = ar.read(source);
+	int begin = buffer.indexOf("{");
+	if (begin < buffer.size())
+	{
+        IgParser parser(to);
+        parser.parse(buffer.data(),begin);
+	}
   }
-  catch(ParseError &e)
+  catch(ParseError &)
   {
     std::ostringstream str;
-    str << "Unable parse file: " << source->name() << ". Maybe it got truncated?";
+    str << "Unable parse file: " << source->name().toStdString() << ". Maybe it got truncated?";
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
   }
   catch(IgArchive::Exception &e)
   {
     std::ostringstream str;
-    str << "Unable parse file: " << source->name() 
+    str << "Unable parse file: " << source->name().toStdString() 
         << ".\nMaybe it got truncated on because disk is full?"
         << "\nFull debug log:\n" << e.explain();
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
-    std::cerr << source->name() << ": error: " << e.explain() << std::endl;
+    std::cerr << source->name().toStdString() << ": error: " << e.explain() << std::endl;
   }
   catch(std::exception &e)
   {
     std::ostringstream str;
-    str << "Unable parse file: " << source->name()
+    str << "Unable parse file: " << source->name().toStdString()
         << ".\nFull debug log:\n" << e.what();
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
-    std::cerr << source->name() << ": error: " << e.what() << std::endl;
+    std::cerr << source->name().toStdString() << ": error: " << e.what() << std::endl;
   }
 
-  showMessage("");
+  showMessage("Data Read");
 }
 
 /** DOCUMENT ME */
@@ -3004,7 +3014,9 @@ ISpyApplication::downloadFile(const QUrl &link)
     saveDir = QDir::home().filePath("Desktop");
   }
 
-  QString savedFileName = link.toString().replace(QRegExp(".*/"), saveDir + "/");
+  QString linkString = link.toString().replace(QRegExp(".*/"),"");  // down to last slash
+  linkString.replace(QRegExp("[\"|\\*|:|<|>|\\?|\\\\|/|\\|]"),"--");  // replace most problematic special characters
+  QString savedFileName =  saveDir + "/" + linkString;
   IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(reply,
                                                              new QFile(savedFileName));
   QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),
@@ -3071,16 +3083,20 @@ bool
 ISpyApplication::backgroundFileDownloaded(IgNetworkReplyHandler *handler)
 {
   QFile *file = static_cast<QFile *>(handler->device());
+  QTemporaryFile *tf = qobject_cast<QTemporaryFile *>(handler->device());
+  QString filename = file->fileName();
+  delete handler; // must do to flush buffer to file
   try
   {
-    openWithFallbackGeometry(file->fileName());
+    openWithFallbackGeometry(filename);
   }
   catch(...)
   {
     showMessage("");
     return false;
   }
-  delete file;
+  // fix this later if possible to remove this kludge to tell temp from permanent files
+  if (tf) { QFile ff(filename); ff.remove(); }
   return true;
 }
 
@@ -3225,6 +3241,7 @@ ISpyApplication::nextEvent(void)
     m_filterProgressDialog->setMaximum(m_events.size() - m_eventIndex);
     m_filterProgressDialog->setValue(++m_counter);
     m_filterProgressDialog->setLabelText("Filtered out " + QString::number(m_counter) + " events.");
+    showMessage(m_events[m_eventIndex].contents->name());
     newEvent();
     filterEvent();
   }
@@ -3238,7 +3255,10 @@ ISpyApplication::previousEvent(void)
 {
   m_nextEvent = false;
   if (m_eventIndex > 0 && --m_eventIndex < m_events.size())
+  {
+    showMessage(m_events[m_eventIndex].contents->name());
     newEvent();
+  }
   else
     m_eventIndex = 0;
 }
@@ -3249,7 +3269,10 @@ ISpyApplication::rewind(void)
 {
   m_eventIndex = 0;
   if (m_eventIndex < m_events.size())
+  {
+    showMessage(m_events[m_eventIndex].contents->name());
     newEvent();
+  }
 }
 
 /** SLOT to make sure we update the camera when we toggle perspective / 

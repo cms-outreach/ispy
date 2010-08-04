@@ -7,6 +7,7 @@
 # include <QUrl>
 # include <QCheckBox>
 # include <QHeaderView>
+# include <QFile>
 # include <vector>
 # include <map>
 # include <Inventor/nodes/SoMarkerSet.h>
@@ -278,9 +279,10 @@ private:
 
   void                  displayCollection(Collection &c);
   void                  createStats(void);
-  IgArchive *           loadFile(const char *fileName);
-  void                  readData(IgDataStorage *to, IgArchive *archive,
-                                 IgMember *source);
+  IgArchive *           loadFile(const QString &fileName);
+  void                  readData(IgDataStorage *to,
+                                 IgArchive *archive,
+                                 IgMember  *source);
   void                  downloadFile(const QUrl &url);
   void                  downloadGeometry(void);
   bool                  simpleOpen(const QString &fileName);

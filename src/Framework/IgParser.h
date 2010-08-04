@@ -107,11 +107,20 @@ public:
 
   void parseDouble(double &result)
     {
-      char *endbuf;
-      result = strtod(m_buffer, &endbuf);
-      if (!endbuf)
-      { throwParseError(m_buffer-m_initialBuffer); }
-      m_buffer = endbuf;
+	  const char *checkString = "\n\t ,])";
+	  m_buffer += strspn(m_buffer,checkString); 
+	  ptrdiff_t noff = strpbrk(m_buffer, checkString) - m_buffer;
+	  QByteArray str(m_buffer, noff); 
+	  result = str.toDouble(); 
+	  m_buffer += noff;
+    }
+  void parseDoubleString(double &result, const char * checkString)
+  {
+	  ptrdiff_t noff = strpbrk(m_buffer, checkString) - m_buffer;
+	  QByteArray str(m_buffer, noff); 
+	  result = str.toDouble(); 
+	  m_buffer += noff + 1;
+	  m_buffer += strspn(m_buffer,checkString);
     }
 
   void parseString(std::string &result)
@@ -134,13 +143,14 @@ public:
 
   void parseDoubleTuple(double *result, size_t e)
     {
-      m_buffer += strspn(m_buffer, "\n\t (");;
+      m_buffer += strspn(m_buffer, "\n\t (");
+	  char * checkChars;
       switch(e)
       {
-        case 4: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
-        case 3: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
-        case 2: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
-        case 1: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t )");
+		case 4: checkChars =  "\n\t ,"; parseDoubleString(*result++, checkChars);
+        case 3: checkChars =  "\n\t ,"; parseDoubleString(*result++, checkChars);
+        case 2: checkChars =  "\n\t ,"; parseDoubleString(*result++, checkChars);
+        case 1: checkChars =  "\n\t )"; parseDoubleString(*result++, checkChars);
       }
     }
 
@@ -329,9 +339,9 @@ public:
       skipChar('}');
     }
 
-  void parse(const char *buffer)
+  void parse(const char *buffer, const int start=0)
     {
-      m_buffer = buffer;
+      m_buffer = buffer+start;
       m_initialBuffer = buffer;
 
       try
@@ -344,7 +354,7 @@ public:
         parseAssociationss();
         skipChar('}');
       }
-      catch(ParseError &e)
+      catch(ParseError &)
       {
         int position = m_buffer - m_initialBuffer ;
         std::string parsedSentence(m_initialBuffer + position);
