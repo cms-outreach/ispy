@@ -18,10 +18,9 @@ IgNetworkReplyHandler::IgNetworkReplyHandler(QNetworkReply *reply, QIODevice *de
 {
   Q_CHECK_PTR(m_reply);
   Q_CHECK_PTR(m_device);
+  m_reply->ignoreSslErrors();
   connect(m_reply, SIGNAL(readyRead()), this, SLOT(downloadMore()));
   connect(m_reply, SIGNAL(finished()), this, SLOT(finished()));
-  connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
-          this, SLOT(error(QNetworkReply::NetworkError)));
   connect(m_reply, SIGNAL(error(QNetworkReply::NetworkError)),
           this, SLOT(error(QNetworkReply::NetworkError)));
   m_device->open(QFile::WriteOnly);
