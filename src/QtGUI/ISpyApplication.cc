@@ -17,7 +17,7 @@
 #include "Framework/IgParser.h"
 #include "Framework/IgStyleParser.h"
 #include "Framework/IgArchive.h"
-
+#include "Framework/SimpleSAXParser.h"
 // FIXME : these should be migrated from shapes into draw functions
 
 #include <Inventor/Qt/SoQt.h>
@@ -449,106 +449,209 @@ ISpyApplication::parseCss(const char *css)
 }
 
 
-/** Helper method to parse attributes that contain a 3-vector where components
-    are comma separated, e. g.: "1.0, 0.0, 2.0".
-    
-    @a value to set according to the attribute.
-    
-    @a attr containing all the attributes.
 
-    @a name for the attribute containing the vector.
-    
-    @throw ViewSpecParseError in case of mistakes.
-*/
-void
-parseVectorAttribute(float *v, QXmlStreamAttributes &attr, const char *name)
+class ISpyConfigParser : public SimpleSAXParser
 {
-  QStringList sl = attr.value(name).toString().simplified().split(QRegExp("[ ]*,[ ]*"));
-  if (sl.count() != 3)
-    throw ViewSpecParseError();
-
-  for (size_t i = 0; i != 3; ++i)
+public:
+  ISpyConfigParser(std::istream &f, ISpyApplication *app)
+  :SimpleSAXParser(f),
+   m_app(app)
+  {}
+  
+  virtual void startElement(const std::string &name, Attributes &attributes)
   {
-    bool ok;
-    v[i] = sl[i].toFloat(&ok);
-    if (!ok)
-      throw ViewSpecParseError();
+    if (name == "collection")
+    {
+      std::string label, collectionSpec, otherCollectionSpec, 
+                  associationSpec, make3DName;
+      bool visibility = true;
+      
+      parseStringAttribute(label, attributes, "label");
+      parseStringAttribute(collectionSpec, attributes, "spec");
+      parseStringAttribute(otherCollectionSpec, attributes, "other");
+      parseStringAttribute(associationSpec, attributes, "associations");
+      parseStringAttribute(make3DName, attributes, "draw");
+      parseBooleanAttribute(visibility, attributes, "visibility", "block", "none");
+      
+      m_app->collection(label.c_str(),
+                        collectionSpec.c_str(),
+                        otherCollectionSpec.c_str(),
+                        associationSpec.c_str(),
+                        make3DName.c_str(), 
+                        visibility);
+    }
+    else if (name == "view")
+    {
+      std::string label = "Unnamed view";
+      bool specialised = true;
+      bool autoplay = true;
+      
+      parseStringAttribute(label, attributes, "label");
+      parseBooleanAttribute(specialised, attributes, "specialised");
+      parseBooleanAttribute(autoplay, attributes, "autoplay");
+      
+      m_app->view(label.c_str(), specialised, autoplay);
+    }
+    else if (name == "camera")
+    {
+      float position[3] = {0., 0., 0.};
+      float pointAt[3] = {1., 0., 0.};
+      float scale = 1.0;
+      bool ortho = false;
+      bool rotating = true;
+      std::string projection = "identity";
+      
+      parseVectorAttribute(position, attributes, "position");
+      parseVectorAttribute(pointAt, attributes, "pointAt");
+      parseFloatAttribute(scale, attributes, "scale");
+      parseBooleanAttribute(ortho, attributes, "orthographic");
+      parseBooleanAttribute(rotating, attributes, "rotating");
+      parseStringAttribute(projection, attributes, "projection");
+      m_app->camera(position, pointAt, scale, ortho, rotating, projection);
+    }
+    else if (name == "visibilityGroup")
+      m_app->visibilityGroup(); 
+    else if (name == "layout")
+      return;
+    else
+      throw ParserError("Invalid tag " + name);
   }
-}
 
-/** Helper method to parse attributes that can be either "true" or "false".
-    
-    @a value to set according to the attribute.
-    
-    @a attr containing all the attributes in the element.
-    
-    @a name containing the name of the attribute to be used.
-    
-    @a trueString containing the mnemonic for a true condition.
-    
-    @a falseString containing the mnemonic for a false condition.
-    
-    @throw ViewSpecParseError on parse errors.
-*/
-void
-parseBooleanAttribute(bool &value, QXmlStreamAttributes &attr, const char *name, 
-                      const char *trueString = "true", 
-                      const char * falseString = "false")
-{
-  if (!attr.hasAttribute(name))
-    return;
-  
-  QStringRef str = attr.value(name);
-  
-  if (str != trueString && str != falseString)
-    throw ViewSpecParseError();
+private:
+  /** Helper method to parse attributes float attributes.
 
-  value = (str == trueString);
-}
+      @a value to set according to the attribute.
 
-/** Helper method to parse attributes float attributes.
-    
-    @a value to set according to the attribute.
-    
-    @a attr containing all attributes.
-    
-    @a name for the attribute.
-    
-    @throw ViewSpecParseError on parse errors.
-*/
-void
-parseFloatAttribute(float &value, QXmlStreamAttributes &attr, const char *name)
-{
-  if (!attr.hasAttribute(name))
-    return;
-  
-  QString str = attr.value(name).toString();
+      @a attr containing all attributes.
 
-  bool ok;
-  value = str.toFloat(&ok);
-  
-  if (!ok)
-    throw ViewSpecParseError();
-}
+      @a name for the attribute.
 
-/** Helper method to parse string attributes.
+      @throw ViewSpecParseError on parse errors.
+      
+      @return true or false depending on whether the attribute was found.
+  */
+  bool parseFloatAttribute(float &value, Attributes &attr, const char *name)
+  {
+    std::string valueString;
     
-    @a value to set according to the attribute.
+    bool found = parseStringAttribute(valueString, attr, name);
     
-    @a attr containing all attributes.
+    if (!found)
+      return false;
+
+    char *error = 0;
+    value = strtod(valueString.c_str(), &error);
+
+    if (error == valueString.c_str())
+      throw ViewSpecParseError();
+    return true;
+  }
+
+  /** Helper method to parse string attributes.
+      
+      @a value to set according to the attribute.
+      
+      @a attr containing all attributes.
+      
+      @a name for the attribute.
+      
+      @return true or false depending on whether the attribute was found.
+  */
+  bool parseStringAttribute(std::string &value, 
+                            const Attributes &attr, 
+                            const std::string &name)
+  {
+    Attributes::const_iterator i = std::lower_bound(attr.begin(),
+                                                    attr.end(),
+                                                    Attribute(name, ""));
+    // Attribute with key name not found.
+    if (i == attr.end() || i->key != name)
+      return false;
+
+    value = i->value;
+    return true;
+  }
+
+  /** Helper method to parse attributes that can be either "true" or "false".
+      
+      @a value to set according to the attribute.
+      
+      @a attr containing all the attributes in the element.
+      
+      @a name containing the name of the attribute to be used.
+      
+      @a trueString containing the mnemonic for a true condition.
+      
+      @a falseString containing the mnemonic for a false condition.
+      
+      @throw ViewSpecParseError on parse errors.
+      
+      @return true if found, false otherwise.
+  */
+  bool parseBooleanAttribute(bool &value, Attributes &attr, const char *name, 
+                             const char *trueString = "true", 
+                             const char * falseString = "false")
+  {
+    std::string valueString;
     
-    @a name for the attribute.
+    bool found = parseStringAttribute(valueString, attr, name);
+
+    if (!found)
+      return false;
     
-    @throw ViewSpecParseError on parse errors.
-*/
-void
-parseStringAttribute(QString &value, QXmlStreamAttributes &attr, const char *name)
-{
-  if (!attr.hasAttribute(name))
-    return;
+    if (valueString != trueString && valueString != falseString)
+      throw ViewSpecParseError();
   
-  value = attr.value(name).toString();
-}
+    value = (valueString == trueString);
+    return true;
+  }
+
+  /** Helper method to parse attributes that contain a 3-vector where components
+      are comma separated, e. g.: "1.0, 0.0, 2.0".
+      
+      @a value to set according to the attribute.
+      
+      @a attr containing all the attributes.
+  
+      @a name for the attribute containing the vector.
+      
+      @throw ViewSpecParseError in case of mistakes.
+  */
+  bool parseVectorAttribute(float *v, Attributes &attr, const char *name)
+  {
+    std::string valueString;
+    bool found = parseStringAttribute(valueString, attr, name);
+    
+    if (!found)
+      return false;
+
+    const char *pos = valueString.c_str();
+    char *error = 0;
+
+    v[0] = strtod(pos, &error);
+    while (isspace(*error))
+      ++error;
+    if (*error != ',')
+      throw ViewSpecParseError();
+    pos = error + 1;    
+    
+    v[1] = strtod(pos, &error);
+    while (isspace(*error))
+      ++error;
+    if (*error != ',')
+      throw ViewSpecParseError();
+    pos = error + 1;    
+
+    v[2] = strtod(pos, &error);
+    while (isspace(*error))
+      ++error;
+    if (*error != 0)
+      throw ViewSpecParseError();
+    return true;
+  }
+
+  ISpyApplication *m_app;
+};
 
 /** Read the view definition from @a device and create the various views.
 
@@ -558,90 +661,21 @@ parseStringAttribute(QString &value, QXmlStreamAttributes &attr, const char *nam
           and off displaying some collections depending on the trigger status.
 */
 void
-ISpyApplication::parseViewsDefinition(QByteArray &data)
+ISpyApplication::parseViewsDefinition(const char *data)
 {
-  QXmlStreamReader xml;
-  xml.addData(data);
-
-  while (!xml.atEnd())
-  {
-    xml.readNext();
-    if (xml.tokenType() == QXmlStreamReader::StartElement)
-    {
-      QXmlStreamAttributes attr = xml.attributes();
-      if (xml.name() == "collection")
-      {
-        QString label, collectionSpec, otherCollectionSpec, 
-                associationSpec, make3DName;
-        bool visibility = true;
-        
-        parseStringAttribute(label, attr, "label");
-        parseStringAttribute(collectionSpec, attr, "spec");
-        parseStringAttribute(otherCollectionSpec, attr, "other");
-        parseStringAttribute(associationSpec, attr, "associations");
-        parseStringAttribute(make3DName, attr, "draw");
-        parseBooleanAttribute(visibility, attr, "visibility", "block", "none");
-
-        DrawFunctionsRegistry::iterator i = m_drawFunctions.find(make3DName.toStdString().c_str());
-        Make3D df = 0;
-
-        if (i != m_drawFunctions.end())
-          df = i->second;
-
-        collection(label.toStdString().c_str(),
-                   collectionSpec.toStdString().c_str(),
-                   otherCollectionSpec.toStdString().c_str(),
-                   associationSpec.toStdString().c_str(),
-                   df,
-                   visibility);
-      }
-      else if (xml.name() == "view")
-      {
-        QString label = "Unnamed view";
-        bool specialised = true;
-        bool autoplay = true;
-        
-        if (attr.hasAttribute("label"))
-          label = attr.value("label").toString();
-        parseBooleanAttribute(specialised, attr, "specialised");
-        parseBooleanAttribute(autoplay, attr, "autoplay");
-        
-        view(label.toAscii(), specialised, autoplay);
-      }
-      else if (xml.name() == "camera")
-      {
-        float position[3] = {0., 0., 0.};
-        float pointAt[3] = {1., 0., 0.};
-        float scale = 1.0;
-        bool ortho = false;
-        bool rotating = true;
-        QString projection = "identity";
-        
-        parseVectorAttribute(position, attr, "position");
-        parseVectorAttribute(pointAt, attr, "pointAt");
-        parseFloatAttribute(scale, attr, "scale");
-        parseBooleanAttribute(ortho, attr, "orthographic");
-        parseBooleanAttribute(rotating, attr, "rotating");
-        parseStringAttribute(projection, attr, "projection");
-        camera(position, pointAt, scale, ortho, rotating, projection.toStdString());
-      }
-      else if (xml.name() == "visibilityGroup")
-      {  
-        visibilityGroup(); 
-      }
-      else if (xml.name() == "layout")
-      {
-        continue;
-      }
-      else
-      {  
-        throw ViewSpecParseError(xml.lineNumber());
-      }
-    }
-  }
+  std::istringstream stream;
+  // FIXME: extremely bad, but I want to get rid of the need for QByteArray.
+  stream.str(data);
   
-  if (xml.hasError())
-    throw ViewSpecParseError(xml.lineNumber());
+  ISpyConfigParser parser(stream, this);
+  try
+  {
+    parser.parse();
+  }
+  catch(SimpleSAXParser::ParserError &e)
+  {
+    std::cerr << e.error() << std::endl;
+  }
 }
 
 /** Initialise but do not yet run the application object. 
@@ -780,7 +814,7 @@ ISpyApplication::parseViewsDefinitionFile(const char *filename)
   assert(viewData.size());
   try
   {
-    parseViewsDefinition(viewData);
+    parseViewsDefinition(viewData.constData());
   }
   catch (ViewSpecParseError &e)
   {
@@ -852,8 +886,8 @@ splitCollectionSpec(const char *spec, std::vector<std::string> &parts)
 
     @a make3D
 
-    Method to invoke to render a collection matching these
-    requirements.  
+    Label associated to the DrawFunction to invoke to render a collection
+    matching these requirements.
  
     @the visibility
  
@@ -866,7 +900,7 @@ ISpyApplication::collection(const char *friendlyName,
                             const char *collectionSpec,
                             const char *otherCollectionSpec,
                             const char *associationSpec,
-                            Make3D make3D,
+                            const char *make3DName,
                             bool visibility)
 {
   assert(collectionSpec);
@@ -901,22 +935,27 @@ ISpyApplication::collection(const char *friendlyName,
     spec.otherAssociation = parts[0];
   }
 
-  spec.make3D = make3D;
-  spec.defaultVisibility = visibility;
+  DrawFunctionsRegistry::iterator i = m_drawFunctions.find(make3DName);
+  if (i != m_drawFunctions.end())
+    spec.make3D = i->second;
+  else
+    spec.make3D = 0;
+
+  spec.defaultVisibility = visibility ? Qt::Checked : Qt::Unchecked;
   
   // Assign the visibility place-holder for this collection.
   // Within a same visibility group, CollectionSpec referring to the same
   // collection use the same visibility settings.
-  VisibilityGroupMap::iterator i = m_visibilityGroupMap.find(spec.collection);
-  if (i != m_visibilityGroupMap.end())
-    spec.visibilityIndex = i->second;
+  VisibilityGroupMap::iterator j = m_visibilityGroupMap.find(spec.collection);
+  if (j != m_visibilityGroupMap.end())
+    spec.visibilityIndex = j->second;
   else
   {
     size_t size = m_visibility.size();
     m_visibilityGroupMap.insert(std::make_pair(spec.collection, size));
     spec.visibilityIndex = size;
     m_visibility.resize(size + 1);
-    m_visibility.back() = visibility;
+    m_visibility.back() = spec.defaultVisibility;
   }
   
   // Update the view to include one more CollectionSpec.

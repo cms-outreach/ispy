@@ -80,6 +80,23 @@ public:
   const char *          appname(void) const;
   QNetworkReply *	getUrl(const QUrl &link);
 
+  void                  collection(const char *friendlyName,
+                                   const char *collectionSpec,
+                                   const char *otherCollectionSpec,
+                                   const char *associationSpec,
+                                   const char *make3DName,
+                                   bool visibility);
+  void                  view(const char *name,
+                             bool specialized,
+                             bool autoplay);
+  void                  camera(float *pos,
+                               float *pointAt,
+                               float scale,
+                               bool orthographic,
+                               bool rotating,
+                               const std::string &projection);
+  void                  visibilityGroup(void);
+
 public slots:
   void                  openFileDialog(void);
   void                  openUrlDialog(void);
@@ -129,9 +146,9 @@ private slots:
   void                  cameraToggled(void);
   void                  resetToHomePosition(void);
   void                  restartPlay(void);
-  void			updateFilterListModel(const QString& title);
-  void			showPublish(void);
-  void			stopFiltering(void);
+  void                  updateFilterListModel(const QString& title);
+  void                  showPublish(void);
+  void                  stopFiltering(void);
 
 private:
   struct CollectionSpec
@@ -257,24 +274,6 @@ private:
   void                  onlineConfig(const char* server);
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
-  void                  collection(const char *friendlyName,
-                                   const char *collectionSpec,
-                                   const char *otherCollectionSpec,
-                                   const char *associationSpec,
-                                   Make3D make3D,
-                                   bool visibility);
-  void                  view(const char *name,
-                             bool specialized,
-                             bool autoplay);
-
-  void                  camera(float *pos,
-                               float *pointAt,
-                               float scale,
-                               bool orthographic,
-                               bool rotating,
-                               const std::string &projection);
-
-  void                  visibilityGroup(void);
 
   void                  displayCollection(Collection &c);
   void                  createStats(void);
@@ -302,7 +301,7 @@ private:
   bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);
   // Helper methods to handle views layouts.
-  void                      parseViewsDefinition(QByteArray &data);
+  void                      parseViewsDefinition(const char *data);
   bool                      parseViewsDefinitionFile(const char *filename);
 
   void                      registerDrawFunction(const char *name, Make3D func);

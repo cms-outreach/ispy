@@ -2342,7 +2342,7 @@ make3DLimits(IgCollection **collections, IgAssociations **,
   helper.endBox();  
 }
 
-void 
+void
 registerDrawHelpers(std::map<std::string, Make3D> &helpers)
 {
   helpers.insert(std::make_pair("make3DAnyBox", make3DAnyBox));
