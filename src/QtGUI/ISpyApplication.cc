@@ -2922,7 +2922,8 @@ ISpyApplication::readData(IgDataStorage *to, IgArchive *archive, IgMember *sourc
   try
   {
     IgArchiveReader ar(archive);
-    std::string buffer = ar.read(source);
+    std::string buffer;
+    ar.read(source, buffer);
     IgParser parser(to);
     parser.parse(&buffer[0]);
   }

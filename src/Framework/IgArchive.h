@@ -56,7 +56,7 @@ public:
   :m_archive(archive)
   {}
   
-  const std::string read(IgMember *member);
+  void read(IgMember *member, std::string &result);
 private:
   IgArchive *m_archive;
 };
