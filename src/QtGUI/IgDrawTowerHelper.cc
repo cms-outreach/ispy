@@ -118,7 +118,7 @@ IgDrawTowerHelper::addTowerOutline(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
                           SbVec3f(b3.x(), b3.y(), b3.z()),
                           SbVec3f(b4.x(), b4.y(), b4.z()) };
 
-  drawTowerOutline(vertices);
+  drawTower(vertices, true);
 }
 
 void
@@ -143,7 +143,7 @@ IgDrawTowerHelper::addTowerOutlineProjected(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV
                           m_projectors.projectAsWithOffset(b3, centre),
                           m_projectors.projectAsWithOffset(b4, centre)};
 
-  drawTowerOutline(vertices);
+  drawTower(vertices, true);
 }
 
 void
@@ -410,7 +410,7 @@ IgDrawTowerHelper::addScaledBoxProjected( IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  Ig
 
 
 void
-IgDrawTowerHelper::drawTower(SbVec3f *vertices)
+IgDrawTowerHelper::drawTower(SbVec3f *vertices, bool outline)
 {
   m_vertices->vertex.setNum(m_c + 8); // increase vector length to accomodate next 8 vertices
   m_vertices->vertex.setValues(m_c, 8, vertices);
@@ -425,18 +425,20 @@ IgDrawTowerHelper::drawTower(SbVec3f *vertices)
   m_lineSet->coordIndex.setValues(m_l, 24, lineIndexes);
   m_l += 24;
   
-  // 6 faces, each with 4 corners(normals should point outwards)
-  int faceIndexes[30] = {3 + m_c, 2 + m_c, 1 + m_c, 0 + m_c, SO_END_FACE_INDEX,
-                         4 + m_c, 5 + m_c, 6 + m_c, 7 + m_c, SO_END_FACE_INDEX,
-                         5 + m_c, 1 + m_c, 2 + m_c, 6 + m_c, SO_END_FACE_INDEX,
-                         2 + m_c, 3 + m_c, 7 + m_c, 6 + m_c, SO_END_FACE_INDEX,
-                         7 + m_c, 3 + m_c, 0 + m_c, 4 + m_c, SO_END_FACE_INDEX,
-                         1 + m_c, 5 + m_c, 4 + m_c, 0 + m_c, SO_END_FACE_INDEX};
-  
-  m_faceSet->coordIndex.setNum(m_f + 30);
-  m_faceSet->coordIndex.setValues(m_f, 30, faceIndexes);
-  m_f += 30;
-
+  if (!outline)
+  {
+    // 6 faces, each with 4 corners(normals should point outwards)
+    int faceIndexes[30] = {3 + m_c, 2 + m_c, 1 + m_c, 0 + m_c, SO_END_FACE_INDEX,
+                           4 + m_c, 5 + m_c, 6 + m_c, 7 + m_c, SO_END_FACE_INDEX,
+                           5 + m_c, 1 + m_c, 2 + m_c, 6 + m_c, SO_END_FACE_INDEX,
+                           2 + m_c, 3 + m_c, 7 + m_c, 6 + m_c, SO_END_FACE_INDEX,
+                           7 + m_c, 3 + m_c, 0 + m_c, 4 + m_c, SO_END_FACE_INDEX,
+                           1 + m_c, 5 + m_c, 4 + m_c, 0 + m_c, SO_END_FACE_INDEX};
+    
+    m_faceSet->coordIndex.setNum(m_f + 30);
+    m_faceSet->coordIndex.setValues(m_f, 30, faceIndexes);
+    m_f += 30;
+  }
   m_c += 8;
 }
 
@@ -590,21 +592,6 @@ IgDrawTowerHelper::addLegoTower(SbVec2f position, float energy, float emFraction
     m_group->addChild(shapeHints);
     m_group->addChild(faces);
   }
-}
-
-void
-IgDrawTowerHelper::drawTowerOutline(SbVec3f *vertices)
-{
-  m_vertices->vertex.setValues(m_c, 8 , vertices);
-
-  setLineIndices(0, 1, 2, 3, 0); // front face
-  setLineIndices(4, 5, 6, 7, 4); // back face
-  setLineIndices(0, 4);          // edge linking front and back face
-  setLineIndices(1, 5);          // edge linking front and back face
-  setLineIndices(2, 6);          // edge linking front and back face
-  setLineIndices(3, 7);          // edge linking front and back face
-
-  m_c += 8;
 }
 
 /** Helper function to draw a box that is rotated with respect to 
