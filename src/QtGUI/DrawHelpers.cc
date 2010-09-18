@@ -144,8 +144,8 @@ public:
     m_textStartTranslation = new SoTranslation;
     m_nextLineTranslation = new SoTranslation;
     float fontHeight = deltaY * m_font->size.getValue();
-    m_textStartTranslation->translation = SbVec3f(x, y + fontHeight, 0.);
-    m_nextLineTranslation->translation = SbVec3f(deltaX, fontHeight, 0.);
+    m_textStartTranslation->translation.setValue(x, y + fontHeight, 0.);
+    m_nextLineTranslation->translation.setValue(deltaX, fontHeight, 0.);
     m_boxSeparator = new SoSeparator;
     m_boxSeparator->addChild(m_textStartTranslation);
     m_boxSeparator->addChild(m_font);
@@ -164,8 +164,8 @@ public:
     SoTranslation *indentation = new SoTranslation;
     m_nextLineTranslation = new SoTranslation;
     float fontHeight = -0.254/72 * m_font->size.getValue();
-    indentation->translation = SbVec3f((float)(indentationLevel) * 0.04, 0, 0.);
-    m_nextLineTranslation->translation = SbVec3f(0, fontHeight, 0.);
+    indentation->translation.setValue((float)(indentationLevel) * 0.04, 0, 0.);
+    m_nextLineTranslation->translation.setValue(0, fontHeight, 0.);
     m_boxSeparator->addChild(indentation);
     m_boxSeparator->addChild(m_font);
   }
@@ -198,7 +198,7 @@ public:
     SoSeparator *logoSep = new SoSeparator;
     SoTranslation *translation = new SoTranslation;
     image->vertAlignment = SoImage::TOP;
-    translation->translation = SbVec3f(x, y, 0);
+    translation->translation.setValue(x, y, 0);
     logoSep->addChild(translation);
     logoSep->addChild(image);
     m_overlay->addChild(logoSep);
@@ -752,12 +752,12 @@ makeLegoGrid(IgCollection **, IgAssociations **,
   float x = float (2 * M_PI);
   float z = 5.191;
     
-  vtx->vertex.set1Value (0, SbVec3f (0, 0, -z));
-  vtx->vertex.set1Value (1, SbVec3f (0, 0,  z));
-  vtx->vertex.set1Value (2, SbVec3f (x, 0,  z));
-  vtx->vertex.set1Value (3, SbVec3f (x, 0, -z));
-  vtx->vertex.set1Value (4, SbVec3f (0, 0, -z));
-  vtx->vertex.set1Value (5, SbVec3f (0, 1, -z));
+  vtx->vertex.set1Value(0, 0, 0, -z);
+  vtx->vertex.set1Value(1, 0, 0,  z);
+  vtx->vertex.set1Value(2, x, 0,  z);
+  vtx->vertex.set1Value(3, x, 0, -z);
+  vtx->vertex.set1Value(4, 0, 0, -z);
+  vtx->vertex.set1Value(5, 0, 1, -z);
     
   for (coord = 0; coord < vertex; coord++)
     coords.set1Value (coord, coord);
@@ -765,17 +765,17 @@ makeLegoGrid(IgCollection **, IgAssociations **,
     
   for (tick = 0; tick < 43; tick++)
   {
-    vtx->vertex.set1Value (vertex, SbVec3f (0, 0, etaHFBins [tick]));       
-    coords.set1Value (coord++, vertex++);
-    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, etaHFBins [tick]));
-    coords.set1Value (coord++, vertex++);
-    coords.set1Value (coord++, SO_END_LINE_INDEX);
+    vtx->vertex.set1Value(vertex, 0, 0, etaHFBins[tick]);       
+    coords.set1Value(coord++, vertex++);
+    vtx->vertex.set1Value(vertex, x, 0, etaHFBins [tick]);
+    coords.set1Value(coord++, vertex++);
+    coords.set1Value(coord++, SO_END_LINE_INDEX);
 	
-    vtx->vertex.set1Value (vertex, SbVec3f (0, 0, -etaHFBins [tick]));
+    vtx->vertex.set1Value(vertex, 0, 0, -etaHFBins [tick]);
     coords.set1Value (coord++, vertex++);
-    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, -etaHFBins [tick]));
-    coords.set1Value (coord++, vertex++);
-    coords.set1Value (coord++, SO_END_LINE_INDEX);
+    vtx->vertex.set1Value (vertex, x, 0, -etaHFBins [tick]);
+    coords.set1Value(coord++, vertex++);
+    coords.set1Value(coord++, SO_END_LINE_INDEX);
   }
     
   int ticks = 36;
@@ -784,19 +784,19 @@ makeLegoGrid(IgCollection **, IgAssociations **,
   for (tick = 0; tick < ticks; tick++)
   {
     x = tick * M_PI / 18.0;
-    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, -z));
-    coords.set1Value (coord++, vertex++);
-    vtx->vertex.set1Value (vertex, SbVec3f (x, 0, z));
-    coords.set1Value (coord++, vertex++);
-    coords.set1Value (coord++, SO_END_LINE_INDEX);
+    vtx->vertex.set1Value(vertex, x, 0, -z);
+    coords.set1Value(coord++, vertex++);
+    vtx->vertex.set1Value(vertex, x, 0, z);
+    coords.set1Value(coord++, vertex++);
+    coords.set1Value(coord++, SO_END_LINE_INDEX);
 	
     for (int ttow = 1; ttow < 2; ttow++)
     {
-      vtx->vertex.set1Value (vertex, SbVec3f (x + ttow * 0.087, 0, -1.74));
-      coords.set1Value (coord++, vertex++);
-      vtx->vertex.set1Value (vertex, SbVec3f (x + ttow * 0.087, 0, 1.74));
-      coords.set1Value (coord++, vertex++);
-      coords.set1Value (coord++, SO_END_LINE_INDEX);
+      vtx->vertex.set1Value(vertex, x + ttow * 0.087, 0, -1.74);
+      coords.set1Value(coord++, vertex++);
+      vtx->vertex.set1Value(vertex, x + ttow * 0.087, 0, 1.74);
+      coords.set1Value(coord++, vertex++);
+      coords.set1Value(coord++, SO_END_LINE_INDEX);
     }
   }
     
@@ -807,23 +807,23 @@ makeLegoGrid(IgCollection **, IgAssociations **,
     
   for (int etaTicks = 0; etaTicks < 11; etaTicks++, ztick--)
   {
-    vtx->vertex.set1Value (vertex, SbVec3f (0, ytick, ztick));
+    vtx->vertex.set1Value(vertex, 0, ytick, ztick);
     coords.set1Value (coord++, vertex++);
-    vtx->vertex.set1Value (vertex, SbVec3f (0, 0, ztick));
-    coords.set1Value (coord++, vertex++);
-    vtx->vertex.set1Value (vertex, SbVec3f (-ytick, 0, ztick));
-    coords.set1Value (coord++, vertex++);
-    coords.set1Value (coord++, SO_END_LINE_INDEX);
+    vtx->vertex.set1Value(vertex, 0, 0, ztick);
+    coords.set1Value(coord++, vertex++);
+    vtx->vertex.set1Value(vertex, -ytick, 0, ztick);
+    coords.set1Value(coord++, vertex++);
+    coords.set1Value(coord++, SO_END_LINE_INDEX);
   }
   for (int phiTicks = 0; phiTicks < 8; phiTicks++)
   {
-    vtx->vertex.set1Value (vertex, SbVec3f (xtick, ytick, -z));
-    coords.set1Value (coord++, vertex++);
-    vtx->vertex.set1Value (vertex, SbVec3f (xtick, 0, -z));
-    coords.set1Value (coord++, vertex++);
-    vtx->vertex.set1Value (vertex, SbVec3f (xtick, 0, -z - ytick));
-    coords.set1Value (coord++, vertex++);
-    coords.set1Value (coord++, SO_END_LINE_INDEX);
+    vtx->vertex.set1Value(vertex, xtick, ytick, -z);
+    coords.set1Value(coord++, vertex++);
+    vtx->vertex.set1Value(vertex, xtick, 0, -z);
+    coords.set1Value(coord++, vertex++);
+    vtx->vertex.set1Value(vertex, xtick, 0, -z - ytick);
+    coords.set1Value(coord++, vertex++);
+    coords.set1Value(coord++, SO_END_LINE_INDEX);
     xtick += M_PI / 4;
   }
   //
@@ -841,8 +841,8 @@ makeLegoGrid(IgCollection **, IgAssociations **,
     
   z = 5.191;
     
-  phiStart->translation = SbVec3f (M_PI / 4, 0, -z - 0.6);
-  phiTranslation->translation = SbVec3f (M_PI / 4, 0, 0);
+  phiStart->translation.setValue(M_PI / 4, 0, -z - 0.6);
+  phiTranslation->translation.setValue(M_PI / 4, 0, 0);
   phiLabels->addChild (phiStart);
     
   for (tick = 0; tick < 8; tick ++) 
@@ -872,8 +872,7 @@ makeLegoGrid(IgCollection **, IgAssociations **,
   char scaleChars [12];
   sprintf (scaleChars, "%.2G GeV (Et)", scale);
   labelScaleText->string = scaleChars;
-  labelScaleOffset->translation
-    = SbVec3f (-0.6, 1, z - 0.6);
+  labelScaleOffset->translation.setValue(-0.6, 1, z - 0.6);
   labelScale->addChild (labelScaleOffset);
   labelScale->addChild (labelScaleText);
   gridSep->addChild (labelScale);
@@ -882,8 +881,8 @@ makeLegoGrid(IgCollection **, IgAssociations **,
   SoTranslation       *etaStart = new SoTranslation;
   SoTranslation       *etaTranslation = new SoTranslation;
     
-  etaStart->translation = SbVec3f (-0.6, 0, -5.0);
-  etaTranslation->translation = SbVec3f (0, 0, 1);
+  etaStart->translation.setValue(-0.6, 0, -5.0);
+  etaTranslation->translation.setValue(0, 0, 1);
   etaLabels->addChild (etaStart);
     
   for (tick = 0; tick < 11; tick++, z++)
@@ -998,14 +997,14 @@ makeLegoJets(IgCollection **collections, IgAssociations ** /*assocs*/,
       int i = 0;
       
       for (i = 0; i < segments; ++i)
-        vtx->vertex.set1Value (i, SbVec3f (r * cos (i * segAngle) + cx,
-                                           0.01,
-                                           r * sin (i * segAngle) + cz));
+        vtx->vertex.set1Value(i, r * cos (i * segAngle) + cx,
+                                 0.01,
+                                 r * sin (i * segAngle) + cz);
 
-      vtx->vertex.set1Value (i, SbVec3f (r * cos (0.F) + cx,
-                                         0.01,
-                                         r * sin (0.F) + cz));
-      vtx->normal = SbVec3f (0, 0, 1);
+      vtx->vertex.set1Value(i, r * cos (0.F) + cx,
+                               0.01,
+                               r * sin (0.F) + cz);
+      vtx->normal.setValue(0, 0, 1);
       vtx->normalBinding = SoVertexProperty::OVERALL;
       vtx->materialBinding = SoVertexProperty::OVERALL;
       line->numVertices = segments + 1;
@@ -1013,7 +1012,7 @@ makeLegoJets(IgCollection **collections, IgAssociations ** /*assocs*/,
 
       SoMarkerSet *marker = new SoMarkerSet;
       SoVertexProperty *mvtx = new SoVertexProperty;
-      mvtx->vertex.set1Value (0, SbVec3f (cx, 0, cz));
+      mvtx->vertex.set1Value (0, cx, 0, cz);
       marker->vertexProperty = mvtx;
       marker->markerIndex = style->markerType;
       marker->numPoints = 1;
@@ -1113,7 +1112,7 @@ makeLegoTriggerObjects(IgCollection **collections, IgAssociations **,
     // viewed from the top
     SoMarkerSet *marker = new SoMarkerSet;
     SoVertexProperty *mvtx = new SoVertexProperty;
-    mvtx->vertex.set1Value (0, SbVec3f (phi, 0, eta));
+    mvtx->vertex.set1Value(0, phi, 0, eta);
     marker->vertexProperty = mvtx;
     marker->markerIndex = SoMarkerSet::CROSS_5_5;
     marker->numPoints = 1;
@@ -1179,7 +1178,7 @@ makeLegoPhotons(IgCollection **collections, IgAssociations **,
 
     SoMarkerSet *marker = new SoMarkerSet;
     SoVertexProperty *mvtx = new SoVertexProperty;
-    mvtx->vertex.set1Value (0, SbVec3f (phi, 0, eta));
+    mvtx->vertex.set1Value(0, phi, 0, eta);
     marker->vertexProperty = mvtx;
     marker->markerIndex = SoMarkerSet::CROSS_5_5;
     marker->numPoints = 1;
@@ -1250,7 +1249,7 @@ makeLegoTracks(IgCollection **collections, IgAssociations **assocs,
 
        SoMarkerSet *marker = new SoMarkerSet;
        SoVertexProperty *mvtx = new SoVertexProperty;
-       mvtx->vertex.set1Value (0, SbVec3f (phi, 0, eta));
+       mvtx->vertex.set1Value(0, phi, 0, eta);
        marker->vertexProperty = mvtx;
        marker->markerIndex = style->markerType;
        marker->numPoints = 1;
@@ -1776,7 +1775,7 @@ make3DCaloClusters(IgCollection **collections, IgAssociations **assocs,
 
     SoSeparator *annSep = new SoSeparator;
     SoTranslation *textPos = new SoTranslation;
-    textPos->translation = SbVec3f(pos.x(), pos.y(), pos.z());
+    textPos->translation.setValue(pos.x(), pos.y(), pos.z());
 
     char buf[128];
     std::string text = (sprintf(buf, "%0.2f", energy), buf) + std::string(" GeV");
