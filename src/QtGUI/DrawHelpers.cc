@@ -31,6 +31,16 @@
 #include <QString>
 #include <sstream>
 
+/** This template can be overwritten to transform SbVec3f to foreign types,
+    like those used by eigen or even Coin.
+  */
+template <>
+SbVec3f IgCollectionItem::get<SbVec3f>(IgColumn<SbVec3f> &property)
+{
+  IgV3d& p = get<IgV3d>(property);
+  return SbVec3f(p.x(), p.y(), p.z());
+}
+
 /** Helper method to decide which point associated to an object should be 
     the one that is used to project.
     
@@ -45,22 +55,22 @@
     
     @return the point to be used as reference for projections.
 */
-IgV3d
+SbVec3f
 decideProjectionPoint(IgAssociations::iterator begin, 
                       IgAssociations::iterator end, 
-                      IgProperty &position)
+                      IgColumn<SbVec3f> &position)
 {
   // If there are no associated points (i.e. the range is null),
   // simply return 0,0,0. Notice that end is decremented here,
   // so it points to the last but one element in the range,
   // in case the range is not empty.
   if (begin == end)
-    return IgV3d(0, 0, 0);
+    return SbVec3f(0, 0, 0);
 
-  IgV3d result;
+  SbVec3f result;
   // Get the last item.
   for(; begin != end; ++begin)
-    result = begin->get<IgV3d>(position);
+    result = begin->get(position);
   return result;
 }
 
@@ -391,8 +401,8 @@ makeAnyTriggerObject(IgCollection **collections, IgAssociations **,
                      Projectors &projectors)
 {
   IgCollection         *c = collections[0];
-  IgProperty           ID(c, "VID"), PT(c, "pt");
-  IgProperty           ETA(c, "eta"), PHI(c, "phi");
+  IgColumn<int>        ID(c, "VID");
+  IgColumn<double>     PT(c, "pt"), ETA(c, "eta"), PHI(c, "phi");
 
   SoVertexProperty     *vertices = new SoVertexProperty;
   SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
@@ -405,14 +415,13 @@ makeAnyTriggerObject(IgCollection **collections, IgAssociations **,
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {    
-    int id = ci->get<int>(ID);
+    int id = ci->get(ID);
 
-    double eta = ci->get<double>(ETA);
-    double phi = ci->get<double>(PHI);
+    double eta = ci->get(ETA);
+    double phi = ci->get(PHI);
+    double pt = ci->get(PT);
 
-    double pt = ci->get<double>(PT);
-
-    IgV3d p(pt*cos(phi), pt*sin(phi), pt*sinh(eta));
+    SbVec3f p(pt*cos(phi), pt*sin(phi), pt*sinh(eta));
     SbVec3f direction = projectors.project(p);
     direction.normalize();
     direction *= 2.0;
@@ -460,13 +469,13 @@ makeAnyPointSetShapes(IgCollection **collections, IgAssociations **,
                       Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty            POS(c, "pos");
+  IgColumn<SbVec3f>     POS(c, "pos");
   SoMarkerSet           *points = new SoMarkerSet;
   SoVertexProperty      *vertices = new SoVertexProperty;
   int                   n = 0;
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-    vertices->vertex.set1Value(n++, projectors.project(ci->get<IgV3d>(POS)));
+    vertices->vertex.set1Value(n++, projectors.project(ci->get(POS)));
 
   vertices->vertex.setNum(n);
 
@@ -487,22 +496,22 @@ makeAnyBoxHelper(IgCollection **collections, IgAssociations **,
   IgCollection *c = collections[0];
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
-  IgProperty        FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty        FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty        BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty        BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
+                    FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
+                    BACK_1(c, "back_1"), BACK_2(c, "back_2"),
+                    BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-    IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-    IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-    IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+    SbVec3f f1  = ci->get(FRONT_1);
+    SbVec3f f2  = ci->get(FRONT_2);
+    SbVec3f f3  = ci->get(FRONT_3);
+    SbVec3f f4  = ci->get(FRONT_4);
 
-    IgV3d b1  = ci->get<IgV3d>(BACK_1);
-    IgV3d b2  = ci->get<IgV3d>(BACK_2);
-    IgV3d b3  = ci->get<IgV3d>(BACK_3);
-    IgV3d b4  = ci->get<IgV3d>(BACK_4);
+    SbVec3f b1  = ci->get(BACK_1);
+    SbVec3f b2  = ci->get(BACK_2);
+    SbVec3f b3  = ci->get(BACK_3);
+    SbVec3f b4  = ci->get(BACK_4);
     
     if (solid && projected)
       drawTowerHelper.addTowerProjected(f1,f2,f3,f4, b1,b2,b3,b4);
@@ -548,7 +557,7 @@ make3DAnyLine(IgCollection **collections, IgAssociations **,
               SoSeparator *sep, Style * /*style*/, Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty            P1(c, "pos_1"), P2(c, "pos_2");
+  IgColumn<SbVec3f>     P1(c, "pos_1"), P2(c, "pos_2");
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoIndexedLineSet      *lineSet = new SoIndexedLineSet;
   std::vector<SbVec3f>  corners;
@@ -557,8 +566,8 @@ make3DAnyLine(IgCollection **collections, IgAssociations **,
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d p1 = ci->get<IgV3d>(P1);
-    IgV3d p2 = ci->get<IgV3d>(P2);
+    SbVec3f p1 = ci->get(P1);
+    SbVec3f p2 = ci->get(P2);
     // Discontinuities in projections are handled so that the projection is
     // always done so like for the first point.
     corners.push_back(projectors.project(p1));
@@ -585,13 +594,13 @@ make3DAnyPoint(IgCollection **collections, IgAssociations **,
                SoSeparator *sep, Style * /* style */, Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty            POS(c, "pos");
+  IgColumn<SbVec3f>     POS(c, "pos");
   SoPointSet            *points = new SoPointSet;
   SoVertexProperty      *vertices = new SoVertexProperty;
   int                   n = 0;
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
-    vertices->vertex.set1Value(n++, projectors.project(ci->get<IgV3d>(POS)));
+    vertices->vertex.set1Value(n++, projectors.project(ci->get(POS)));
 
   vertices->vertex.setNum(n);
   points->vertexProperty = vertices;
@@ -621,18 +630,18 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociations **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty ENERGY(c, "energy");
-  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgColumn<double>  ENERGY(c, "energy");
+  IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
+                    FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
+                    BACK_1(c, "back_1"), BACK_2(c, "back_2"),
+                    BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   // FIXME: can compress the following code
   float maxEnergy = style->maxEnergy;
   
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>(ENERGY);
+    double energy = ci->get(ENERGY);
     if (energy > maxEnergy)
       maxEnergy = energy;
   }
@@ -642,32 +651,32 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociations **,
 
   for(IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>(ENERGY);
-    if(energy > style->minEnergy)
+    double energy = ci->get(ENERGY);
+    if (energy > style->minEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+      SbVec3f f1  = ci->get(FRONT_1);
+      SbVec3f f2  = ci->get(FRONT_2);
+      SbVec3f f3  = ci->get(FRONT_3);
+      SbVec3f f4  = ci->get(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>(BACK_1);
-      IgV3d b2  = ci->get<IgV3d>(BACK_2);
-      IgV3d b3  = ci->get<IgV3d>(BACK_3);
-      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+      SbVec3f b1  = ci->get(BACK_1);
+      SbVec3f b2  = ci->get(BACK_2);
+      SbVec3f b3  = ci->get(BACK_3);
+      SbVec3f b4  = ci->get(BACK_4);
 
-      float yf1 = sqrt (f1.x () * f1.x () + f1.y () * f1.y ());
-      float yf2 = sqrt (f2.x () * f2.x () + f2.y () * f2.y ());
-      float yf3 = sqrt (f3.x () * f3.x () + f3.y () * f3.y ());
-      float yf4 = sqrt (f4.x () * f4.x () + f4.y () * f4.y ());
+      float yf1 = sqrt (f1[0] * f1[0] + f1[1] * f1[1]);
+      float yf2 = sqrt (f2[0] * f2[0] + f2[1] * f2[1]);
+      float yf3 = sqrt (f3[0] * f3[0] + f3[1] * f3[1]);
+      float yf4 = sqrt (f4[0] * f4[0] + f4[1] * f4[1]);
 
-      float yb1 = sqrt (b1.x () * b1.x () + b1.y () * b1.y ());
-      float yb2 = sqrt (b2.x () * b2.x () + b2.y () * b2.y ());
-      float yb3 = sqrt (b3.x () * b3.x () + b3.y () * b3.y ());
-      float yb4 = sqrt (b4.x () * b4.x () + b4.y () * b4.y ());
+      float yb1 = sqrt (b1[0] * b1[0] + b1[1] * b1[1]);
+      float yb2 = sqrt (b2[0] * b2[0] + b2[1] * b2[1]);
+      float yb3 = sqrt (b3[0] * b3[0] + b3[1] * b3[1]);
+      float yb4 = sqrt (b4[0] * b4[0] + b4[1] * b4[1]);
 
       float x = 0.001;
       
-      if (f1.y () < 0.)
+      if (f1[1] < 0.)
       {
         yf1 = - yf1;
         yf2 = - yf2;
@@ -680,20 +689,20 @@ makeRZEnergyHisto(IgCollection **collections, IgAssociations **,
         x = - x;
       }
       
-      if(flag && f2.z() > 0.)
+      if(flag && f2[2] > 0.)
         x = - x;
 
-      IgV3d tf1  = IgV3d(layer + x, yf1, f1.z());
-      IgV3d tf2  = IgV3d(layer + 2*x, yf2, f2.z());
-      IgV3d tf3  = IgV3d(layer + 2*x, yf3, f3.z());
-      IgV3d tf4  = IgV3d(layer + x, yf4, f4.z());
+      SbVec3f tf1  = SbVec3f(layer + x, yf1, f1[2]);
+      SbVec3f tf2  = SbVec3f(layer + 2*x, yf2, f2[2]);
+      SbVec3f tf3  = SbVec3f(layer + 2*x, yf3, f3[2]);
+      SbVec3f tf4  = SbVec3f(layer + x, yf4, f4[2]);
 
-      IgV3d tb1  = IgV3d(layer + x, yb1, b1.z());
-      IgV3d tb2  = IgV3d(layer + 2*x, yb2, b2.z());
-      IgV3d tb3  = IgV3d(layer + 2*x, yb3, b3.z());
-      IgV3d tb4  = IgV3d(layer + x, yb4, b4.z());
+      SbVec3f tb1  = SbVec3f(layer + x, yb1, b1[2]);
+      SbVec3f tb2  = SbVec3f(layer + 2*x, yb2, b2[2]);
+      SbVec3f tb3  = SbVec3f(layer + 2*x, yb3, b3[2]);
+      SbVec3f tb4  = SbVec3f(layer + x, yb4, b4[2]);
 
-      if(mirror && f2.z() < 0.)
+      if(mirror && f2[2] < 0.)
         drawTowerHelper.addTower(tb1, tb4, tb3, tb2, tf1, tf4, tf3, tf2,
                                  energy/style->maxEnergy, 
                                  style->energyScale);
@@ -931,17 +940,20 @@ makeLegoCaloTowers(IgCollection **collections, IgAssociations **,
 {
   IgCollection          *c = collections[0];
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
+  
+  IgColumn<double> EM(c, "emEnergy"), ET(c, "et"), 
+                   ETA(c, "eta"), PHI(c, "phi");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double emEnergy = ci->get<double>("emEnergy");
-    double et = ci->get<double>("et");
+    double emEnergy = ci->get(EM);
+    double et = ci->get(ET);
     double emFraction = emEnergy / et;
  
     if (et > style->minEnergy)
     {
-      double eta  = ci->get<double>("eta");
-      double phi  = ci->get<double>("phi");
+      double eta  = ci->get(ETA);
+      double phi  = ci->get(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, (emFraction > 0 ? emFraction : 0),
@@ -972,18 +984,18 @@ makeLegoJets(IgCollection **collections, IgAssociations ** /*assocs*/,
   
   IgCollection          *c = collections[0];
 
-  IgProperty ETA(c, "eta");
-  IgProperty PHI(c, "phi"); 
-  IgProperty ET(c, "et");
+  IgColumn<double> ETA(c, "eta");
+  IgColumn<double> PHI(c, "phi"); 
+  IgColumn<double> ET(c, "et");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double et = ci->get<double>(ET);
+    double et = ci->get(ET);
  
     if (et > style->minEnergy)
     {
-      double eta  = ci->get<double>(ETA);
-      double phi  = ci->get<double>(PHI);
+      double eta  = ci->get(ETA);
+      double phi  = ci->get(PHI);
       if (phi < 0) phi += 2 * M_PI;
 
       SoVertexProperty    *vtx = new SoVertexProperty;
@@ -1032,19 +1044,17 @@ makeLegoHcalRecHits(IgCollection **collections, IgAssociations ** /*assocs*/,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty ENERGY(c, "energy");
-  IgProperty ETA(c, "eta");
-  IgProperty PHI(c, "phi");
+  IgColumn<double> ENERGY(c, "energy"), ETA(c, "eta"), PHI(c, "phi");
   
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>(ENERGY);
-    double eta  = ci->get<double>(ETA);
+    double energy = ci->get(ENERGY);
+    double eta  = ci->get(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
     if (et > style->minEnergy)
     {
-      double phi  = ci->get<double>(PHI);
+      double phi  = ci->get(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 0.0,
@@ -1063,19 +1073,17 @@ makeLegoEcalRecHits(IgCollection **collections, IgAssociations ** /*assocs*/,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty ENERGY(c, "energy");
-  IgProperty ETA(c, "eta");
-  IgProperty PHI(c, "phi");
+  IgColumn<double> ENERGY(c, "energy"), ETA(c, "eta"), PHI(c, "phi");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>(ENERGY);
-    double eta  = ci->get<double>(ETA);
+    double energy = ci->get(ENERGY);
+    double eta  = ci->get(ETA);
     double et = energy * sin(2*atan(exp(-eta)));
  
     if (et > style->minEnergy)
     {
-      double phi  = ci->get<double>(PHI);
+      double phi  = ci->get(PHI);
       if (phi < 0) phi += 2 * M_PI;
       
       drawTowerHelper.addLegoTower(SbVec2f(phi, eta), et, 1.0,
@@ -1091,8 +1099,8 @@ makeLegoTriggerObjects(IgCollection **collections, IgAssociations **,
                        Projectors & /*projectors*/)
 {
   IgCollection         *c = collections[0];
-  IgProperty           ID(c, "VID"), PT(c, "pt");
-  IgProperty           ETA(c, "eta"), PHI(c, "phi");
+  IgColumn<int>        ID(c, "VID");
+  IgColumn<double>     PT(c, "pt"), ETA(c, "eta"), PHI(c, "phi");
   SoSeparator          *top = new SoSeparator;
   SoVertexProperty     *vertices = new SoVertexProperty;
   SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
@@ -1102,11 +1110,11 @@ makeLegoTriggerObjects(IgCollection **collections, IgAssociations **,
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {    
-    int id = ci->get<int>(ID);
-    double eta = ci->get<double>(ETA);
-    double phi = ci->get<double>(PHI);  
+    int id = ci->get(ID);
+    double eta = ci->get(ETA);
+    double phi = ci->get(PHI);  
     if ( phi < 0 ) phi += 2*M_PI;
-    double pt = ci->get<double>(PT);
+    double pt = ci->get(PT);
 
     // A marker is nice as the lines disappear from view when 
     // viewed from the top
@@ -1160,7 +1168,7 @@ makeLegoPhotons(IgCollection **collections, IgAssociations **,
                 Projectors &/*projectors*/)
 {
   IgCollection         *c = collections[0];
-  IgProperty           E(c, "energy"), ETA(c, "eta"), PHI(c, "phi");
+  IgColumn<double>     E(c, "energy"), ETA(c, "eta"), PHI(c, "phi");
   SoSeparator          *top = new SoSeparator;
   SoVertexProperty     *vertices = new SoVertexProperty;
   SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
@@ -1170,10 +1178,10 @@ makeLegoPhotons(IgCollection **collections, IgAssociations **,
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {    
-    double eta = ci->get<double>(ETA);
-    double phi = ci->get<double>(PHI);  
+    double eta = ci->get(ETA);
+    double phi = ci->get(PHI);  
     if ( phi < 0 ) phi += 2*M_PI;      
-    double energy = ci->get<double>(E);
+    double energy = ci->get(E);
     double et = energy*sin(2*atan(exp(-eta)));
 
     SoMarkerSet *marker = new SoMarkerSet;
@@ -1212,8 +1220,8 @@ makeLegoTracks(IgCollection **collections, IgAssociations **assocs,
    IgCollection           *tracks = collections[0];
    IgCollection           *extras = collections[1];
    IgAssociations         *assoc = assocs[0];
-   IgProperty             PT(tracks, "pt");
-   IgProperty             DIR2(extras, "dir_2");   
+   IgColumn<double>       PT(tracks, "pt");
+   IgColumn<SbVec3f>      DIR2(extras, "dir_2");   
    SoSeparator            *top = new SoSeparator; 
    SoVertexProperty       *vertices = new SoVertexProperty;
    SoIndexedLineSet       *lineSet = new SoIndexedLineSet;
@@ -1230,18 +1238,17 @@ makeLegoTracks(IgCollection **collections, IgAssociations **assocs,
    {
      IgCollectionItem track = *ci;
      
-     double pt = track.get<double>(PT);
+     double pt = track.get(PT);
  
      for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
      {
        IgCollectionItem m = *ai;
        
        // Determine eta and phi from the direction of the outermost state
-       IgV3d d = m.get<IgV3d>(DIR2);
-       SbVec3f dir(d.x(),d.y(),d.z());
-       dir.normalize();
-       double phi = atan2(dir[1],dir[0]);
-       double theta = acos(dir[2]);
+       SbVec3f d = m.get(DIR2);
+       d.normalize();
+       double phi = atan2(d[1],d[0]);
+       double theta = acos(d[2]);
        double tanThetaOverTwo = tan(theta/2);
        double eta = -log(tanThetaOverTwo);
 
@@ -1294,12 +1301,12 @@ make3DTrackingParticles(IgCollection **collections, IgAssociations **assocs,
   int                 nv        = 0;
   IgDrawSplinesHelper splineDrawHelper;
 
-  IgProperty PT(tracks, "pt");
-  IgProperty POS(hits, "pos"), DIR(hits, "dir");
+  IgColumn<double> PT(tracks, "pt");
+  IgColumn<SbVec3f> POS(hits, "pos"), DIR(hits, "dir");
   
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
-    double pt = ci->get<double>(PT);
+    double pt = ci->get(PT);
      
     // FIXME: TM: make this configurable
     if ( pt < 0.5 )
@@ -1311,7 +1318,7 @@ make3DTrackingParticles(IgCollection **collections, IgAssociations **assocs,
     // This is needed to get nice looking tracks when they cross a 
     // discontinuity like in the case of RZ. Does not really affect anything
     // in other views.
-    IgV3d lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS);
+    SbVec3f lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS);
     
     // FIXME: TM: eventually move the functionality of this class to here
     SoMFVec3f points;
@@ -1321,9 +1328,9 @@ make3DTrackingParticles(IgCollection **collections, IgAssociations **assocs,
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end();
          ai != ae; ++ai)
     {
-      IgV3d p = ai->get<IgV3d>(POS);
-      IgV3d d = ai->get<IgV3d>(DIR);
-      IgV3d dp(p.x() + d.x(), p.y() + p.y(), p.z() + d.z());
+      SbVec3f p = ai->get(POS);
+      SbVec3f d = ai->get(DIR);
+      SbVec3f dp = p + d;
       
       SbVec3f pTrans = projectors.projectAs(p, lastOutPos);
       SbVec3f dpTrans = projectors.projectAs(dp, lastOutPos);
@@ -1361,9 +1368,10 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
   IgCollection        *tracks = collections[0];
   IgCollection        *extras = collections[1];
   IgAssociations      *assoc = assocs[0];
-  IgProperty          PT(tracks, "pt"), POS(tracks, "pos");
-  IgProperty          POS1(extras, "pos_1"), DIR1(extras, "dir_1");
-  IgProperty          POS2(extras, "pos_2"), DIR2(extras, "dir_2");
+  IgColumn<double>    PT(tracks, "pt");
+  IgColumn<SbVec3f>   POS(tracks, "pos"), 
+                      POS1(extras, "pos_1"), DIR1(extras, "dir_1"),
+                      POS2(extras, "pos_2"), DIR2(extras, "dir_2");
   IgDrawSplinesHelper helper;
 
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
@@ -1374,7 +1382,7 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
     // This is needed to get nice looking tracks when they cross a 
     // discontinuity like in the case of RZ. Does not really affect anything
     // in other views.
-    IgV3d lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS2);
+    SbVec3f lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS2);
 
     SoMFVec3f points;
     SoMFVec3f tangents;
@@ -1383,18 +1391,18 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
     SoMarkerSet         *tpoints   = new SoMarkerSet;
     int                 nVtx = 0;
 
-    IgV3d p = ci->get<IgV3d>(POS);
+    SbVec3f p = ci->get(POS);
 
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
-                        .arg(ci->get<double>(PT))
-                        .arg(p.x()).arg(p.y()).arg(p.z());
+                        .arg(ci->get(PT))
+                        .arg(p[0]).arg(p[1]).arg(p[2]);
 
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
-      p = ai->get<IgV3d>(POS1);
-      IgV3d d = ai->get<IgV3d>(DIR1);
+      p = ai->get(POS1);
+      SbVec3f d = ai->get(DIR1);
 
-      IgV3d dp1(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      SbVec3f dp1 = p + d;
       
       SbVec3f pProj = projectors.projectAs(p, lastOutPos);
       SbVec3f dpProj = projectors.projectAs(dp1, lastOutPos);
@@ -1406,10 +1414,10 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
       tvertices->vertex.set1Value(nVtx, pProj);
       ++nVtx;
       
-      p = ai->get<IgV3d>(POS2);
-      d = ai->get<IgV3d>(DIR2);
+      p = ai->get(POS2);
+      d = ai->get(DIR2);
       
-      IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      SbVec3f dp2 = p + d;
 
       pProj = projectors.projectAs(p, lastOutPos);
       dpProj = projectors.projectAs(dp2, lastOutPos);
@@ -1441,9 +1449,11 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
   IgCollection      *tracks = collections[0];
   IgCollection      *extras = collections[1];
   IgAssociations  *assoc = assocs[0];
-  IgProperty        PT(tracks, "pt"), POS(tracks, "pos"), P(tracks, "dir");
-  IgProperty        POS1(extras, "pos_1"), DIR1(extras, "dir_1");
-  IgProperty        POS2(extras, "pos_2"), DIR2(extras, "dir_2");
+  IgColumn<double>  PT(tracks, "pt");
+  IgColumn<SbVec3f> POS(tracks, "pos"), P(tracks, "dir"),
+                    POS1(extras, "pos_1"), DIR1(extras, "dir_1"),
+                    POS2(extras, "pos_2"), DIR2(extras, "dir_2");
+  
   SoSeparator       *vsep = new SoSeparator;
   IgDrawSplinesHelper helper;
 
@@ -1461,7 +1471,7 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     // This is needed to get nice looking tracks when they cross a 
     // discontinuity like in the case of RZ. Does not really affect anything
     // in other views.
-    IgV3d lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS2);
+    SbVec3f lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS2);
 
     // Here is the actual track representation.
     SoMFVec3f tsPoints;
@@ -1473,9 +1483,9 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     SoMarkerSet         *tpoints   = new SoMarkerSet;
     int                 nVtx = 0;
     
-    IgV3d p = ci->get<IgV3d>(POS);
-    IgV3d d = ci->get<IgV3d>(P);
-    IgV3d dp1(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+    SbVec3f p = ci->get(POS);
+    SbVec3f d = ci->get(P);
+    SbVec3f dp1 = p + d;
     
     SbVec3f pProj = projectors.projectAs(p, lastOutPos);
     SbVec3f dpProj = projectors.projectAs(dp1, lastOutPos);
@@ -1486,15 +1496,13 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     vTangents.set1Value(0, dProj);
 
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
-                        .arg(ci->get<double>(PT))
-                        .arg(p[0]).arg(p[1]).arg(p[2]);
-    
+                        .arg(ci->get(PT)).arg(p[0]).arg(p[1]).arg(p[2]);
     
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
-      p = ai->get<IgV3d>(POS1);
-      d = ai->get<IgV3d>(DIR1);
-      IgV3d dp2(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      p = ai->get(POS1);
+      d = ai->get(DIR1);
+      SbVec3f dp2 = p + d;
       // If this is the first hit, then also add it to the vertex property
       // for the dotted line which goes to the vertex. 
       pProj = projectors.projectAs(p, lastOutPos);
@@ -1510,9 +1518,9 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
       tvertices->vertex.set1Value(nVtx, pProj);
       ++nVtx;
       
-      p = ai->get<IgV3d>(POS2);
-      d = ai->get<IgV3d>(DIR2);
-      IgV3d dp3(p.x() + d.x(), p.y() + d.y(), p.z() + d.z());
+      p = ai->get(POS2);
+      d = ai->get(DIR2);
+      SbVec3f dp3 = p + d;
       pProj = projectors.projectAs(p, lastOutPos);
       dpProj = projectors.projectAs(dp3, lastOutPos);
       dProj =  dpProj - pProj;
@@ -1545,32 +1553,32 @@ make3DPreshowerTowers(IgCollection **collections, IgAssociations **,
   IgCollection          *c = collections[0];
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
-  IgProperty ENERGY(c, "energy");
-  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgColumn<double> ENERGY(c, "energy");
+  IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
+                    FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
+                    BACK_1(c, "back_1"), BACK_2(c, "back_2"),
+                    BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>(ENERGY);
+    double energy = ci->get(ENERGY);
     if (energy > style->minEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+      SbVec3f f1  = ci->get(FRONT_1);
+      SbVec3f f2  = ci->get(FRONT_2);
+      SbVec3f f3  = ci->get(FRONT_3);
+      SbVec3f f4  = ci->get(FRONT_4);
       
-      IgV3d b1  = ci->get<IgV3d>(BACK_1);
-      IgV3d b2  = ci->get<IgV3d>(BACK_2);
-      IgV3d b3  = ci->get<IgV3d>(BACK_3);
-      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+      SbVec3f b1  = ci->get(BACK_1);
+      SbVec3f b2  = ci->get(BACK_2);
+      SbVec3f b3  = ci->get(BACK_3);
+      SbVec3f b4  = ci->get(BACK_4);
     
       // FIXME: There is a bug in Preshower geometry.
       // The corners order is a translation.
       // When it is fixed to mirrored, the fix
       // to flip energy bumps can be removed.
-      if(f2.z() > 0.)
+      if(f2[2] > 0.)
         drawTowerHelper.addTower(f1, f2, f3, f4, b1, b2, b3, b4,
                                  energy, style->energyScale);
       else
@@ -1593,38 +1601,37 @@ make3DEnergyBoxes(IgCollection **collections, IgAssociations **,
   float maxEnergy          = style->maxEnergy;  // GeV  Not a cut -- just used to set max box size
 
   // FIXME: can compress the following code
-
+  IgColumn<double> E(c, "energy");
+  
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
+    double energy = ci->get(E);
     if (energy > maxEnergy)
-    {
       maxEnergy = energy;
-    }
   }
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
+                    FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
+                    BACK_1(c, "back_1"), BACK_2(c, "back_2"),
+                    BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>("energy");
+    double energy = ci->get(E);
 
     if (energy > style->minEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+      SbVec3f f1  = ci->get(FRONT_1);
+      SbVec3f f2  = ci->get(FRONT_2);
+      SbVec3f f3  = ci->get(FRONT_3);
+      SbVec3f f4  = ci->get(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>(BACK_1);
-      IgV3d b2  = ci->get<IgV3d>(BACK_2);
-      IgV3d b3  = ci->get<IgV3d>(BACK_3);
-      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+      SbVec3f b1  = ci->get(BACK_1);
+      SbVec3f b2  = ci->get(BACK_2);
+      SbVec3f b3  = ci->get(BACK_3);
+      SbVec3f b4  = ci->get(BACK_4);
 
       drawTowerHelper.addScaledBoxProjected(f1,f2,f3,f4, b1,b2,b3,b4, energy/maxEnergy);
     }
@@ -1640,27 +1647,27 @@ make3DEnergyTowers(IgCollection **collections, IgAssociations **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
-  IgProperty ENERGY(c, "energy");
+  IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
+                    FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
+                    BACK_1(c, "back_1"), BACK_2(c, "back_2"),
+                    BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgColumn<double>  ENERGY(c, "energy");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>(ENERGY);
+    double energy = ci->get(ENERGY);
 
     if (energy > style->minEnergy)       // GeV
     {
-      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+      SbVec3f f1  = ci->get(FRONT_1);
+      SbVec3f f2  = ci->get(FRONT_2);
+      SbVec3f f3  = ci->get(FRONT_3);
+      SbVec3f f4  = ci->get(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>(BACK_1);
-      IgV3d b2  = ci->get<IgV3d>(BACK_2);
-      IgV3d b3  = ci->get<IgV3d>(BACK_3);
-      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+      SbVec3f b1  = ci->get(BACK_1);
+      SbVec3f b2  = ci->get(BACK_2);
+      SbVec3f b3  = ci->get(BACK_3);
+      SbVec3f b4  = ci->get(BACK_4);
 
       drawTowerHelper.addTowerProjected(f1,f2,f3,f4,
                                         b1,b2,b3,b4,
@@ -1670,10 +1677,6 @@ make3DEnergyTowers(IgCollection **collections, IgAssociations **,
   }
 }
 
-
-
-
-
 static void
 make3DEmCaloTowerShapes(IgCollection **collections, IgAssociations **, 
                         SoSeparator *sep, Style * style, Projectors &projectors)
@@ -1682,27 +1685,26 @@ make3DEmCaloTowerShapes(IgCollection **collections, IgAssociations **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
-  IgProperty ENERGY(c, "emEnergy");
+  IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
+                    FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
+                    BACK_1(c, "back_1"), BACK_2(c, "back_2"),
+                    BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgColumn<double>  ENERGY(c, "emEnergy");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double energy = ci->get<double>(ENERGY);
+    double energy = ci->get(ENERGY);
 
     if (energy > style->minEnergy)  // GeV
     {
-      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
-
-      IgV3d b1  = ci->get<IgV3d>(BACK_1);
-      IgV3d b2  = ci->get<IgV3d>(BACK_2);
-      IgV3d b3  = ci->get<IgV3d>(BACK_3);
-      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+      SbVec3f f1  = ci->get(FRONT_1);
+      SbVec3f f2  = ci->get(FRONT_2);
+      SbVec3f f3  = ci->get(FRONT_3);
+      SbVec3f f4  = ci->get(FRONT_4);
+      SbVec3f b1  = ci->get(BACK_1);
+      SbVec3f b2  = ci->get(BACK_2);
+      SbVec3f b3  = ci->get(BACK_3);
+      SbVec3f b4  = ci->get(BACK_4);
 
       drawTowerHelper.addTowerProjected(f1,f2,f3,f4,
                                         b1,b2,b3,b4,
@@ -1720,28 +1722,28 @@ make3DEmPlusHadCaloTowerShapes(IgCollection **collections, IgAssociations **,
 
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
 
-  IgProperty FRONT_1(c, "front_1"), FRONT_2(c, "front_2");
-  IgProperty FRONT_3(c, "front_3"), FRONT_4(c, "front_4");
-  IgProperty BACK_1(c, "back_1"), BACK_2(c, "back_2");
-  IgProperty BACK_3(c, "back_3"), BACK_4(c, "back_4");
-  IgProperty EMENERGY(c, "emEnergy"), HADENERGY(c, "hadEnergy");
+  IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
+                    FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
+                    BACK_1(c, "back_1"), BACK_2(c, "back_2"),
+                    BACK_3(c, "back_3"), BACK_4(c, "back_4");
+  IgColumn<double> EMENERGY(c, "emEnergy"), HADENERGY(c, "hadEnergy");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    double emEnergy = ci->get<double>(EMENERGY);
-    double hadEnergy = ci->get<double>(HADENERGY);
+    double emEnergy = ci->get(EMENERGY);
+    double hadEnergy = ci->get(HADENERGY);
 
     if (hadEnergy > style->minEnergy)
     {
-      IgV3d f1  = ci->get<IgV3d>(FRONT_1);
-      IgV3d f2  = ci->get<IgV3d>(FRONT_2);
-      IgV3d f3  = ci->get<IgV3d>(FRONT_3);
-      IgV3d f4  = ci->get<IgV3d>(FRONT_4);
+      SbVec3f f1  = ci->get(FRONT_1);
+      SbVec3f f2  = ci->get(FRONT_2);
+      SbVec3f f3  = ci->get(FRONT_3);
+      SbVec3f f4  = ci->get(FRONT_4);
 
-      IgV3d b1  = ci->get<IgV3d>(BACK_1);
-      IgV3d b2  = ci->get<IgV3d>(BACK_2);
-      IgV3d b3  = ci->get<IgV3d>(BACK_3);
-      IgV3d b4  = ci->get<IgV3d>(BACK_4);
+      SbVec3f b1  = ci->get(BACK_1);
+      SbVec3f b2  = ci->get(BACK_2);
+      SbVec3f b3  = ci->get(BACK_3);
+      SbVec3f b4  = ci->get(BACK_4);
 
       drawTowerHelper.addTowerProjected(f1,f2,f3,f4,
                                         b1,b2,b3,b4,
@@ -1760,22 +1762,22 @@ make3DCaloClusters(IgCollection **collections, IgAssociations **assocs,
   IgAssociations   *assoc    = assocs[0];
   
   IgDrawTowerHelper drawTowerHelper(sep, projectors);
-
-  IgProperty POS(clusters, "pos"), E(clusters, "energy");
-  IgProperty FRONT_1(fracs, "front_1"), FRONT_2(fracs, "front_2");
-  IgProperty FRONT_3(fracs, "front_3"), FRONT_4(fracs, "front_4");
+  IgColumn<double>  E(clusters, "energy");
+  IgColumn<SbVec3f> POS(clusters, "pos"),
+                    FRONT_1(fracs, "front_1"), FRONT_2(fracs, "front_2"),
+                    FRONT_3(fracs, "front_3"), FRONT_4(fracs, "front_4");
  
   for (IgCollection::iterator ci = clusters->begin(), ce = clusters->end(); ci != ce; ++ci)
   {
-    IgV3d pos = ci->get<IgV3d>(POS);
+    SbVec3f pos = ci->get(POS);
 
-    double energy = ci->get<double>(E);
+    double energy = ci->get(E);
     SoText2* label = new SoText2;
     label->justification.setValue(SoText2::CENTER);
 
     SoSeparator *annSep = new SoSeparator;
     SoTranslation *textPos = new SoTranslation;
-    textPos->translation.setValue(pos.x(), pos.y(), pos.z());
+    textPos->translation = pos;
 
     char buf[128];
     std::string text = (sprintf(buf, "%0.2f", energy), buf) + std::string(" GeV");
@@ -1787,16 +1789,15 @@ make3DCaloClusters(IgCollection **collections, IgAssociations **assocs,
 
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
-      IgV3d f1  = ai->get<IgV3d>(FRONT_1);
-      IgV3d f2  = ai->get<IgV3d>(FRONT_2);
-      IgV3d f3  = ai->get<IgV3d>(FRONT_3);
-      IgV3d f4  = ai->get<IgV3d>(FRONT_4);
+      SbVec3f f1  = ai->get(FRONT_1);
+      SbVec3f f2  = ai->get(FRONT_2);
+      SbVec3f f3  = ai->get(FRONT_3);
+      SbVec3f f4  = ai->get(FRONT_4);
       
       drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4,f1,f2,f3,f4);
     }
   }
 }
-
 
 static void
 make3DCaloTowers(IgCollection **collections, IgAssociations **assocs, 
@@ -1895,8 +1896,8 @@ makeAnyPhoton(IgCollection **collections, IgAssociations **,
               Projectors &projectors)
 {
   IgCollection  *c = collections[0];
-  IgProperty    E(c, "energy"), ETA(c, "eta");
-  IgProperty    PHI(c, "phi"), POS(c, "pos");
+  IgColumn<double>  E(c, "energy"), ETA(c, "eta"), PHI(c, "phi");
+  IgColumn<SbVec3f> POS(c, "pos");
 
   SoVertexProperty     *vertices = new SoVertexProperty;
   SoIndexedLineSet     *lineSet = new SoIndexedLineSet;
@@ -1910,24 +1911,23 @@ makeAnyPhoton(IgCollection **collections, IgAssociations **,
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {    
-    double eta = ci->get<double>(ETA);
-    double phi = ci->get<double>(PHI);
+    double eta = ci->get(ETA);
+    double phi = ci->get(PHI);
     
     double px = cos(phi);
     double py = sin(phi);
     double pz = sinh(eta);
 
-    IgV3d p1 = ci->get<IgV3d>(POS);
+    SbVec3f p1 = ci->get(POS);
 
     double t = 0.0;
 
-    double x0 = p1.x();
-    double y0 = p1.y();
-    double z0 = p1.z();
+    double x0 = p1[0];
+    double y0 = p1[1];
+    double z0 = p1[2];
 
     if ( fabs(eta) > 1.48 ) // i.e. not in the EB, so propagate to ES
       t = fabs((lEB - z0)/pz); 
-
     else // propagate to EB
     {
       double a = px*px + py*py;
@@ -1935,9 +1935,8 @@ makeAnyPhoton(IgCollection **collections, IgAssociations **,
       double c = x0*x0 + y0*y0 - rEB*rEB;
       t = (-b+sqrt(b*b-4*a*c))/2*a;
     }
-    IgV3d pnt1(x0, y0, z0);
-    IgV3d pnt2(x0+px*t, y0+py*t, z0+pz*t);
-    points.push_back(projectors.projectAs(pnt1, pnt2));
+    SbVec3f pnt2(x0+px*t, y0+py*t, z0+pz*t);
+    points.push_back(projectors.projectAs(p1, pnt2));
     points.push_back(projectors.project(pnt2));
 
     lineIndices.push_back(i);
@@ -1960,13 +1959,13 @@ makeAnyJetShapes(IgCollection **collections, IgAssociations **,
                 SoSeparator *sep, Style * style, Projectors &projectors)
 {
   IgCollection          *c = collections[0];
-  IgProperty ET(c, "et"), THETA(c, "theta"), PHI(c, "phi");
+  IgColumn<double> ET(c, "et"), THETA(c, "theta"), PHI(c, "phi");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d jet(ci->get<double>(ET), ci->get<double>(THETA), ci->get<double>(PHI));
+    SbVec3f jet(ci->get(ET), ci->get(THETA), ci->get(PHI));
     
-    if (jet.x() > style->minEnergy)
+    if (jet[0] > style->minEnergy)
     {
       IgSoJet *recoJet = new IgSoJet;
       SbVec3f jetP = projectors.projectThetaPhi(jet);
@@ -2000,13 +1999,13 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
   SbVec3f direction(0.,0.,0.);
   float etMiss = -999.;
 
-  IgProperty PX(c, "px"), PY(c, "py");
+  IgColumn<double> PX(c, "px"), PY(c, "py");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     points.push_back(SbVec3f(0., 0., 0.));
 
-    IgV3d p(ci->get<double>(PX), ci->get<double>(PY), 0.0);
+    SbVec3f p(ci->get(PX), ci->get(PY), 0.0);
 
     direction = projectors.project(p);
     etMiss = direction.length();
@@ -2063,12 +2062,12 @@ makeAnySegmentShapes(IgCollection **collections, IgAssociations **,
   std::vector<SbVec3f>  points;
   int                   i = 0;
 
-  IgProperty POS_1(c, "pos_1"), POS_2(c, "pos_2");
+  IgColumn<SbVec3f> POS_1(c, "pos_1"), POS_2(c, "pos_2");
   
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d p2 = ci->get<IgV3d>(POS_2);
-    points.push_back(projectors.projectAs(ci->get<IgV3d>(POS_1), p2));
+    SbVec3f p2 = ci->get(POS_2);
+    points.push_back(projectors.projectAs(ci->get(POS_1), p2));
     points.push_back(projectors.project(p2));
     lineIndices.push_back(i);
     lineIndices.push_back(i + 1);
@@ -2090,16 +2089,16 @@ make3DCSCDigis(IgCollection **collections, IgAssociations **, SoSeparator *sep,
                double width, double depth, double rotate, Projectors &projectors)
 {
   IgCollection  *c = collections[0];
-  IgProperty    POS(c, "pos"), LEN(c, "length");
+  IgColumn<SbVec3f> POS(c, "pos");
+  IgColumn<double>  LEN(c, "length");
   IgDrawTowerHelper helper(sep, projectors);
   
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d pos = ci->get<IgV3d>(POS);
-    IgV3d axis(0.0, 0.0, 1.0);
-    double angle = -atan2(pos.x(),pos.y()) - rotate;
-    helper.addRotatedBox(pos, axis, angle,
-                         width, ci->get<double>(LEN), depth);
+    SbVec3f pos = ci->get(POS);
+    SbVec3f axis(0.0, 0.0, 1.0);
+    double angle = -atan2(pos[0], pos[1]) - rotate;
+    helper.addRotatedBox(pos, axis, angle, width, ci->get(LEN), depth);
   }
 }
 
@@ -2128,18 +2127,16 @@ make3DDTDigis(IgCollection **collections, IgAssociations **,
               SoSeparator *sep, Style * /*style*/, Projectors &projectors)
 {
   IgCollection   *c = collections[0];
-  IgProperty     POS(c, "pos"), AXIS(c, "axis"), ANGLE(c, "angle"),
-                 CELL_L(c, "cellLength"), CELL_W(c, "cellWidth"), 
-                 CELL_H(c, "cellHeight");
+  IgColumn<SbVec3f> POS(c, "pos"), AXIS(c, "axis");
+  IgColumn<double>  ANGLE(c, "angle"), CELL_L(c, "cellLength"),
+                    CELL_W(c, "cellWidth"), CELL_H(c, "cellHeight");
 
   IgDrawTowerHelper      helper(sep, projectors);
   
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    helper.addRotatedBox(ci->get<IgV3d>(POS), ci->get<IgV3d>(AXIS),
-                          ci->get<double>(ANGLE),
-                          ci->get<double>(CELL_W), ci->get<double>(CELL_L),
-                          ci->get<double>(CELL_H));
+    helper.addRotatedBox(ci->get(POS), ci->get(AXIS), ci->get(ANGLE),
+                         ci->get(CELL_W), ci->get(CELL_L), ci->get(CELL_H));
   }
 }
 
@@ -2148,15 +2145,14 @@ make3DDTRecHits(IgCollection **collections, IgAssociations **,
                 SoSeparator *sep, Style * style, Projectors &projectors)
 {
   IgCollection    *c = collections[0];
-  IgProperty      LPLUS_GLOBALPOS(c, "lPlusGlobalPos");
-  IgProperty      LMINUS_GLOBALPOS(c, "lMinusGlobalPos");
-  IgProperty      RPLUS_GLOBALPOS(c, "rPlusGlobalPos");
-  IgProperty      RMINUS_GLOBALPOS(c, "rMinusGlobalPos");
-  IgProperty      LGLOBALPOS(c, "lGlobalPos");
-  IgProperty      RGLOBALPOS(c, "rGlobalPos");
-  IgProperty      WPOS(c, "wirePos"), AXIS(c, "axis"), ANGLE(c, "angle"),
-                  CELL_L(c, "cellLength"), CELL_W(c, "cellWidth"), 
-                  CELL_H(c, "cellHeight");
+  IgColumn<SbVec3f> LPLUS_GLOBALPOS(c, "lPlusGlobalPos"),
+                    LMINUS_GLOBALPOS(c, "lMinusGlobalPos"),
+                    RPLUS_GLOBALPOS(c, "rPlusGlobalPos"),
+                    RMINUS_GLOBALPOS(c, "rMinusGlobalPos"),
+                    LGLOBALPOS(c, "lGlobalPos"), RGLOBALPOS(c, "rGlobalPos"),
+                    WPOS(c, "wirePos"), AXIS(c, "axis");
+  IgColumn<double> ANGLE(c, "angle"), CELL_L(c, "cellLength"),
+                   CELL_W(c, "cellWidth"), CELL_H(c, "cellHeight");
 
   SoVertexProperty      *vertices = new SoVertexProperty;
   SoIndexedMarkerSet    *points = new SoIndexedMarkerSet;
@@ -2168,15 +2164,15 @@ make3DDTRecHits(IgCollection **collections, IgAssociations **,
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     // Point which decides selection.
-    IgV3d ps = ci->get<IgV3d>(LGLOBALPOS);
+    SbVec3f ps = ci->get(LGLOBALPOS);
 
     // All vertices, projected.
-    SbVec3f tmpVertices[6] = { projectors.projectAs(ci->get<IgV3d>(LPLUS_GLOBALPOS), ps),
-                               projectors.projectAs(ci->get<IgV3d>(LMINUS_GLOBALPOS), ps),
-                               projectors.projectAs(ci->get<IgV3d>(RPLUS_GLOBALPOS), ps),
-                               projectors.projectAs(ci->get<IgV3d>(RMINUS_GLOBALPOS), ps),
-                               projectors.projectAs(ci->get<IgV3d>(LGLOBALPOS), ps),
-                               projectors.projectAs(ci->get<IgV3d>(RGLOBALPOS), ps) };
+    SbVec3f tmpVertices[6] = { projectors.projectAs(ci->get(LPLUS_GLOBALPOS), ps),
+                               projectors.projectAs(ci->get(LMINUS_GLOBALPOS), ps),
+                               projectors.projectAs(ci->get(RPLUS_GLOBALPOS), ps),
+                               projectors.projectAs(ci->get(RMINUS_GLOBALPOS), ps),
+                               projectors.projectAs(ci->get(LGLOBALPOS), ps),
+                               projectors.projectAs(ci->get(RGLOBALPOS), ps) };
     
     // Line indices.
     int lineIndices[6] = { n*6    , n*6 + 1, SO_END_LINE_INDEX,
@@ -2189,12 +2185,8 @@ make3DDTRecHits(IgCollection **collections, IgAssociations **,
     points->coordIndex.setValues(n*2, 2, pointIndices);
     n++;
 
-    helper.addRotatedBox(ci->get<IgV3d>(WPOS), 
-                         ci->get<IgV3d>(AXIS), 
-                         ci->get<double>(ANGLE),
-                         ci->get<double>(CELL_W),
-                         ci->get<double>(CELL_L),
-                         ci->get<double>(CELL_H));
+    helper.addRotatedBox(ci->get(WPOS), ci->get(AXIS), ci->get(ANGLE),
+                         ci->get(CELL_W), ci->get(CELL_L), ci->get(CELL_H));
   }
 
   points->markerIndex = style->markerType;
@@ -2217,18 +2209,14 @@ make3DRPCRecHits(IgCollection **collections, IgAssociations **,
   std::vector<SbVec3f>  points;
   int                   i = 0;
 
-  IgProperty U1(c, "u1"), U2(c, "u2");
-  IgProperty V1(c, "v1"), V2(c, "v2");
-  IgProperty W1(c, "w1"), W2(c, "w2");
+  IgColumn<SbVec3f> U1(c, "u1"), U2(c, "u2"), V1(c, "v1"), V2(c, "v2"),
+                    W1(c, "w1"), W2(c, "w2");
 
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
-    IgV3d u1 = ci->get<IgV3d>(U1);
-    IgV3d u2 = ci->get<IgV3d>(U2);
-    IgV3d v1 = ci->get<IgV3d>(V1);
-    IgV3d v2 = ci->get<IgV3d>(V2);
-    IgV3d w1 = ci->get<IgV3d>(W1);
-    IgV3d w2 = ci->get<IgV3d>(W2);
+    SbVec3f u1 = ci->get(U1), u2 = ci->get(U2);
+    SbVec3f v1 = ci->get(V1), v2 = ci->get(V2);
+    SbVec3f w1 = ci->get(W1), w2 = ci->get(W2);
 
     points.push_back(projectors.project(u1));
     points.push_back(projectors.projectAs(u2, u1));
@@ -2268,7 +2256,7 @@ make3DTrackPoints(IgCollection **collections, IgAssociations **assocs,
   IgCollection          *points = collections[1];
   IgAssociations      *assoc = assocs[0];
 
-  IgProperty POS(points, "pos");
+  IgColumn<SbVec3f> POS(points, "pos");
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
     SoVertexProperty      *properties = new SoVertexProperty;
@@ -2280,11 +2268,11 @@ make3DTrackPoints(IgCollection **collections, IgAssociations **assocs,
     // This is needed to get nice looking tracks when they cross a 
     // discontinuity like in the case of RZ. Does not really affect anything
     // in other views.
-    IgV3d lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS);
+    SbVec3f lastOutPos = decideProjectionPoint(assoc->begin(ci), assoc->end(), POS);
     
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
-      SbVec3f pos = projectors.projectAs(ai->get<IgV3d>(POS), lastOutPos);
+      SbVec3f pos = projectors.projectAs(ai->get(POS), lastOutPos);
       properties->vertex.set1Value(n, pos);
       n++;
     }

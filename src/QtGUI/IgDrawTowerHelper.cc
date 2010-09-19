@@ -13,11 +13,11 @@ IgDrawTowerHelper::projectVertices(SbVec3f *vertices)
   // where to optimize things.
   SbVec3f soCenter = (  vertices[0] + vertices[1] + vertices[2] + vertices[3]
                      + vertices[4] + vertices[5] + vertices[6] + vertices[7]) / 8;
-  IgV3d centre(soCenter[0], soCenter[1], soCenter[2]);
+  SbVec3f centre(soCenter[0], soCenter[1], soCenter[2]);
   
   for(size_t i = 0; i < 8; ++i)
   {
-    IgV3d v(vertices[i][0], vertices[i][1], vertices[i][2]);
+    SbVec3f v(vertices[i][0], vertices[i][1], vertices[i][2]);
     vertices[i] = m_projectors.projectAsWithOffset(v, centre);
   }
   return vertices;
@@ -59,34 +59,24 @@ IgDrawTowerHelper::~IgDrawTowerHelper()
 }
 
 void
-IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                            IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4)
+IgDrawTowerHelper::addTower(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                            SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4)
 {
   // Project all the points as requested. We use projectAsWithOffset to
   // avoid having to deal with degenerated cubes.
-  SbVec3f vertices[8] = { SbVec3f(f1.x(), f1.y(), f1.z()),
-                          SbVec3f(f2.x(), f2.y(), f2.z()),
-                          SbVec3f(f3.x(), f3.y(), f3.z()),
-                          SbVec3f(f4.x(), f4.y(), f4.z()),
-                          SbVec3f(b1.x(), b1.y(), b1.z()),
-                          SbVec3f(b2.x(), b2.y(), b2.z()),
-                          SbVec3f(b3.x(), b3.y(), b3.z()),
-                          SbVec3f(b4.x(), b4.y(), b4.z())};
+  SbVec3f vertices[8] = { f1, f2, f3, f4, b1, b2, b3, b4};
   
   // Call the bit which actually generates the inventor faceset.
   drawTower(vertices);
 }
 
 void
-IgDrawTowerHelper::addTowerProjected(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                                     IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4)
+IgDrawTowerHelper::addTowerProjected(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                                     SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4)
 {
   // Calculate the centre of the box to decide how to transform the tower
   // in case of discontinuities of the projection.
-  double centreX = (f1.x() + f2.x() + f3.x() + f4.x() + b1.x() + b2.x() + b3.x() + b4.x()) / 8;
-  double centreY = (f1.y() + f2.y() + f3.y() + f4.y() + b1.y() + b2.y() + b3.y() + b4.y()) / 8;
-  double centreZ = (f1.z() + f2.z() + f3.z() + f4.z() + b1.z() + b2.z() + b3.z() + b4.z()) / 8;
-  IgV3d centre(centreX, centreY, centreZ); 
+  SbVec3f centre = (f1 + f2 + f3 + f4 + b1 + b2 + b3 + b4) / 8; 
 
   // Project all the points as requested. We use projectAsWithOffset to
   // avoid having to deal with degenerated cubes.
@@ -104,33 +94,23 @@ IgDrawTowerHelper::addTowerProjected(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
 }
 
 void
-IgDrawTowerHelper::addTowerOutline(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                                   IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4)
+IgDrawTowerHelper::addTowerOutline(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                                   SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4)
 {
   // Project all the points as requested. We use projectAsWithOffset to
   // avoid having to deal with degenerated cubes.
-  SbVec3f vertices[8] = { SbVec3f(f1.x(), f1.y(), f1.z()),
-                          SbVec3f(f2.x(), f2.y(), f2.z()),
-                          SbVec3f(f3.x(), f3.y(), f3.z()),
-                          SbVec3f(f4.x(), f4.y(), f4.z()),
-                          SbVec3f(b1.x(), b1.y(), b1.z()),
-                          SbVec3f(b2.x(), b2.y(), b2.z()),
-                          SbVec3f(b3.x(), b3.y(), b3.z()),
-                          SbVec3f(b4.x(), b4.y(), b4.z()) };
+  SbVec3f vertices[8] = { f1, f2, f3, f4, b1, b2, b3, b4};
 
   drawTower(vertices, true);
 }
 
 void
-IgDrawTowerHelper::addTowerOutlineProjected(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                                            IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4)
+IgDrawTowerHelper::addTowerOutlineProjected(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                                            SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4)
 {
   // Calculate the centre of the box to decide how to transform the tower
   // in case of discontinuities of the projection.
-  double centreX = (f1.x() + f2.x() + f3.x() + f4.x() + b1.x() + b2.x() + b3.x() + b4.x()) / 8;
-  double centreY = (f1.y() + f2.y() + f3.y() + f4.y() + b1.y() + b2.y() + b3.y() + b4.y()) / 8;
-  double centreZ = (f1.z() + f2.z() + f3.z() + f4.z() + b1.z() + b2.z() + b3.z() + b4.z()) / 8;
-  IgV3d centre(centreX, centreY, centreZ); 
+  SbVec3f centre = (f1 + f2 + f3 + f4 + b1 + b2 + b3 + b4) / 8; 
 
   // Project all the points as requested. We use projectAsWithOffset to
   // avoid having to deal with degenerated cubes.
@@ -147,263 +127,177 @@ IgDrawTowerHelper::addTowerOutlineProjected(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV
 }
 
 void
-IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                            IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4,
+IgDrawTowerHelper::addTower(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                            SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4,
                             float heightContent = 1.0,
                             float heightScale   = 1.0)
 {
   float scale = heightContent * heightScale;
-
-  // FIXME LT: the following is horribly clunky
-  // FIXME LT: somebody clever can reduce the following to a couple of lines
-
-  SbVec3f sf1(f1.x(), f1.y(), f1.z());
-  SbVec3f sf2(f2.x(), f2.y(), f2.z());
-  SbVec3f sf3(f3.x(), f3.y(), f3.z());
-  SbVec3f sf4(f4.x(), f4.y(), f4.z());
-
-  SbVec3f sb1(b1.x(), b1.y(), b1.z());
-  SbVec3f sb2(b2.x(), b2.y(), b2.z());
-  SbVec3f sb3(b3.x(), b3.y(), b3.z());
-  SbVec3f sb4(b4.x(), b4.y(), b4.z());
-
   // FIXME LT: I tried compressing this in the obvious mathematical way
   // FIXME LT: but got in a bizarre mess with types and signatures
 
-  SbVec3f diff1 = sb1-sf1;
-  SbVec3f diff2 = sb2-sf2;
-  SbVec3f diff3 = sb3-sf3;
-  SbVec3f diff4 = sb4-sf4;
+  SbVec3f diff1 = b1-f1;
+  SbVec3f diff2 = b2-f2;
+  SbVec3f diff3 = b3-f3;
+  SbVec3f diff4 = b4-f4;
 
   diff1.normalize();
   diff2.normalize();
   diff3.normalize();
   diff4.normalize();
 
-  SbVec3f vertices[8] = { sf1, 
-                          sf2, 
-                          sf3, 
-                          sf4,
-                          sf1 + (diff1 * scale),
-                          sf2 + (diff2 * scale),
-                          sf3 + (diff3 * scale),
-                          sf4 + (diff4 * scale)};
+  SbVec3f vertices[8] = { f1, 
+                          f2, 
+                          f3, 
+                          f4,
+                          f1 + (diff1 * scale),
+                          f2 + (diff2 * scale),
+                          f3 + (diff3 * scale),
+                          f4 + (diff4 * scale)};
 
   drawTower(vertices);
 }
 
 void
-IgDrawTowerHelper::addTowerProjected(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                                     IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4,
+IgDrawTowerHelper::addTowerProjected(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                                     SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4,
                                      float heightContent = 1.0,
                                      float heightScale   = 1.0)
 {
   float scale = heightContent * heightScale;
 
-  // FIXME LT: the following is horribly clunky
-  // FIXME LT: somebody clever can reduce the following to a couple of lines
-
-  SbVec3f sf1(f1.x(), f1.y(), f1.z());
-  SbVec3f sf2(f2.x(), f2.y(), f2.z());
-  SbVec3f sf3(f3.x(), f3.y(), f3.z());
-  SbVec3f sf4(f4.x(), f4.y(), f4.z());
-
-  SbVec3f sb1(b1.x(), b1.y(), b1.z());
-  SbVec3f sb2(b2.x(), b2.y(), b2.z());
-  SbVec3f sb3(b3.x(), b3.y(), b3.z());
-  SbVec3f sb4(b4.x(), b4.y(), b4.z());
-
   // FIXME LT: I tried compressing this in the obvious mathematical way
   // FIXME LT: but got in a bizarre mess with types and signatures
-
-  SbVec3f diff1 = sb1-sf1;
-  SbVec3f diff2 = sb2-sf2;
-  SbVec3f diff3 = sb3-sf3;
-  SbVec3f diff4 = sb4-sf4;
+  SbVec3f diff1 = b1-f1;
+  SbVec3f diff2 = b2-f2;
+  SbVec3f diff3 = b3-f3;
+  SbVec3f diff4 = b4-f4;
 
   diff1.normalize();
   diff2.normalize();
   diff3.normalize();
   diff4.normalize();
 
-  SbVec3f vertices[8] = { sf1, 
-                          sf2, 
-                          sf3, 
-                          sf4,
-                          sf1 + (diff1 * scale),
-                          sf2 + (diff2 * scale),
-                          sf3 + (diff3 * scale),
-                          sf4 + (diff4 * scale)};
+  SbVec3f vertices[8] = { f1, 
+                          f2, 
+                          f3, 
+                          f4,
+                          f1 + (diff1 * scale),
+                          f2 + (diff2 * scale),
+                          f3 + (diff3 * scale),
+                          f4 + (diff4 * scale)};
 
   drawTower(projectVertices(vertices));
 }
 
 
 void
-IgDrawTowerHelper::addTower(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                            IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4,
+IgDrawTowerHelper::addTower(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                            SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4,
                             float heightContent = 1, float heightOffset = 1,
                             float heightScale = 1)
 {
   float scaleContent = (heightContent+heightOffset) * heightScale;
   float scaleOffset = heightOffset * heightScale;
 
-  // FIXME LT: the following is horribly clunky
-  // FIXME LT: somebody clever can reduce the following to a couple of lines
-
-  SbVec3f sf1(f1.x(), f1.y(), f1.z());
-  SbVec3f sf2(f2.x(), f2.y(), f2.z());
-  SbVec3f sf3(f3.x(), f3.y(), f3.z());
-  SbVec3f sf4(f4.x(), f4.y(), f4.z());
-
-  SbVec3f sb1(b1.x(), b1.y(), b1.z());
-  SbVec3f sb2(b2.x(), b2.y(), b2.z());
-  SbVec3f sb3(b3.x(), b3.y(), b3.z());
-  SbVec3f sb4(b4.x(), b4.y(), b4.z());
-
   // FIXME LT: I tried compressing this in the obvious mathematical way
   // FIXME LT: but got in a bizarre mess with types and signatures
 
-  SbVec3f diff1 = sb1-sf1;
-  SbVec3f diff2 = sb2-sf2;
-  SbVec3f diff3 = sb3-sf3;
-  SbVec3f diff4 = sb4-sf4;
+  SbVec3f diff1 = b1-f1;
+  SbVec3f diff2 = b2-f2;
+  SbVec3f diff3 = b3-f3;
+  SbVec3f diff4 = b4-f4;
 
   diff1.normalize();
   diff2.normalize();
   diff3.normalize();
   diff4.normalize();
 
-  SbVec3f sc[8] = {sf1 + diff1*scaleOffset,
-                   sf2 + diff2*scaleOffset,
-                   sf3 + diff3*scaleOffset,
-                   sf4 + diff4*scaleOffset,
-                   sf1 + diff1*scaleOffset + diff1*scaleContent,
-                   sf2 + diff2*scaleOffset + diff2*scaleContent,
-                   sf3 + diff3*scaleOffset + diff3*scaleContent,
-                   sf4 + diff4*scaleOffset + diff4*scaleContent};
+  SbVec3f sc[8] = { f1 + diff1*scaleOffset,
+                    f2 + diff2*scaleOffset,
+                    f3 + diff3*scaleOffset,
+                    f4 + diff4*scaleOffset,
+                    f1 + diff1*scaleOffset + diff1*scaleContent,
+                    f2 + diff2*scaleOffset + diff2*scaleContent,
+                    f3 + diff3*scaleOffset + diff3*scaleContent,
+                    f4 + diff4*scaleOffset + diff4*scaleContent};
 
   drawTower(sc);
 }
 
 void
-IgDrawTowerHelper::addTowerProjected(IgV3d &f1, IgV3d &f2, IgV3d &f3, IgV3d &f4,
-                                     IgV3d &b1, IgV3d &b2, IgV3d &b3, IgV3d &b4,
+IgDrawTowerHelper::addTowerProjected(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
+                                     SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4,
                                      float heightContent = 1, float heightOffset = 1,
                                      float heightScale = 1)
 {
   float scaleContent = (heightContent+heightOffset) * heightScale;
   float scaleOffset = heightOffset * heightScale;
 
-  // FIXME LT: the following is horribly clunky
-  // FIXME LT: somebody clever can reduce the following to a couple of lines
-
-  SbVec3f sf1(f1.x(), f1.y(), f1.z());
-  SbVec3f sf2(f2.x(), f2.y(), f2.z());
-  SbVec3f sf3(f3.x(), f3.y(), f3.z());
-  SbVec3f sf4(f4.x(), f4.y(), f4.z());
-
-  SbVec3f sb1(b1.x(), b1.y(), b1.z());
-  SbVec3f sb2(b2.x(), b2.y(), b2.z());
-  SbVec3f sb3(b3.x(), b3.y(), b3.z());
-  SbVec3f sb4(b4.x(), b4.y(), b4.z());
-
   // FIXME LT: I tried compressing this in the obvious mathematical way
   // FIXME LT: but got in a bizarre mess with types and signatures
 
-  SbVec3f diff1 = sb1-sf1;
-  SbVec3f diff2 = sb2-sf2;
-  SbVec3f diff3 = sb3-sf3;
-  SbVec3f diff4 = sb4-sf4;
+  SbVec3f diff1 = b1-f1;
+  SbVec3f diff2 = b2-f2;
+  SbVec3f diff3 = b3-f3;
+  SbVec3f diff4 = b4-f4;
 
   diff1.normalize();
   diff2.normalize();
   diff3.normalize();
   diff4.normalize();
 
-  SbVec3f sc[8] = {sf1 + diff1*scaleOffset,
-                   sf2 + diff2*scaleOffset,
-                   sf3 + diff3*scaleOffset,
-                   sf4 + diff4*scaleOffset,
-                   sf1 + diff1*scaleOffset + diff1*scaleContent,
-                   sf2 + diff2*scaleOffset + diff2*scaleContent,
-                   sf3 + diff3*scaleOffset + diff3*scaleContent,
-                   sf4 + diff4*scaleOffset + diff4*scaleContent};
+  SbVec3f sc[8] = {f1 + diff1*scaleOffset,
+                   f2 + diff2*scaleOffset,
+                   f3 + diff3*scaleOffset,
+                   f4 + diff4*scaleOffset,
+                   f1 + diff1*scaleOffset + diff1*scaleContent,
+                   f2 + diff2*scaleOffset + diff2*scaleContent,
+                   f3 + diff3*scaleOffset + diff3*scaleContent,
+                   f4 + diff4*scaleOffset + diff4*scaleContent};
 
   drawTower(projectVertices(sc));
 }
 
 
 void
-IgDrawTowerHelper::addScaledBox( IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                                 IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
-                                 float scaleFraction)
+IgDrawTowerHelper::addScaledBox(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                                SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
+                                float scaleFraction)
 {
-  // FIXME LT: the following is horribly clunky
-  // FIXME LT: somebody clever can reduce the following to a couple of lines
-
-  SbVec3f sf1(f1.x(), f1.y(), f1.z());
-  SbVec3f sf2(f2.x(), f2.y(), f2.z());
-  SbVec3f sf3(f3.x(), f3.y(), f3.z());
-  SbVec3f sf4(f4.x(), f4.y(), f4.z());
-
-  SbVec3f sb1(b1.x(), b1.y(), b1.z());
-  SbVec3f sb2(b2.x(), b2.y(), b2.z());
-  SbVec3f sb3(b3.x(), b3.y(), b3.z());
-  SbVec3f sb4(b4.x(), b4.y(), b4.z());
-
-  SbVec3f centre = (sf1 + sf2 + sf3 +sf4 + sb1 + sb2 + sb3 + sb4) / 8.0;
-
-  // FIXME LT: I tried compressing this in the obvious mathematical way
-  // FIXME LT: but got in a bizarre mess with types and signatures
+  SbVec3f centre = (f1 + f2 + f3 + f4 + b1 + b2 + b3 + b4) / 8.0;
 
   // Coordinates for a scaled version of the original box
 
-  SbVec3f sc[8] = { centre + (sf1-centre)*scaleFraction,
-                    centre + (sf2-centre)*scaleFraction,
-                    centre + (sf3-centre)*scaleFraction,
-                    centre + (sf4-centre)*scaleFraction,
-                    centre + (sb1-centre)*scaleFraction,
-                    centre + (sb2-centre)*scaleFraction,
-                    centre + (sb3-centre)*scaleFraction,
-                    centre + (sb4-centre)*scaleFraction};
+  SbVec3f sc[8] = { centre + (f1-centre)*scaleFraction,
+                    centre + (f2-centre)*scaleFraction,
+                    centre + (f3-centre)*scaleFraction,
+                    centre + (f4-centre)*scaleFraction,
+                    centre + (b1-centre)*scaleFraction,
+                    centre + (b2-centre)*scaleFraction,
+                    centre + (b3-centre)*scaleFraction,
+                    centre + (b4-centre)*scaleFraction };
 
   drawTower(sc);
 }
 
 void
-IgDrawTowerHelper::addScaledBoxProjected( IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                                          IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
-                                          float scaleFraction)
+IgDrawTowerHelper::addScaledBoxProjected(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                                         SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
+                                         float scaleFraction)
 {
-  // FIXME LT: the following is horribly clunky
-  // FIXME LT: somebody clever can reduce the following to a couple of lines
-
-  SbVec3f sf1(f1.x(), f1.y(), f1.z());
-  SbVec3f sf2(f2.x(), f2.y(), f2.z());
-  SbVec3f sf3(f3.x(), f3.y(), f3.z());
-  SbVec3f sf4(f4.x(), f4.y(), f4.z());
-
-  SbVec3f sb1(b1.x(), b1.y(), b1.z());
-  SbVec3f sb2(b2.x(), b2.y(), b2.z());
-  SbVec3f sb3(b3.x(), b3.y(), b3.z());
-  SbVec3f sb4(b4.x(), b4.y(), b4.z());
-
-  SbVec3f centre = (sf1 + sf2 + sf3 +sf4 + sb1 + sb2 + sb3 + sb4) / 8.0;
-
-  // FIXME LT: I tried compressing this in the obvious mathematical way
-  // FIXME LT: but got in a bizarre mess with types and signatures
+  SbVec3f centre = (f1 + f2 + f3 +f4 + b1 + b2 + b3 + b4) / 8.0;
 
   // Coordinates for a scaled version of the original box
 
-  SbVec3f sc[8] = { centre + (sf1-centre)*scaleFraction,
-                    centre + (sf2-centre)*scaleFraction,
-                    centre + (sf3-centre)*scaleFraction,
-                    centre + (sf4-centre)*scaleFraction,
-                    centre + (sb1-centre)*scaleFraction,
-                    centre + (sb2-centre)*scaleFraction,
-                    centre + (sb3-centre)*scaleFraction,
-                    centre + (sb4-centre)*scaleFraction};
+  SbVec3f sc[8] = { centre + (f1-centre)*scaleFraction,
+                    centre + (f2-centre)*scaleFraction,
+                    centre + (f3-centre)*scaleFraction,
+                    centre + (f4-centre)*scaleFraction,
+                    centre + (b1-centre)*scaleFraction,
+                    centre + (b2-centre)*scaleFraction,
+                    centre + (b3-centre)*scaleFraction,
+                    centre + (b4-centre)*scaleFraction};
 
   drawTower(projectVertices(sc));
 }
@@ -598,8 +492,8 @@ IgDrawTowerHelper::addLegoTower(SbVec2f position, float energy, float emFraction
     the origin. 
   */
 void
-IgDrawTowerHelper::addRotatedBox(IgV3d &pos, IgV3d &axis, double angle,
-                                double w, double h, double d)
+IgDrawTowerHelper::addRotatedBox(const SbVec3f &pos, const SbVec3f &axis,
+                                 double angle, double w, double h, double d)
 {
   // 
   // Cube vertices
@@ -625,25 +519,21 @@ IgDrawTowerHelper::addRotatedBox(IgV3d &pos, IgV3d &axis, double angle,
 
   SbVec3f tmpVertices[8];
   SbMatrix matrix;
-  SbVec3f a(axis.x(), axis.y(), axis.z());
+  SbVec3f a = axis;
   a.normalize();
-  matrix.setTransform(SbVec3f(pos.x(), pos.y(), pos.z()),
-                      SbRotation(a, angle),
-                      SbVec3f(1,1,1));
+  matrix.setTransform(pos, SbRotation(a, angle), SbVec3f(1,1,1));
 
   for (int i = 0; i < 8; ++i)
     matrix.multVecMatrix(vertices[i], tmpVertices[i]);
 
-  // Extremely ugly, but since we need to do the projection 
-  // anyways... Do the projection for all the vertices.
+  // Do the projection for all the vertices.
   // Use the center to decide which map to use for the projections.
-  IgV3d centre(pos.x(), pos.y(), pos.z());
   SbVec3f outPoints[8];
 
   for (int i = 0; i < 8; ++i)
   {
-    IgV3d rotatedPoint(tmpVertices[i][0], tmpVertices[i][1],tmpVertices[i][2]);
-    outPoints[i] = m_projectors.projectAsWithOffset(rotatedPoint, centre);
+    SbVec3f rotatedPoint(tmpVertices[i][0], tmpVertices[i][1],tmpVertices[i][2]);
+    outPoints[i] = m_projectors.projectAsWithOffset(rotatedPoint, pos);
   }
   
   // Put all the vertices.
