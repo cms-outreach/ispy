@@ -1,5 +1,9 @@
 #include "QtGUI/IgDrawTowerHelper.h"
 #include "Inventor/nodes/SoShapeHints.h"
+#include <Inventor/nodes/SoIndexedFaceSet.h>
+#include <Inventor/nodes/SoIndexedLineSet.h>
+#include <Inventor/nodes/SoGroup.h>
+#include <Inventor/nodes/SoVertexProperty.h>
 #include "Inventor/SbMatrix.h"
 #include "Inventor/SbColor.h"
 #include "QtGUI/Projectors.h"
