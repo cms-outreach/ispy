@@ -6,21 +6,14 @@
 #include <iostream>
 
 SbVec3f *
-IgDrawTowerHelper::projectVertices(SbVec3f *vertices)
+IgDrawTowerHelper::projectVertices(SbVec3f *v)
 {
-  // Doing the projection:
-  // Sigh... transforming things back and forward... At least I know
-  // where to optimize things.
-  SbVec3f soCenter = (  vertices[0] + vertices[1] + vertices[2] + vertices[3]
-                     + vertices[4] + vertices[5] + vertices[6] + vertices[7]) / 8;
-  SbVec3f centre(soCenter[0], soCenter[1], soCenter[2]);
+  SbVec3f centre = (v[0] + v[1] + v[2] + v[3] + v[4] + v[5] + v[6] + v[7]) / 8;
   
   for(size_t i = 0; i < 8; ++i)
-  {
-    SbVec3f v(vertices[i][0], vertices[i][1], vertices[i][2]);
-    vertices[i] = m_projectors.projectAsWithOffset(v, centre);
-  }
-  return vertices;
+    v[i] = m_projectors.projectAsWithOffset(v[i], centre);
+
+  return v;
 }
 
 IgDrawTowerHelper::IgDrawTowerHelper(SoGroup *group, Projectors &projectors)
@@ -76,29 +69,16 @@ IgDrawTowerHelper::addTowerProjected(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVe
 {
   // Calculate the centre of the box to decide how to transform the tower
   // in case of discontinuities of the projection.
-  SbVec3f centre = (f1 + f2 + f3 + f4 + b1 + b2 + b3 + b4) / 8; 
-
-  // Project all the points as requested. We use projectAsWithOffset to
-  // avoid having to deal with degenerated cubes.
-  SbVec3f vertices[8] = { m_projectors.projectAsWithOffset(f1, centre),
-                          m_projectors.projectAsWithOffset(f2, centre),
-                          m_projectors.projectAsWithOffset(f3, centre),
-                          m_projectors.projectAsWithOffset(f4, centre),
-                          m_projectors.projectAsWithOffset(b1, centre),
-                          m_projectors.projectAsWithOffset(b2, centre),
-                          m_projectors.projectAsWithOffset(b3, centre),
-                          m_projectors.projectAsWithOffset(b4, centre)};
+  SbVec3f vertices[8] = { f1, f2, f3, f4, b1, b2, b3, b4};
   
   // Call the bit which actually generates the inventor faceset.
-  drawTower(vertices);
+  drawTower(projectVertices(vertices));
 }
 
 void
 IgDrawTowerHelper::addTowerOutline(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
                                    SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4)
 {
-  // Project all the points as requested. We use projectAsWithOffset to
-  // avoid having to deal with degenerated cubes.
   SbVec3f vertices[8] = { f1, f2, f3, f4, b1, b2, b3, b4};
 
   drawTower(vertices, true);
@@ -108,22 +88,9 @@ void
 IgDrawTowerHelper::addTowerOutlineProjected(SbVec3f &f1, SbVec3f &f2, SbVec3f &f3, SbVec3f &f4,
                                             SbVec3f &b1, SbVec3f &b2, SbVec3f &b3, SbVec3f &b4)
 {
-  // Calculate the centre of the box to decide how to transform the tower
-  // in case of discontinuities of the projection.
-  SbVec3f centre = (f1 + f2 + f3 + f4 + b1 + b2 + b3 + b4) / 8; 
+  SbVec3f vertices[8] = { f1, f2, f3, f4, b1, b2, b3, b4};
 
-  // Project all the points as requested. We use projectAsWithOffset to
-  // avoid having to deal with degenerated cubes.
-  SbVec3f vertices[8] = { m_projectors.projectAsWithOffset(f1, centre),
-                          m_projectors.projectAsWithOffset(f2, centre),
-                          m_projectors.projectAsWithOffset(f3, centre),
-                          m_projectors.projectAsWithOffset(f4, centre),
-                          m_projectors.projectAsWithOffset(b1, centre),
-                          m_projectors.projectAsWithOffset(b2, centre),
-                          m_projectors.projectAsWithOffset(b3, centre),
-                          m_projectors.projectAsWithOffset(b4, centre)};
-
-  drawTower(vertices, true);
+  drawTower(projectVertices(vertices), true);
 }
 
 void
