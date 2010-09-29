@@ -7,7 +7,6 @@
 # include <QUrl>
 # include <QCheckBox>
 # include <QHeaderView>
-# include <QFile>
 # include <vector>
 # include <map>
 # include <Inventor/nodes/SoMarkerSet.h>
@@ -81,6 +80,23 @@ public:
   const char *          appname(void) const;
   QNetworkReply *	getUrl(const QUrl &link);
 
+  void                  collection(const char *friendlyName,
+                                   const char *collectionSpec,
+                                   const char *otherCollectionSpec,
+                                   const char *associationSpec,
+                                   const char *make3DName,
+                                   bool visibility);
+  void                  view(const char *name,
+                             bool specialized,
+                             bool autoplay);
+  void                  camera(float *pos,
+                               float *pointAt,
+                               float scale,
+                               bool orthographic,
+                               bool rotating,
+                               const std::string &projection);
+  void                  visibilityGroup(void);
+
 public slots:
   void                  openFileDialog(void);
   void                  openUrlDialog(void);
@@ -130,9 +146,9 @@ private slots:
   void                  cameraToggled(void);
   void                  resetToHomePosition(void);
   void                  restartPlay(void);
-  void			updateFilterListModel(const QString& title);
-  void			showPublish(void);
-  void			stopFiltering(void);
+  void                  updateFilterListModel(const QString& title);
+  void                  showPublish(void);
+  void                  stopFiltering(void);
 
 private:
   struct CollectionSpec
@@ -255,34 +271,17 @@ private:
   int                   doRun(void);
   void                  defaultSettings(void);
   void                  restoreSettings(void);
+#if  !defined(Q_WS_MAC) && !defined(Q_WS_WIN)
   void                  onlineConfig(const char* server);
+#endif
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
-  void                  collection(const char *friendlyName,
-                                   const char *collectionSpec,
-                                   const char *otherCollectionSpec,
-                                   const char *associationSpec,
-                                   Make3D make3D,
-                                   bool visibility);
-  void                  view(const char *name,
-                             bool specialized,
-                             bool autoplay);
-
-  void                  camera(float *pos,
-                               float *pointAt,
-                               float scale,
-                               bool orthographic,
-                               bool rotating,
-                               const std::string &projection);
-
-  void                  visibilityGroup(void);
 
   void                  displayCollection(Collection &c);
   void                  createStats(void);
-  IgArchive *           loadFile(const QString &fileName);
-  void                  readData(IgDataStorage *to,
-                                 IgArchive *archive,
-                                 IgMember  *source);
+  IgArchive *           loadFile(const char *fileName);
+  void                  readData(IgDataStorage *to, IgArchive *archive,
+                                 IgMember *source);
   void                  downloadFile(const QUrl &url);
   void                  downloadGeometry(void);
   bool                  simpleOpen(const QString &fileName);
@@ -304,7 +303,7 @@ private:
   bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);
   // Helper methods to handle views layouts.
-  void                      parseViewsDefinition(QByteArray &data);
+  void                      parseViewsDefinition(const char *data);
   bool                      parseViewsDefinitionFile(const char *filename);
 
   void                      registerDrawFunction(const char *name, Make3D func);
