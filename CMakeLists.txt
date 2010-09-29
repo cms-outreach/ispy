@@ -33,7 +33,7 @@ set(CMAKE_LIBRARY_PATH ${ISPY_EXTERNALS_PATH}/lib)
 set(CMAKE_INCLUDE_PATH ${ISPY_EXTERNALS_PATH}/include)
 
 
-file(GLOB FRAMEWORK_SOURCES "src/Framework/*.cc")
+file(GLOB FRAMEWORK_SOURCES "src/Framework/*.cc" "src/Framework/*.c")
 include_directories("src" "src/Framework")
 add_library(ISpyFramework STATIC ${FRAMEWORK_SOURCES})
 find_package(Qt4 4.5.0)
