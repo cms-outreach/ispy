@@ -1,5 +1,5 @@
 #include "Framework/IgArchive.h"
-#include "QtGUI/IgSubProcess.h"
+#include "unzip.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -13,55 +13,87 @@
 void
 IgArchive::readMembers()
 {
-  QStringList args;
-
-  IgSubProcess subprocess;
-
-#ifdef WIN32
-//  QString command("C:/Graphics/unzip/win32/vc8/unzip__Win32_Release/unzip");
-  QString command("unzip");
-  args << "-Z" << "-1";
-#else
-  QString command("unzip");
-  args << "-Z" << "-1";
-#endif
-
-  args << m_filename;
-  subprocess.start(command, args);
-  if (!subprocess.waitForFinished()) throw IgArchive::Exception();
-
-  QTextStream ss(subprocess.getBuffer());
+  unzFile uf = NULL;
   
-  while(!ss.atEnd())
+#ifdef USEWIN32IOAPI
+  zlib_filefunc64_def ffunc;
+#endif
+  
+#ifdef USEWIN32IOAPI
+  fill_win32_filefunc64A(&ffunc);
+  uf = unzOpen2_64(m_filename.c_str(),&ffunc);
+#else
+  uf = unzOpen64(m_filename.c_str());
+#endif
+  
+  if (uf==NULL)
+    throw IgArchive::Exception();
+  
+  uLong i;
+  unz_global_info64 gi;
+  int err;
+
+  err = unzGetGlobalInfo64(uf,&gi);
+  for (i=0; i < gi.number_entry; ++i)
   {
-    QString memberName = ss.readLine();
-	m_members.push_back(new IgMember(memberName));
+    // FIXME: does this really mean that archives cannot have filenames
+    //        larger than 4096 characters???
+    char memberName[4096];
+    unz_file_info64 file_info;
+    uLong ratio=0;
+    const char *string_method;
+    char charCrypt=' ';
+    err = unzGetCurrentFileInfo64(uf, &file_info, memberName,
+                                  sizeof(memberName), NULL, 0, NULL, 0);
+    if (err != UNZ_OK)
+      throw IgArchive::Exception();
+
+    m_members.push_back(new IgMember(memberName));
+    
+    if ((i+1) < gi.number_entry)
+    {
+        err = unzGoToNextFile(uf);
+        if (err != UNZ_OK)
+          throw IgArchive::Exception();
+    }
   }
+  
+  unzClose(uf);
 }
 
-const QByteArray&
-IgArchiveReader::read(IgMember *member)
+void
+IgArchiveReader::read(IgMember *member, std::string &result)
 {
-  QStringList args;
+  unzFile uf = unzOpen(m_archive->name());
+  if (uf == NULL)
+    throw IgArchive::Exception();
+    
+  if (unzLocateFile(uf, member->name(), 0) != UNZ_OK)
+    throw IgArchive::Exception();
 
-  IgSubProcess subprocess;
+  unz_file_info64 info;
+  int ms = strlen(member->name());
+  char *mn = new char[ms]; 
+  if (unzGetCurrentFileInfo64(uf, &info, mn, ms, NULL, 0, NULL, 0) != UNZ_OK
+      || unzOpenCurrentFile(uf) != UNZ_OK)
+  {
+    delete mn;
+    throw IgArchive::Exception();
+  }
+  
+  delete mn;
 
-#ifdef WIN32
-//  QString command("C:/Graphics/unzip/win32/vc8/unzip__Win32_Release/unzip");
-  QString command("unzip");
-  args << "-p";
-#else
-  QString command("unzip");
-  args << "-p";
-#endif
-
-  args << m_archive->name();
-  args << member->name();
-  subprocess.start(command, args);
-
-  if (!subprocess.waitForFinished(120000)) throw IgArchive::Exception();
-
-
-  m_stream.append(subprocess.getBuffer());
-  return m_stream;
+  char *buffer = (char*) malloc(info.uncompressed_size);
+  int readSize = unzReadCurrentFile(uf, buffer, info.uncompressed_size);
+  if (readSize != info.uncompressed_size)
+  {
+    free(buffer);
+    throw IgArchive::Exception();
+  }
+  
+  result.assign(buffer, info.uncompressed_size);
+  free(buffer);
+  
+  if (unzCloseCurrentFile(uf) != UNZ_OK)
+    throw IgArchive::Exception();
 }
