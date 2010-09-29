@@ -37,5 +37,6 @@
     <file>print.png</file>
     <file>zoom_in.png</file>
     <file>zoom_out.png</file>
+    <file>iSpyIconVista.ico</file>
   </qresource>
 </RCC>
