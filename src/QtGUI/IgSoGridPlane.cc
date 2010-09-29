@@ -8,13 +8,8 @@
 #include <Inventor/nodes/SoText2.h>
 #include <Inventor/nodes/SoResetTransform.h>
 #include <Inventor/SbString.h>
-#include <assert.h>
+#include <cassert>
 
-#ifdef __APPLE__
-# include <OpenGL/gl.h>
-#elif !defined(WIN32)
-# include <GL/gl.h>
-#endif
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
 //<<<<<< PRIVATE TYPES                                                  >>>>>>
