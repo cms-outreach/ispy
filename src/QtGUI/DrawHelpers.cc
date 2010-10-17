@@ -251,7 +251,7 @@ make3DEvent(IgCollectionItem& e,
                              e.get<int>("run"), e.get<int>("event")), buf));
       helper.endBox();
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2009. All rights reserved.");
+      helper.createTextLine("(c) CERN 2010. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
       helper.createTextLine("http://iguana.cern.ch/ispy");
@@ -286,7 +286,7 @@ make3DEvent(IgCollectionItem& e,
       helper.endBox();
       
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2009. All rights reserved.");
+      helper.createTextLine("(c) CERN 2010. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
       helper.createTextLine("http://iguana.cern.ch/ispy");
