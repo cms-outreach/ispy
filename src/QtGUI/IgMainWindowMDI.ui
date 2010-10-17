@@ -14,7 +14,7 @@
    <string>IGUANA iSpy</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../interface/ispy.qrc">
+   <iconset>
     <normaloff>:/images/iguana-small.xpm</normaloff>:/images/iguana-small.xpm</iconset>
   </property>
   <property name="dockNestingEnabled">
@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -45,6 +45,7 @@
     <addaction name="actionOpenWizard"/>
     <addaction name="actionSave"/>
     <addaction name="actionPrint"/>
+    <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -120,7 +121,7 @@ spacing: 0px;
       <number>0</number>
      </property>
      <property name="spacing">
-      <number>-1</number>
+      <number>6</number>
      </property>
      <item row="1" column="0">
       <widget class="QTreeWidget" name="treeWidget">
@@ -196,6 +197,18 @@ alternate-background-color: #cfdde6;
        </attribute>
        <attribute name="headerDefaultSectionSize">
         <number>22</number>
+       </attribute>
+       <attribute name="headerStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerCascadingSectionResizes">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerDefaultSectionSize">
+        <number>22</number>
+       </attribute>
+       <attribute name="headerVisible">
+        <bool>false</bool>
        </attribute>
        <attribute name="headerStretchLastSection">
         <bool>false</bool>
@@ -361,6 +374,9 @@ QComboBox QAbstractItemView
        <attribute name="verticalHeaderVisible">
         <bool>false</bool>
        </attribute>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
       </widget>
      </item>
     </layout>
@@ -384,7 +400,7 @@ QComboBox QAbstractItemView
   </action>
   <action name="actionNext">
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset>
      <normaloff>:/images/next.png</normaloff>:/images/next.png</iconset>
    </property>
    <property name="text">
@@ -399,7 +415,7 @@ QComboBox QAbstractItemView
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset>
      <normaloff>:/images/previous.png</normaloff>:/images/previous.png</iconset>
    </property>
    <property name="text">
@@ -414,7 +430,7 @@ QComboBox QAbstractItemView
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset>
      <normaloff>:/images/Play1Normal.png</normaloff>
      <normalon>:/images/PausePressed.png</normalon>:/images/Play1Normal.png</iconset>
    </property>
@@ -430,7 +446,7 @@ QComboBox QAbstractItemView
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset>
      <normaloff>:/images/print.png</normaloff>:/images/print.png</iconset>
    </property>
    <property name="text">
@@ -442,7 +458,7 @@ QComboBox QAbstractItemView
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset>
      <normaloff>:/images/filesave.png</normaloff>:/images/filesave.png</iconset>
    </property>
    <property name="text">
@@ -518,10 +534,16 @@ QComboBox QAbstractItemView
     <string>Picture Publishing...</string>
    </property>
   </action>
+  <action name="actionExport">
+   <property name="text">
+    <string>Export as...</string>
+   </property>
+   <property name="toolTip">
+    <string>Export scene in IV format</string>
+   </property>
+  </action>
  </widget>
- <resources>
-  <include location="../interface/ispy.qrc"/>
- </resources>
+ <resources/>
  <connections>
   <connection>
    <sender>actionSaveSettings</sender>

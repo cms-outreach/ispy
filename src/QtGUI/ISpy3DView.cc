@@ -244,7 +244,11 @@ ISpy3DView::save(void)
   // saveNode(getSceneManager()->getSceneGraph(), "Save Scene As...", parent());
   // saveNode(model()->sceneGraph(), "Save Scene As...", getShellWidget());
 }
-
+void
+ISpy3DView::exportIV(void)
+{
+	saveNode(m_model->sceneGraph(),"Export as Inventor");
+}
 bool
 ISpy3DView::saveNode(SoNode *node, const QString& title,
                      QWidget* parent /* = 0 */, const char* file /*= 0*/)

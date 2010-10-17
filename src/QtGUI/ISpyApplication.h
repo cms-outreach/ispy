@@ -119,9 +119,10 @@ signals:
   void                  firstEvent(void);
   void                  lastEvent(void);
   void                  save(void);
+  void                  exportIV(void);
   void                  print(void);
   void                  resetCounter(void);
-  void			getNewEvent(void);
+  void                  getNewEvent(void);
   void                  styleChanged(void);
 
 protected:

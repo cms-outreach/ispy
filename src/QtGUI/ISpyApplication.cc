@@ -1576,6 +1576,7 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(previousEvent()), this, SLOT(previousEvent()));
   QObject::connect(m_mainWindow, SIGNAL(rewind()),        this, SLOT(rewind()));
   QObject::connect(m_mainWindow, SIGNAL(print()),         this, SIGNAL(print()));
+  QObject::connect(m_mainWindow, SIGNAL(exportIV()),      this, SIGNAL(exportIV()));
   QObject::connect(m_mainWindow, SIGNAL(save()),          this, SIGNAL(save()));
   QObject::connect(m_mainWindow, SIGNAL(showAbout()),     this, SLOT(showAbout()));
   QObject::connect(m_mainWindow->actionEvent_Filter, SIGNAL(triggered()), m_selector, SLOT(show()));
@@ -1836,6 +1837,8 @@ ISpyApplication::doRun(void)
   m_mainWindow->addToolBar(Qt::TopToolBarArea, m_3DToolBar);
 
   QObject::connect(this, SIGNAL(save()), m_viewer, SLOT(save()));
+  QObject::connect(this, SIGNAL(exportIV()), m_viewer, SLOT(exportIV()));
+ 
   QObject::connect(this, SIGNAL(print()), m_viewer, SLOT(print()));
   QObject::connect(m_viewer, SIGNAL(cameraToggled()), 
                    this, SLOT(cameraToggled()));

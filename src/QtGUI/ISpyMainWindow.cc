@@ -40,6 +40,7 @@ ISpyMainWindow::setupActions(void)
   QObject::connect(actionPrevious, SIGNAL(triggered()), this, SIGNAL(previousEvent()));
   QObject::connect(actionPrint, SIGNAL(triggered()), this, SIGNAL(print()));
   QObject::connect(actionSave, SIGNAL(triggered()), this, SIGNAL(save()));
+  QObject::connect(actionExport, SIGNAL(triggered()), this, SIGNAL(exportIV()));
   QObject::connect(actionMaximize, SIGNAL(triggered()), this, SLOT(maximize()));
   QObject::connect(actionFull_screen, SIGNAL(triggered()), this, SLOT(fullScreen()));
   QObject::connect(actionAbout, SIGNAL(triggered()), this, SIGNAL(showAbout()));
