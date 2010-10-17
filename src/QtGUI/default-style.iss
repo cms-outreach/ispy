@@ -101,6 +101,8 @@ DTs3D_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);transparency:0.5;}
 DTsRPhi_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);transparency:0.5;}
 DTsRZ_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);transparency:0.5;}
 CSC3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.5;}
+CSC3DPlus_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.5;}
+CSC3DMinus_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.5;}
 CSCRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.5;}
 RPC3D_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);transparency:0.5;}
 RPCRPhi_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);transparency:0.5;}
@@ -220,8 +222,8 @@ CSCSegments_V1 {
   diffuse-color: rgb(1.0, 0.8, 1.0);
 }
 
-CSCWireDigis_V1 {diffuse-color: rgb(1.0, 0.6, 1.0);}
-CSCStripDigis_V1 {diffuse-color: rgb(1.0, 0.2, 1.0);}
+CSCWireDigis_V1 {diffuse-color: rgb(1.0, 0.6, 1.0); transparency: 0.5;}
+CSCStripDigis_V1 {diffuse-color: rgb(1.0, 0.2, 1.0); transparency: 0.5;}
 
 RPCRecHits_V1 {
   diffuse-color: rgb(1.0, 1.0, 0.2);

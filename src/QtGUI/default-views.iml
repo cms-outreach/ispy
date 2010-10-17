@@ -114,6 +114,16 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
+  <collection label="Detector/Cathode Strip Chambers (Plus Z)"
+              spec="CSC3DPlus_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="makeAnyBox"
+              visibility="none"/>
+  
+  <collection label="Detector/Cathode Strip Chambers (Minus Z)"
+              spec="CSC3DMinus_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="makeAnyBox"
+              visibility="none"/>
+
   <collection label="Detector/Cathode Strip Chambers"
               spec="CSC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
