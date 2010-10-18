@@ -2477,7 +2477,7 @@ ISpyApplication::updateCollections(void)
       // node in the 3D model. The latter will be filled in on first
       // display, and directly here if the visibility is on.
       // 
-      // Notice taht tree items will be added to the widget only 
+      // Notice that tree items will be added to the widget only 
       // later on, once we have sorted the collections by the
       // associated specs.
       QTreeWidgetItem *item = new QTreeWidgetItem;
