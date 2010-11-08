@@ -27,6 +27,7 @@
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoImage.h>
+#include <Inventor/nodes/SoPickStyle.h>
 
 #include <QString>
 #include <sstream>
@@ -115,6 +116,10 @@ public:
    m_fontScale(1.)
   {
     m_group->enableNotify(FALSE);
+	// make annotations unpickable
+	SoPickStyle *ps = new SoPickStyle;
+	ps->style = SoPickStyle::UNPICKABLE;
+	m_group->addChild(ps);
     // Scale is 1. by default. LEAVE_ALONE is used to make sure we can have
     // an almost view independent positioning.
     m_camera->nearDistance = 1;

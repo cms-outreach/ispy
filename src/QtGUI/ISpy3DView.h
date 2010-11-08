@@ -53,6 +53,7 @@ public:
 public slots:
   void         save(void);
   void         print(void);
+  void         exportIV(void);
   void         zoomIn(void);
   void         zoomOut(void);
   void         zoom(const float diffvalue);
@@ -97,6 +98,7 @@ private:
   bool                  m_grid;
   bool                  m_oldView;
   bool                  m_oldSeek;
+  bool                  m_interact; ///! indicates pick mode
   enum Mode             m_viewMode;
   QString               m_currentEvent;
 

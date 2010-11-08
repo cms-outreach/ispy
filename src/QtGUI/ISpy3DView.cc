@@ -4,6 +4,7 @@
 #include "QtGUI/ISpy3DView.h"
 #include "QtGUI/Ig3DBaseModel.h"
 #include "QtGUI/IgSoGridPlane.h"
+#include <Inventor/nodekits/SoBaseKit.h>
 #include <Inventor/SoOffscreenRenderer.h>
 #include <Inventor/nodes/SoDirectionalLight.h>
 #include <Inventor/nodes/SoPointLight.h>
@@ -11,16 +12,27 @@
 #include <Inventor/actions/SoLineHighlightRenderAction.h>
 #include <Inventor/nodes/SoOrthographicCamera.h>
 #include <Inventor/nodes/SoPerspectiveCamera.h>
+#include <Inventor/nodes/SoAnnotation.h>
+#include <Inventor/nodes/SoPointSet.h>
 #include <Inventor/actions/SoWriteAction.h>
 #include <Inventor/Qt/SoQtCursor.h>
 #include <Inventor/errors/SoDebugError.h>
-
+#include <Inventor/Qt/devices/SoQtMouse.h>
 #include <QtGui>
 #include <iostream>
 #include <typeinfo>
 
 #include <Inventor/actions/SoSearchAction.h>
-#include <Inventor/nodekits/SoBaseKit.h>
+#include <Inventor/actions/SoRayPickAction.h>
+#include <Inventor/nodes/SoSelection.h>
+#include <Inventor/SoPickedPoint.h>
+#include <Inventor/SoPath.h>
+#include <Inventor/details/SoDetail.h>
+#include <Inventor/details/SoPointDetail.h>
+#include <Inventor/details/SoLineDetail.h>
+
+#include <QtGlobal>
+#include <QDebug>
 
 ISpy3DView::ISpy3DView(Ig3DBaseModel *model, QWidget *parent)
   : SoQtExaminerViewer(parent, "iSpy 3D"),
@@ -30,9 +42,16 @@ ISpy3DView::ISpy3DView(Ig3DBaseModel *model, QWidget *parent)
     m_grid(false),
     m_oldView(true),
     m_oldSeek(false),
+	m_interact(false),
     m_viewMode(ROTATION_MODE)
 {
   initWidget();
+  SoSelection *sel = dynamic_cast<SoSelection*>(getSceneGraph());
+  if (sel)
+  {
+	  redrawOnSelectionChange(sel);
+  }
+
 }
 
 void debugCameraClipPlanes(void * data, const SbVec2f & nearfar)
@@ -749,13 +768,97 @@ ISpy3DView::eventCallback(void *closure, QEvent *event)
 {
   ISpy3DView *self = static_cast<ISpy3DView *>(closure);
 
-  // Block popping up a non-functional GUI on right mouse click
   if (QMouseEvent *mEvent = dynamic_cast<QMouseEvent *>(event))
   {
-    if (mEvent->button() == Qt::RightButton)
-      return true;
+	  // Block popping up a non-functional GUI on right mouse click
+	  if (mEvent->button() == Qt::RightButton)
+	  {
+		  return true;
+	  }
+	  // Pick if in pick mode: will take everything and eliminate any SoAnnotations on top
+	  else if (self->m_interact && mEvent->button() != Qt::NoButton) // take any button
+	  {
+		  SoSelection *sel = dynamic_cast<SoSelection*>(self->getSceneGraph());
+		  sel->deselectAll(); // can later add shift select to add to selection instead
+		  bool picked = false;
+		  SoSearchAction sa;
+		  sa.setType(SoAnnotation::getClassTypeId());
+		  SoRayPickAction rp( self->getViewportRegion() );
+		  rp.setPickAll(true); 
+		  SoQtMouse m;
+		  m.setWindowSize(self->getSize());
+		  rp.setPoint(m.translateEvent(mEvent)->getPosition());
+		  rp.apply(self->getSceneGraph());
+		  self->m_interact = false;
+		  self->setComponentCursor(SoQtCursor(SoQtCursor::DEFAULT));
+		  qDebug() << "Pick!...";
+		  SoPickedPointList ppl(rp.getPickedPointList());
+		  int list=0;
+		  while (list < ppl.getLength() && !picked )
+		  {
+			  SoPath *path = ppl[list]->getPath();
+			  sa.apply(path);
+//			  if (sa.getPath() == NULL) // not an annotation
+//			  {
+				  picked = true;
+				  for (int n=0; n < path->getLength(); ++n)
+				  {
+					  // expecting as names(from node 0 down): ISPY_SCENE_GRAPH_V.. (an SoSelection), CollectionName (an SoSwitch)
+					  // bottom node should be MarkerSet, IndexedLineSet, NurbsCurve, LineSet, etc, with a Separator above
+					  SoNode *node = path->getNode(n);
+					  SbName name(node->getName());
+					  uint32_t nid = node->getNodeId();
+					  std::string s(name.getString());
+					  SoType type = node->getTypeId();
+					  SbName typen(type.getName());
+					  std::string sn(typen.getString());
+					  qDebug() << n << "  node id: " << nid << ", node type: " << sn.c_str() << ", node name: " << s.c_str();
+				  }
+				  // Now pull out the pieces
+				  SoNode *collectionNode = path->getNode(2); // Collection Name
+				  SoNode *collectionItem = path->getNode(4); // Item
+				  // check for a set
+				  // only concerned with SoMarkerSet and SoLineSet. In both cases, want the index
+				  int detailIndex = -1;
+				  const SoDetail *detail = ppl[list]->getDetail();
+				  if (detail)
+				  {
+					  const SoPointDetail *pd = dynamic_cast<const SoPointDetail*>(detail);
+					  if (pd)
+					  {
+						  detailIndex = pd->getCoordinateIndex();
+					  }
+					  const SoLineDetail *ld = dynamic_cast<const SoLineDetail*>(detail);
+					  if (ld)
+					  {
+						  detailIndex = ld->getLineIndex();
+					  }
+				  }
+				  if (detailIndex > -1) qDebug() << "  Picked part: " << detailIndex;
+				  sel->select(ppl[list]->getPath());
+			  }
+			  ++list;
+//		  }
+		  if (picked) self->getSceneManager()->scheduleRedraw();
+		  return false;
+	  }  
   }
-
+  // Toggle the interaction mode on keyboard P (pick). Seek (S) is built into SoQtViewer.
+  if (QKeyEvent *mEvent = dynamic_cast<QKeyEvent *>(event))
+  {
+	  if (mEvent->key() == Qt::Key_P && mEvent->type() == QEvent::KeyRelease)
+	  {
+		  self->m_interact = ! self->m_interact;
+		  if (self->m_interact)
+		  {
+			  self->setComponentCursor(SoQtCursor(SoQtCursor::CROSSHAIR));
+		  }
+		  else
+		  {  
+			  self->setComponentCursor(SoQtCursor(SoQtCursor::DEFAULT));
+		  }
+	  }
+  }
   switch (self->m_viewMode)
   {
     case PAN_MODE:
