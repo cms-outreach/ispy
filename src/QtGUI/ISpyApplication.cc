@@ -1323,7 +1323,7 @@ ISpyApplication::run(int argc, char *argv[])
       {
         m_online = true;
         m_autoEvents = true;
-        onlineConfig(*argv);
+        //onlineConfig(*argv); this isn't defined anywhere and not used anyway
         *++argv;
         // Remove the command line option so that
         // it would not be treated as a filename.
