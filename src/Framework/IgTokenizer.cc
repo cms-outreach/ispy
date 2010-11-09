@@ -1,6 +1,7 @@
 #include "Framework/IgTokenizer.h"
 #include <cstring>
 #include <cstdlib>
+#include <cstdio>
 
 /** Helper function which gets a token delimited by @a separator from the 
     @a file and write it, 0 terminated in the buffer found in @a buffer.

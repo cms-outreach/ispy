@@ -3,6 +3,8 @@
 
 #include "Framework/IgTokenizer.h"
 #include <sstream>
+#include <cstdio>
+#include <cstdlib>
 
 class IgStyleParser
 {
