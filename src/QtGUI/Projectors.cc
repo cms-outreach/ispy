@@ -6,11 +6,11 @@
 
   */
 static SbVec3f
-projectRZ(IgV3d &v)
+projectRZ(const SbVec3f &v)
 {
-  double sign = v.y() / fabs(v.y());
-  double size = sqrt(v.x()*v.x() + v.y()*v.y());
-  return SbVec3f(0, sign * size, v.z());
+  double sign = v[1] / fabs(v[1]);
+  double size = sqrt(v[0]*v[0]+ v[1]*v[1]);
+  return SbVec3f(0, sign * size, v[2]);
 }
 /** Helper method to do RZ projections. It transforms the the vector @a v
     with the same kind of projection that would be used for the vector @a s.
@@ -20,12 +20,12 @@ projectRZ(IgV3d &v)
     @a s the vector which defines which map to use for the transformation.
   */
 static SbVec3f
-projectRZAs(IgV3d &v, IgV3d &s)
+projectRZAs(const SbVec3f &v, const SbVec3f &s)
 {
-  double size = sqrt(v.x()*v.x() + v.y()*v.y());
-  if (s.y() < 0.)
-    return SbVec3f(0, -size, v.z());
-  return SbVec3f(0, size, v.z());
+  double size = sqrt(v[0]*v[0] + v[1]*v[1]);
+  if (s[1] < 0.)
+    return SbVec3f(0, -size, v[2]);
+  return SbVec3f(0, size, v[2]);
 }
 
 /** Helper method to do RZ projections. It transforms the the vector @a v
@@ -39,26 +39,25 @@ projectRZAs(IgV3d &v, IgV3d &s)
     @a s the vector which defines which map to use for the transformation.
   */
 static SbVec3f
-projectRZAsWithOffset(IgV3d &v, IgV3d &s)
+projectRZAsWithOffset(const SbVec3f &v, const SbVec3f &s)
 {
-  double size = sqrt(v.x()*v.x() + v.y()*v.y());
-  if (s.y() < 0.)
-  {
-    double angle = atan2(v.x(), v.y());
-    return SbVec3f(-angle, -size, v.z());
-  }
-  double angle = atan2(v.x(), v.y());
-  return SbVec3f(angle, size, v.z());
+  double size = sqrt(v[0]*v[0] + v[1]*v[1]);
+  double angle = atan2(v[0], v[1]);
+
+  if (s[1] < 0.)
+    return SbVec3f(-angle, -size, v[2]);
+
+  return SbVec3f(angle, size, v[2]);
 }
 
 
 /** Helper method to do the RZ projection in the case of coordinates passed 
     in terms of RHO, THETA, PHI */
 static SbVec3f
-prejectRZThetaPhi(IgV3d &v)
+prejectRZThetaPhi(const SbVec3f &v)
 {
-  double theta = v.y();
-  double phi = v.z();
+  double theta = v[1];
+  double phi = v[2];
   
   double x = cos(theta) * sin(phi);
   double y = sin(theta) * sin(phi);
@@ -67,7 +66,7 @@ prejectRZThetaPhi(IgV3d &v)
   double sign = y / fabs(y);
   double size = sqrt(x*x + y*y);
   
-  return SbVec3f(v.x(), acos(z), atan2(sign*size, 0));
+  return SbVec3f(v[0], acos(z), atan2(sign*size, 0));
 }
 
 /** Helper method for the identity projection.
@@ -77,28 +76,28 @@ prejectRZThetaPhi(IgV3d &v)
     @return the transformed vector
   */
 static SbVec3f
-identity(IgV3d &v)
+identity(const SbVec3f &v)
 {
-  return SbVec3f(v.x(), v.y(), v.z());
+  return v;
 }
 
 static SbVec3f
-identityAs(IgV3d &v, IgV3d &)
+identityAs(const SbVec3f &v, const SbVec3f &)
 {
-  return SbVec3f(v.x(), v.y(), v.z());
+  return v;
 }
 
 static SbVec3f
-identityAsWithOffset(IgV3d &v, IgV3d &)
+identityAsWithOffset(const SbVec3f &v, const SbVec3f &)
 {
-  return SbVec3f(v.x(), v.y(), v.z());
+  return v;
 }
 
 
 static SbVec3f
-identityThetaPhi(IgV3d &v)
+identityThetaPhi(const SbVec3f &v)
 {
-  return SbVec3f(v.x(), v.y(), v.z());
+  return v;
 }
 
 /** Custom projection for sliced views
@@ -132,29 +131,29 @@ ZSlice slices[15] = { ZSlice(-20.96, -10.83, 20 * -7, 0),
                      ZSlice( 10.83,  20.96, 20 *  7, 0)};
 
 static SbVec3f
-projectMuonSliced(IgV3d &v)
+projectMuonSliced(const SbVec3f &v)
 {
   for (size_t i = 0; i < 15; i++)
   {
     ZSlice &slice = slices[i];
-    if (v.z() > slice.zMin && v.z() < slice.zMax)
-      return SbVec3f(slice.x + v.x(), slice.y + v.y(), v.z());
+    if (v[2] > slice.zMin && v[2] < slice.zMax)
+      return SbVec3f(slice.x + v[0], slice.y + v[1], v[2]);
   }
   // Clip whatever is outside the slices.
-  return SbVec3f(v.x(), v.y(), -1000);
+  return SbVec3f(v[0], v[1], -1000);
 }
 
 static SbVec3f
-projectMuonSlicedAs(IgV3d &v, IgV3d &s)
+projectMuonSlicedAs(const SbVec3f &v, const SbVec3f &s)
 {
   for (size_t i = 0; i < 15; i++)
   {
     ZSlice &slice = slices[i];
-    if (s.z() > slice.zMin && s.z() < slice.zMax)
-      return SbVec3f(slice.x + v.x(), slice.y + v.y(), v.z());
+    if (s[2] > slice.zMin && s[2] < slice.zMax)
+      return SbVec3f(slice.x + v[0], slice.y + v[1], v[2]);
   }
   // Clip whatever is outside the slices.
-  return SbVec3f(v.x(), v.y(), 10000);
+  return SbVec3f(v[0], v[1], 10000);
 }
 
 /** Return the projectors associated to @a projectionType 

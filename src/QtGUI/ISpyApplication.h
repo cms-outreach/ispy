@@ -1,8 +1,6 @@
 #ifndef IGUANA_ISPY_APPLICATION_H
 # define IGUANA_ISPY_APPLICATION_H
 
-//<<<<<< INCLUDES                                                       >>>>>>
-
 # include <QObject>
 # include <QStringList>
 # include <QTimer>
@@ -17,9 +15,6 @@
 # include "QtGUI/Projectors.h"
 # include "QtGUI/DrawHelpers.h"
 
-//<<<<<< PUBLIC DEFINES                                                 >>>>>>
-//<<<<<< PUBLIC CONSTANTS                                               >>>>>>
-//<<<<<< PUBLIC TYPES                                                   >>>>>>
 
 class IgCollection;
 class IgAssociations;
@@ -50,16 +45,8 @@ class SoFont;
 class ISpyPicturePublishingDialog;
 class SoImage;
 class QFileSystemWatcher;
-
-namespace lat
-{
-  class ZipArchive;
-  class ZipMember;
-}
-
-//<<<<<< PUBLIC VARIABLES                                               >>>>>>
-//<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
-//<<<<<< CLASS DECLARATIONS                                             >>>>>>
+class IgArchive;
+class IgMember;
 
 struct ViewSpecParseError
 {
@@ -92,6 +79,23 @@ public:
   char **               argv(void) const;
   const char *          appname(void) const;
   QNetworkReply *	getUrl(const QUrl &link);
+
+  void                  collection(const char *friendlyName,
+                                   const char *collectionSpec,
+                                   const char *otherCollectionSpec,
+                                   const char *associationSpec,
+                                   const char *make3DName,
+                                   bool visibility);
+  void                  view(const char *name,
+                             bool specialized,
+                             bool autoplay);
+  void                  camera(float *pos,
+                               float *pointAt,
+                               float scale,
+                               bool orthographic,
+                               bool rotating,
+                               const std::string &projection);
+  void                  visibilityGroup(void);
 
 public slots:
   void                  openFileDialog(void);
@@ -142,9 +146,9 @@ private slots:
   void                  cameraToggled(void);
   void                  resetToHomePosition(void);
   void                  restartPlay(void);
-  void			updateFilterListModel(const QString& title);
-  void			showPublish(void);
-  void			stopFiltering(void);
+  void                  updateFilterListModel(const QString& title);
+  void                  showPublish(void);
+  void                  stopFiltering(void);
 
 private:
   struct CollectionSpec
@@ -216,8 +220,8 @@ private:
   struct Event
   {
     size_t                      index;
-    lat::ZipArchive             *archive;
-    lat::ZipMember              *contents;
+    IgArchive                   *archive;
+    IgMember                    *contents;
   };
 
   struct FilterSpec
@@ -244,7 +248,7 @@ private:
   typedef std::vector<Event>            Events;
   typedef std::vector<Group>            Groups;
   typedef std::vector<size_t>           GroupIndex;
-  typedef std::vector<Qt::CheckState>   Visibilities;
+  typedef std::vector<bool>             Visibilities;
   typedef std::map<std::string, size_t> VisibilityGroupMap;
   typedef std::vector<Filter>           Filters;
   typedef std::vector<FilterSpec>       FilterSpecs;
@@ -270,31 +274,12 @@ private:
   void                  onlineConfig(const char* server);
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
-  void                  collection(const char *friendlyName,
-                                   const char *collectionSpec,
-                                   const char *otherCollectionSpec,
-                                   const char *associationSpec,
-                                   Make3D make3D,
-                                   Qt::CheckState visibility);
-  void                  view(const char *name,
-                             bool specialized,
-                             bool autoplay);
-
-  void                  camera(float *pos,
-                               float *pointAt,
-                               float scale,
-                               bool orthographic,
-                               bool rotating,
-                               const std::string &projection);
-
-  void                  visibilityGroup(void);
 
   void                  displayCollection(Collection &c);
   void                  createStats(void);
-  lat::ZipArchive *     loadFile(const QString &fileName);
-  void                  readData(IgDataStorage *to,
-                                 lat::ZipArchive *archive,
-                                 lat::ZipMember *source);
+  IgArchive *           loadFile(const char *fileName);
+  void                  readData(IgDataStorage *to, IgArchive *archive,
+                                 IgMember *source);
   void                  downloadFile(const QUrl &url);
   void                  downloadGeometry(void);
   bool                  simpleOpen(const QString &fileName);
@@ -316,7 +301,7 @@ private:
   bool                      parseCssFile(const char *filename);
   size_t                    findStyle(const char *pattern);
   // Helper methods to handle views layouts.
-  void                      parseViewsDefinition(QByteArray &data);
+  void                      parseViewsDefinition(const char *data);
   bool                      parseViewsDefinitionFile(const char *filename);
 
   void                      registerDrawFunction(const char *name, Make3D func);
@@ -328,7 +313,7 @@ private:
   int                   m_argc;
   char                  **m_argv;
   char                  *m_appname;
-  lat::ZipArchive       *m_archives[2];
+  IgArchive             *m_archives[2];
   IgDataStorage         *m_storages[2];
   CollectionSpecs       m_specs;
   ViewSpecs             m_viewSpecs;
@@ -439,8 +424,5 @@ private:
   // Hold the name of the current event.
   QString                 m_eventName;
 };
-
-//<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
-//<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 
 #endif // IGUANA_ISPY_APPLICATION_H

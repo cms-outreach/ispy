@@ -4,16 +4,15 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 # include <Inventor/SbLinear.h>
 # include <cmath>
-# include "Framework/IgLinearAlgebra.h"
 # include <string>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
 //<<<<<< PUBLIC TYPES                                                   >>>>>>
 
-typedef SbVec3f(*Projector)(IgV3d &);
-typedef SbVec3f(*ProjectorThetaPhi)(IgV3d &);
-typedef SbVec3f(*ProjectorAsPoint)(IgV3d &, IgV3d &);
+typedef SbVec3f(*Projector)(const SbVec3f &);
+typedef SbVec3f(*ProjectorThetaPhi)(const SbVec3f &);
+typedef SbVec3f(*ProjectorAsPoint)(const SbVec3f &, const SbVec3f &);
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>

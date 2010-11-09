@@ -76,12 +76,11 @@ main(int argc, char **argv)
          i++)
     {
       IgCollectionItem track = *i;
-      IgAssociatedSet extras = storage.getAssociatedSet("TrackExtras_V1", track);
-      for (IgAssociatedSet::Iterator e = extras.begin();
-           e != extras.end();
-           e++)
+      IgAssociations extras = storage.getAssociations("TrackExtras_V1");
+      for (IgAssociations::iterator ai = extras.begin(i), ae = extras.end(); 
+           ai != ae; ++ai)
       {
-        IgCollectionItem extra = *e;
+        IgCollectionItem extra = *ai;
         std::cerr << "Track: " << track.currentRow() << std::endl;
         IgV3d pos_1 = extra.get<IgV3d>("pos_1");
         IgV3d dir_1 = extra.get<IgV3d>("pos_2");

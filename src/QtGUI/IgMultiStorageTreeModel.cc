@@ -4,7 +4,6 @@
 #include "QtGUI/IgDataStorageTableModel.h"
 #include "Framework/IgCollection.h"
 #include <QtGui>
-#include "classlib/utils/DebugAids.h"
 #include <iostream>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>

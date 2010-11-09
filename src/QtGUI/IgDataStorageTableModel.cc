@@ -3,7 +3,7 @@
 #include "QtGUI/IgDataStorageTableModel.h"
 #include "Framework/IgCollection.h"
 #include <QtGui>
-#include "classlib/utils/DebugAids.h"
+#include <cassert>
 #include <iostream>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
@@ -72,7 +72,7 @@ IgDataStorageTableModel::rowCount(const QModelIndex &parent) const
   if (parent.isValid())
     return 0;
 
-  ASSERT(m_storage);
+  assert(m_storage);
   return m_storage->collectionNames().size();
 }
 

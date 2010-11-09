@@ -1,7 +1,7 @@
 #ifndef IGGI_IGGI_MAIN_WINDOW_H
 # define IGGI_IGGI_MAIN_WINDOW_H
 
-# include "ui/ui_IgMainWindowMDI.1.0.h"
+# include "ui/ui_IgMainWindowMDI.h"
 # include <QObject>
 
 class IgLocationDialog;

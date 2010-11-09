@@ -1,0 +1,39 @@
+// Format for the style:
+// stylesheet: <style> [<style>]
+// style: <view>::<collection> {<property>}
+// view: string-literal
+// collection: string-literal
+// property: <property-label>: <value>
+// property-label: string-literal
+// value: (<number>|<color>|<string-literal>|<quoted-string>)
+// color: (#<hex-byte><hex-byte><hex-byte>|rgb[(]<number>, <number>, <number>[)])
+
+digraph
+{
+  IN_BEGIN_DOCUMENT->IN_VIEW_SPEC_STATE [label = "nextChar == '[a-zA-Z-]'"];
+  IN_BEGIN_DOCUMENT->IN_WHITE_SPACE [label = "nextChar == ' '"];
+  
+  IN_WHITE_SPACE->IN_VIEW_SPEC_STATE [label = "[a-zA-Z-]"];
+  
+  IN_VIEW_SPEC_STATE->IN_COLLECTION_SPEC_STATE [label = "nextChar == '>'"];
+  
+  IN_COLLECTION_SPEC_STATE->IN_PROPERTY_LABEL [label = "nextChar == '{'"];
+  
+  IN_PROPERTY_LABEL->IN_PROPERTY_VALUE [label = "nextChar == ':'"];
+
+  IN_PROPERTY_VALUE->IN_QUOTED_PROPERTY [label = "nextChar == '\"\''"];
+  IN_PROPERTY_VALUE->IN_END_PROPERTY [label = "nextChar == ';'"];
+
+  IN_QUOTED_PROPERTY->IN_END_QUOTED_PROPERTY [label = "nextChar == <previous quote>"];
+  IN_END_QUOTED_PROPERTY->IN_END_PROPERTY [label = "nextChar == ';'"];
+  
+  IN_END_PROPERTY->IN_PROPERTY_LABEL [label="nextChar == '[a-zA-Z]'"];
+  IN_END_PROPERTY->IN_EMPTY_PROPERTY [label = "nextChar == ';'"];
+  IN_END_PROPERTY->IN_END_STYLE [label="nextChar == '}'"];
+  
+  IN_EMPTY_PROPERTY->IN_EMPTY_PROPERTY [label = "nextChar == ';'"];
+  IN_EMPTY_PROPERTY->IN_PROPERTY_LABEL [label = "nextChar == '[a-zA-Z]'"]
+  
+  IN_END_STYLE->IN_VIEW_SPEC_STATE [label="nextChar == [a-zA-Z]'"];
+  IN_END_STYLE->IN_END_DOCUMENT [label="eof"];
+}

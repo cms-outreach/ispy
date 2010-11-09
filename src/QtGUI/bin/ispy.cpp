@@ -1,15 +1,7 @@
-//<<<<<< INCLUDES                                                       >>>>>>
-
 #include "QtGUI/ISpyApplication.h"
 #include <iostream>
 #include <cstdlib>
 
-//<<<<<< PRIVATE DEFINES                                                >>>>>>
-//<<<<<< PRIVATE CONSTANTS                                              >>>>>>
-//<<<<<< PRIVATE TYPES                                                  >>>>>>
-//<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>
-//<<<<<< CLASS STRUCTURE INITIALIZATION                                 >>>>>>
 
 #if __GNUC__ == 2
 // Force instantiation of the default allocator on GCC 2.9x.  On RH 6.x
@@ -27,9 +19,6 @@
 template class __default_alloc_template<1, 0>;
 #endif
 
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
-//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
-//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
 int
 main (int argc, char *argv[])

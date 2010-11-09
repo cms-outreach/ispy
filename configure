@@ -1,0 +1,33 @@
+#!/bin/sh
+# Wrapper script to make using cmake a little bit easier.
+
+function die {
+  echo $1
+  exit 1
+}
+
+which cmake >/dev/null || die "cmake is missing. Please refer to http://www.cmake.org."
+
+shift
+
+while [ $# -gt 0 ]
+do
+  case $0 in
+    --prefix)
+      opts="-DCMAKE_INSTALL_PREFIX=$1"; 
+      shift; shift;;
+    --debug)
+      debug=true
+      shift ;;
+  esac
+  echo $0
+done
+
+if [ X$debug = true ]
+then
+  opts="$opts -DCMAKE_BUILD_TYPE=Debug"
+else
+  opts="$opts -DCMAKE_BUILD_TYPE=Debug"
+fi
+
+cmake $opts
