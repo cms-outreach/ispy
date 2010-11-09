@@ -245,7 +245,7 @@ make3DEvent(IgCollectionItem& e,
       // This is  a view stripped down of information which is suitable for 
       // press releases.
       helper.beginBox(style->left, style->top, style->textAlign);
-      helper.createTextLine("CMS Experiment at the LHC, CERN");
+      helper.createTextLine("ATLAS Experiment at the LHC, CERN");
       helper.indentText(0, 0.7);
       helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
                                    ("Data recorded: " + time).c_str());
@@ -253,7 +253,7 @@ make3DEvent(IgCollectionItem& e,
                              e.get<int>("run"), e.get<int>("event")), buf));
       helper.endBox();
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2009. All rights reserved.");
+      helper.createTextLine("(c) CERN 2010. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
       helper.createTextLine("http://iguana.cern.ch/ispy");
@@ -266,7 +266,7 @@ make3DEvent(IgCollectionItem& e,
     case ISPY_ANNOTATION_LEVEL_FULL:
       // This is the default view.
       helper.beginBox(style->left, style->top, style->textAlign);
-      helper.createTextLine("CMS Experiment at the LHC, CERN");
+      helper.createTextLine("ATLAS Experiment at the LHC, CERN");
       helper.indentText(0, 0.7);
       helper.createTextLine("Data recorded: ");
       helper.createTextLine("Run: ");
@@ -288,7 +288,7 @@ make3DEvent(IgCollectionItem& e,
       helper.endBox();
       
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2009. All rights reserved.");
+      helper.createTextLine("(c) CERN 2010. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
       helper.createTextLine("http://iguana.cern.ch/ispy");
