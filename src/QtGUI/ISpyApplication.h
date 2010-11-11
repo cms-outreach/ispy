@@ -271,7 +271,6 @@ private:
   int                   doRun(void);
   void                  defaultSettings(void);
   void                  restoreSettings(void);
-  void                  onlineConfig(const char* server);
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
 
@@ -342,9 +341,6 @@ private:
   ISpyEventSelectorDialog *m_selector;
   bool                   m_nextEvent;
     
-  bool                  m_online;
-  std::string 		m_host;
-  int			m_port;
   bool                  m_autoEvents;
   bool                  m_exiting;
   QTimer                *m_animationTimer;
