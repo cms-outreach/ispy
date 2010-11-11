@@ -83,14 +83,20 @@ set (ISPY_SOURCES "src/QtGUI/bin/ispy.cpp" ${QTGUI_SOURCES}
                   ${QTGUI_MOC_PROCESSED_FILES})
 
 if(APPLE)
-   add_executable(iSpy MACOSX_BUNDLE ${ISPY_SOURCES})
-   set_target_properties(iSpy PROPERTIES 
-                              MACOSX_BUNDLE_INFO_PLIST "src/QtGUI/resources/Info.plist")
+  set(ISPY_NAME iSpy)
 else(APPLE)
-   add_executable(ispy ${ISPY_SOURCES})
+  set(ISPY_NAME ispy)
 endif(APPLE)
 
-target_link_libraries(ispy ISpyFramework ${QT_LIBRARIES} 
+if(APPLE)
+   add_executable(${ISPY_NAME} MACOSX_BUNDLE ${ISPY_SOURCES})
+   set_target_properties(${ISPY_NAME} PROPERTIES 
+                              MACOSX_BUNDLE_INFO_PLIST "src/QtGUI/resources/Info.plist")
+else(APPLE)
+   add_executable(${ISPY_NAME} ${ISPY_SOURCES})
+endif(APPLE)
+
+target_link_libraries(${ISPY_NAME} ISpyFramework ${QT_LIBRARIES} 
                       ${QT_QTNETWORK_LIBRARIES}
                       ${QT_QTOPENGL_LIBRARIES} ${PCRE_LIBRARY}
                       ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}
