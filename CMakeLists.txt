@@ -43,7 +43,7 @@ if(APPLE)
    find_library(COIN3D_LIBRARIES Coin)
    find_path(COIN3D_INCLUDE_DIRS Inventor/So.h NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 else(APPLE)
-   find_package(Coin3d REQUIRED)
+   find_package(Coin3D REQUIRED)
 endif(APPLE)
 
 find_package(OpenGL REQUIRED)
@@ -90,7 +90,7 @@ else(APPLE)
    add_executable(ispy ${ISPY_SOURCES})
 endif(APPLE)
 
-target_link_libraries(iSpy ISpyFramework ${QT_LIBRARIES} 
+target_link_libraries(ispy ISpyFramework ${QT_LIBRARIES} 
                       ${QT_QTNETWORK_LIBRARIES}
                       ${QT_QTOPENGL_LIBRARIES} ${PCRE_LIBRARY}
                       ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}

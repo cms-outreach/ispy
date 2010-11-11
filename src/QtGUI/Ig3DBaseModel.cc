@@ -8,6 +8,7 @@
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/actions/SoSearchAction.h>
 #include <cassert>
+#include <climits>
 
 Ig3DBaseModel::Ig3DBaseModel(void)
   : m_sceneGraph(new SoSelection),

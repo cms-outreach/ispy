@@ -4,11 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-#include "QString"
-#include "QRegExp"
-#include "QStringBuilder"
-#include "QTextStream"
-#include "QProcess"
+#include <cstring>
 
 void
 IgArchive::readMembers()
