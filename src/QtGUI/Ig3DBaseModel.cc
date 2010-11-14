@@ -7,14 +7,14 @@
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/actions/SoSearchAction.h>
-#include <classlib/utils/DebugAids.h>
+#include <cassert>
 
 Ig3DBaseModel::Ig3DBaseModel(void)
   : m_sceneGraph(new SoSelection),
     m_contents(0),
     m_selection(0)
 {
-  // ASSERT("attachPoint is the scene graph or within it");
+  // assert("attachPoint is the scene graph or within it");
   m_sceneGraph->ref();
   m_sceneGraph->setName("ISPY_SCENE_GRAPH_V1");
   initScene(m_sceneGraph);
@@ -115,11 +115,11 @@ Ig3DBaseModel::setCamera(SoCamera *camera)
   }
   SoPath *path = cameraAction->getPath();
   SoCamera *currentCamera = dynamic_cast<SoCamera *>(path->getTail());
-  ASSERT(currentCamera);
+  assert(currentCamera);
   if (camera != currentCamera)
   {
     SoGroup *group = dynamic_cast<SoGroup*>(path->getNodeFromTail(1));
-    ASSERT(group);
+    assert(group);
     group->replaceChild(currentCamera, camera);
   }
   delete cameraAction;
@@ -150,7 +150,7 @@ Ig3DBaseModel::decode(const std::string &name)
 #           endif
       unsigned int code = ((unsigned)(first - hexdigits) << 4)
                          + ((unsigned)(second - hexdigits));
-      ASSERT(code <= UCHAR_MAX);
+      assert(code <= UCHAR_MAX);
       result += static_cast<char>(code);
       i += 3;
     }

@@ -1,7 +1,7 @@
 #include "QtGUI/IgCollectionListModel.h"
 #include "Framework/IgCollection.h"
 #include <QtGui>
-#include "classlib/utils/DebugAids.h"
+#include <cassert>
 #include <iostream>
 
 IgCollectionListModel::IgCollectionListModel (IgCollection *collection, QObject *parent)
@@ -98,7 +98,7 @@ IgCollectionListModel::rowCount(const QModelIndex &parent) const
 void
 IgCollectionListModel::setCollection(IgCollection *collection)
 {
-  ASSERT(collection);
+  assert(collection);
   m_collection = collection;
   //std::cout << " with collection name " << m_collection->name() << std::endl;
   emit reset();

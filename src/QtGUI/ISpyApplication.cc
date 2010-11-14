@@ -1,4 +1,3 @@
-//<<<<<< INCLUDES                                                       >>>>>>
 #define QT_NO_EMIT
 #include "QtGUI/ISpyApplication.h"
 #include "QtGUI/ISpy3DView.h"
@@ -16,19 +15,10 @@
 
 #include "Framework/IgCollection.h"
 #include "Framework/IgParser.h"
-
+#include "Framework/IgStyleParser.h"
+#include "Framework/IgArchive.h"
+#include "Framework/SimpleSAXParser.h"
 // FIXME : these should be migrated from shapes into draw functions
-
-
-#include "classlib/iobase/File.h"
-#include "classlib/iobase/Filename.h"
-#include "classlib/iotools/InputStream.h"
-#include "classlib/utils/ShellEnvironment.h"
-#include "classlib/utils/StringOps.h"
-#include "classlib/utils/Error.h"
-#include "classlib/utils/Regexp.h"
-#include "classlib/zip/ZipMember.h"
-#include "classlib/zip/ZipArchive.h"
 
 #include <Inventor/Qt/SoQt.h>
 #include <Inventor/Qt/viewers/SoQtExaminerViewer.h>
@@ -60,12 +50,9 @@
 #include <set>
 #include <sstream>
 #include <string>
+#include <cassert>
 
-using namespace lat;
 const static size_t ISPY_MAX_STYLES = (size_t) -1;
-
-//<<<<<< PRIVATE FUNCTION DEFINITIONS                                   >>>>>>
-
 
 void
 stripWhitespaces(std::string &s)
@@ -161,149 +148,142 @@ parseColor(const char *rgb, float *color)
   
   // Case for rgb (r, g , b) format.
   //
-  // Make sure the syntax is correct.
   // Split string into components and make sure we have 3 of them.
-  // Convert each component one by one, making sure they are normalized.
-  if (strncmp(rgb, "rgb(", 4) == 0)
-  {
-    if (rgb[strlen(rgb)-1] != ')')
-      return;
-    
-    std::string s(rgb, 4, strlen(rgb) - 6);
-    StringList components = StringOps::split(s, ",");
-    if (components.size() != 3)
-      return;
+  // We check:
+  // * that at least part of the string was parsed.
+  // * that the part of the string that was not parsed is composed only of
+  //   white spaces. 
+  // * that the components read are normalised betwee 0 and 1.
+  if (strncmp(rgb, "rgb(", 4) != 0)
+    throw CssParseError("Color definition expected", rgb);
 
-    for (int i = 0, e = 3; i != e; i++)
+  char *component, *brkb, *colorString;
+  const char *sep = ",";
+  
+  colorString = strdup(rgb + 4);
+  size_t i = 0;
+  for (component = strtok_r(colorString, sep, &brkb);
+       component;
+       component = strtok_r(NULL, sep, &brkb))
+  {
+    if (i > 2)
     {
-      color[i] = strtod(components[i].c_str(), &endptr);
-      if (*endptr)
-      {
-        defaultColor(color);
-        throw CssParseError("Unable to parse color.", rgb);
-      }
-      if (color[i] < 0. || color[i] > 1.0)
-      {
-        defaultColor(color);
-        throw CssParseError("Color not normalized.", rgb);
-      }
+      defaultColor(color);
+      free(colorString);
+      throw CssParseError("Too many components in color definition", rgb);
     }
+    
+    color[i] = strtod(component, &endptr);
+
+    if (endptr == component)
+    { 
+      free(colorString);
+      defaultColor(color);
+      throw CssParseError("Unable to parse color.", rgb);
+    }
+
+    char lastChar = 0;
+    if (endptr && *endptr)
+      lastChar = *(endptr + strspn(endptr, " \t\n)"));
+      
+    if (endptr && lastChar)
+    {
+      defaultColor(color);        
+      free(colorString);
+      std::string err = "Expected ',' found ";
+      throw CssParseError((err + &lastChar).c_str(), rgb);
+    }
+    
+    if (color[i] < 0. || color[i] > 1.0)
+    {
+      free(colorString);
+      defaultColor(color);
+      throw CssParseError("Color not normalized.", rgb);
+    }
+    ++i;
   }
+  free(colorString);
 }
 
-/** Defines a new cascading style.
-    
-    @a rule
-
-    the rule to be matched in order to apply the style. For the moment this
-    only means either "*" (matches anything) or the collection name.
-    
-    @a css
-    
-    a set of property definitions in the form:
-    
-    key1:value1;key2:value2;...
-    
-    see ISpyApplication::parseCss for a description of the changeable 
-    properties.
-*/
-void
-ISpyApplication::style(const char *rule, const char *css)
+class ISpyStyleParser : public IgStyleParser
 {
-  m_styleSpecs.resize(m_styleSpecs.size() + 1);
-  StyleSpec &spec = m_styleSpecs.back();
-
-  // Define the defaults.
-  spec.viewName = "*";
-  spec.collectionName = "*";
-  spec.background = "";
-  defaultColor(spec.diffuseColor);
-  spec.transparency = 0.0;
-  spec.lineWidth = 1.0;
-  spec.linePattern = 0xffff;
-  spec.fontSize = 12;
-  spec.fontFamily = "Helvetica";
-  spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
-  spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
-  spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
-  spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
-  spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
-  spec.minEnergy = 0.2;   // Default value is 0.2 GeV
-  spec.maxEnergy = 5.;    // Default value is 5.0 GeV
-  spec.energyScale = 1.;  // Default value is 0.1 m/GeV
-  spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
-  // Default position it top left corner. Coordinate system
-  // is like the web one.
-  spec.left = 0;
-  spec.top = 0;
+public:
+  ISpyStyleParser(std::istream &in, std::vector<StyleSpec> &specs)
+    : IgStyleParser(in),
+      m_styleSpecs(specs)
+  {}
   
-  // Parse the rule.
-  StringList ruleParts = StringOps::split(rule, "::");
-  if (ruleParts.size() == 1)
-    spec.collectionName = ruleParts[0];
-  else if (!ruleParts.size() || ruleParts.size() > 2)
-    throw CssParseError("Wrong syntax for rule!", rule);
-  else
+  void ruleSpec(const std::string &name)
   {
-    spec.viewName = ruleParts[0];
-    spec.collectionName = ruleParts[1];
+    m_styleSpecs.resize(m_styleSpecs.size() + 1);
+    StyleSpec &spec = m_styleSpecs.back();    
+    // Define the defaults.
+    spec.viewName = "*";
+    spec.collectionName = "*";
+    spec.background = "";
+    defaultColor(spec.diffuseColor);
+    spec.transparency = 0.0;
+    spec.lineWidth = 1.0;
+    spec.linePattern = 0xffff;
+    spec.fontSize = 12;
+    spec.fontFamily = "Helvetica";
+    spec.drawStyle = ISPY_SOLID_DRAW_STYLE;
+    spec.markerShape = ISPY_SQUARE_MARKER_SHAPE;
+    spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
+    spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
+    spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
+    spec.minEnergy = 0.2;   // Default value is 0.2 GeV
+    spec.maxEnergy = 5.;    // Default value is 5.0 GeV
+    spec.energyScale = 1.;  // Default value is 0.1 m/GeV
+    spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
+    // Default position it top left corner. Coordinate system
+    // is like the web one.
+    spec.left = 0;
+    spec.top = 0;
+
+    // FIXME: For the moment we ignore different views. We should have a rule
+    // spec parser.
+    spec.collectionName = name;
+
+    // Copy over properties from previously matching specs.
+    for (size_t ssi = 0, sse = m_styleSpecs.size() - 1; ssi != sse; ++ssi)
+    {
+      StyleSpec &previous = m_styleSpecs[ssi];
+  
+      if (previous.viewName != "*"
+          && previous.viewName != spec.viewName)
+        continue;
+       
+      if (previous.collectionName != "*" &&
+          previous.collectionName != spec.collectionName)
+        continue;
+  
+      memcpy(spec.diffuseColor, previous.diffuseColor, 3*sizeof(float));
+      spec.transparency = previous.transparency;
+      spec.lineWidth = previous.lineWidth;
+      spec.linePattern = previous.linePattern;
+      spec.fontSize = previous.fontSize;
+      spec.fontFamily = previous.fontFamily;
+      spec.drawStyle = previous.drawStyle;
+      spec.markerShape = previous.markerShape;
+      spec.markerSize = previous.markerSize;
+      spec.markerStyle = previous.markerStyle;
+      spec.textAlign = previous.textAlign;
+      spec.minEnergy = previous.minEnergy;
+      spec.maxEnergy = previous.maxEnergy;
+      spec.energyScale = previous.energyScale;
+      spec.background = previous.background;
+      spec.annotationLevel = previous.annotationLevel;
+      spec.top = previous.top;
+      spec.left = previous.left;
+    }
   }
 
-  // Copy over properties from previously matching specs.
-  for (size_t ssi = 0, sse = m_styleSpecs.size() - 1; ssi != sse; ++ssi)
+  void propertySpec(const std::string &key, const std::string &value)
   {
-    StyleSpec &previous = m_styleSpecs[ssi];
-
-    if (previous.viewName != "*"
-        && previous.viewName != spec.viewName)
-      continue;
-     
-    if (previous.collectionName != "*" &&
-        previous.collectionName != spec.collectionName)
-      continue;
-
-    memcpy(spec.diffuseColor, previous.diffuseColor, 3*sizeof(float));
-    spec.transparency = previous.transparency;
-    spec.lineWidth = previous.lineWidth;
-    spec.linePattern = previous.linePattern;
-    spec.fontSize = previous.fontSize;
-    spec.fontFamily = previous.fontFamily;
-    spec.drawStyle = previous.drawStyle;
-    spec.markerShape = previous.markerShape;
-    spec.markerSize = previous.markerSize;
-    spec.markerStyle = previous.markerStyle;
-    spec.textAlign = previous.textAlign;
-    spec.minEnergy = previous.minEnergy;
-    spec.maxEnergy = previous.maxEnergy;
-    spec.energyScale = previous.energyScale;
-    spec.background = previous.background;
-    spec.annotationLevel = previous.annotationLevel;
-    spec.top = previous.top;
-    spec.left = previous.left;
-  }
-
-  // Parse the property declarations and deposit new value on top of those
-  // coming from previous declarations.
-  // Remove trailing spaces
-  //
-  // FIXME: converting to a string is lame, but effective...
-  // FIXME: move bracket parsing one level up.
-  std::string cssString = css;
-  stripWhitespaces(cssString);
-  
-  StringList properties = StringOps::split(cssString.c_str(), ";", StringOps::TrimEmpty);
-  
-  std::string key, value;
-
-  for (size_t pi = 0, pe = properties.size(); pi != pe; pi++)
-  {
+    StyleSpec &spec = m_styleSpecs.back();    
     // Split a string at the first ":" and use the first part as property key,
     // the second as value.
-    std::string &property = properties[pi];
-    size_t sep_pos = property.find(':');
-    key.assign(property.c_str(), 0, sep_pos);
-    value.assign(property.c_str(), sep_pos + 1, property.size());
-
     char *endptr;
     
     if (key == "diffuse-color")
@@ -419,7 +399,9 @@ ISpyApplication::style(const char *rule, const char *css)
       throw CssParseError("Unknown property", key);
     }
   }
-}
+private:
+  std::vector<StyleSpec> &m_styleSpecs;
+};
 
 /** Parses a string contain a CSS to be used for rendering...
 
@@ -461,132 +443,215 @@ ISpyApplication::style(const char *rule, const char *css)
 void 
 ISpyApplication::parseCss(const char *css)
 {
-  // The parsing works by first removing all the comments and spaces,
-  // then it divides up different CSS statements by splitting at the final
-  // } found in every definition and then divides the rule from the
-  // property by splitting at the {. 
-  // FIXME: the parsing is somewhat rudimentary but does its job.
-  //        Write a better one when you have time.
-  // FIXME: remove the ASSERT and have proper error handling, once
-  //        we start having user specified css.
-  std::string cssStr;
-  cssStr = StringOps::remove(css, Regexp("//.*\n"));
-  stripWhitespaces(cssStr);
-  cssStr = StringOps::remove(cssStr, Regexp("/\\*.*?\\*/"));
-  
-  StringList classes = StringOps::split(cssStr, "}", StringOps::TrimEmpty); 
-  
-  for (size_t i = 0, e = classes.size(); i != e; ++i)
-  {
-    StringList parts = StringOps::split(classes[i], "{", StringOps::TrimEmpty);
-    ASSERT(parts.size() == 2);
-    style(parts[0].c_str(), parts[1].c_str());
-  }
+  std::stringstream in(css);
+  ISpyStyleParser styleParser(in, m_styleSpecs);
+  styleParser.parse();
 }
 
-//<<<<<< PUBLIC FUNCTION DEFINITIONS                                    >>>>>>
-//<<<<<< MEMBER FUNCTION DEFINITIONS                                    >>>>>>
 
-/** Helper method to parse attributes that contain a 3-vector where components
-    are comma separated, e. g.: "1.0, 0.0, 2.0".
-    
-    @a value to set according to the attribute.
-    
-    @a attr containing all the attributes.
 
-    @a name for the attribute containing the vector.
-    
-    @throw ViewSpecParseError in case of mistakes.
-*/
-void
-parseVectorAttribute(float *v, QXmlStreamAttributes &attr, const char *name)
+class ISpyConfigParser : public SimpleSAXParser
 {
-  QStringList sl = attr.value(name).toString().simplified().split(QRegExp("[ ]*,[ ]*"));
-  if (sl.count() != 3)
-    throw ViewSpecParseError();
-
-  for (size_t i = 0; i != 3; ++i)
+public:
+  ISpyConfigParser(std::istream &f, ISpyApplication *app)
+  :SimpleSAXParser(f),
+   m_app(app)
+  {}
+  
+  virtual void startElement(const std::string &name, Attributes &attributes)
   {
-    bool ok;
-    v[i] = sl[i].toFloat(&ok);
-    if (!ok)
+    if (name == "collection")
+    {
+      std::string label, collectionSpec, otherCollectionSpec, 
+                  associationSpec, make3DName;
+      bool visibility = true;
+      
+      parseStringAttribute(label, attributes, "label");
+      parseStringAttribute(collectionSpec, attributes, "spec");
+      parseStringAttribute(otherCollectionSpec, attributes, "other");
+      parseStringAttribute(associationSpec, attributes, "associations");
+      parseStringAttribute(make3DName, attributes, "draw");
+      parseBooleanAttribute(visibility, attributes, "visibility", "block", "none");
+      
+      m_app->collection(label.c_str(),
+                        collectionSpec.c_str(),
+                        otherCollectionSpec.c_str(),
+                        associationSpec.c_str(),
+                        make3DName.c_str(), 
+                        visibility);
+    }
+    else if (name == "view")
+    {
+      std::string label = "Unnamed view";
+      bool specialised = true;
+      bool autoplay = true;
+      
+      parseStringAttribute(label, attributes, "label");
+      parseBooleanAttribute(specialised, attributes, "specialised");
+      parseBooleanAttribute(autoplay, attributes, "autoplay");
+      
+      m_app->view(label.c_str(), specialised, autoplay);
+    }
+    else if (name == "camera")
+    {
+      float position[3] = {0., 0., 0.};
+      float pointAt[3] = {1., 0., 0.};
+      float scale = 1.0;
+      bool ortho = false;
+      bool rotating = true;
+      std::string projection = "identity";
+      
+      parseVectorAttribute(position, attributes, "position");
+      parseVectorAttribute(pointAt, attributes, "pointAt");
+      parseFloatAttribute(scale, attributes, "scale");
+      parseBooleanAttribute(ortho, attributes, "orthographic");
+      parseBooleanAttribute(rotating, attributes, "rotating");
+      parseStringAttribute(projection, attributes, "projection");
+      m_app->camera(position, pointAt, scale, ortho, rotating, projection);
+    }
+    else if (name == "visibilityGroup")
+      m_app->visibilityGroup(); 
+    else if (name == "layout")
+      return;
+    else
+      throw ParserError("Invalid tag " + name);
+  }
+
+private:
+  /** Helper method to parse attributes float attributes.
+
+      @a value to set according to the attribute.
+
+      @a attr containing all attributes.
+
+      @a name for the attribute.
+
+      @throw ViewSpecParseError on parse errors.
+      
+      @return true or false depending on whether the attribute was found.
+  */
+  bool parseFloatAttribute(float &value, Attributes &attr, const char *name)
+  {
+    std::string valueString;
+    
+    bool found = parseStringAttribute(valueString, attr, name);
+    
+    if (!found)
+      return false;
+
+    char *error = 0;
+    value = strtod(valueString.c_str(), &error);
+
+    if (error == valueString.c_str())
       throw ViewSpecParseError();
+    return true;
   }
-}
 
-/** Helper method to parse attributes that can be either "true" or "false".
-    
-    @a value to set according to the attribute.
-    
-    @a attr containing all the attributes in the element.
-    
-    @a name containing the name of the attribute to be used.
-    
-    @a trueString containing the mnemonic for a true condition.
-    
-    @a falseString containing the mnemonic for a false condition.
-    
-    @throw ViewSpecParseError on parse errors.
-*/
-void
-parseBooleanAttribute(bool &value, QXmlStreamAttributes &attr, const char *name, 
-                      const char *trueString = "true", 
-                      const char * falseString = "false")
-{
-  if (!attr.hasAttribute(name))
-    return;
-  
-  QStringRef str = attr.value(name);
-  
-  if (str != trueString && str != falseString)
-    throw ViewSpecParseError();
+  /** Helper method to parse string attributes.
+      
+      @a value to set according to the attribute.
+      
+      @a attr containing all attributes.
+      
+      @a name for the attribute.
+      
+      @return true or false depending on whether the attribute was found.
+  */
+  bool parseStringAttribute(std::string &value, 
+                            const Attributes &attr, 
+                            const std::string &name)
+  {
+    Attributes::const_iterator i = std::lower_bound(attr.begin(),
+                                                    attr.end(),
+                                                    Attribute(name, ""));
+    // Attribute with key name not found.
+    if (i == attr.end() || i->key != name)
+      return false;
 
-  value = (str == trueString);
-}
+    value = i->value;
+    return true;
+  }
 
-/** Helper method to parse attributes float attributes.
+  /** Helper method to parse attributes that can be either "true" or "false".
+      
+      @a value to set according to the attribute.
+      
+      @a attr containing all the attributes in the element.
+      
+      @a name containing the name of the attribute to be used.
+      
+      @a trueString containing the mnemonic for a true condition.
+      
+      @a falseString containing the mnemonic for a false condition.
+      
+      @throw ViewSpecParseError on parse errors.
+      
+      @return true if found, false otherwise.
+  */
+  bool parseBooleanAttribute(bool &value, Attributes &attr, const char *name, 
+                             const char *trueString = "true", 
+                             const char * falseString = "false")
+  {
+    std::string valueString;
     
-    @a value to set according to the attribute.
-    
-    @a attr containing all attributes.
-    
-    @a name for the attribute.
-    
-    @throw ViewSpecParseError on parse errors.
-*/
-void
-parseFloatAttribute(float &value, QXmlStreamAttributes &attr, const char *name)
-{
-  if (!attr.hasAttribute(name))
-    return;
-  
-  QString str = attr.value(name).toString();
+    bool found = parseStringAttribute(valueString, attr, name);
 
-  bool ok;
-  value = str.toFloat(&ok);
+    if (!found)
+      return false;
+    
+    if (valueString != trueString && valueString != falseString)
+      throw ViewSpecParseError();
   
-  if (!ok)
-    throw ViewSpecParseError();
-}
+    value = (valueString == trueString);
+    return true;
+  }
 
-/** Helper method to parse string attributes.
-    
-    @a value to set according to the attribute.
-    
-    @a attr containing all attributes.
-    
-    @a name for the attribute.
-    
-    @throw ViewSpecParseError on parse errors.
-*/
-void
-parseStringAttribute(QString &value, QXmlStreamAttributes &attr, const char *name)
-{
-  if (!attr.hasAttribute(name))
-    return;
+  /** Helper method to parse attributes that contain a 3-vector where components
+      are comma separated, e. g.: "1.0, 0.0, 2.0".
+      
+      @a value to set according to the attribute.
+      
+      @a attr containing all the attributes.
   
-  value = attr.value(name).toString();
-}
+      @a name for the attribute containing the vector.
+      
+      @throw ViewSpecParseError in case of mistakes.
+  */
+  bool parseVectorAttribute(float *v, Attributes &attr, const char *name)
+  {
+    std::string valueString;
+    bool found = parseStringAttribute(valueString, attr, name);
+    
+    if (!found)
+      return false;
+
+    const char *pos = valueString.c_str();
+    char *error = 0;
+
+    v[0] = strtod(pos, &error);
+    while (isspace(*error))
+      ++error;
+    if (*error != ',')
+      throw ViewSpecParseError();
+    pos = error + 1;    
+    
+    v[1] = strtod(pos, &error);
+    while (isspace(*error))
+      ++error;
+    if (*error != ',')
+      throw ViewSpecParseError();
+    pos = error + 1;    
+
+    v[2] = strtod(pos, &error);
+    while (isspace(*error))
+      ++error;
+    if (*error != 0)
+      throw ViewSpecParseError();
+    return true;
+  }
+
+  ISpyApplication *m_app;
+};
 
 /** Read the view definition from @a device and create the various views.
 
@@ -596,90 +661,21 @@ parseStringAttribute(QString &value, QXmlStreamAttributes &attr, const char *nam
           and off displaying some collections depending on the trigger status.
 */
 void
-ISpyApplication::parseViewsDefinition(QByteArray &data)
+ISpyApplication::parseViewsDefinition(const char *data)
 {
-  QXmlStreamReader xml;
-  xml.addData(data);
-
-  while (!xml.atEnd())
-  {
-    xml.readNext();
-    if (xml.tokenType() == QXmlStreamReader::StartElement)
-    {
-      QXmlStreamAttributes attr = xml.attributes();
-      if (xml.name() == "collection")
-      {
-        QString label, collectionSpec, otherCollectionSpec, 
-                associationSpec, make3DName;
-        bool visibility = true;
-        
-        parseStringAttribute(label, attr, "label");
-        parseStringAttribute(collectionSpec, attr, "spec");
-        parseStringAttribute(otherCollectionSpec, attr, "other");
-        parseStringAttribute(associationSpec, attr, "associations");
-        parseStringAttribute(make3DName, attr, "draw");
-        parseBooleanAttribute(visibility, attr, "visibility", "block", "none");
-
-        DrawFunctionsRegistry::iterator i = m_drawFunctions.find(make3DName.toStdString().c_str());
-        Make3D df = 0;
-
-        if (i != m_drawFunctions.end())
-          df = i->second;
-
-        collection(label.toStdString().c_str(),
-                   collectionSpec.toStdString().c_str(),
-                   otherCollectionSpec.toStdString().c_str(),
-                   associationSpec.toStdString().c_str(),
-                   df,
-                   visibility ? Qt::Checked : Qt::Unchecked);
-      }
-      else if (xml.name() == "view")
-      {
-        QString label = "Unnamed view";
-        bool specialised = true;
-        bool autoplay = true;
-        
-        if (attr.hasAttribute("label"))
-          label = attr.value("label").toString();
-        parseBooleanAttribute(specialised, attr, "specialised");
-        parseBooleanAttribute(autoplay, attr, "autoplay");
-        
-        view(label.toAscii(), specialised, autoplay);
-      }
-      else if (xml.name() == "camera")
-      {
-        float position[3] = {0., 0., 0.};
-        float pointAt[3] = {1., 0., 0.};
-        float scale = 1.0;
-        bool ortho = false;
-        bool rotating = true;
-        QString projection = "identity";
-        
-        parseVectorAttribute(position, attr, "position");
-        parseVectorAttribute(pointAt, attr, "pointAt");
-        parseFloatAttribute(scale, attr, "scale");
-        parseBooleanAttribute(ortho, attr, "orthographic");
-        parseBooleanAttribute(rotating, attr, "rotating");
-        parseStringAttribute(projection, attr, "projection");
-        camera(position, pointAt, scale, ortho, rotating, projection.toStdString());
-      }
-      else if (xml.name() == "visibilityGroup")
-      {  
-        visibilityGroup(); 
-      }
-      else if (xml.name() == "layout")
-      {
-        continue;
-      }
-      else
-      {  
-        throw ViewSpecParseError(xml.lineNumber());
-      }
-    }
-  }
+  std::istringstream stream;
+  // FIXME: extremely bad, but I want to get rid of the need for QByteArray.
+  stream.str(data);
   
-  if (xml.hasError())
-    throw ViewSpecParseError(xml.lineNumber());
+  ISpyConfigParser parser(stream, this);
+  try
+  {
+    parser.parse();
+  }
+  catch(SimpleSAXParser::ParserError &e)
+  {
+    std::cerr << e.error() << std::endl;
+  }
 }
 
 /** Initialise but do not yet run the application object. 
@@ -743,11 +739,14 @@ ISpyApplication::ISpyApplication(void)
   // Notice that we keep track of how big the vector containing the style
   // specifications is, so that we can revert back to default simply by 
   // resizing such a vector.
-  style("*", "");
-  style("Background","diffuse-color: rbg(1.,0,0);");
+  std::stringstream str("* {diffuse-color: rgb(.7,.7,.7); }"
+                        "Background {diffuse-color: rgb(1., 0, 0);}");
+  ISpyStyleParser styleParser(str, m_styleSpecs);
+  styleParser.parse();
+  
   bool ok = parseCssFile(":/css/default-style.iss");
   m_defaultStyleLevel = m_styleSpecs.size();
-  ASSERT(ok && "Default style not compiled as resource.");
+  assert(ok && "Default style not compiled as resource.");
   
   // Register draw functions which will be later used to draw various 
   // collections.
@@ -780,7 +779,7 @@ ISpyApplication::parseCssFile(const char *filename)
     return false;
   
   QByteArray cssData = cssFile.readAll();
-  ASSERT(cssData.size());
+  assert(cssData.size());
   try 
   {
     parseCss(cssData.data());
@@ -812,10 +811,10 @@ ISpyApplication::parseViewsDefinitionFile(const char *filename)
     return false;
 
   QByteArray viewData = viewsDefinitionFile.readAll();
-  ASSERT(viewData.size());
+  assert(viewData.size());
   try
   {
-    parseViewsDefinition(viewData);
+    parseViewsDefinition(viewData.constData());
   }
   catch (ViewSpecParseError &e)
   {
@@ -824,6 +823,26 @@ ISpyApplication::parseViewsDefinitionFile(const char *filename)
     return false;
   }
   return true;
+}
+
+/**Helper method which splits a given path like collection specification as
+   found in @a spec into n components and puts them in @a parts.
+ */
+void
+splitCollectionSpec(const char *spec, std::vector<std::string> &parts)
+{
+  char *component = 0, *brkb = 0;
+  char *tmp = strdup(spec);
+  const char *sep = ":";
+  parts.clear();
+  parts.reserve(10);
+ 
+  for (component = strtok_r(tmp, sep, &brkb);
+       component;
+       component = strtok_r(0, sep, &brkb))
+     parts.push_back(component);
+ 
+  free(tmp);
 }
 
 /** Specify a new collection.  Call this during the application
@@ -867,12 +886,12 @@ ISpyApplication::parseViewsDefinitionFile(const char *filename)
 
     @a make3D
 
-    Method to invoke to render a collection matching these
-    requirements.  
+    Label associated to the DrawFunction to invoke to render a collection
+    matching these requirements.
  
     @the visibility
  
-    Either Qt::Checked (i.e. collection visible) or Qt::Unchecked 
+    Either true (i.e. collection visible) or false 
     (i.e. collection invisible). This option controls the 
     visibility of the collection at startup. It matters only in 
     the case @a make3D is provided. */
@@ -881,61 +900,66 @@ ISpyApplication::collection(const char *friendlyName,
                             const char *collectionSpec,
                             const char *otherCollectionSpec,
                             const char *associationSpec,
-                            Make3D make3D,
-                            Qt::CheckState visibility)
+                            const char *make3DName,
+                            bool visibility)
 {
-  ASSERT(collectionSpec);
+  assert(collectionSpec);
 
   m_specs.resize(m_specs.size() + 1);
   CollectionSpec &spec = m_specs.back();
-  StringList parts;
-
+  std::vector<std::string> parts;
+  
   if (friendlyName)
     spec.friendlyName = friendlyName;
   
-  parts = StringOps::split(collectionSpec, ':');
-  ASSERT(! parts.empty());
-  spec.collection = parts[0];
+  splitCollectionSpec(collectionSpec, parts);
+  assert(!parts.empty());
     
+  spec.collection = parts[0];
   spec.requiredFields.insert(spec.requiredFields.end(),
                              parts.begin()+1, parts.end());
 
-  if (otherCollectionSpec)
+  if (otherCollectionSpec && *otherCollectionSpec)
   {
-    parts = StringOps::split(otherCollectionSpec, ':');
-    ASSERT(! parts.empty());
+    splitCollectionSpec(otherCollectionSpec, parts);
+    assert(! parts.empty());
     spec.otherCollection = parts[0];
     spec.otherRequiredFields.insert(spec.otherRequiredFields.end(),
                                     parts.begin()+1, parts.end());
   }
 
-  if (associationSpec)
+  if (associationSpec && *associationSpec)
   {
-    parts = StringOps::split(associationSpec, ':');
-    ASSERT(parts.size() == 1);
+    splitCollectionSpec(associationSpec, parts);
+    assert(parts.size() == 1);
     spec.otherAssociation = parts[0];
   }
 
-  spec.make3D = make3D;
-  spec.defaultVisibility = visibility;
+  DrawFunctionsRegistry::iterator i = m_drawFunctions.find(make3DName);
+  if (i != m_drawFunctions.end())
+    spec.make3D = i->second;
+  else
+    spec.make3D = 0;
+
+  spec.defaultVisibility = visibility ? Qt::Checked : Qt::Unchecked;
   
   // Assign the visibility place-holder for this collection.
   // Within a same visibility group, CollectionSpec referring to the same
   // collection use the same visibility settings.
-  VisibilityGroupMap::iterator i = m_visibilityGroupMap.find(spec.collection);
-  if (i != m_visibilityGroupMap.end())
-    spec.visibilityIndex = i->second;
+  VisibilityGroupMap::iterator j = m_visibilityGroupMap.find(spec.collection);
+  if (j != m_visibilityGroupMap.end())
+    spec.visibilityIndex = j->second;
   else
   {
     size_t size = m_visibility.size();
     m_visibilityGroupMap.insert(std::make_pair(spec.collection, size));
     spec.visibilityIndex = size;
     m_visibility.resize(size + 1);
-    m_visibility.back() = visibility;
+    m_visibility.back() = spec.defaultVisibility;
   }
   
   // Update the view to include one more CollectionSpec.
-  ASSERT(!m_viewSpecs.empty());
+  assert(!m_viewSpecs.empty());
   ViewSpec &view = m_viewSpecs.back();
   view.endCollIndex++;
 }
@@ -945,20 +969,20 @@ ISpyApplication::collection(const char *friendlyName,
  */
 void
 ISpyApplication::filter(const char *friendlyName,
-			const char *collectionSpec)
+                        const char *collectionSpec)
 {
-  ASSERT(collectionSpec);
+  assert(collectionSpec);
   
   m_filterSpecs.resize(m_filterSpecs.size() + 1);
   FilterSpec &spec = m_filterSpecs.back();
-  StringList parts;
+  std::vector<std::string> parts;
 
   if (friendlyName)
     spec.friendlyName = friendlyName;
   
-  parts = StringOps::split(collectionSpec, ':');
+  splitCollectionSpec(collectionSpec, parts);
   
-  ASSERT(! parts.empty());
+  assert(! parts.empty());
   spec.collection = parts[0];
   spec.requiredFields.insert(spec.requiredFields.end(),
                              parts.begin()+1, parts.end());
@@ -1073,7 +1097,7 @@ ISpyApplication::view(const char *prettyName, bool specialized, bool autoplay)
   m_viewSpecs.resize(m_viewSpecs.size() + 1);
   ViewSpec &view = m_viewSpecs.back();
   view.name = prettyName;
-  ASSERT(!m_cameraSpecs.empty());
+  assert(!m_cameraSpecs.empty());
   view.specialized = specialized;
   view.cameraIndex = m_cameraSpecs.size() - 1;
   view.startCollIndex = view.endCollIndex = m_specs.size();
@@ -1711,7 +1735,7 @@ ISpyApplication::resetStyleStack(size_t level)
 {
   // We should never pop more levels than there are in the stack!
   // If this happens it means that the logic is broken.
-  ASSERT(level <= m_styleSpecs.size());
+  assert(level <= m_styleSpecs.size());
 
   // Process all the Styles to be popped and unref any SoNode that they 
   // define. This means that when all the scenegraphs referring to the style
@@ -1786,7 +1810,7 @@ ISpyApplication::doRun(void)
   else
   {
       bool ok = parseViewsDefinitionFile(":/views/default-views.iml");
-      ASSERT(ok && "Default views are broken!!!");
+      assert(ok && "Default views are broken!!!");
       qDebug() << "Reading default views.";
   }
   
@@ -1961,9 +1985,9 @@ ISpyApplication::handleGroupsClicking(QTreeWidgetItem *current)
   int index = m_treeWidget->indexOfTopLevelItem(current);
   if (index < 0)
     return;
-  ASSERT((size_t) index < m_groupIndex.size());
+  assert((size_t) index < m_groupIndex.size());
   size_t groupIndex = m_groupIndex[index];
-  ASSERT(groupIndex < m_groups.size());
+  assert(groupIndex < m_groups.size());
   Group &group = m_groups[groupIndex];
   group.expanded = m_treeWidget->isItemExpanded(current);
 }
@@ -1988,16 +2012,16 @@ ISpyApplication::getCollectionIndex(QTreeWidgetItem *item)
   int parentIndex = m_treeWidget->indexOfTopLevelItem(parent);
   if (parentIndex < 0)
     return -1;
-  ASSERT((size_t)(parentIndex) < m_groupIndex.size());
+  assert((size_t)(parentIndex) < m_groupIndex.size());
   size_t groupIndex = m_groupIndex[parentIndex];
-  ASSERT((size_t)(groupIndex) < m_groups.size());
+  assert((size_t)(groupIndex) < m_groups.size());
   Group &group = m_groups[groupIndex];
   int childIndex = parent->indexOfChild(item);
-  ASSERT(childIndex >= 0);
-  ASSERT((size_t)(childIndex) < group.children.size());
+  assert(childIndex >= 0);
+  assert((size_t)(childIndex) < group.children.size());
   size_t index = group.children[childIndex];
   Collection &c = m_collections[index];
-  ASSERT(c.item == item);
+  assert(c.item == item);
   return index;
 }
 
@@ -2016,7 +2040,7 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
   if (index < 0)
     return;
   Collection &c = m_collections[index];
-  ASSERT(c.item == current);
+  assert(c.item == current);
   
   // Record visibility state in the assigned position in the m_visibility
   // vector. 
@@ -2056,10 +2080,10 @@ ISpyApplication::itemActivated(QTreeWidgetItem *current, int)
 void
 ISpyApplication::displayCollection(Collection &c)
 {
-  ASSERT(c.data[0]);
-  ASSERT(c.item);
-  ASSERT(c.node);
-  ASSERT(c.sep);
+  assert(c.data[0]);
+  assert(c.item);
+  assert(c.node);
+  assert(c.sep);
   // Get the current view in order to know which projector to use.
   View &view = m_views[m_currentViewIndex];
   Projectors &projectors = view.camera->spec->projectors;
@@ -2077,7 +2101,7 @@ ISpyApplication::displayCollection(Collection &c)
         && c.spec->make3D)
     {
       Style *style = &(m_styles[c.style]);
-      ASSERT(style);
+      assert(style);
       c.sep->enableNotify(FALSE);
       style->viewport = m_viewer->getViewportRegion();
       c.sep->addChild(style->material);
@@ -2215,7 +2239,7 @@ ISpyApplication::findStyle(const char *pattern)
     return styleIndex;
   }
   qDebug() << "Could not find any matching style for " << pattern;
-  ASSERT(false && "Could not find any matching style ");
+  assert(false && "Could not find any matching style ");
   return 0;
 }
 
@@ -2338,7 +2362,7 @@ ISpyApplication::updateCollections(void)
     // if it qualifies all stated requirements.  If it matches, use
     // the "friendly" collection name from the spec and its drawing
     // utility.
-    StringList &names = m_storages[sti]->collectionNames();
+    std::vector<std::string> &names = m_storages[sti]->collectionNames();
     for (size_t ci = 0, ce = names.size(); ci != ce; ++ci, ++i)
     {
       std::string       collectionName = names[ci];
@@ -2350,7 +2374,7 @@ ISpyApplication::updateCollections(void)
 
       // Get the current view and iterate on all the specs found there.
       // FIXME: pick up something different from the first one.
-      ASSERT(m_currentViewIndex < m_views.size());
+      assert(m_currentViewIndex < m_views.size());
 
       for (size_t spi = view.spec->startCollIndex, spe = view.spec->endCollIndex; 
            spi != spe && !spec;
@@ -2399,13 +2423,16 @@ ISpyApplication::updateCollections(void)
       // Actual addition of the children to a group is done later on, so that
       // we can make sure that the group ordering is the same as the 
       // one in which the collections where declared.
-      lat::StringList parts = lat::StringOps::split(name, '/');
-      name = parts.back();
+      //
+      // Remember that divPos + 1 is always 0 because std::string::npos := 1.
+      size_t divPos = name.find_first_of('/');
       std::string groupName;
-      if (parts.size() == 2)
-        groupName = parts.front();
-      else
+      if (!divPos || divPos == std::string::npos)
         groupName = "Other";
+      else
+        groupName = std::string(name, 0, divPos);
+
+      name = std::string(name, divPos + 1);
       
       int groupIdx = -1;
       for (size_t gi = 0, ge = m_groups.size(); gi != ge; gi++)
@@ -2522,8 +2549,10 @@ ISpyApplication::updateCollections(void)
     group.item->addChild(coll.item);
     
     // Finish setting up the tree items and append them to the tree widget.
+    bool visibility = m_visibility[coll.spec->visibilityIndex];
+    
     if (coll.spec && coll.spec->make3D)
-      coll.item->setCheckState(2, m_visibility[coll.spec->visibilityIndex]);
+      coll.item->setCheckState(2, visibility ? Qt::Checked : Qt::Unchecked);
     else
       coll.item->setFlags(Qt::ItemIsSelectable|Qt::ItemIsEnabled);
     
@@ -2621,7 +2650,7 @@ ISpyApplication::updateCollections(void)
       f.collectionName = (*cit).collectionName;
       
       // There must be two fields
-      ASSERT(f.spec->requiredFields.size() == 2);
+      assert(f.spec->requiredFields.size() == 2);
       f.result = doFilterCollection(*cit, f.spec->requiredFields[0].c_str(), f.spec->requiredFields[1].c_str());
     }
   }
@@ -2635,14 +2664,11 @@ ISpyApplication::newEvent(void)
 {
   delete m_storages[0];
 
-  ASSERT(m_eventIndex < m_events.size());
-  readData(m_storages[0] = new IgDataStorage,
-	   m_events[m_eventIndex].archive,
-	   m_events[m_eventIndex].contents);
-  
+  assert(m_eventIndex < m_events.size());
+  Event &event = m_events[m_eventIndex];
+  readData(m_storages[0] = new IgDataStorage, event.archive, event.contents);
   updateCollections();
-
-  m_eventName = m_events[m_eventIndex].contents->name().name();
+  m_eventName = event.contents->name();
   showMessage(m_eventName);
   updateEventMessage();
 }
@@ -2751,19 +2777,20 @@ ISpyApplication::simpleOpen(const QString &fileName)
   showMessage(QString("Opening ") + fileName + tr("..."));
 
   // Read the file in.
-  ZipArchive *file = loadFile(fileName);
+  IgArchive *file = loadFile(fileName.toStdString().c_str());
   if (! file)
     return false;
 
   // See what the file contains.
   Events                        events;
-  lat::ZipMember                *geometry = 0;
-  lat::ZipArchive::Iterator     zi, ze;
+  IgMember                      *geometry = 0;
+  IgArchive::Members::const_iterator     zi, ze;
   size_t                        index = 0;
 
-  events.reserve(file->size());
-  for (zi = file->begin(), ze = file->end(); zi != ze; ++zi, ++index)
-    if ((*zi)->isDirectory() ||(*zi)->size(ZipMember::UNCOMPRESSED) == 0)
+  events.reserve(file->members().size());
+  for (zi = file->members().begin(), ze = file->members().end(); 
+       zi != ze; ++zi, ++index)
+    if ((*zi)->isDirectory() || (*zi)->empty())
       continue;
     else if (! strncmp((*zi)->name(), "Geometry/", 9))
     {
@@ -2786,7 +2813,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
   // the file has events and geometry, take both from it.  If the file
   // has no geometry, take event list from it, whether it had any
   // events or not.
-  ZipArchive *deleted = 0;
+  IgArchive *deleted = 0;
   bool update = false;
   if (geometry)
   {
@@ -2858,24 +2885,22 @@ ISpyApplication::downloadGeometry(void)
 }
 
 /** Helper function to load zip archive index contents. */
-ZipArchive *
-ISpyApplication::loadFile(const QString &filename)
+IgArchive *
+ISpyApplication::loadFile(const char *filename)
 {
-  ZipArchive *file = 0;
+  IgArchive *file = 0;
   try
   {
-    file = new ZipArchive(Filename(filename.toStdString())
-                          .substitute(ShellEnvironment()),
-                          IOFlags::OpenRead);
+    file = new IgArchive(filename);
   }
-  catch(lat::Error &e)
+  catch(IgArchive::Exception &e)
   {
     std::ostringstream str;
-    str << "Unable parse file: " << filename.toStdString() << ".\nMaybe it got truncated?";
+    str << "Unable parse file: " << filename << ".\nMaybe it got truncated?";
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
 
-    std::cerr << (const char *) filename.toAscii()
+    std::cerr << filename
               << ": error: cannot read: "
               << e.explain() << std::endl;
   }
@@ -2889,20 +2914,16 @@ ISpyApplication::loadFile(const QString &filename)
     @a archive  Archive file containing @a source.
     @a source   The source data file to read in. */
 void
-ISpyApplication::readData(IgDataStorage *to, ZipArchive *archive, ZipMember *source)
+ISpyApplication::readData(IgDataStorage *to, IgArchive *archive, IgMember *source)
 {
   qDebug() << QString("Reading ") << source->name() << tr("...");
   showMessage(QString("Reading ") + source->name() + tr("..."));
 
   try
   {
-    InputStream *is = archive->input(source);
-    IOSize length = source->size(ZipMember::UNCOMPRESSED);
-    std::vector<char> buffer(length+1, 0);
-    is->xread(&buffer[0], length);
-    is->close();
-    delete is;
-
+    IgArchiveReader ar(archive);
+    std::string buffer;
+    ar.read(source, buffer);
     IgParser parser(to);
     parser.parse(&buffer[0]);
   }
@@ -2913,7 +2934,7 @@ ISpyApplication::readData(IgDataStorage *to, ZipArchive *archive, ZipMember *sou
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
   }
-  catch(lat::Error &e)
+  catch(IgArchive::Exception &e)
   {
     std::ostringstream str;
     str << "Unable parse file: " << source->name() 

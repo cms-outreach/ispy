@@ -47,32 +47,32 @@ public:
   /**
       Add a single tower whose height does not scale(i.e. tower floor is front face, roof is back face)
   */
-  void addTower(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
+  void addTower(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4);
 
-  void addTowerProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                         IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
+  void addTowerProjected(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                         SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4);
 
   /**
       Add a single tower outline whose height does not scale(i.e. tower floor is front face, roof is back face)
   */
-  void addTowerOutline(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                       IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
+  void addTowerOutline(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                       SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4);
 
-  void addTowerOutlineProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                                IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4);
+  void addTowerOutlineProjected(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                                SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4);
 
   /**
       Add a single tower whose floor is the front face and whose height scales according to
       some scalar variable(heightContent) and an overall scale(heightScale)
   */
-  void addTower(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+  void addTower(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
                 float heightContent,
                 float heightScale);
 
-  void addTowerProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                         IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+  void addTowerProjected(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                         SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
                          float heightContent,
                          float heightScale);
 
@@ -81,13 +81,13 @@ public:
       and whose height scales according to
       some scalar variable(heightContent) and an overall scale(heightScale)
   */
-  void addTower(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+  void addTower(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
                 float heightContent, float heightOffset,
                 float heightScale);
 
-  void addTowerProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                         IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+  void addTowerProjected(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                         SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
                          float heightContent, float heightOffset,
                          float heightScale);
 
@@ -99,15 +99,15 @@ public:
   /**
       Add a single box centred on the original box but scaled linearly by scaleFraction
   */
-  void addScaledBox(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                    IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+  void addScaledBox(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                    SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
                     float scaleFraction);
 
-  void addScaledBoxProjected(IgV3d &f1,  IgV3d &f2,  IgV3d &f3,  IgV3d &f4,
-                             IgV3d &b1,  IgV3d &b2,  IgV3d &b3,  IgV3d &b4,
+  void addScaledBoxProjected(SbVec3f &f1,  SbVec3f &f2,  SbVec3f &f3,  SbVec3f &f4,
+                             SbVec3f &b1,  SbVec3f &b2,  SbVec3f &b3,  SbVec3f &b4,
                              float scaleFraction);
 
-  void addRotatedBox(IgV3d &pos, IgV3d &axis, double angle,
+  void addRotatedBox(const SbVec3f &pos, const SbVec3f &axis, double angle,
                      double w, double h, double d);
 
 private:
@@ -129,8 +129,7 @@ private:
   void setLineIndices(int p1, int p2, int p3, int p4, int p5);
   void setLineIndices(int p1, int p2);
   void setFaceIndices(int p1, int p2, int p3, int p4);
-  void drawTower(SbVec3f *vertices);
-  void drawTowerOutline(SbVec3f *vertices);
+  void drawTower(SbVec3f *vertices, bool outline = false);
   SbVec3f *projectVertices(SbVec3f *vertices);
 };
 
