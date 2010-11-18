@@ -692,9 +692,6 @@ ISpyApplication::ISpyApplication(void)
     m_mainWindow(0),
     m_treeWidget(0),
     m_splash(0),
-    m_online (false),
-    m_host("localhost"),
-    m_port(9000),
     m_autoEvents(false),
     m_exiting(false),
     m_animationTimer(new QTimer(this)),
@@ -1250,8 +1247,7 @@ ISpyApplication::usage(void)
   const char *app = appname();
   std::cerr << "Usage: " << app << " [CSS-FILE] [LAYOUT-FILE] [IG-FILE]...\n"
             << "   or: " << app << " --help\n"
-            << "   or: " << app << " --version\n"
-            << "   or: " << app << " --online HOST[:PORT]\n";
+            << "   or: " << app << " --version\n";
 
   return EXIT_FAILURE;
 }
@@ -1307,29 +1303,6 @@ ISpyApplication::run(int argc, char *argv[])
       // Remove the command line option so that
       // it would not be treated as a filename.
       m_argv[i][0] = '\0';
-    }
-    else if (!strcmp(*argv, "--online"))
-    {      
-#ifdef Q_WS_MAC
-      std::cerr << "Option --online is not currently supported on MacOSX.\n" << std::endl;
-      return EXIT_FAILURE;
-#endif
-      if (! *++argv)
-      {
-        std::cerr << "--online requires an argument\n";
-        return usage();
-      }
-      else
-      {
-        m_online = true;
-        m_autoEvents = true;
-        //onlineConfig(*argv); this isn't defined anywhere and not used anyway
-        *++argv;
-        // Remove the command line option so that
-        // it would not be treated as a filename.
-        m_argv[i][0] = '\0'; m_argv[i+1][0] = '\0';
-        i++;
-      }
     }
     i++;
   }
@@ -1553,14 +1526,6 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_selector, SIGNAL(pageChanged(QString)), this, SLOT(updateFilterListModel(QString)));
 
   m_filterProgressDialog = new QProgressDialog(m_mainWindow);
-  if(m_online)
-  {    
-    m_filterProgressDialog->setMaximum(0);
-    m_mainWindow->setWindowTitle(QString("IGUANA iSpy - ONLINE %1:%2")
-				 .arg(QString::fromStdString(m_host))
-				 .arg(m_port));
-  }
-  
   m_filterProgressDialog->setModal(true);
   QObject::connect(m_filterProgressDialog, SIGNAL(canceled()), this, SLOT(stopFiltering()));
 
@@ -1877,31 +1842,10 @@ ISpyApplication::doRun(void)
   QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()),
                    m_splash, SLOT(showWizard()));
 
-  // Add a timer which indicates how long it has been since the last online event
-  // Run in maximized mode for online
-  // FIXME: put it in a more approprate place
-  if (m_online)
-  {
-    m_mainWindow->actionAuto->setEnabled(true);
-    m_mainWindow->actionNext->setEnabled(true);
-    m_mainWindow->actionAuto->setChecked(true);
-    m_mainWindow->showMaximized();
-    autoEvents();
-
-    ISpyDigitalClock *clock = new ISpyDigitalClock(m_mainWindow->toolBarEvent);
-    m_mainWindow->toolBarEvent->addWidget (clock);
-    QObject::connect(this, SIGNAL(resetCounter()), clock, SLOT(resetTime()));
-    clock->show();
-    nextEvent();
-  }
-  else if (! m_archives[0] && ! m_archives[1])
-  {
+  if (! m_archives[0] && ! m_archives[1])
     m_splash->showWizard();
-  }
   else
-  {
     m_mainWindow->show();
-  }
 
   // We look up for changes in the CSS file only at the end, so that 
   // we are sure that there is actually something to update.
@@ -2607,35 +2551,25 @@ ISpyApplication::updateCollections(void)
   for (size_t i = 0, e = m_collections.size(); i != e; ++i)
     m_3DModel->contents()->addChild(m_collections[i].node);
 
-  // For now keep all controls enabled for online
-  if (m_online)
-  {
-    m_mainWindow->actionAuto->setEnabled(true);
-    m_mainWindow->actionNext->setEnabled(true);
-    m_mainWindow->actionPrevious->setEnabled(true);
-  }
-  else
-  {   
-    // Finally adjust buttons to what can be done here.
-    m_mainWindow->actionAuto->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
-    m_mainWindow->actionNext->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
-    m_mainWindow->actionPrevious->setEnabled(m_eventIndex > 0);
+  // Finally adjust buttons to what can be done here.
+  m_mainWindow->actionAuto->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
+  m_mainWindow->actionNext->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
+  m_mainWindow->actionPrevious->setEnabled(m_eventIndex > 0);
   
-    if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
-    {
-      m_mainWindow->showNormal();
-      m_mainWindow->dockTreeWidget->setShown(true);
-      m_mainWindow->dockTableWidget->setShown(true);
-      m_mainWindow->menubar->show();
-      m_3DToolBar->show();
-      m_idleTimer->stop();
-      m_idleTimer->disconnect();
-      m_animationTimer->stop();
-      m_animationTimer->disconnect();
-      m_timer->stop();
-      m_timer->disconnect();
-      m_mainWindow->actionAuto->setChecked(false);
-    }
+  if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
+  {
+    m_mainWindow->showNormal();
+    m_mainWindow->dockTreeWidget->setShown(true);
+    m_mainWindow->dockTableWidget->setShown(true);
+    m_mainWindow->menubar->show();
+    m_3DToolBar->show();
+    m_idleTimer->stop();
+    m_idleTimer->disconnect();
+    m_animationTimer->stop();
+    m_animationTimer->disconnect();
+    m_timer->stop();
+    m_timer->disconnect();
+    m_mainWindow->actionAuto->setChecked(false);
   }
 
   // Update registered filters
