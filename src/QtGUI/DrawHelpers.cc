@@ -2428,4 +2428,5 @@ registerDrawHelpers(std::map<std::string, Make3D> &helpers)
   helpers.insert(std::make_pair("makeRZHCalRecHits", makeRZHCalRecHits));
   helpers.insert(std::make_pair("makeLegoPhotons", makeLegoPhotons));
   helpers.insert(std::make_pair("make3DAnyCylinder", make3DAnyCylinder));
+
 }

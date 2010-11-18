@@ -276,6 +276,11 @@ GlobalMuons_V1 {
   diffuse-color: rgb(1.0, 0.0, 0.0);
 }
 
+MuonChambers_V1 {
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+  transparency:0.5;
+}
+
 PFRecTracks_V1 {
   draw-style: lines; 
   line-width: 3;
