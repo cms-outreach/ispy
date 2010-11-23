@@ -137,6 +137,12 @@ Tracks_V2
   marker-style: outline;
 }
 
+TrackerDets_V1
+{
+  diffuse-color: rgb(1.0, 0.7, 0.1);
+  transparency: 0.5;
+}
+
 PixelDigis_V1
 {
   diffuse-color: rgb(1.0, 0.6, 0.0);

@@ -210,6 +210,11 @@
               spec="TrackingRecHits_V1:pos"
               draw="make3DPointSetShapes"/>
 
+  <collection label="Tracking/Matching Tracker Dets"
+              spec="TrackerDets_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
   <collection label="ECAL/ECAL Rec. Hits" spec="EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"/>
 
@@ -330,7 +335,7 @@
               spec="CSCRecHit2Ds_V2:u1:u2:v1:v2:w1:w2"
               draw="make3DRPCRecHits"/>
 
-   <collection label="Muon/Muon Chambers"
+   <collection label="Muon/Matching Muon Chambers"
               spec="MuonChambers_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
