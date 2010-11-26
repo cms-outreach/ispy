@@ -371,18 +371,21 @@ Jets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
+  min-energy: 50.0;
 }
 
 PATJets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
+  min-energy: 50.0;
 }
 
 PFJets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
+  min-energy: 50.0;
 }
 
 METs_V1 { 
