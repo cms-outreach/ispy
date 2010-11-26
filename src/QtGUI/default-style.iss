@@ -113,6 +113,9 @@ TEC_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.8; }
 EB_V1 {diffuse-color: rgb(0.5, 0.8, 1.0); transparency:0.8;}
 EE_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.8;} 
 HO_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
+HE_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
+HB_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
+HF_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
 
 // Default event objects style.
 TriggerObjects_V1

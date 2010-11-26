@@ -66,7 +66,7 @@
               visibility="none"/>
 
    <collection label="Detector/Tracker TOB (simplified)"
-              spec="TOB_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              spec="TOB_V1:zvals:rmins:rmaxs"
               draw="make3DAnyCylinder"
               visibility="none"/>	      
 
@@ -81,7 +81,7 @@
               visibility="none"/>
 
   <collection label="Detector/Tracker TEC (simplified)"
-              spec="TEC_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              spec="TEC_V1:zvals:rmins:rmaxs"
               draw="make3DAnyCylinder"
               visibility="none"/>
 
@@ -91,7 +91,7 @@
               visibility="none"/>
 
   <collection label="Detector/ECAL Barrel (simplified)"
-              spec="EB_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              spec="EB_V1:zvals:rmins:rmaxs"
               draw="make3DAnyCylinder"
               visibility="none"/>
 
@@ -101,7 +101,7 @@
               visibility="none"/>
 	      
   <collection label="Detector/ECAL Endcap (simplified)"
-              spec="EE_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              spec="EE_V1:zvals:rmins:rmaxs"
               draw="make3DAnyCylinder"
               visibility="none"/>
 
@@ -115,9 +115,19 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
+  <collection label="Detector/HCAL Barrel (simplified)"
+              spec="HB_V1:zvals:rmins:rmaxs"
+              draw="make3DAnyCylinder"
+              visibility="none"/>
+
   <collection label="Detector/HCAL Endcap"
               spec="HcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/HCAL Endcap (simplified)"
+              spec="HE_V1:zvals:rmins:rmaxs"
+              draw="make3DAnyCylinder"
               visibility="none"/>
 
   <collection label="Detector/HCAL Outer"
@@ -125,13 +135,18 @@
               draw="make3DAnyBox"/>
 
   <collection label="Detector/HCAL Outer (simplified)"
-              spec="HO_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              spec="HO_V1:zvals:rmins:rmaxs"
               draw="make3DAnyCylinder"
               visibility="none"/>
 
   <collection label="Detector/HCAL Forward"
               spec="HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/HCAL Forward (simplified)"
+              spec="HF_V1:zvals:rmins:rmaxs"
+              draw="make3DAnyCylinder"
               visibility="none"/>
 
   <collection label="Detector/Drift Tubes"

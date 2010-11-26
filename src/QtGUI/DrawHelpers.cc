@@ -42,6 +42,21 @@ SbVec3f IgCollectionItem::get<SbVec3f>(IgColumn<SbVec3f> &property)
   return SbVec3f(p.x(), p.y(), p.z());
 }
 
+template <>
+SbVec4f IgCollectionItem::get<SbVec4f>(IgColumn<SbVec4f> &property)
+{
+  IgV4d& p = get<IgV4d>(property);
+  return SbVec4f(p.x(), p.y(), p.z(), p.w());
+}
+
+template <>
+SbVec2f IgCollectionItem::get<SbVec2f>(IgColumn<SbVec2f> &property)
+{
+  IgV2d& p = get<IgV2d>(property);
+  return SbVec2f(p.x(), p.y());
+}
+
+
 /** Helper method to decide which point associated to an object should be 
     the one that is used to project.
     
@@ -532,38 +547,34 @@ make3DAnyCylinder(IgCollection **collections, IgAssociations **,
 {
   IgCollection* c = collections[0];
 
-  IgProperty INNER_R_PLUS(c, "innerR_plus");
-  IgProperty OUTER_R_PLUS(c, "outerR_plus");
-  IgProperty Z_PLUS(c, "z_plus");
-  
-  IgProperty INNER_R_MINUS(c, "innerR_minus");
-  IgProperty OUTER_R_MINUS(c, "outerR_minus");
-  IgProperty Z_MINUS(c, "z_minus");
+  IgColumn<SbVec4f> ZVALS(c, "zvals"), RMINS(c, "rmins"), RMAXS(c, "rmaxs");
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {
-    double innerR_plus = ci->get<double>(INNER_R_PLUS);
-    double outerR_plus = ci->get<double>(OUTER_R_PLUS);
-    double z_plus = ci->get<double>(Z_PLUS);
-    
-    double innerR_minus = ci->get<double>(INNER_R_MINUS);
-    double outerR_minus = ci->get<double>(OUTER_R_MINUS);
-    double z_minus = ci->get<double>(Z_MINUS);
-  
-    std::vector<float> zvals;
-    zvals.push_back(z_minus);
-    zvals.push_back(z_plus);
+    SbVec4f zvals = ci->get(ZVALS);
+    SbVec4f rmins = ci->get(RMINS);
+    SbVec4f rmaxs = ci->get(RMAXS);
 
-    std::vector<float> rmin;
-    rmin.push_back(innerR_minus);
-    rmin.push_back(innerR_plus);
+    std::vector<float> zvec;
+    zvec.push_back(zvals[0]);
+    zvec.push_back(zvals[1]);
+    zvec.push_back(zvals[2]);
+    zvec.push_back(zvals[3]);
+ 
+    std::vector<float> rminvec;
+    rminvec.push_back(rmins[0]);
+    rminvec.push_back(rmins[1]);
+    rminvec.push_back(rmins[2]);
+    rminvec.push_back(rmins[3]);
 
-    std::vector<float> rmax;
-    rmax.push_back(outerR_minus);
-    rmax.push_back(outerR_plus);
+    std::vector<float> rmaxvec;
+    rmaxvec.push_back(rmaxs[0]);
+    rmaxvec.push_back(rmaxs[1]);
+    rmaxvec.push_back(rmaxs[2]);
+    rmaxvec.push_back(rmaxs[3]);
 
     IgSoPcon* cylinder = new IgSoPcon();
-    cylinder->makePcon(zvals, rmin, rmax);
+    cylinder->makePcon(zvec, rminvec, rmaxvec);
 
     sep->addChild(cylinder);
   }
