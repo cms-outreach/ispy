@@ -1170,32 +1170,7 @@ ISpyApplication::run(int argc, char *argv[])
       // it would not be treated as a filename.
       m_argv[i][0] = '\0';
     }
-<<<<<<< HEAD
-    else if (!strcmp(*argv, "--online"))
-    {      
-#ifdef Q_WS_MAC
-      std::cerr << "Option --online is not currently supported on MacOSX.\n" << std::endl;
-      return EXIT_FAILURE;
-#endif
-      if (! *++argv)
-      {
-        std::cerr << "--online requires an argument\n";
-        return usage();
-      }
-      else
-      {
-        m_online = true;
-        m_autoEvents = true;
-        //onlineConfig(*argv); this isn't defined anywhere and not used anyway
-        *++argv;
-        // Remove the command line option so that
-        // it would not be treated as a filename.
-        m_argv[i][0] = '\0'; m_argv[i+1][0] = '\0';
-        i++;
-      }
-    }
-=======
->>>>>>> 7a6a136fe7735dae01e30e13ae5e3cd4fd77027e
+
     i++;
   }
 

@@ -99,11 +99,7 @@ else(APPLE)
    add_executable(${ISPY_NAME} ${ISPY_SOURCES})
 endif(APPLE)
 
-<<<<<<< HEAD
-target_link_libraries(ispy ISpyFramework ${QT_LIBRARIES} 
-=======
 target_link_libraries(${ISPY_NAME} ISpyFramework ${QT_LIBRARIES} 
->>>>>>> 7a6a136fe7735dae01e30e13ae5e3cd4fd77027e
                       ${QT_QTNETWORK_LIBRARIES}
                       ${QT_QTOPENGL_LIBRARIES} ${PCRE_LIBRARY}
                       ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}
