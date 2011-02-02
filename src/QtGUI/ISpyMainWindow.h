@@ -28,7 +28,6 @@ public slots:
 
 signals:
   void          open(void);
-  void          autoEvents(void);
   void          nextEvent(void);
   void          previousEvent(void);
   void          rewind(void);

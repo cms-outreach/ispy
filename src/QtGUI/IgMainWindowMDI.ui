@@ -14,7 +14,7 @@
    <string>IGUANA iSpy</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../interface/ispy.qrc">
+   <iconset resource="resources/ispy.qrc">
     <normaloff>:/images/iguana-small.xpm</normaloff>:/images/iguana-small.xpm</iconset>
   </property>
   <property name="dockNestingEnabled">
@@ -32,7 +32,7 @@
      <x>0</x>
      <y>0</y>
      <width>1050</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -71,12 +71,10 @@
      <property name="title">
       <string>Expert Debug Tools...</string>
      </property>
-     <addaction name="actionPicture_Publishing"/>
      <addaction name="actionEditSettings"/>
      <addaction name="separator"/>
      <addaction name="actionSaveSettings"/>
     </widget>
-    <addaction name="actionEvent_Filter"/>
     <addaction name="separator"/>
     <addaction name="menuExpert_Debug_Tools"/>
    </widget>
@@ -95,7 +93,6 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="actionAuto"/>
    <addaction name="actionPrevious"/>
    <addaction name="actionNext"/>
   </widget>
@@ -384,7 +381,7 @@ QComboBox QAbstractItemView
   </action>
   <action name="actionNext">
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset resource="resources/ispy.qrc">
      <normaloff>:/images/next.png</normaloff>:/images/next.png</iconset>
    </property>
    <property name="text">
@@ -399,7 +396,7 @@ QComboBox QAbstractItemView
     <bool>false</bool>
    </property>
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset resource="resources/ispy.qrc">
      <normaloff>:/images/previous.png</normaloff>:/images/previous.png</iconset>
    </property>
    <property name="text">
@@ -409,28 +406,12 @@ QComboBox QAbstractItemView
     <string>Ctrl+P</string>
    </property>
   </action>
-  <action name="actionAuto">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
-     <normaloff>:/images/Play1Normal.png</normaloff>
-     <normalon>:/images/PausePressed.png</normalon>:/images/Play1Normal.png</iconset>
-   </property>
-   <property name="text">
-    <string>Play</string>
-   </property>
-   <property name="toolTip">
-    <string>Play Events</string>
-   </property>
-  </action>
   <action name="actionPrint">
    <property name="enabled">
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset resource="resources/ispy.qrc">
      <normaloff>:/images/print.png</normaloff>:/images/print.png</iconset>
    </property>
    <property name="text">
@@ -442,7 +423,7 @@ QComboBox QAbstractItemView
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="../interface/ispy.qrc">
+    <iconset resource="resources/ispy.qrc">
      <normaloff>:/images/filesave.png</normaloff>:/images/filesave.png</iconset>
    </property>
    <property name="text">
@@ -508,19 +489,9 @@ QComboBox QAbstractItemView
     <string>Get data to display</string>
    </property>
   </action>
-  <action name="actionEvent_Filter">
-   <property name="text">
-    <string>Event Filter...</string>
-   </property>
-  </action>
-  <action name="actionPicture_Publishing">
-   <property name="text">
-    <string>Picture Publishing...</string>
-   </property>
-  </action>
  </widget>
  <resources>
-  <include location="../interface/ispy.qrc"/>
+  <include location="resources/ispy.qrc"/>
  </resources>
  <connections>
   <connection>

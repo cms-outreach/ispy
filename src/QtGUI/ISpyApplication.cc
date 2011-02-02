@@ -1,12 +1,8 @@
 #define QT_NO_EMIT
 #include "QtGUI/ISpyApplication.h"
 #include "QtGUI/ISpy3DView.h"
-#include "QtGUI/ISpyDigitalClock.h"
-#include "QtGUI/ISpyEventSelectorDialog.h"
 #include "QtGUI/ISpyEventFilter.h"
 #include "QtGUI/ISpyMainWindow.h"
-#include "QtGUI/ISpyPicturePublishingDialog.h"
-#include "QtGUI/ISpyRestartPlayDialog.h"
 #include "QtGUI/ISpySplashScreen.h"
 #include "QtGUI/Ig3DBaseModel.h"
 #include "QtGUI/IgCollectionListModel.h"
@@ -692,22 +688,13 @@ ISpyApplication::ISpyApplication(void)
     m_mainWindow(0),
     m_treeWidget(0),
     m_splash(0),
-    m_online (false),
-    m_host("localhost"),
-    m_port(9000),
-    m_autoEvents(false),
     m_exiting(false),
-    m_animationTimer(new QTimer(this)),
-    m_timer(new QTimer(this)),
-    m_idleTimer(new QTimer(this)),
     m_networkManager(new QNetworkAccessManager),
     m_progressDialog(0),
     m_3DToolBar(0),
     m_actionCameraPerspective(0),
     m_actionCameraOrthographic(0),
     m_fileWatcher(new QFileSystemWatcher),
-    m_printTimer(new QTimer(this)),
-    m_filterProgressDialog(0),
     m_counter(0),
     m_eventName("NOEVENT")
 {
@@ -726,14 +713,6 @@ ISpyApplication::ISpyApplication(void)
 
   if (QDir::home().isReadable())
     defaultSettings();
-
-  // Define event filters
-  // A filter is defined by a friendly collection name.
-  // The collection must have the fields specified here.
-  //
-  filter("Provenance/L1 Triggers", "L1GtTrigger_V1:algorithm:result");
-  filter("Provenance/HLT Trigger Paths", "TriggerPaths_V1:Name:Accept");
-
   
   // Create the default style reading the specification from a QT resource.
   // Notice that we keep track of how big the vector containing the style
@@ -964,115 +943,6 @@ ISpyApplication::collection(const char *friendlyName,
   view.endCollIndex++;
 }
 
-/** Specify a new event filter.  Call this during the application
-     initialisation to register filters for known collection handlers.
- */
-void
-ISpyApplication::filter(const char *friendlyName,
-                        const char *collectionSpec)
-{
-  assert(collectionSpec);
-  
-  m_filterSpecs.resize(m_filterSpecs.size() + 1);
-  FilterSpec &spec = m_filterSpecs.back();
-  std::vector<std::string> parts;
-
-  if (friendlyName)
-    spec.friendlyName = friendlyName;
-  
-  splitCollectionSpec(collectionSpec, parts);
-  
-  assert(! parts.empty());
-  spec.collection = parts[0];
-  spec.requiredFields.insert(spec.requiredFields.end(),
-                             parts.begin()+1, parts.end());
-}
-
-/** Accumulate results from all registered filters
- */
-bool
-ISpyApplication::filter(void)
-{
-  bool flag = true;
-
-  for(size_t it = 0; it < m_filters.size(); ++it)
-  {
-    Filter &f = m_filters[it];
-    flag &= f.result;
-  }
-
-  return flag;
-}
-
-/** Do the actual event filterng.
-    Assume that a filter is done on
-
-    @a algoName
-
-    which an is an algorithm name - std::string type in the collection for
-    
-    @a result
-    
-    which is an int type in the collection.
-    The result should be == 1 for the filter to pass.
-    The algo names are defined in a GUI as a list of strings.
-    The filter returns true on the first match (e.g. OR).
- */
-bool
-ISpyApplication::doFilterCollection(const Collection &collection, const char* algoName, const char *result)
-{
-  QStringList strList = m_selector->filterText(QString::fromStdString(collection.spec->friendlyName)).split("|", QString::SkipEmptyParts);
-  if(strList.isEmpty())
-    return true;
-
-  QStringList fullList;
-  
-  IgCollection *lc = collection.data[0];
-  for (IgCollection::iterator ci = lc->begin(), ce = lc->end(); ci != ce; ++ci)
-  {
-    if(ci->get<int>(result) == 1)
-      fullList << QString::fromStdString(ci->get<std::string>(algoName));
-  }
-  foreach (QString str, strList) {
-    if(fullList.contains(str.trimmed()))
-      return true;
-  }
-  
-  return false;
-}
-
-/** Find the collection by friendly name and trigger an update
-    of its filter list model.
-  */
-void
-ISpyApplication::updateFilterListModel(const QString &title)
-{
-  CollectionSpecs::iterator it = find_if (m_specs.begin(), m_specs.end(),
-					  MatchByFriendlyName(title.toStdString()));
-  if(it != m_specs.end())
-  {
-    Collections::iterator cit = find_if (m_collections.begin(), m_collections.end(), MatchByName(it->collection));
-    if(cit != m_collections.end())
-    {
-      doUpdateFilterListModel(*cit);
-    }
-  }
-}
-
-/** Actual update of the filter list model.
-  */
-void
-ISpyApplication::doUpdateFilterListModel(const Collection &collection)
-{
-  if (! m_listModel)
-  {
-    m_listModel = new IgCollectionListModel(collection.data[0]);
-    m_selector->setModel(m_listModel);
-  }
-  else
-    m_listModel->setCollection(collection.data[0]);
-}
-
 /** Begins the definition of a new view. 
     A view is simply a set of CollectionSpecs, as defined by the 
     ISpyApplication::collection() method.
@@ -1177,13 +1047,6 @@ void
 ISpyApplication::onExit(void)
 {
   m_exiting = true;
-  stopFiltering();
-  m_idleTimer->stop();
-  m_idleTimer->disconnect();
-  m_animationTimer->stop();
-  m_animationTimer->disconnect();
-  m_timer->stop();
-  m_timer->disconnect();
   
   QObject::disconnect(qApp, SIGNAL(lastWindowClosed()), this, SLOT(onExit()));
   
@@ -1250,8 +1113,7 @@ ISpyApplication::usage(void)
   const char *app = appname();
   std::cerr << "Usage: " << app << " [CSS-FILE] [LAYOUT-FILE] [IG-FILE]...\n"
             << "   or: " << app << " --help\n"
-            << "   or: " << app << " --version\n"
-            << "   or: " << app << " --online HOST[:PORT]\n";
+            << "   or: " << app << " --version\n";
 
   return EXIT_FAILURE;
 }
@@ -1308,6 +1170,7 @@ ISpyApplication::run(int argc, char *argv[])
       // it would not be treated as a filename.
       m_argv[i][0] = '\0';
     }
+<<<<<<< HEAD
     else if (!strcmp(*argv, "--online"))
     {      
 #ifdef Q_WS_MAC
@@ -1331,6 +1194,8 @@ ISpyApplication::run(int argc, char *argv[])
         i++;
       }
     }
+=======
+>>>>>>> 7a6a136fe7735dae01e30e13ae5e3cd4fd77027e
     i++;
   }
 
@@ -1549,23 +1414,7 @@ ISpyApplication::setupMainWindow(void)
   m_mainWindow = new ISpyMainWindow;
   m_mainWindow->setUnifiedTitleAndToolBarOnMac(true);
 
-  m_selector = new ISpyEventSelectorDialog (m_mainWindow);
-  QObject::connect(m_selector, SIGNAL(pageChanged(QString)), this, SLOT(updateFilterListModel(QString)));
-
-  m_filterProgressDialog = new QProgressDialog(m_mainWindow);
-  if(m_online)
-  {    
-    m_filterProgressDialog->setMaximum(0);
-    m_mainWindow->setWindowTitle(QString("IGUANA iSpy - ONLINE %1:%2")
-				 .arg(QString::fromStdString(m_host))
-				 .arg(m_port));
-  }
-  
-  m_filterProgressDialog->setModal(true);
-  QObject::connect(m_filterProgressDialog, SIGNAL(canceled()), this, SLOT(stopFiltering()));
-
   QObject::connect(m_mainWindow, SIGNAL(open()),          this, SLOT(openFileDialog()));
-  QObject::connect(m_mainWindow, SIGNAL(autoEvents()),    this, SLOT(autoEvents()));
   QObject::connect(m_mainWindow, SIGNAL(nextEvent()),     this, SLOT(nextEvent()));
   QObject::connect(this, SIGNAL(getNewEvent()), this, SLOT(nextEvent()));
   QObject::connect(m_mainWindow, SIGNAL(previousEvent()), this, SLOT(previousEvent()));
@@ -1573,11 +1422,7 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(print()),         this, SIGNAL(print()));
   QObject::connect(m_mainWindow, SIGNAL(save()),          this, SIGNAL(save()));
   QObject::connect(m_mainWindow, SIGNAL(showAbout()),     this, SLOT(showAbout()));
-  QObject::connect(m_mainWindow->actionEvent_Filter, SIGNAL(triggered()), m_selector, SLOT(show()));
-  QObject::connect(m_mainWindow->actionPicture_Publishing, SIGNAL(triggered()), this, SLOT(showPublish()));
 
-  m_mainWindow->actionAuto->setChecked(false);
-  m_mainWindow->actionAuto->setEnabled(false);
   m_mainWindow->actionNext->setEnabled(false);
   m_mainWindow->actionPrevious->setEnabled(false);
 
@@ -1600,10 +1445,6 @@ ISpyApplication::setupMainWindow(void)
   m_itemFont->setPixelSize(11);
 
   m_mainWindow->restoreSettings();
-  m_pubDialog = new ISpyPicturePublishingDialog(m_mainWindow->centralWidget());
-  m_printTimer->setInterval(m_pubDialog->delay());
-  if(m_pubDialog->isAuto())
-    m_printTimer->start();
 
   // Create the various cameras as defined by the various CameraSpecs.
   // We use an extra Camera struct to maintain this information, because
@@ -1631,15 +1472,6 @@ ISpyApplication::setupMainWindow(void)
     view.camera = &(m_cameras[spec->cameraIndex]);
   }
 
-  // Create the filters
-  for(size_t fsi = 0, fse = m_filterSpecs.size(); fsi != fse; ++fsi)
-  {
-    FilterSpec *spec = &(m_filterSpecs[fsi]);
-    m_filters.resize(m_filters.size() + 1);
-    Filter &filter = m_filters.back();
-    filter.spec = spec;
-  }
-
   // Setup the combo box with the possible views.
   m_mainWindow->viewSelector->clear();
   for (size_t vi = 0, ve = m_views.size(); vi != ve; ++vi)
@@ -1664,21 +1496,6 @@ ISpyApplication::setupMainWindow(void)
 }
 
 void
-ISpyApplication::showPublish(void)
-{
-  m_pubDialog->show();
-  if(m_pubDialog->exec() == QDialog::Accepted)
-  {
-    if(m_printTimer->isActive())
-      m_printTimer->stop();
-    m_printTimer->setInterval(m_pubDialog->delay());
-    
-    if(m_pubDialog->isAuto())
-      m_printTimer->start();
-  }
-}
-
-void
 ISpyApplication::updateEventMessage()
 {
   QString eventMessage = m_eventName;
@@ -1686,13 +1503,6 @@ ISpyApplication::updateEventMessage()
   eventMessage.replace("/", "-");
   eventMessage.replace(" ", "_");
   m_viewer->setEventMessage(eventMessage);
-}
-
-void
-ISpyApplication::stopFiltering(void)
-{
-  m_counter = 0;
-  m_nextEvent = false;
 }
 
 void
@@ -1834,7 +1644,6 @@ ISpyApplication::doRun(void)
   QObject::connect(this, SIGNAL(print()), m_viewer, SLOT(print()));
   QObject::connect(m_viewer, SIGNAL(cameraToggled()), 
                    this, SLOT(cameraToggled()));
-  QObject::connect(m_printTimer, SIGNAL(timeout()), this, SLOT(autoPrint()));
   QObject::connect(m_mainWindow->actionQuit, SIGNAL(triggered()), this, SLOT(onExit()));
   QObject::connect(this, SIGNAL(showMessage(const QString &)), 
                    m_mainWindow->statusBar(), 
@@ -1877,31 +1686,10 @@ ISpyApplication::doRun(void)
   QObject::connect(m_mainWindow->actionOpenWizard, SIGNAL(triggered()),
                    m_splash, SLOT(showWizard()));
 
-  // Add a timer which indicates how long it has been since the last online event
-  // Run in maximized mode for online
-  // FIXME: put it in a more approprate place
-  if (m_online)
-  {
-    m_mainWindow->actionAuto->setEnabled(true);
-    m_mainWindow->actionNext->setEnabled(true);
-    m_mainWindow->actionAuto->setChecked(true);
-    m_mainWindow->showMaximized();
-    autoEvents();
-
-    ISpyDigitalClock *clock = new ISpyDigitalClock(m_mainWindow->toolBarEvent);
-    m_mainWindow->toolBarEvent->addWidget (clock);
-    QObject::connect(this, SIGNAL(resetCounter()), clock, SLOT(resetTime()));
-    clock->show();
-    nextEvent();
-  }
-  else if (! m_archives[0] && ! m_archives[1])
-  {
+  if (! m_archives[0] && ! m_archives[1])
     m_splash->showWizard();
-  }
   else
-  {
     m_mainWindow->show();
-  }
 
   // We look up for changes in the CSS file only at the end, so that 
   // we are sure that there is actually something to update.
@@ -1928,35 +1716,6 @@ ISpyApplication::doRun(void)
   delete m_viewer;
   delete m_splash;
   return 0;
-}
-
-/** Request a View to print its scene in a png format.
-    Assuming that the status bar hold event nd run information,
-    it will be added as the image metadata.
-
-    Print images in a directory specified by a publisher dialog.
- */
-void
-ISpyApplication::autoPrint(void)
-{
-  // Check if the view should be printed
-  QStringList viewsToPublish = m_pubDialog->views();
-  
-  bool flag = false;
-  foreach(QString viewStr, viewsToPublish)
-  {
-    if(m_metaData.contains(viewStr, Qt::CaseInsensitive))
-    {
-      flag = true;
-    }
-  }
-  
-  if(! flag) { return; }
-  
-  QDir curDir = QDir::current();
-  QDir::setCurrent(m_pubDialog->dir());
-  m_viewer->autoPrint(m_metaData);
-  QDir::setCurrent(curDir.path());
 }
 
 /** Respond to selection changes in the tree view.  This may be due to
@@ -2607,55 +2366,18 @@ ISpyApplication::updateCollections(void)
   for (size_t i = 0, e = m_collections.size(); i != e; ++i)
     m_3DModel->contents()->addChild(m_collections[i].node);
 
-  // For now keep all controls enabled for online
-  if (m_online)
-  {
-    m_mainWindow->actionAuto->setEnabled(true);
-    m_mainWindow->actionNext->setEnabled(true);
-    m_mainWindow->actionPrevious->setEnabled(true);
-  }
-  else
-  {   
-    // Finally adjust buttons to what can be done here.
-    m_mainWindow->actionAuto->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
-    m_mainWindow->actionNext->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
-    m_mainWindow->actionPrevious->setEnabled(m_eventIndex > 0);
+  // Finally adjust buttons to what can be done here.
+  m_mainWindow->actionNext->setEnabled(! m_events.empty() && m_eventIndex < m_events.size()-1);
+  m_mainWindow->actionPrevious->setEnabled(m_eventIndex > 0);
   
-    if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
-    {
-      m_mainWindow->showNormal();
-      m_mainWindow->dockTreeWidget->setShown(true);
-      m_mainWindow->dockTableWidget->setShown(true);
-      m_mainWindow->menubar->show();
-      m_3DToolBar->show();
-      m_idleTimer->stop();
-      m_idleTimer->disconnect();
-      m_animationTimer->stop();
-      m_animationTimer->disconnect();
-      m_timer->stop();
-      m_timer->disconnect();
-      m_mainWindow->actionAuto->setChecked(false);
-    }
-  }
-
-  // Update registered filters
-  //
-  for(size_t fi = 0; fi < m_filters.size(); ++fi)
+  if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
   {
-    Filter &f = m_filters[fi];
-    Collections::iterator cit = find_if (m_collections.begin(), m_collections.end(), MatchByName(f.spec->collection));
-    if(cit != m_collections.end())
-    {
-      f.data[0] = (*cit).data[0];
-      f.collectionName = (*cit).collectionName;
-      
-      // There must be two fields
-      assert(f.spec->requiredFields.size() == 2);
-      f.result = doFilterCollection(*cit, f.spec->requiredFields[0].c_str(), f.spec->requiredFields[1].c_str());
-    }
+    m_mainWindow->showNormal();
+    m_mainWindow->dockTreeWidget->setShown(true);
+    m_mainWindow->dockTableWidget->setShown(true);
+    m_mainWindow->menubar->show();
+    m_3DToolBar->show();
   }
-  
-  m_selector->updateDialog();
 }
 
 /** Read in and display a new event. */
@@ -2671,54 +2393,6 @@ ISpyApplication::newEvent(void)
   m_eventName = event.contents->name();
   showMessage(m_eventName);
   updateEventMessage();
-}
-
-/* Run current event through the filters */
-void
-ISpyApplication::filterEvent(void)
-{
-  bool restorePlay = false;
-  bool restoreAnim = false;
-  bool restoreIdle = false;
-  if(m_animationTimer->isActive())
-  {
-    restorePlay = true;
-    m_animationTimer->stop();
-  }
-  if(m_idleTimer->isActive())
-  {
-    restoreIdle = true;
-    m_idleTimer->stop();
-  }
-  
-  if(m_timer->isActive())
-  {
-    restoreAnim = true;
-    m_timer->stop();
-  }
-  
-  // Skip an event if it did not pass the filters.
-  // Filter only forward.
-  if(!filter() && m_nextEvent)
-  {
-    QCoreApplication::processEvents();
-    m_filterProgressDialog->show();
-
-    // When the filtering is canceled from the dialog above,
-    // the flag is set to false.
-    if(m_nextEvent)
-      getNewEvent();
-  }  
-  else
-    m_counter = 0;
-  
-  m_filterProgressDialog->hide();
-  if(restorePlay)
-    m_animationTimer->start();
-  if(restoreIdle)
-    m_idleTimer->start();
-  if(restoreAnim)
-    m_timer->start();
 }
 
 /** Prompt for a new file to be openend. */
@@ -2853,7 +2527,6 @@ ISpyApplication::simpleOpen(const QString &fileName)
       update = true;
     else
     {
-      m_filterProgressDialog->setMaximum(m_events.size());
       newEvent();
       update = false;
     }
@@ -3164,96 +2837,6 @@ ISpyApplication::openUrlDialog(void)
   this->downloadFile(dialog.textValue());
 }
 
-/** Toggle events auto-play. */
-void
-ISpyApplication::autoEvents(void)
-{
-  QSettings settings;
-  settings.beginGroup("igevents");
-  int animationTimeout = settings.value("animation", 20000).value<int>();
-  int timeout = settings.value("timeout", 60000).value<int>();
-  int idleTimeout = settings.value("idle", 15*60000).value<int>();
-  settings.endGroup();
-  m_autoEvents = m_mainWindow->actionAuto->isChecked();
-
-  if (m_autoEvents)
-  {
-    m_mainWindow->showMaximized();
-    m_mainWindow->dockTreeWidget->setShown(false);
-    m_mainWindow->dockTableWidget->setShown(false);
-    m_mainWindow->menubar->hide();
-    m_3DToolBar->hide();
-    // Stops animation and restores all the camera.
-    if (m_viewer->isAnimating())
-      m_viewer->stopAnimating();
-
-    for(size_t i = 0, e = m_cameras.size(); i < e; ++i)
-      restoreCameraFromSpec(m_cameras[i].spec, m_cameras[i]);    
-    
-    QObject::connect(m_animationTimer, SIGNAL(timeout()), SLOT(animateViews()));
-
-    // Keep an eye on idle application
-    // Auto-play should automatically restart if iSpy is idle for some time
-    if(! m_idleTimer->isActive())
-    {      
-      m_idleTimer->stop();
-      m_idleTimer->disconnect();
-      QObject::connect(m_idleTimer, SIGNAL(timeout()), SLOT(restartPlay()));
-      m_idleTimer->start(idleTimeout);
-    }
-    QObject::connect(m_timer, SIGNAL(timeout()), SLOT(nextEvent()));
-
-    m_animationTimer->setInterval(animationTimeout);
-    m_animationTimer->start();
-    m_timer->setInterval(timeout);
-    m_timer->start();
-  }
-  else
-  {
-    m_mainWindow->showNormal();
-    m_mainWindow->dockTreeWidget->setShown(true);
-    m_mainWindow->dockTableWidget->setShown(true);
-    m_mainWindow->menubar->show();
-    m_3DToolBar->show();
-    m_animationTimer->stop();
-    m_animationTimer->disconnect();
-    m_timer->stop();
-    m_timer->disconnect();
-  }
-}
-
-/** Poor mans animation: auto-switching between the views.
-
-    Skip views that do not have "autoplay" flag set.
-
-    In the case no views have the autoplay flag set, simply stick with the 
-    current one.
-*/
-void
-ISpyApplication::animateViews(void) 
-{
-  // Check if any view in autoplay mode. Simply exit in case none is found.
-  bool anyOn = false;
-  for (size_t i = 0, e = m_views.size(); i != e; ++i)
-    anyOn |= m_views[i].spec->autoplay;
-  if (!anyOn)
-    return;
-
-  // Rotate views that have the autoplay flag set.
-  int next = (m_currentViewIndex + 1) % m_mainWindow->viewSelector->count();
-
-  if (m_views[next].spec->autoplay)
-  {
-    m_mainWindow->viewSelector->setCurrentIndex (next);
-    switchView(next);
-  }
-  else
-  {
-    m_currentViewIndex = next;
-    animateViews();
-  }
-}
-
 /** Go to the next event. */
 void
 ISpyApplication::nextEvent(void)
@@ -3261,13 +2844,7 @@ ISpyApplication::nextEvent(void)
   m_nextEvent = true;
 
   if (++m_eventIndex < m_events.size())
-  {
-    m_filterProgressDialog->setMaximum(m_events.size() - m_eventIndex);
-    m_filterProgressDialog->setValue(++m_counter);
-    m_filterProgressDialog->setLabelText("Filtered out " + QString::number(m_counter) + " events.");
     newEvent();
-    filterEvent();
-  }
   else
     m_eventIndex = (m_events.empty() ? 0 : m_events.size()-1);
 }
@@ -3326,25 +2903,6 @@ ISpyApplication::resetToHomePosition(void)
   switchView(m_currentViewIndex);
 }
 
-/** SLOT to restart play if the play has been paused for a long time */
-void
-ISpyApplication::restartPlay (void)
-{
-  if (! m_autoEvents)
-  {
-    ISpyRestartPlayDialog dialog(m_mainWindow->centralWidget());
-    if (dialog.exec() == QDialog::Accepted)
-    {
-      m_mainWindow->actionAuto->setChecked(true);
-      autoEvents();
-    }
-    else 
-    {
-      m_idleTimer->stop();
-      m_idleTimer->disconnect();
-    }
-  }
-}
 
 /** Switch view. */
 void
