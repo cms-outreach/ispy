@@ -1421,6 +1421,13 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
 
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
+    double pt = ci->get(PT);
+    std::cout<<"make3DAnyTracksNoVertex: pt, minPt = "<< pt <<" "<< style->minPt <<std::endl;
+
+    if ( pt < style->minPt )
+      continue;
+
+
     // Determine the sign of the last tracking rechit and always project the
     // track so that the same map is used for projection.
     //
@@ -1510,6 +1517,11 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
   
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
   {
+    double pt = ci->get(PT);
+    std::cout<<"mkae3DAnyTracks: pt, minPt = "<< pt <<" "<< style->minPt <<std::endl;
+    if ( pt < style->minPt )
+      continue;
+
     // Determine the sign of the last tracking rechit and always project the
     // track so that the same map is used for projection.
     //
