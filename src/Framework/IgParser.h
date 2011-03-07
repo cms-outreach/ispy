@@ -1,6 +1,11 @@
 #ifndef IGUANA_IG_PARSER_H
 #define IGUANA_IG_PARSER_H
-#include <Framework/IgCollection.h>
+
+#ifdef PROJECT_NAME
+ #include <ISpy/Services/interface/IgCollection.h>
+#else
+ #include <Framework/IgCollection.h>
+#endif
 
 class ParseError
 {
@@ -134,16 +139,37 @@ public:
 
   void parseDoubleTuple(double *result, size_t e)
     {
-      m_buffer += strspn(m_buffer, "\n\t (");;
+      if ( int i = strspn(m_buffer, "\n\t (") )
+        m_buffer += i;
+      if ( int j = strspn(m_buffer, "\n\t [") )
+        m_buffer += j;
+
       switch(e)
       {
         case 4: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
         case 3: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
         case 2: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t ,");
-        case 1: parseDouble(*result++); m_buffer += strspn(m_buffer, "\n\t )");
-      }
+        case 1: 
+          {
+            parseDouble(*result++); 
+            
+            if ( int k = strspn(m_buffer, "\n\t )") )
+            {
+              m_buffer += k;
+              break;
+            }
+            if ( strspn(m_buffer, "\n\t ]") )
+            {
+              // No matter how many closing ]s we have 
+              // we only want to increment by one,
+              // so that we catch the closing ] of the tuple
+              m_buffer += 1;
+              break;
+            }
+          }
+      }                           
     }
-
+  
   void parseAssociation(void)
     {
       IgRef a, b;

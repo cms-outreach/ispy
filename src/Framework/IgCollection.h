@@ -1,7 +1,11 @@
 #ifndef IGUANA_IG_COLLECTION_H
 #define IGUANA_IG_COLLECTION_H
 
-#include <Framework/IgLinearAlgebra.h>
+#ifdef PROJECT_NAME
+# include <ISpy/Services/interface/IgLinearAlgebra.h>
+#else
+# include <Framework/IgLinearAlgebra.h>
+#endif
 #include <cstring>
 #include <string>
 #include <cassert>
@@ -193,19 +197,19 @@ public:
       case VECTOR_2D:
         {
           IgV2d &v = get<IgV2d>(position);
-          stream << "("<< v.x() << ", " << v.y() << ")";
+          stream << "["<< v.x() << ", " << v.y() << "]";
         }
         break;
       case VECTOR_3D:
         {
           IgV3d &v = get<IgV3d>(position);
-          stream << "("<< v.x() << ", " << v.y() << ", " << v.z() << ")";
+          stream << "["<< v.x() << ", " << v.y() << ", " << v.z() << "]";
         }
         break;
       case VECTOR_4D:
         {
           IgV4d &v = get<IgV4d>(position);
-          stream << "("<< v.x() << ", " << v.y() << ", " << v.z() << ", " << v.w() << ")";
+          stream << "["<< v.x() << ", " << v.y() << ", " << v.z() << ", " << v.w() << "]";
         }
         break;
       default:
