@@ -113,6 +113,9 @@ TEC_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.8; }
 EB_V1 {diffuse-color: rgb(0.5, 0.8, 1.0); transparency:0.8;}
 EE_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.8;} 
 HO_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
+HE_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
+HB_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
+HF_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
 
 // Default event objects style.
 TriggerObjects_V1
@@ -135,6 +138,12 @@ Tracks_V2
   draw-style: lines; line-width: 3;
   diffuse-color: rgb(1.0, 0.7, 0.1);
   marker-style: outline;
+}
+
+TrackerDets_V1
+{
+  diffuse-color: rgb(1.0, 0.7, 0.1);
+  transparency: 0.5;
 }
 
 PixelDigis_V1
@@ -276,6 +285,11 @@ GlobalMuons_V1 {
   diffuse-color: rgb(1.0, 0.0, 0.0);
 }
 
+MuonChambers_V1 {
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+  transparency:0.5;
+}
+
 PFRecTracks_V1 {
   draw-style: lines; 
   line-width: 3;
@@ -357,18 +371,21 @@ Jets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
+  min-energy: 50.0;
 }
 
 PATJets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
+  min-energy: 50.0;
 }
 
 PFJets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
+  min-energy: 50.0;
 }
 
 METs_V1 { 
