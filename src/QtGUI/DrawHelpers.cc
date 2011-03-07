@@ -1,6 +1,7 @@
 #include "QtGUI/DrawHelpers.h"
 #include "QtGUI/Style.h"
 #include "QtGUI/IgSoJet.h"
+#include "QtGUI/IgSoPcon.h"
 #include "QtGUI/IgDrawTowerHelper.h"
 #include "QtGUI/IgDrawSplinesHelper.h"
 #include "Framework/IgCollection.h"
@@ -80,6 +81,7 @@ void initHelpers(void)
 {
   IgSoShapeKit::initClass();
   IgSoJet::initClass();
+  IgSoPcon::initClass();
 }
 
 // ------------------------------------------------------
@@ -521,6 +523,49 @@ makeAnyBoxHelper(IgCollection **collections, IgAssociations **,
       drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4, b1,b2,b3,b4);
     else if (!solid && !projected)
       drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
+  }
+}
+
+static void
+make3DAnyCylinder(IgCollection **collections, IgAssociations **,
+                  SoSeparator *sep, Style* style, Projectors &projectors)
+{
+  IgCollection* c = collections[0];
+
+  IgProperty INNER_R_PLUS(c, "innerR_plus");
+  IgProperty OUTER_R_PLUS(c, "outerR_plus");
+  IgProperty Z_PLUS(c, "z_plus");
+  
+  IgProperty INNER_R_MINUS(c, "innerR_minus");
+  IgProperty OUTER_R_MINUS(c, "outerR_minus");
+  IgProperty Z_MINUS(c, "z_minus");
+
+  for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
+  {
+    double innerR_plus = ci->get<double>(INNER_R_PLUS);
+    double outerR_plus = ci->get<double>(OUTER_R_PLUS);
+    double z_plus = ci->get<double>(Z_PLUS);
+    
+    double innerR_minus = ci->get<double>(INNER_R_MINUS);
+    double outerR_minus = ci->get<double>(OUTER_R_MINUS);
+    double z_minus = ci->get<double>(Z_MINUS);
+  
+    std::vector<float> zvals;
+    zvals.push_back(z_minus);
+    zvals.push_back(z_plus);
+
+    std::vector<float> rmin;
+    rmin.push_back(innerR_minus);
+    rmin.push_back(innerR_plus);
+
+    std::vector<float> rmax;
+    rmax.push_back(outerR_minus);
+    rmax.push_back(outerR_plus);
+
+    IgSoPcon* cylinder = new IgSoPcon();
+    cylinder->makePcon(zvals, rmin, rmax);
+
+    sep->addChild(cylinder);
   }
 }
 
@@ -2382,4 +2427,5 @@ registerDrawHelpers(std::map<std::string, Make3D> &helpers)
   helpers.insert(std::make_pair("makeRZEPRecHits", makeRZEPRecHits));
   helpers.insert(std::make_pair("makeRZHCalRecHits", makeRZHCalRecHits));
   helpers.insert(std::make_pair("makeLegoPhotons", makeLegoPhotons));
+  helpers.insert(std::make_pair("make3DAnyCylinder", make3DAnyCylinder));
 }

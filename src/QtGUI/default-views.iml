@@ -65,6 +65,11 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
+   <collection label="Detector/Tracker TOB (simplified)"
+              spec="TOB_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              draw="make3DAnyCylinder"
+              visibility="none"/>	      
+
   <collection label="Detector/Tracker TID"
               spec="SiStripTID3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
@@ -75,14 +80,29 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
+  <collection label="Detector/Tracker TEC (simplified)"
+              spec="TEC_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              draw="make3DAnyCylinder"
+              visibility="none"/>
+
   <collection label="Detector/ECAL Barrel"
               spec="EcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
+  <collection label="Detector/ECAL Barrel (simplified)"
+              spec="EB_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              draw="make3DAnyCylinder"
+              visibility="none"/>
+
   <collection label="Detector/ECAL Endcap"
               spec="EcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
+              visibility="none"/>
+	      
+  <collection label="Detector/ECAL Endcap (simplified)"
+              spec="EE_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              draw="make3DAnyCylinder"
               visibility="none"/>
 
   <collection label="Detector/Preshower"
@@ -103,6 +123,11 @@
   <collection label="Detector/HCAL Outer"
               spec="HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"/>
+
+  <collection label="Detector/HCAL Outer (simplified)"
+              spec="HO_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
+              draw="make3DAnyCylinder"
+              visibility="none"/>
 
   <collection label="Detector/HCAL Forward"
               spec="HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"

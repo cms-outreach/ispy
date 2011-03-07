@@ -35,7 +35,6 @@ ISpyMainWindow::setupActions(void)
   settings->sync();
   m_settingsEditor->setSettingsObject(settings);
 
-  QObject::connect(actionAuto, SIGNAL(triggered()), this, SIGNAL(autoEvents()));
   QObject::connect(actionNext, SIGNAL(triggered()), this, SIGNAL(nextEvent()));
   QObject::connect(actionPrevious, SIGNAL(triggered()), this, SIGNAL(previousEvent()));
   QObject::connect(actionPrint, SIGNAL(triggered()), this, SIGNAL(print()));
@@ -64,13 +63,6 @@ ISpyMainWindow::restoreSettings(void)
     dockTableWidget->setFloating(settings.value("mainwindow/tableview/floating").value<bool>());
   if (settings.contains("mainwindow/configuration/save"))
     actionSaveSettings->setChecked(settings.value("mainwindow/configuration/save").value<bool>());
-
-  if (settings.contains("igevents/auto"))
-  {
-    bool flag = settings.value("igevents/auto").value<bool>();
-    actionAuto->setEnabled(flag);
-    actionAuto->setChecked(flag);
-  }
 }
 
 void
@@ -90,7 +82,6 @@ ISpyMainWindow::saveSettings(void)
     settings.setValue("mainwindow/tableview/shown", tableFlag);
     settings.setValue("mainwindow/tableview/floating", dockTableWidget->isFloating());
 
-    settings.setValue("igevents/auto", actionAuto->isChecked());
     //  settings.setValue("mainwindow/toolbars/file/shown", actionFile_Toolbar->isChecked());
     //  settings.setValue("mainwindow/toolbars/event/shown", actionFile_Event->isChecked());
   }

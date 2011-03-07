@@ -102,8 +102,6 @@ public slots:
   void                  openUrlDialog(void);
   void                  openWithFallbackGeometry(const QString &fileName);
   void                  connect(void);
-  void                  autoEvents(void);
-  void                  animateViews(void);
   void                  nextEvent(void);
   void                  previousEvent(void);
   void                  showAbout(void);
@@ -112,7 +110,6 @@ public slots:
   void                  openCss(const QString &filename);
   void                  cssDirChanged(const QString &cssDir);
   void                  checkCss(void);
-  void                  autoPrint(void);
 
 signals:
   void                  showMessage(const QString &fileName);
@@ -145,10 +142,6 @@ private slots:
   void                  switchView(int i);
   void                  cameraToggled(void);
   void                  resetToHomePosition(void);
-  void                  restartPlay(void);
-  void                  updateFilterListModel(const QString& title);
-  void                  showPublish(void);
-  void                  stopFiltering(void);
 
 private:
   struct CollectionSpec
@@ -224,21 +217,6 @@ private:
     IgMember                    *contents;
   };
 
-  struct FilterSpec
-  {
-    std::string                 friendlyName;
-    std::string                 collection;
-    std::vector<std::string>    requiredFields;
-  };
-  
-  struct Filter
-  {
-    FilterSpec                  *spec;
-    IgCollection                *data[2];
-    std::string                 collectionName;
-    bool                      	result;
-  };
-
   typedef std::vector<CollectionSpec>   CollectionSpecs;
   typedef std::vector<CameraSpec>       CameraSpecs;
   typedef std::vector<ViewSpec>         ViewSpecs;
@@ -250,9 +228,6 @@ private:
   typedef std::vector<size_t>           GroupIndex;
   typedef std::vector<bool>             Visibilities;
   typedef std::map<std::string, size_t> VisibilityGroupMap;
-  typedef std::vector<Filter>           Filters;
-  typedef std::vector<FilterSpec>       FilterSpecs;
-
 
   struct SortBySpecAndName
   {
@@ -271,7 +246,6 @@ private:
   int                   doRun(void);
   void                  defaultSettings(void);
   void                  restoreSettings(void);
-  void                  onlineConfig(const char* server);
 
   int                   getCollectionIndex(QTreeWidgetItem *item);
 
@@ -285,12 +259,6 @@ private:
   bool                  simpleOpen(const QString &fileName);
   void                  setupActions(void);
   void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
-  void                  filter(const char *friendlyName,
-			       const char *collectionSpec);
-  bool                  filter(void);
-  void			filterEvent(void);
-  bool                  doFilterCollection(const Collection &collection, const char *algoName, const char *result);
-  void                  doUpdateFilterListModel(const Collection &collection);
   // Helper methods to handle rendering styles.
   SoMarkerSet::MarkerType   getMarkerType(enum ISPY_MARKER_STYLE style,
                                           enum ISPY_MARKER_SIZE size,
@@ -328,8 +296,6 @@ private:
   VisibilityGroupMap    m_visibilityGroupMap;
   size_t                m_eventIndex;
   size_t                m_currentViewIndex;
-  FilterSpecs         	m_filterSpecs;
-  Filters             	m_filters;
 
   IgCollectionListModel *m_listModel;
   IgCollectionTableModel *m_tableModel;
@@ -342,14 +308,7 @@ private:
   ISpyEventSelectorDialog *m_selector;
   bool                   m_nextEvent;
     
-  bool                  m_online;
-  std::string 		m_host;
-  int			m_port;
-  bool                  m_autoEvents;
   bool                  m_exiting;
-  QTimer                *m_animationTimer;
-  QTimer                *m_timer;
-  QTimer                *m_idleTimer;
   QNetworkAccessManager *m_networkManager;
   QProgressDialog       *m_progressDialog;
   QToolBar              *m_3DToolBar;
@@ -361,9 +320,7 @@ private:
   QActionGroup          *m_viewModeGroup;
   QFileSystemWatcher    *m_fileWatcher;
   ISpyPicturePublishingDialog *m_pubDialog;
-  QTimer		*m_printTimer;
   QString		m_metaData;
-  QProgressDialog       *m_filterProgressDialog;
   int			m_counter;
 
   class MatchByName {

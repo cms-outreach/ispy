@@ -3,6 +3,9 @@ project(iSpy)
 include(FindQt4)
 enable_testing()
 
+set(LIBRARY_OUTPUT_PATH build)
+set(EXECUTABLE_OUTPUT_PATH build)
+set(CMAKE_CURRENT_BINARY_DIR build)
 set(CMAKE_OSX_ARCHITECTURES "ppc;i386")
 set(CMAKE_OSX_DEPLOYMENT_TARGET 10.5)
 set(CMAKE_OSX_SYSROOT /Developer/SDKs/MacOSX10.5.sdk)
@@ -43,7 +46,7 @@ if(APPLE)
    find_library(COIN3D_LIBRARIES Coin)
    find_path(COIN3D_INCLUDE_DIRS Inventor/So.h NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 else(APPLE)
-   find_package(Coin3d REQUIRED)
+   find_package(Coin3D REQUIRED)
 endif(APPLE)
 
 find_package(OpenGL REQUIRED)
@@ -83,14 +86,20 @@ set (ISPY_SOURCES "src/QtGUI/bin/ispy.cpp" ${QTGUI_SOURCES}
                   ${QTGUI_MOC_PROCESSED_FILES})
 
 if(APPLE)
-   add_executable(iSpy MACOSX_BUNDLE ${ISPY_SOURCES})
-   set_target_properties(iSpy PROPERTIES 
-                              MACOSX_BUNDLE_INFO_PLIST "src/QtGUI/resources/Info.plist")
+  set(ISPY_NAME iSpy)
 else(APPLE)
-   add_executable(ispy ${ISPY_SOURCES})
+  set(ISPY_NAME ispy)
 endif(APPLE)
 
-target_link_libraries(iSpy ISpyFramework ${QT_LIBRARIES} 
+if(APPLE)
+   add_executable(${ISPY_NAME} MACOSX_BUNDLE ${ISPY_SOURCES})
+   set_target_properties(${ISPY_NAME} PROPERTIES 
+                              MACOSX_BUNDLE_INFO_PLIST "src/QtGUI/resources/Info.plist")
+else(APPLE)
+   add_executable(${ISPY_NAME} ${ISPY_SOURCES})
+endif(APPLE)
+
+target_link_libraries(${ISPY_NAME} ISpyFramework ${QT_LIBRARIES} 
                       ${QT_QTNETWORK_LIBRARIES}
                       ${QT_QTOPENGL_LIBRARIES} ${PCRE_LIBRARY}
                       ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}

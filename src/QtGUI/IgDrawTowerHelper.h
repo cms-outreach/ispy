@@ -3,20 +3,13 @@
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
-#include "Framework/IgLinearAlgebra.h"
-#include <Inventor/nodes/SoGroup.h>
-#include <Inventor/nodes/SoIndexedFaceSet.h>
-#include <Inventor/nodes/SoIndexedLineSet.h>
 #include "QtGUI/Projectors.h"
 #include <vector>
 
-//<<<<<< PUBLIC DEFINES                                                 >>>>>>
-//<<<<<< PUBLIC CONSTANTS                                               >>>>>>
-//<<<<<< PUBLIC TYPES                                                   >>>>>>
-//<<<<<< PUBLIC VARIABLES                                               >>>>>>
-//<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
-//<<<<<< CLASS DECLARATIONS                                             >>>>>>
-
+class SoGroup;
+class SoIndexedLineSet;
+class SoIndexedFaceSet;
+class SoVertexProperty;
 
 /**
    Tower drawing helper(e.g. for histogram like energy deposits)
@@ -32,7 +25,6 @@
    1) the back face(e.g. if drawing a detector element)
    2) before or beyond the back face depending on e.g. energy
 */
-
 
 class IgDrawTowerHelper
 {

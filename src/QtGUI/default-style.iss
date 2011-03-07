@@ -107,6 +107,13 @@ RPCRPhi_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);transparency:0.5;}
 RPCRZ_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);transparency:0.5;}
 CaloLego_V1 {diffuse-color: rgb(1.0, 1.0, 1.0);transparency:0.5;}
 
+// Simplified geometry
+TOB_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.8; }
+TEC_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.8; }
+EB_V1 {diffuse-color: rgb(0.5, 0.8, 1.0); transparency:0.8;}
+EE_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.8;} 
+HO_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.8;}
+
 // Default event objects style.
 TriggerObjects_V1
 {

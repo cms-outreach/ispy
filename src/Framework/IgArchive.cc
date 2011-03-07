@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <cstring>
 
 void
 IgArchive::readMembers()
