@@ -86,6 +86,7 @@ struct StyleSpec
   ISPY_MARKER_STYLE           markerStyle;
   ISPY_TEXT_ALIGN             textAlign;
   ISPY_ANNOTATION_LEVEL       annotationLevel;
+  double                      minPt;
   double                      minEnergy;
   double                      maxEnergy;
   double                      energyScale;
@@ -106,6 +107,7 @@ struct Style
   SoMarkerSet::MarkerType     markerType;
   SbViewportRegion            viewport;
   SoText2::Justification      textAlign;
+  double                      minPt;
   double                      minEnergy;
   double                      maxEnergy;
   double                      energyScale;

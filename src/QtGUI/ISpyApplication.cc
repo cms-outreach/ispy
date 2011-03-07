@@ -228,6 +228,7 @@ public:
     spec.markerSize = ISPY_NORMAL_MARKER_SIZE;
     spec.markerStyle = ISPY_FILLED_MARKER_STYLE;
     spec.textAlign = ISPY_TEXT_ALIGN_LEFT;
+    spec.minPt = 1.0;       // Default value is 1.0 GeV
     spec.minEnergy = 0.2;   // Default value is 0.2 GeV
     spec.maxEnergy = 5.;    // Default value is 5.0 GeV
     spec.energyScale = 1.;  // Default value is 0.1 m/GeV
@@ -265,6 +266,7 @@ public:
       spec.markerSize = previous.markerSize;
       spec.markerStyle = previous.markerStyle;
       spec.textAlign = previous.textAlign;
+      spec.minPt = previous.minPt;
       spec.minEnergy = previous.minEnergy;
       spec.maxEnergy = previous.maxEnergy;
       spec.energyScale = previous.energyScale;
@@ -358,6 +360,13 @@ public:
       spec.annotationLevel = ISPY_ANNOTATION_LEVEL_FULL;
     else if (key == "annotation-level")
       throw CssParseError("Syntax error while defining annotation-level", value);      
+    else if (key == "min-pt")
+    {
+      std::cout<<"key == min-pt"<<std::endl;
+      spec.minPt = strtod(value.c_str(), &endptr);
+      if (*endptr)
+	throw CssParseError("Error while parsing min-pt value", value);
+    }
     else if (key == "min-energy")
     {
       spec.minEnergy = strtod(value.c_str(), &endptr);
@@ -1930,6 +1939,7 @@ ISpyApplication::findStyle(const char *pattern)
       case ISPY_TEXT_ALIGN_RIGHT: style.textAlign = SoText2::RIGHT; break;
       case ISPY_TEXT_ALIGN_CENTER: style.textAlign = SoText2::CENTER; break;        
     }
+    style.minPt = spec.minPt;
     style.minEnergy = spec.minEnergy;
     style.maxEnergy = spec.maxEnergy;
     style.energyScale = spec.energyScale;

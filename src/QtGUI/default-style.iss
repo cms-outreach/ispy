@@ -19,6 +19,7 @@
   marker-size: normal;
   marker-style: filled;
   text-align: left;
+  min-pt: 1.0;
   min-energy: 0.2;
   max-energy: 5.0;
   energy-scale: 1.0;
@@ -130,6 +131,7 @@ Tracks_V1
 {
   draw-style: lines; line-width: 3;
   diffuse-color: rgb(1.0, 0.7, 0.1);
+  min-pt: 1.0;
   marker-style: outline;
 }
 
@@ -137,6 +139,7 @@ Tracks_V2
 {
   draw-style: lines; line-width: 3;
   diffuse-color: rgb(1.0, 0.7, 0.1);
+  min-pt: 10.0;
   marker-style: outline;
 }
 
