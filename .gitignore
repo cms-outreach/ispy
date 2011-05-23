@@ -28,3 +28,4 @@ Info.plist
 test_StyleParser
 test_igfiles
 build
+externals/sw
