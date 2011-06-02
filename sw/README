@@ -1,2 +1,0 @@
-This directory is used as installation base if you want to build externals (Qt, SoQt, etc) on your own.
-Notice that if you keep your ispy installation on Dropbox, you probably want to opt out syncing it.
