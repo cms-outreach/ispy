@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1050</width>
-    <height>855</height>
+    <height>852</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -150,6 +150,21 @@ alternate-background-color: #cfdde6;
  QTreeView::item:selected:!active {
      background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6b9be8, stop: 1 #577fbf);
  }
+
+QTreeView::branch:selected {
+     border-top: 1px solid #567dbc;
+     border-bottom: 1px solid #567dbc;
+	 border-left: 0px;
+	 border-right: 0px;
+ }
+
+QTreeView::branch:selected:active {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+}
+
+QTreeView::branch:selected:!active {
+     background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #6ea1f1, stop: 1 #567dbc);
+}
 </string>
        </property>
        <property name="frameShape">
