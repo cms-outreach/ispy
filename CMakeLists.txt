@@ -24,10 +24,10 @@ find_path(QT_CORE_HEADERS QtCore PATHS ${QT_ROOT}/include/QtCore NO_SYSTEM_ENVIR
 find_path(QT_GUI_HEADERS QtGui PATHS ${QT_ROOT}/include/QtGui NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)              
 find_path(QT_NETWORK_HEADERS QtNetwork PATHS ${QT_ROOT}/include/QtNetwork NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)             
 
-find_library(QT_NETWORK_LIBRARY QtNetwork ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(QT_GUI_LIBRARY QtGui ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(QT_CORE_LIBRARY QtCore ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(QT_OPENGL_LIBRARY QtOpenGL ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_NETWORK_LIBRARY libQtNetwork.a QtNetwork ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_GUI_LIBRARY libQtGUI.a QtGui ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_CORE_LIBRARY libQtCore.a QtCore ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_OPENGL_LIBRARY libQtOpenGL.a QtOpenGL ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 message(${QT_GUI_LIBRARY})
 
 set(QT_INCLUDE_DIRS ${QT_ROOT}/include ${QT_CORE_HEADERS} ${QT_GUI_HEADERS} ${QT_NETWORK_HEADERS})
@@ -78,7 +78,7 @@ MACRO(ISPY_WRAP_RSRC outfiles)
     MESSAGE(${outfile})
     ADD_CUSTOM_COMMAND(OUTPUT ${outfile}
       COMMAND ${QT_RCC_EXECUTABLE}
-      ARGS  -name ${outfilename} -o ${outfile} ${infile}
+      ARGS -o ${outfile} ${infile}
       MAIN_DEPENDENCY ${infile})
     SET(${outfiles} ${${outfiles}} ${outfile})
   ENDFOREACH(it)
@@ -105,16 +105,15 @@ endif(APPLE)
 
 find_package(OpenGL REQUIRED)
 
-find_library(PCRE_LIBRARY pcre REQUIRED)
-find_library(FREETYPE_LIBRARY freetype REQUIRED)
-find_library(FONTCONFIG_LIBRARY fontconfig REQUIRED)
-find_library(SOQT_LIBRARY SoQt REQUIRED)
-find_library(ZLIB_LIBRARY z REQUIRED NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(FREETYPE_LIBRARY libfreetype.a freetype REQUIRED)
+find_library(FONTCONFIG_LIBRARY libfontconfig.a fontconfig REQUIRED)
+find_library(SOQT_LIBRARY libSoQt.a SoQt REQUIRED)
+find_library(ZLIB_LIBRARY libz.a z REQUIRED NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 if(APPLE)
-   find_library(EXPAT_LIBRARY expatstatic REQUIRED)
+   find_library(EXPAT_LIBRARY libexpatstatic.a expatstatic REQUIRED)
    find_library(SECURITY_LIBRARY Security)
 else(APPLE)
-   find_library(EXPAT_LIBRARY expat REQUIRED)
+   find_library(EXPAT_LIBRARY libexpat.a expat REQUIRED)
 endif(APPLE)
 
 #include(${QT_USE_FILE})

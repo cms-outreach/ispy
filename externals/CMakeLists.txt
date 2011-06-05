@@ -6,31 +6,68 @@ set(CC gcc)
 set(CPP cpp)
 set(EXTERNALS_PREFIX sw)
 
+if(APPLE)
+  set(PLATFORM APPLE)                                                                                                                              
+else(APPLE)
+  set(PLATFORM LINUX)
+endif(APPLE)
+
 ExternalProject_Add(zlib
                     URL http://zlib.net/zlib-1.2.5.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
-                    CONFIGURE_COMMAND cd <SOURCE_DIR> && ./configure --prefix <INSTALL_DIR> 
+                    CONFIGURE_COMMAND cd <SOURCE_DIR> && 
+                      ./configure --prefix <INSTALL_DIR> --static
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
-                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
+                    INSTALL_COMMAND cd <SOURCE_DIR> && 
+                                  mkdir -p <INSTALL_DIR>/lib && 
+                                  mkdir -p <INSTALL_DIR>/include &&
+                                  cp -f libz.a <INSTALL_DIR>/lib &&
+                                  cp -f zconf.h zlib.h <INSTALL_DIR>/include
 )
 
 ExternalProject_Add(freetype
                     DEPENDS zlib
                     URL http://ftp.igh.cnrs.fr/pub/nongnu/freetype/freetype-2.4.4.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
-                    CONFIGURE_COMMAND cd <SOURCE_DIR> &&
-                    ./configure --prefix <INSTALL_DIR>
-                      ${PLATF_CFGFLAGS} --disable-libtool-lock 
-                      --enable-static --disable-shared --with-zlib
-                      CFLAGS='${PLATF_CFLAGS}' LDFLAGS='-L<INSTALL_DIR>/lib' LIBS='-lz'
-                      CXX=${CXX} CC=${CC} CPP=${CPP}
-                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
-                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
+                    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
+                                  ${PLATF_CFGFLAGS} --disable-libtool-lock 
+                                  --enable-static --disable-shared --with-zlib
+                                  CFLAGS='-I<INSTALL_DIR>/include' LDFLAGS='-L<INSTALL_DIR>/lib' LIBS='-lz'
+                                  CXX=${CXX} CC=${CC} CPP=${CPP}
+                    BUILD_COMMAND make -j 5
+                    INSTALL_COMMAND make -j 10 install
 )
 
+ExternalProject_Add(expat
+                    URL http://switch.dl.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz
+                    PREFIX ${EXTERNALS_PREFIX}
+                    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
+                                  --disable-libtool-lock --disable-dependency-tracking
+                                  --enable-static --disable-shared
+                    BUILD_COMMAND make -j 5
+                    INSTALL_COMMAND make -j 10 install ${EXPAT_ARCH_INSTALL} &&
+                                    ln -sf libexpat.a <INSTALL_DIR>/lib/libexpat-static.a
+)
+ExternalProject_Add(fontconfig
+                    DEPENDS freetype expat
+                    URL http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.8.0.tar.gz
+                    PREFIX ${EXTERNALS_PREFIX}
+                    CONFIGURE_COMMAND cd <SOURCE_DIR> && ../../../configure_fontconfig.sh <INSTALL_DIR> ${PLATFORM}
+                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
+                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install)
+
+ExternalProject_Add(pcre
+                    URL http://switch.dl.sourceforge.net/project/pcre/pcre/8.12/pcre-8.12.tar.gz
+                    PREFIX ${EXTERNALS_PREFIX}
+                    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
+                                  --disable-libtool-lock --disable-dependency-tracking
+                                  --enable-static --disable-shared
+                    BUILD_COMMAND make -j 5
+                    INSTALL_COMMAND make -j 10 install
+)
 
 ExternalProject_Add(qt
-                    DEPENDS zlib freetype
+                    DEPENDS zlib freetype pcre
                     URL ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.3.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
@@ -49,45 +86,6 @@ ExternalProject_Add(qt
                         -make "libs tools"
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 4
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
-)
-
-if (APPLE)
-set(COIN_CONF_FLAGS --without-framework)
-else(APPLE)
-endif(APPLE)
-
-ExternalProject_Add(coin
-                    URL http://ftp.coin3d.org/coin/src/all/Coin-3.1.3.tar.gz 
-                    PREFIX ${EXTERNALS_PREFIX}
-                    CONFIGURE_COMMAND cd <SOURCE_DIR> &&
-                      ./configure --prefix <INSTALL_DIR>
-                        ${PLATF_CFGFLAGS} ${COIN_CONF_FLAGS} 
-                        --disable-libtool-lock --disable-dependency-tracking
-                        --enable-static --disable-shared --disable-dl-simage 
-                        --disable-dl-openal --without-openal --without-zlib 
-                        --disable-dl-zlib --disable-dl-libbzip2
-                        --disable-java-wrapper --disable-3ds-import --disable-javascript-api
-                        "CXXFLAGS=${USER_CXXFLAGS}"
-                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
-                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
-)
-
-
-if(APPLE)
-  set(PLATFORM APPLE)
-else(APPLE)
-  set(PLATFORM LINUX)
-endif(APPLE)
-
-set(CONFIG_QTLIBS -L<INSTALL_DIR>/lib -lz -lQt3Support -lQtOpenGL -lQtGui -lQtCore ${SOQT_LIBS})
-
-ExternalProject_Add(soqt
-                    URL http://ftp.coin3d.org/coin/src/all/SoQt-1.5.0.tar.gz
-                    PREFIX ${EXTERNALS_PREFIX}
-                    DEPENDS coin qt
-                    CONFIGURE_COMMAND cd <SOURCE_DIR> && sh -ex ../../../configure_soqt.sh <INSTALL_DIR> ${PLATFORM}
-                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
-                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 
 )
 
 if(APPLE)
@@ -111,6 +109,42 @@ ExternalProject_Add(simage
                     BUILD_COMMAND cd <SOURCE_DIR> ; make -j 5
                     INSTALL_COMMAND cd <SOURCE_DIR> ; make -j 10 install
 )
+
+if (APPLE)
+set(COIN_CONF_FLAGS --without-framework)
+else(APPLE)
+endif(APPLE)
+
+ExternalProject_Add(coin
+                    DEPENDS simage freetype
+                    URL http://ftp.coin3d.org/coin/src/all/Coin-3.1.3.tar.gz 
+                    PREFIX ${EXTERNALS_PREFIX}
+                    CONFIGURE_COMMAND cd <SOURCE_DIR> &&
+                      ./configure --prefix <INSTALL_DIR>
+                        ${PLATF_CFGFLAGS} ${COIN_CONF_FLAGS} 
+                        --disable-libtool-lock --disable-dependency-tracking
+                        --enable-static --disable-shared --disable-dl-simage 
+                        --disable-dl-openal --without-openal --without-zlib 
+                        --disable-dl-zlib --disable-dl-libbzip2
+                        --with-freetype=<INSTALL_DIR>/lib
+                        --disable-java-wrapper --disable-3ds-import --disable-javascript-api
+                        "CXXFLAGS=${USER_CXXFLAGS}"
+                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
+                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
+)
+
+
+set(CONFIG_QTLIBS -L<INSTALL_DIR>/lib -lz -lQt3Support -lQtOpenGL -lQtGui -lQtCore ${SOQT_LIBS})
+
+ExternalProject_Add(soqt
+                    URL http://ftp.coin3d.org/coin/src/all/SoQt-1.5.0.tar.gz
+                    PREFIX ${EXTERNALS_PREFIX}
+                    DEPENDS coin qt
+                    CONFIGURE_COMMAND cd <SOURCE_DIR> && sh -ex ../../../configure_soqt.sh <INSTALL_DIR> ${PLATFORM}
+                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
+                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 
+)
+
 
 ExternalProject_Add(libpng
                     URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.2.tar.gz 
