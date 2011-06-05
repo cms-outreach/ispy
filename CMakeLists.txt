@@ -109,6 +109,7 @@ find_library(FREETYPE_LIBRARY libfreetype.a freetype REQUIRED)
 find_library(FONTCONFIG_LIBRARY libfontconfig.a fontconfig REQUIRED)
 find_library(SOQT_LIBRARY libSoQt.a SoQt REQUIRED)
 find_library(ZLIB_LIBRARY libz.a z REQUIRED NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(ICONV_LIBRARY iconv REQUIRED)
 if(APPLE)
    find_library(EXPAT_LIBRARY libexpatstatic.a expatstatic REQUIRED)
    find_library(SECURITY_LIBRARY Security)
@@ -179,10 +180,10 @@ target_link_libraries(${ISPY_NAME} ISpyFramework
                       ${QT_CORE_LIBRARY}  
                       ${QT_GUI_LIBRARY}  
                       ${QT_NETWORK_LIBRARY}
-                      ${QT_OPENGL_LIBRARY} ${PCRE_LIBRARY}
+                      ${QT_OPENGL_LIBRARY}
                       ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}
                       ${FREETYPE_LIBRARY} ${FONTCONFIG_LIBRARY} 
-                      ${ZLIB_LIBRARY} ${ADDITIONAL_LIBS})
+                      ${ZLIB_LIBRARY} ${ICONV_LIBRARY} ${ADDITIONAL_LIBS})
 
 
 # Build unit tests for igfiles.

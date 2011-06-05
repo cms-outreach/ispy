@@ -116,22 +116,21 @@ else(APPLE)
 endif(APPLE)
 
 ExternalProject_Add(coin
-                    DEPENDS simage freetype
+                    DEPENDS simage freetype fontconfig
                     URL http://ftp.coin3d.org/coin/src/all/Coin-3.1.3.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
-                    CONFIGURE_COMMAND cd <SOURCE_DIR> &&
-                      ./configure --prefix <INSTALL_DIR>
-                        ${PLATF_CFGFLAGS} ${COIN_CONF_FLAGS} 
-                        --disable-libtool-lock --disable-dependency-tracking
-                        --enable-static --disable-shared --disable-dl-simage 
-                        --disable-dl-openal --without-openal --without-zlib 
-                        --disable-dl-zlib --disable-dl-libbzip2
-                        --with-freetype=<INSTALL_DIR>/lib
-                        --disable-java-wrapper --disable-3ds-import --disable-javascript-api
-                        "CXXFLAGS=${USER_CXXFLAGS}"
+                    CONFIGURE_COMMAND cd <SOURCE_DIR>
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
 )
+
+ExternalProject_Add_Step(coin post_configure
+   COMMAND cd <SOURCE_DIR> && ../../../configure_coin.sh <INSTALL_DIR> ${PLATFORM} 
+   DEPENDEES configure 
+   DEPENDERS build
+   DEPENDS configure_coin.sh
+)
+
 
 
 set(CONFIG_QTLIBS -L<INSTALL_DIR>/lib -lz -lQt3Support -lQtOpenGL -lQtGui -lQtCore ${SOQT_LIBS})
