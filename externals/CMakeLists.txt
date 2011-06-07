@@ -7,9 +7,9 @@ set(CPP cpp)
 set(EXTERNALS_PREFIX sw)
 
 if(APPLE)
-  set(PLATFORM APPLE)                                                                                                                              
+  set(PLATFORM "APPLE")                                                                                                                              
 else(APPLE)
-  set(PLATFORM LINUX)
+  set(PLATFORM "LINUX")
 endif(APPLE)
 
 ExternalProject_Add(zlib
@@ -56,18 +56,8 @@ ExternalProject_Add(fontconfig
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install)
 
-ExternalProject_Add(pcre
-                    URL http://switch.dl.sourceforge.net/project/pcre/pcre/8.12/pcre-8.12.tar.gz
-                    PREFIX ${EXTERNALS_PREFIX}
-                    CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
-                                  --disable-libtool-lock --disable-dependency-tracking
-                                  --enable-static --disable-shared
-                    BUILD_COMMAND make -j 5
-                    INSTALL_COMMAND make -j 10 install
-)
-
 ExternalProject_Add(qt
-                    DEPENDS zlib freetype pcre
+                    DEPENDS zlib freetype
                     URL ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.3.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
