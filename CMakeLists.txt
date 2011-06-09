@@ -199,8 +199,8 @@ target_link_libraries(test_StyleParser ISpyFramework ${SECURITY_LIBRARY})
 add_test(test_StyleParser ${EXECUTABLE_OUTPUT_PATH}/test_StyleParser)
 
 # Build command line tool
-add_executable(jspy "src/JSClient/main.cc")
-target_link_libraries(jspy ISpyFramework ${SECURITY_LIBRARY})
+#add_executable(jspy "src/JSClient/main.cc")
+#target_link_libraries(jspy ISpyFramework ${SECURITY_LIBRARY})
 
 # Build .app on mac.
 if (APPLE)
@@ -210,6 +210,8 @@ INSTALL(CODE "
    include(BundleUtilities)
    fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
    " COMPONENT Runtime)
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/externals/sw/src/qt/src/gui/mac/qt_menu.nib
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/Resources/ )
 endif(APPLE)
 
 add_test(test_igfiles ${EXECUTABLE_OUTPUT_PATH}/test_igfiles)

@@ -12,6 +12,16 @@ else(APPLE)
   set(PLATFORM "LINUX")
 endif(APPLE)
 
+MACRO(custom_configure)
+MESSAGE(${ARGV})
+ExternalProject_Add_Step(${ARGV} post_configure                                                                                  
+   COMMAND cd <SOURCE_DIR> && ../../../configure_${ARGV}.sh <INSTALL_DIR> ${PLATFORM} 
+   DEPENDEES configure 
+   DEPENDERS build
+   DEPENDS configure_${ARGV}.sh
+)
+ENDMACRO(custom_configure)
+
 ExternalProject_Add(zlib
                     URL http://zlib.net/zlib-1.2.5.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
@@ -52,9 +62,11 @@ ExternalProject_Add(fontconfig
                     DEPENDS freetype expat
                     URL http://www.freedesktop.org/software/fontconfig/release/fontconfig-2.8.0.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
-                    CONFIGURE_COMMAND cd <SOURCE_DIR> && ../../../configure_fontconfig.sh <INSTALL_DIR> ${PLATFORM}
+                    CONFIGURE_COMMAND cd <SOURCE_DIR>
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install)
+
+custom_configure(fontconfig)
 
 ExternalProject_Add(qt
                     DEPENDS zlib freetype
@@ -114,14 +126,7 @@ ExternalProject_Add(coin
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
 )
 
-ExternalProject_Add_Step(coin post_configure
-   COMMAND cd <SOURCE_DIR> && ../../../configure_coin.sh <INSTALL_DIR> ${PLATFORM} 
-   DEPENDEES configure 
-   DEPENDERS build
-   DEPENDS configure_coin.sh
-)
-
-
+custom_configure(coin)
 
 set(CONFIG_QTLIBS -L<INSTALL_DIR>/lib -lz -lQt3Support -lQtOpenGL -lQtGui -lQtCore ${SOQT_LIBS})
 
@@ -133,6 +138,7 @@ ExternalProject_Add(soqt
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 
 )
+custom_configure(soqt)
 
 
 ExternalProject_Add(libpng
