@@ -174,17 +174,20 @@ if (APPLE)
                         ${CARBON_FRAMEWORK}
                         ${SYSTEMCONFIGURATION_FRAMEWORK})
 else(APPLE)
+    find_library(SSL_LIBRARY ssl)
+    find_library(XRENDER_LIBRARY Xrender)
+    set(ADDITIONAL_LIBS ${SSL_LIBRARY} ${XRENDER_LIBRARY})
 endif(APPLE)
 
 target_link_libraries(${ISPY_NAME} ISpyFramework
-                      ${QT_CORE_LIBRARY}  
-                      ${QT_GUI_LIBRARY}  
+                      ${SOQT_LIBRARY}
                       ${QT_NETWORK_LIBRARY}
                       ${QT_OPENGL_LIBRARY}
-                      ${COIN3D_LIBRARIES} ${SOQT_LIBRARY} ${OPENGL_LIBRARIES}
-                      ${FREETYPE_LIBRARY} ${FONTCONFIG_LIBRARY} 
-                      ${ZLIB_LIBRARY} ${ICONV_LIBRARY} ${ADDITIONAL_LIBS})
-
+                      ${QT_GUI_LIBRARY}
+                      ${QT_CORE_LIBRARY}
+                      ${COIN3D_LIBRARIES} ${OPENGL_LIBRARIES}
+                      ${FONTCONFIG_LIBRARY} ${ICONV_LIBRARY} ${FREETYPE_LIBRARY}
+                      ${ZLIB_LIBRARY} ${ADDITIONAL_LIBS})
 
 # Build unit tests for igfiles.
 file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/test_igfiles-*.cpp")
