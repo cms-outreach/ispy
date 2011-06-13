@@ -3,7 +3,7 @@ PLATFORM=$2
 case $PLATFORM in
   APPLE) 
     USER_CONF_FLAGS=--without-framework
-    COIN_LIBS="-iconv -lfontconfig -lfreetype -lexpat -lz"
+    COIN_LIBS="-liconv -lfontconfig -lfreetype -lexpat -lz"
          ;;
   LINUX)
     COIN_LIBS="-lfontconfig -lfreetype -lexpat -lz"
