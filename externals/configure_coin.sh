@@ -2,8 +2,12 @@ INSTALL_DIR=$1
 PLATFORM=$2
 case $PLATFORM in
   APPLE) 
-    USER_CONF_FLAGS=--without-framework;;
-  LINUX) ;;
+    USER_CONF_FLAGS=--without-framework
+    COIN_LIBS="-iconv -lfontconfig -lfreetype -lexpat -lz"
+         ;;
+  LINUX)
+    COIN_LIBS="-lfontconfig -lfreetype -lexpat -lz"
+         ;;
 esac
 ./configure --prefix $INSTALL_DIR \
      --disable-libtool-lock --disable-dependency-tracking \
@@ -17,4 +21,4 @@ esac
      $USER_CONF_FLAGS \
      LDFLAGS="-L$INSTALL_DIR/lib" \
      CPPFLAGS="-DFONTCONFIGGLUE_ASSUME_FONTCONFIG=1" \
-     LIBS="-liconv -lfontconfig -lfreetype -lexpat -lz"
+     LIBS="$COIN_LIBS"

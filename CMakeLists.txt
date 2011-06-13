@@ -25,7 +25,7 @@ find_path(QT_GUI_HEADERS QtGui PATHS ${QT_ROOT}/include/QtGui NO_SYSTEM_ENVIRONM
 find_path(QT_NETWORK_HEADERS QtNetwork PATHS ${QT_ROOT}/include/QtNetwork NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)             
 
 find_library(QT_NETWORK_LIBRARY libQtNetwork.a QtNetwork ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(QT_GUI_LIBRARY libQtGUI.a QtGui ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_GUI_LIBRARY libQtGui.a QtGui ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 find_library(QT_CORE_LIBRARY libQtCore.a QtCore ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 find_library(QT_OPENGL_LIBRARY libQtOpenGL.a QtOpenGL ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 message(${QT_GUI_LIBRARY})
@@ -109,10 +109,10 @@ find_library(FREETYPE_LIBRARY libfreetype.a freetype REQUIRED)
 find_library(FONTCONFIG_LIBRARY libfontconfig.a fontconfig REQUIRED)
 find_library(SOQT_LIBRARY libSoQt.a SoQt REQUIRED)
 find_library(ZLIB_LIBRARY libz.a z REQUIRED NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(ICONV_LIBRARY iconv REQUIRED)
 if(APPLE)
    find_library(EXPAT_LIBRARY libexpatstatic.a expatstatic REQUIRED)
    find_library(SECURITY_LIBRARY Security)
+   find_library(ICONV_LIBRARY iconv REQUIRED)
 else(APPLE)
    find_library(EXPAT_LIBRARY libexpat.a expat REQUIRED)
 endif(APPLE)
@@ -179,27 +179,39 @@ else(APPLE)
     set(ADDITIONAL_LIBS ${SSL_LIBRARY} ${XRENDER_LIBRARY})
 endif(APPLE)
 
-target_link_libraries(${ISPY_NAME} ISpyFramework
-                      ${SOQT_LIBRARY}
-                      ${QT_NETWORK_LIBRARY}
-                      ${QT_OPENGL_LIBRARY}
-                      ${QT_GUI_LIBRARY}
-                      ${QT_CORE_LIBRARY}
-                      ${COIN3D_LIBRARIES} ${OPENGL_LIBRARIES}
-                      ${FONTCONFIG_LIBRARY} ${ICONV_LIBRARY} ${FREETYPE_LIBRARY}
-                      ${ZLIB_LIBRARY} ${ADDITIONAL_LIBS})
+if (APPLE)
+  target_link_libraries(${ISPY_NAME} ISpyFramework 
+                        ${SOQT_LIBRARY}
+                        ${QT_NETWORK_LIBRARY}
+                        ${QT_OPENGL_LIBRARY}
+                        ${QT_GUI_LIBRARY}
+                        ${QT_CORE_LIBRARY}
+                        ${COIN3D_LIBRARIES} ${OPENGL_LIBRARIES}
+                        ${FONTCONFIG_LIBRARY} ${ICONV_LIBRARY} ${FREETYPE_LIBRARY}
+                        ${ZLIB_LIBRARY} ${ADDITIONAL_LIBS})
+else(APPLE)
+   target_link_libraries(${ISPY_NAME} ISpyFramework 
+                         ${SOQT_LIBRARY}
+                         ${QT_NETWORK_LIBRARY}
+                         ${QT_OPENGL_LIBRARY}
+                         ${QT_GUI_LIBRARY}
+                         ${QT_CORE_LIBRARY}
+                         ${COIN3D_LIBRARIES} ${OPENGL_LIBRARIES}
+                         ${FONTCONFIG_LIBRARY} ${FREETYPE_LIBRARY}
+                         ${ZLIB_LIBRARY} ${ADDITIONAL_LIBS})
+endif(APPLE)
 
 # Build unit tests for igfiles.
-file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/test_igfiles-*.cpp")
+#file(GLOB FRAMEWORK_TESTS_SOURCES "src/Framework/tests/test_igfiles-*.cpp")
 #qt4_wrap_cpp(FRAMEWORK_TESTS_MOCS src/Framework/tests/test_igfiles-driver.h)
-add_executable(test_igfiles ${FRAMEWORK_TESTS_SOURCES} ${FRAMEWORK_TESTS_MOCS})
-target_link_libraries(test_igfiles ISpyFramework ${QT_LIBRARIES} 
-                      ${QT_QTTEST_LIBRARIES} ${SECURITY_LIBRARY})
+#add_executable(test_igfiles ${FRAMEWORK_TESTS_SOURCES} ${FRAMEWORK_TESTS_MOCS})
+#target_link_libraries(test_igfiles ISpyFramework ${QT_LIBRARIES} 
+#                      ${QT_QTTEST_LIBRARIES} ${SECURITY_LIBRARY})
 
 # Build unit tests for style parser.
-add_executable(test_StyleParser "src/Framework/tests/test_StyleParser.cpp")
-target_link_libraries(test_StyleParser ISpyFramework ${SECURITY_LIBRARY})
-add_test(test_StyleParser ${EXECUTABLE_OUTPUT_PATH}/test_StyleParser)
+#add_executable(test_StyleParser "src/Framework/tests/test_StyleParser.cpp")
+#target_link_libraries(test_StyleParser ISpyFramework ${SECURITY_LIBRARY})
+#add_test(test_StyleParser ${EXECUTABLE_OUTPUT_PATH}/test_StyleParser)
 
 # Build command line tool
 #add_executable(jspy "src/JSClient/main.cc")

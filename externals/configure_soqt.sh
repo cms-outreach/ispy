@@ -8,7 +8,7 @@ case $PLATFORM in
   ;;  
   *)
     SOQT_CXX="c++ -pthread"
-    SOQT_LIBS="-lrt -lfontconfig -lXrender -lXrandr"
+    SOQT_LIBS="-lrt -lfontconfig -lfreetype -lXrender"
   ;;
 esac
 
