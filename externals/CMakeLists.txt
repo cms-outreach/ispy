@@ -102,14 +102,14 @@ ExternalProject_Add(simage
                     DEPENDS qt
                     CONFIGURE_COMMAND cd <SOURCE_DIR> && 
                       QTDIR=<INSTALL_DIR> ./configure --disable-shared 
-                        --prefix <INSTALL_DIR>
+                        --prefix <INSTALL_DIR> --exec-prefix <INSTALL_DIR>
                         --enable-static --disable-libtool-lock --disable-dependency-tracking
                         --disable-debug --disable-symbols --without-targa --without-pic 
                         --without-rgb --without-tiff --without-jpeg --with-png 
                         --without-gif --without-ungif --without-oggvorbis
                         --without-eps --disable-framework
-                    BUILD_COMMAND cd <SOURCE_DIR> ; make -j 5
-                    INSTALL_COMMAND cd <SOURCE_DIR> ; make -j 10 install
+                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
+                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
 )
 
 if (APPLE)
@@ -142,7 +142,7 @@ custom_configure(soqt)
 
 
 ExternalProject_Add(libpng
-                    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.2.tar.gz 
+                    URL file:///home/mccauley/libpng-1.5.2.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       ./configure --prefix <INSTALL_DIR> --disable-dependency-tracking 
