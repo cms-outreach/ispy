@@ -147,8 +147,8 @@ ExternalProject_Add(libpng
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       ./configure --prefix <INSTALL_DIR> --disable-dependency-tracking 
                                   --disable-shared
-                    BUILD_COMMAND cd <SOURCE_DIR> ; make
-                    INSTALL_COMMAND cd <SOURCE_DIR> ; make install
+                    BUILD_COMMAND cd <SOURCE_DIR> && make
+                    INSTALL_COMMAND cd <SOURCE_DIR> && make install
 )
 
 
