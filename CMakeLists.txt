@@ -113,6 +113,7 @@ if(APPLE)
    find_library(EXPAT_LIBRARY libexpatstatic.a expatstatic REQUIRED)
    find_library(SECURITY_LIBRARY Security)
    find_library(ICONV_LIBRARY iconv REQUIRED)
+   find_library(SIMAGE_LIBRARY simage REQUIRED)
 else(APPLE)
    find_library(EXPAT_LIBRARY libexpat.a expat REQUIRED)
 endif(APPLE)
@@ -186,7 +187,7 @@ if (APPLE)
                         ${QT_OPENGL_LIBRARY}
                         ${QT_GUI_LIBRARY}
                         ${QT_CORE_LIBRARY}
-                        ${COIN3D_LIBRARIES} ${OPENGL_LIBRARIES}
+                        ${COIN3D_LIBRARIES} ${SIMAGE_LIBRARY} ${OPENGL_LIBRARIES}
                         ${FONTCONFIG_LIBRARY} ${ICONV_LIBRARY} ${FREETYPE_LIBRARY}
                         ${ZLIB_LIBRARY} ${ADDITIONAL_LIBS})
 else(APPLE)
