@@ -5,6 +5,7 @@
 #include <Inventor/nodes/SoNurbsCurve.h>
 #include <cmath>
 #include <iostream>
+#include <functional>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -16,7 +17,8 @@ namespace {
 #endif
 }
 //<<<<<< PRIVATE TYPES                                                  >>>>>>
-namespace { //blank namespace is eqivalent to file scope static
+// Moved out from the empty namespace, causes LNK2001 error in VS
+//namespace { //blank namespace is eqivalent to file scope static
   // rootFunction evaluates the formula for the equation defining
   // the opening angle of a helical curve in terms of the invariants.
   // The argument x represents
@@ -44,7 +46,7 @@ namespace { //blank namespace is eqivalent to file scope static
   private:
     const double a, c, f;
   };
-}
+//}
 
 //<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
 //<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>

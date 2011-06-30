@@ -48,6 +48,10 @@
 #include <string>
 #include <cassert>
 
+#ifdef WIN32
+  #define strtok_r strtok_s
+#endif
+
 const static size_t ISPY_MAX_STYLES = (size_t) -1;
 
 void

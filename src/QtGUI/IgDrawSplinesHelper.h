@@ -18,9 +18,9 @@
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
-namespace {
+//namespace {
 class RootFunction;
-}
+//}
 /** \class IgDrawSplinesHelper IgDrawSplinesHelper.h Iguana/QtGUI/src/IgDrawSplinesHelper.h
   
     \brief Provides an helper class to create spline-based tracks which requires the

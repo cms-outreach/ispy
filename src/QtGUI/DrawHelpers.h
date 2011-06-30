@@ -8,7 +8,7 @@
 class IgCollection;
 class IgAssociations;
 class SoSeparator;
-class Style;
+struct Style;
 
 /** Typedef defining the generic function that goes from one (or more)
     collection(s), possibly linked together via one or more @a associations
