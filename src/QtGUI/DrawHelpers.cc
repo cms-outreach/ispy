@@ -2249,12 +2249,17 @@ make3DRPCRecHits(IgCollection **collections, IgAssociations **,
 
 static void
 make3DTrackPoints(IgCollection **collections, IgAssociations **assocs, 
-                  SoSeparator *sep, Style * /* style */, 
+                  SoSeparator *sep, Style *style, 
                   Projectors &projectors)
 {
   IgCollection          *tracks = collections[0];
   IgCollection          *points = collections[1];
   IgAssociations      *assoc = assocs[0];
+
+  SoDrawStyle *trackPointLineStyle = new SoDrawStyle;
+  trackPointLineStyle->style = style->drawStyle->style;
+  trackPointLineStyle->lineWidth = style->drawStyle->lineWidth.getValue();
+  sep->addChild(trackPointLineStyle);
 
   IgColumn<SbVec3f> POS(points, "pos");
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
@@ -2278,13 +2283,13 @@ make3DTrackPoints(IgCollection **collections, IgAssociations **assocs,
     }
 
     SoLineSet     *line = new SoLineSet; // FIXME: SoNurbsCurve
-    SoPointSet    *markers = new SoPointSet;
+    //SoPointSet    *markers = new SoPointSet;
 
     line->vertexProperty = properties;
-    markers->vertexProperty = properties;
+    //markers->vertexProperty = properties;
     
     sep->addChild(line);
-    sep->addChild(markers);
+    //sep->addChild(markers);
   }
 }
 

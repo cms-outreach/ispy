@@ -49,24 +49,26 @@ Event_V2 {
   top: 0.025;
 }
 
-L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); 
+L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.0); 
   text-align: right;
   left: 0.985;  
   top: 0.025;
   }
 
-TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); 
+TriggerPaths_V1 { diffuse-color: rgb(0.8, 0.8, 0.0); 
                   text-align: right; 
                   left: 0.125;
                   top: 0.5;
 }
 
 Internal_Limits_V1 {
+  diffuse-color: rgb(0.8, 0.8, 0.0);
   left: 0.35;
   top: 0.8;
 }
 
 TechTrigger_V1 {
+  diffuse-color: rgb(0.8, 0.8, 0.0);
   text-align: left; 
   left: 0.70;
   top: 0.025;
@@ -78,33 +80,45 @@ Errors_V1 { diffuse-color: rgb(0.8, 0.8, 0.8); }
 
 // Default geometry style.
 Tracker3D_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.95; }
-TrackerRPhi_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.95;}
-TrackerRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.95;}
+TrackerRPhi_V1 { diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.8;}
+TrackerRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.0); transparency:0.8;}
+
 EcalBarrel3D_V1 {diffuse-color: rgb(0.5, 0.8, 1.0); transparency:0.95;}
-EcalEndcap3D_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.95;} 
-EcalBarrelRPhi_V1 {diffuse-color: rgb(0.5, 0.8, 1.0); transparency:0.95;}
-EcalBarrelRZ_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.95;}
+EcalEndcap3D_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.95;}
+ 
+EcalBarrelRPhi_V1 {diffuse-color: rgb(0.5, 0.8, 1.0); transparency:0.8;}
+EcalBarrelRZ_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.8;}
+
 EcalEndcapRZ_V1 {diffuse-color: rgb(0.5, 0.8, 1.0);transparency:0.95;}
+
 EcalPreshower3D_V1 {diffuse-color: rgb(0.5, 0.5, 0.5);transparency:0.95;}
 EcalPreshowerRZ_V1 {diffuse-color: rgb(0.5, 0.5, 0.5);transparency:0.95;}
-HcalBarrel3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);transparency:0.95;}
-HcalEndcap3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);transparency:0.95;}
-HcalBarrelRPhi_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);transparency:0.95;}
-HcalBarrelRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);transparency:0.95;}
-HcalEndcapRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.2);transparency:0.95;}
-HcalOuter3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.95;}
-HcalOuterRPhi_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.95;}
-HcalOuterRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.95;}
-HcalForward3D_V1 {diffuse-color: rgb(0.5, 0.5, 0.9);transparency:0.95;}
-HcalForwardRZ_V1 {diffuse-color: rgb(0.5, 0.5, 0.9);transparency:0.95;}
-DTs3D_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);transparency:0.5;}
-DTsRPhi_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);transparency:0.5;}
-DTsRZ_V1 {diffuse-color: rgb(1.0, 0.5, 0.5);transparency:0.5;}
-CSC3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.5;}
-CSCRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.5);transparency:0.5;}
-RPC3D_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);transparency:0.5;}
-RPCRPhi_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);transparency:0.5;}
-RPCRZ_V1 {diffuse-color: rgb(0.6, 0.8, 0.5);transparency:0.5;}
+
+HcalBarrel3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.95;}
+HcalBarrelRPhi_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.8;}
+HcalBarrelRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.95;}
+
+HcalEndcap3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.95;}
+HcalEndcapRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.95;}
+
+HcalOuter3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.95;}
+HcalOuterRPhi_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.8;}
+HcalOuterRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.8;}
+
+HcalForward3D_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.95;}
+HcalForwardRZ_V1 {diffuse-color: rgb(0.7, 0.7, 0.0);transparency:0.95;}
+
+DTs3D_V1 {diffuse-color: rgb(0.8, 0.4, 0.0);transparency:0.5;}
+DTsRPhi_V1 {diffuse-color: rgb(0.8, 0.4, 0.0);transparency:0.5;}
+DTsRZ_V1 {diffuse-color: rgb(0.8, 0.4, 0.0);transparency:0.5;}
+
+CSC3D_V1 {diffuse-color: rgb(0.0, 0.7, 0.7);transparency:0.5;}
+CSCRZ_V1 {diffuse-color: rgb(0.0, 0.7, 0.7);transparency:0.5;}
+
+RPC3D_V1 {diffuse-color: rgb(0.6, 0.8, 0.0);transparency:0.5;}
+RPCRPhi_V1 {diffuse-color: rgb(0.6, 0.8, 0.0);transparency:0.5;}
+RPCRZ_V1 {diffuse-color: rgb(0.6, 0.8, 0.0);transparency:0.5;}
+
 CaloLego_V1 {diffuse-color: rgb(1.0, 1.0, 1.0);transparency:0.5;}
 
 // Default event objects style.
@@ -267,6 +281,11 @@ GlobalMuons_V1 {
   draw-style: lines; 
   line-width: 3;
   diffuse-color: rgb(1.0, 0.0, 0.0);
+}
+
+MuonChambers_V1 {
+  diffuse-color: rgb(1.0, 0.0, 0.0);
+  transparency:0.5;
 }
 
 PFRecTracks_V1 {

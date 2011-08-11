@@ -2543,7 +2543,7 @@ ISpyApplication::loadFile(const char *filename)
   catch(IgArchive::Exception &e)
   {
     std::ostringstream str;
-    str << "Unable parse file: " << filename << ".\nMaybe it got truncated?";
+    str << "Unable to parse file: " << filename << ".\nMaybe it got truncated?";
     QMessageBox::critical(m_mainWindow, "Error while opening file.",
                           str.str().c_str());
 
