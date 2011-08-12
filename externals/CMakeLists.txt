@@ -142,7 +142,7 @@ custom_configure(soqt)
 
 
 ExternalProject_Add(libpng
-                    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.2.tar.gz 
+                    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.4.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       ./configure --prefix <INSTALL_DIR> --disable-dependency-tracking 
