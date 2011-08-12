@@ -238,6 +238,17 @@ make3DEvent(IgCollectionItem& e,
   switch (style->annotationLevel)
   {
     case ISPY_ANNOTATION_LEVEL_NONE:
+      // One can turn off event information anyway in the display.
+      // Add option here for keeping logo, copyright, and url
+      helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
+      helper.createTextLine("(c) CERN 2011. All rights reserved.");
+      helper.endBox();
+      helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
+      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.endBox();
+      
+      if (style->background)
+        helper.addImage(style->left - 0.2, style->top, style->background);
       break;
     case ISPY_ANNOTATION_LEVEL_PRESS:
       // This is  a view stripped down of information which is suitable for 

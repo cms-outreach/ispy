@@ -91,9 +91,9 @@ ExternalProject_Add(qt
 )
 
 if(APPLE)
-set(SIMAGE_CONF_FLAGS --enable-quicktime --without-framework --without-x --enable-universal --enable-darwin-x11=false)
+ set(SIMAGE_CONF_FLAGS --enable-quicktime --without-framework --without-x --enable-universal --enable-darwin-x11=false)
 else(APPLE)
-set(SIMAGE_CONF_FLAGS)
+ set(SIMAGE_CONF_FLAGS)
 endif(APPLE)
 
 ExternalProject_Add(simage
