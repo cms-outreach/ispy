@@ -139,7 +139,7 @@ Tracks_V1
 
 Tracks_V2
 {
-  draw-style: lines; line-width: 3;
+  draw-style: lines; line-width: 6;
   diffuse-color: rgb(1.0, 0.7, 0.1);
   marker-style: outline;
 }
@@ -284,6 +284,7 @@ GlobalMuons_V1 {
 }
 
 MuonChambers_V1 {
+  line-width: 2;
   diffuse-color: rgb(1.0, 0.0, 0.0);
   transparency:0.5;
 }

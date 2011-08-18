@@ -112,7 +112,7 @@ ExternalProject_Add(simage
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
 )
 
-if (APPLE)
+if(APPLE)
 set(COIN_CONF_FLAGS --without-framework)
 else(APPLE)
 endif(APPLE)
