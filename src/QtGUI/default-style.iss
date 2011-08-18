@@ -44,9 +44,10 @@ Event_V2 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
   font-size: 24.0; 
   font-family: Arial;
-  background: :/images/cms-logo-small.png;
+  background: :/images/cms-color-medium.png;
   left: 0.125;
   top: 0.025;
+  annotation-level: press;
 }
 
 L1GtTrigger_V1 { diffuse-color: rgb(0.8, 0.8, 0.0); 
@@ -139,7 +140,7 @@ Tracks_V1
 
 Tracks_V2
 {
-  draw-style: lines; line-width: 6;
+  draw-style: lines; line-width: 4;
   diffuse-color: rgb(1.0, 0.7, 0.1);
   marker-style: outline;
 }
@@ -286,7 +287,7 @@ GlobalMuons_V1 {
 MuonChambers_V1 {
   line-width: 2;
   diffuse-color: rgb(1.0, 0.0, 0.0);
-  transparency:0.5;
+  transparency:0.9;
 }
 
 PFRecTracks_V1 {
