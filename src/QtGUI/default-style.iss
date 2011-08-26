@@ -139,7 +139,7 @@ Tracks_V1
 
 Tracks_V2
 {
-  draw-style: lines; line-width: 6;
+  draw-style: lines; line-width: 3;
   diffuse-color: rgb(1.0, 0.7, 0.1);
   marker-style: outline;
 }
