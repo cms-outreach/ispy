@@ -116,6 +116,7 @@ if(APPLE)
    find_library(SIMAGE_LIBRARY simage REQUIRED)
 else(APPLE)
    find_library(EXPAT_LIBRARY libexpat.a expat REQUIRED)
+   find_library(SIMAGE_LIBRARY simage REQUIRED)
 endif(APPLE)
 
 #include(${QT_USE_FILE})
@@ -197,7 +198,7 @@ else(APPLE)
                          ${QT_OPENGL_LIBRARY}
                          ${QT_GUI_LIBRARY}
                          ${QT_CORE_LIBRARY}
-                         ${COIN3D_LIBRARIES} ${OPENGL_LIBRARIES}
+                         ${COIN3D_LIBRARIES} ${SIMAGE_LIBRARY} ${OPENGL_LIBRARIES}
                          ${FONTCONFIG_LIBRARY} ${FREETYPE_LIBRARY}
                          ${ZLIB_LIBRARY} ${ADDITIONAL_LIBS})
 endif(APPLE)
