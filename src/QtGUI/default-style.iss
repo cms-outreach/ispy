@@ -7,7 +7,7 @@
 
 
 // Default style.
-{
+* {
   diffuse-color: rgb(0.7, 0.7, 0.7);
   transparency: 0.0;
   line-width: 1.0;

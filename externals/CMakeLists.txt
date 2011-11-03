@@ -70,7 +70,7 @@ custom_configure(fontconfig)
 
 ExternalProject_Add(qt
                     DEPENDS zlib freetype
-                    URL ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.3.tar.gz
+                    URL  ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.3.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       yes | ./configure -prefix <INSTALL_DIR>
@@ -142,7 +142,7 @@ custom_configure(soqt)
 
 
 ExternalProject_Add(libpng
-                    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.4.tar.gz 
+                    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.5.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       ./configure --prefix <INSTALL_DIR> --disable-dependency-tracking 
