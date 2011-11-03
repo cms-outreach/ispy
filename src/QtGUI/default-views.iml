@@ -297,6 +297,10 @@
               spec="CSCStripDigis_V1:pos:length"
               draw="make3DCSCStripDigis"/>
 
+  <collection label="Muon/CSC LCT Digis"
+	      spec="CSCLCTDigis_V1:pos"
+              draw="make3DPointSetShapes"/>
+
   <collection label="Muon/RPC Rec. Hits"
               spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
               draw="make3DRPCRecHits"/>
@@ -1100,6 +1104,10 @@
   <collection label="Muon/CSC Strip Digis"
               spec="CSCStripDigis_V1:pos:length"
               draw="make3DCSCStripDigis"/>
+
+  <collection label="Muon/CSC LCT Digis"
+	      spec="CSCLCTDigis_V1:pos"
+              draw="make3DPointSetShapes"/>
 
   <collection label="Muon/RPC Rec. Hits"
               spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"

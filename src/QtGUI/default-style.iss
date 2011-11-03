@@ -238,6 +238,13 @@ CSCSegments_V1 {
 CSCWireDigis_V1 {diffuse-color: rgb(1.0, 0.6, 1.0);}
 CSCStripDigis_V1 {diffuse-color: rgb(1.0, 0.2, 1.0);}
 
+CSCLCTDigis_V1 {
+  marker-shape: cross;
+  marker-size: huge;
+  diffuse-color: rgb(0.0, 1.0, 1.0);
+}
+
+
 RPCRecHits_V1 {
   diffuse-color: rgb(1.0, 1.0, 0.2);
   line-width: 3;
