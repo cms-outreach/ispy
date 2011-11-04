@@ -11,6 +11,7 @@
     <file>cms-bw-medium.png</file>
     <file>cms-bw-small.png</file>
     <file>cms-logo-small.png</file>
+    <file>atlas-small.png</file>
     <file>Play1Normal.png</file>
     <file>PausePressed.png</file>
     <file>stylesheet-branch-open.png</file>
@@ -37,5 +38,6 @@
     <file>print.png</file>
     <file>zoom_in.png</file>
     <file>zoom_out.png</file>
+    <file>iSpyIconVista.ico</file>
   </qresource>
 </RCC>

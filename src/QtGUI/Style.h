@@ -97,8 +97,9 @@ struct StyleSpec
 // a collection. It includes stuff that is graphics related (like the font
 // and the material) and stuff which is physics related (like min-energy, 
 // max-pt, etc).
-struct Style
+class Style
 {
+public:
   size_t                      spec;
   SoMaterial                  *material;
   SoDrawStyle                 *drawStyle;

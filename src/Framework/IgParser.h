@@ -355,9 +355,9 @@ public:
       skipChar('}');
     }
 
-  void parse(const char *buffer)
+  void parse(const char *buffer, const int start=0)
     {
-      m_buffer = buffer;
+      m_buffer = buffer+start;
       m_initialBuffer = buffer;
 
       try
@@ -370,7 +370,7 @@ public:
         parseAssociationss();
         skipChar('}');
       }
-      catch(ParseError &e)
+      catch(ParseError &)
       {
         int position = m_buffer - m_initialBuffer ;
         std::string parsedSentence(m_initialBuffer + position);

@@ -48,6 +48,10 @@
 #include <string>
 #include <cassert>
 
+#ifdef WIN32
+#define strtok_r strtok_s
+#endif
+
 const static size_t ISPY_MAX_STYLES = (size_t) -1;
 
 void
@@ -1170,6 +1174,7 @@ ISpyApplication::run(int argc, char *argv[])
       // it would not be treated as a filename.
       m_argv[i][0] = '\0';
     }
+
     i++;
   }
 
@@ -1394,6 +1399,7 @@ ISpyApplication::setupMainWindow(void)
   QObject::connect(m_mainWindow, SIGNAL(previousEvent()), this, SLOT(previousEvent()));
   QObject::connect(m_mainWindow, SIGNAL(rewind()),        this, SLOT(rewind()));
   QObject::connect(m_mainWindow, SIGNAL(print()),         this, SIGNAL(print()));
+  QObject::connect(m_mainWindow, SIGNAL(exportIV()),      this, SIGNAL(exportIV()));
   QObject::connect(m_mainWindow, SIGNAL(save()),          this, SIGNAL(save()));
   QObject::connect(m_mainWindow, SIGNAL(showAbout()),     this, SLOT(showAbout()));
 
@@ -1615,6 +1621,8 @@ ISpyApplication::doRun(void)
   m_mainWindow->addToolBar(Qt::TopToolBarArea, m_3DToolBar);
 
   QObject::connect(this, SIGNAL(save()), m_viewer, SLOT(save()));
+  QObject::connect(this, SIGNAL(exportIV()), m_viewer, SLOT(exportIV()));
+ 
   QObject::connect(this, SIGNAL(print()), m_viewer, SLOT(print()));
   QObject::connect(m_viewer, SIGNAL(cameraToggled()), 
                    this, SLOT(cameraToggled()));
@@ -2202,7 +2210,7 @@ ISpyApplication::updateCollections(void)
       // node in the 3D model. The latter will be filled in on first
       // display, and directly here if the visibility is on.
       // 
-      // Notice taht tree items will be added to the widget only 
+      // Notice that tree items will be added to the widget only 
       // later on, once we have sorted the collections by the
       // associated specs.
       QTreeWidgetItem *item = new QTreeWidgetItem;
@@ -2691,7 +2699,9 @@ ISpyApplication::downloadFile(const QUrl &link)
     saveDir = QDir::home().filePath("Desktop");
   }
 
-  QString savedFileName = link.toString().replace(QRegExp(".*/"), saveDir + "/");
+  QString linkString = link.toString().replace(QRegExp(".*/"),"");  // down to last slash
+  linkString.replace(QRegExp("[\"|\\*|:|<|>|\\?|\\\\|/|\\|]"),"--");  // replace most problematic special characters
+  QString savedFileName =  saveDir + "/" + linkString;
   IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(reply,
                                                              new QFile(savedFileName));
   QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),

@@ -33,6 +33,7 @@ signals:
   void          rewind(void);
   void          print(void);
   void          save(void);
+  void          exportIV(void);
   void		showAbout(void);
 
 protected:

@@ -45,6 +45,7 @@
     <addaction name="actionOpenWizard"/>
     <addaction name="actionSave"/>
     <addaction name="actionPrint"/>
+    <addaction name="actionExport"/>
     <addaction name="separator"/>
     <addaction name="actionQuit"/>
    </widget>
@@ -117,7 +118,7 @@ spacing: 0px;
       <number>0</number>
      </property>
      <property name="spacing">
-      <number>-1</number>
+      <number>6</number>
      </property>
      <item row="1" column="0">
       <widget class="QTreeWidget" name="treeWidget">
@@ -208,6 +209,18 @@ QTreeView::branch:selected:!active {
        </attribute>
        <attribute name="headerDefaultSectionSize">
         <number>22</number>
+       </attribute>
+       <attribute name="headerStretchLastSection">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerCascadingSectionResizes">
+        <bool>false</bool>
+       </attribute>
+       <attribute name="headerDefaultSectionSize">
+        <number>22</number>
+       </attribute>
+       <attribute name="headerVisible">
+        <bool>false</bool>
        </attribute>
        <attribute name="headerStretchLastSection">
         <bool>false</bool>
@@ -370,6 +383,9 @@ QComboBox QAbstractItemView
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
+       <attribute name="verticalHeaderVisible">
+        <bool>false</bool>
+       </attribute>
        <attribute name="verticalHeaderVisible">
         <bool>false</bool>
        </attribute>
