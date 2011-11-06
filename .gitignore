@@ -27,3 +27,12 @@ ISpyFrameworkTests
 Info.plist
 test_StyleParser
 test_igfiles
+/*.sln
+/*.vcproj
+/*.pdb
+/*.idb
+/*.ncb
+/*.bak
+/*.sav
+/*.vcproj.*
+/*.suo
