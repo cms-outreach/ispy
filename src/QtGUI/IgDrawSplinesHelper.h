@@ -1,5 +1,5 @@
-#ifndef IG_OPEN_INVENTOR_IG_SO_SPLINE_TRACK_H
-# define IG_OPEN_INVENTOR_IG_SO_SPLINE_TRACK_H
+#ifndef IG_DRAW_SPLINES_HELPER_H
+# define IG_DRAW_SPLINES_HELPER_H
 
 //<<<<<< INCLUDES                                                       >>>>>>
 
@@ -8,6 +8,7 @@
 # include <Inventor/nodes/SoGroup.h>
 # include <Inventor/SbLinear.h>
 # include <vector>
+# include <functional>
 # ifdef WIN32
 #  include <SoWinLeaveScope.h>
 # endif
@@ -18,9 +19,7 @@
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
-namespace {
-class RootFunction;
-}
+
 /** \class IgDrawSplinesHelper IgDrawSplinesHelper.h Iguana/QtGUI/src/IgDrawSplinesHelper.h
   
     \brief Provides an helper class to create spline-based tracks which requires the
@@ -36,6 +35,14 @@ class RootFunction;
 class IgDrawSplinesHelper
 {
 public:
+  class RootFunction : public std::unary_function<float,float>
+  {
+  public:
+	  RootFunction (float paramA, float paramC, float paramF);
+	  float operator() (const float x) const;
+  private:
+	  const double a, c, f;
+  };
   virtual void create(SoGroup *sep, SoMFVec3f &points, SoMFVec3f &tangents);
 protected:
   virtual float findRoot(const RootFunction func, float x1, float x2, 
@@ -55,7 +62,4 @@ private:
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
 //<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 
-# ifdef WIN32
-#  include <SoWinEnterScope.h>
-# endif
-#endif // IG_OPEN_INVENTOR_IG_SO_SPLINE_TRACK_H
+#endif // IG_DRAW_SPLINES_HELPER_H

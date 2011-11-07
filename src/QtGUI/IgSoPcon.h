@@ -91,7 +91,7 @@ protected:
 //<<<<<< INLINE PUBLIC FUNCTIONS                                        >>>>>>
 inline void IgSoPcon::makePcon (const std::vector<float> &zvals, const std::vector<float> &rmin,
 			   const std::vector<float> &rmax, float phiStart, float phiDelta,
-			   int divisions)
+			   int /* divisions */)
 { initialise (static_cast<int>( zvals.size() ), phiStart, phiDelta, &zvals[0], &rmin[0], &rmax[0]); }
 //<<<<<< INLINE MEMBER FUNCTIONS                                        >>>>>>
 

@@ -16,19 +16,12 @@ namespace {
 #endif
 }
 //<<<<<< PRIVATE TYPES                                                  >>>>>>
-namespace { //blank namespace is eqivalent to file scope static
-  // rootFunction evaluates the formula for the equation defining
-  // the opening angle of a helical curve in terms of the invariants.
-  // The argument x represents
-  // the possible values of the angle.
 
-  class RootFunction : public std::unary_function<float,float>
-  {
-  public:
-    RootFunction(float paramA, float paramC, float paramF) :
+
+IgDrawSplinesHelper::RootFunction::RootFunction(float paramA, float paramC, float paramF) :
       a(paramA), c(paramC), f(paramF)
       {};
-    float operator()(const float x) const
+float IgDrawSplinesHelper::RootFunction::operator()(const float x) const
       {
         double denom = -2*(1-cos(x))*(1-a) +x*x*(cos(x)-a);
         double numerator = c * (cos(x)-a);
@@ -41,10 +34,6 @@ namespace { //blank namespace is eqivalent to file scope static
 
         return static_cast<float>(f + radical * (1-a)*(-2+2*cos(x)+x*sin(x))/(cos(x)-1));
       }
-  private:
-    const double a, c, f;
-  };
-}
 
 //<<<<<< PRIVATE VARIABLE DEFINITIONS                                   >>>>>>
 //<<<<<< PUBLIC VARIABLE DEFINITIONS                                    >>>>>>

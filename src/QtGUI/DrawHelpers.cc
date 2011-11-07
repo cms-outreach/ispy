@@ -544,7 +544,7 @@ makeAnyBoxHelper(IgCollection **collections, IgAssociations **,
 
 static void
 make3DAnyCylinder(IgCollection **collections, IgAssociations **,
-                  SoSeparator *sep, Style* style, Projectors &projectors)
+                  SoSeparator *sep, Style* /* style */, Projectors & /* projectors */)
 {
   IgCollection* c = collections[0];
 
@@ -2398,54 +2398,54 @@ make3DLimits(IgCollection **collections, IgAssociations **,
 void
 registerDrawHelpers(std::map<std::string, Make3D> &helpers)
 {
-  helpers.insert(std::make_pair("make3DAnyBox", make3DAnyBox));
-  helpers.insert(std::make_pair("makeAnyBox", makeAnyBox));
-  helpers.insert(std::make_pair("make3DAnyBoxSolid", make3DAnyBoxSolid));
-  helpers.insert(std::make_pair("makeAnyBoxSolid", makeAnyBoxSolid));
-  helpers.insert(std::make_pair("make3DAnyDetId", make3DAnyDetId));
-  helpers.insert(std::make_pair("make3DAnyLine", make3DAnyLine));
-  helpers.insert(std::make_pair("make3DAnyPoint", make3DAnyPoint));
-  helpers.insert(std::make_pair("make3DCSCStripDigis", make3DCSCStripDigis));
-  helpers.insert(std::make_pair("make3DCSCWireDigis", make3DCSCWireDigis));
-  helpers.insert(std::make_pair("make3DCaloClusters", make3DCaloClusters));
-  helpers.insert(std::make_pair("make3DCaloTowers", make3DCaloTowers));
-  helpers.insert(std::make_pair("make3DDTDigis", make3DDTDigis));
-  helpers.insert(std::make_pair("make3DDTRecHits", make3DDTRecHits));
-  helpers.insert(std::make_pair("make3DEnergyBoxes", make3DEnergyBoxes));
-  helpers.insert(std::make_pair("make3DEnergyTowers", make3DEnergyTowers));
-  helpers.insert(std::make_pair("make3DEventV1", make3DEventV1));
-  helpers.insert(std::make_pair("make3DEventV2", make3DEventV2));
-  helpers.insert(std::make_pair("make3DHLTrigger", make3DHLTrigger));
-  helpers.insert(std::make_pair("make3DJetShapes", makeAnyJetShapes));
-  helpers.insert(std::make_pair("make3DL1Trigger", make3DL1Trigger));
-  helpers.insert(std::make_pair("make3DLimits", make3DLimits));
-  helpers.insert(std::make_pair("make3DMET", makeAnyMET));
-  helpers.insert(std::make_pair("make3DPhoton", makeAnyPhoton));
-  helpers.insert(std::make_pair("makeRZPhoton", makeAnyPhoton));
-  helpers.insert(std::make_pair("makeAnyPhoton", makeAnyPhoton));
-  helpers.insert(std::make_pair("make3DPointSetShapes", makeAnyPointSetShapes));
-  helpers.insert(std::make_pair("makeRZPointSetShapes", makeAnyPointSetShapes));
-  helpers.insert(std::make_pair("makeAnyPointSetShapes", makeAnyPointSetShapes));
-  helpers.insert(std::make_pair("make3DPreshowerTowers", make3DPreshowerTowers));
-  helpers.insert(std::make_pair("make3DRPCRecHits", make3DRPCRecHits));
-  helpers.insert(std::make_pair("make3DSegmentShapes", makeAnySegmentShapes));
-  helpers.insert(std::make_pair("make3DTechTrigger", make3DTechTrigger));
-  helpers.insert(std::make_pair("make3DTrackPoints", make3DTrackPoints));
-  helpers.insert(std::make_pair("make3DTrackingParticles", make3DTrackingParticles));
-  helpers.insert(std::make_pair("make3DTracks", makeAnyTracks));
-  helpers.insert(std::make_pair("makeRZTracks", makeAnyTracks));
-  helpers.insert(std::make_pair("makeAnyTracks", makeAnyTracks));
-  helpers.insert(std::make_pair("make3DTracksNoVertex", make3DTracksNoVertex));
-  helpers.insert(std::make_pair("make3DTriggerObject", makeAnyTriggerObject));
-  helpers.insert(std::make_pair("makeLegoTriggerObjects", makeLegoTriggerObjects));
-  helpers.insert(std::make_pair("makeLegoCaloTowers", makeLegoCaloTowers));
-  helpers.insert(std::make_pair("makeLegoEcalRecHits", makeLegoEcalRecHits));
-  helpers.insert(std::make_pair("makeLegoGrid", makeLegoGrid));
-  helpers.insert(std::make_pair("makeLegoHcalRecHits", makeLegoHcalRecHits));
-  helpers.insert(std::make_pair("makeLegoJets", makeLegoJets));
-  helpers.insert(std::make_pair("makeLegoTracks", makeLegoTracks));
-  helpers.insert(std::make_pair("makeRZECalRecHits", makeRZECalRecHits));
-  helpers.insert(std::make_pair("makeRZEPRecHits", makeRZEPRecHits));
-  helpers.insert(std::make_pair("makeRZHCalRecHits", makeRZHCalRecHits));
-  helpers.insert(std::make_pair("makeLegoPhotons", makeLegoPhotons));
+  helpers.insert(std::pair<std::string,Make3D>("make3DAnyBox", make3DAnyBox));
+  helpers.insert(std::pair<std::string,Make3D>("makeAnyBox", makeAnyBox));
+  helpers.insert(std::pair<std::string,Make3D>("make3DAnyBoxSolid", make3DAnyBoxSolid));
+  helpers.insert(std::pair<std::string,Make3D>("makeAnyBoxSolid", makeAnyBoxSolid));
+  helpers.insert(std::pair<std::string,Make3D>("make3DAnyDetId", make3DAnyDetId));
+  helpers.insert(std::pair<std::string,Make3D>("make3DAnyLine", make3DAnyLine));
+  helpers.insert(std::pair<std::string,Make3D>("make3DAnyPoint", make3DAnyPoint));
+  helpers.insert(std::pair<std::string,Make3D>("make3DCSCStripDigis", make3DCSCStripDigis));
+  helpers.insert(std::pair<std::string,Make3D>("make3DCSCWireDigis", make3DCSCWireDigis));
+  helpers.insert(std::pair<std::string,Make3D>("make3DCaloClusters", make3DCaloClusters));
+  helpers.insert(std::pair<std::string,Make3D>("make3DCaloTowers", make3DCaloTowers));
+  helpers.insert(std::pair<std::string,Make3D>("make3DDTDigis", make3DDTDigis));
+  helpers.insert(std::pair<std::string,Make3D>("make3DDTRecHits", make3DDTRecHits));
+  helpers.insert(std::pair<std::string,Make3D>("make3DEnergyBoxes", make3DEnergyBoxes));
+  helpers.insert(std::pair<std::string,Make3D>("make3DEnergyTowers", make3DEnergyTowers));
+  helpers.insert(std::pair<std::string,Make3D>("make3DEventV1", make3DEventV1));
+  helpers.insert(std::pair<std::string,Make3D>("make3DEventV2", make3DEventV2));
+  helpers.insert(std::pair<std::string,Make3D>("make3DHLTrigger", make3DHLTrigger));
+  helpers.insert(std::pair<std::string,Make3D>("make3DJetShapes", makeAnyJetShapes));
+  helpers.insert(std::pair<std::string,Make3D>("make3DL1Trigger", make3DL1Trigger));
+  helpers.insert(std::pair<std::string,Make3D>("make3DLimits", make3DLimits));
+  helpers.insert(std::pair<std::string,Make3D>("make3DMET", makeAnyMET));
+  helpers.insert(std::pair<std::string,Make3D>("make3DPhoton", makeAnyPhoton));
+  helpers.insert(std::pair<std::string,Make3D>("makeRZPhoton", makeAnyPhoton));
+  helpers.insert(std::pair<std::string,Make3D>("makeAnyPhoton", makeAnyPhoton));
+  helpers.insert(std::pair<std::string,Make3D>("make3DPointSetShapes", makeAnyPointSetShapes));
+  helpers.insert(std::pair<std::string,Make3D>("makeRZPointSetShapes", makeAnyPointSetShapes));
+  helpers.insert(std::pair<std::string,Make3D>("makeAnyPointSetShapes", makeAnyPointSetShapes));
+  helpers.insert(std::pair<std::string,Make3D>("make3DPreshowerTowers", make3DPreshowerTowers));
+  helpers.insert(std::pair<std::string,Make3D>("make3DRPCRecHits", make3DRPCRecHits));
+  helpers.insert(std::pair<std::string,Make3D>("make3DSegmentShapes", makeAnySegmentShapes));
+  helpers.insert(std::pair<std::string,Make3D>("make3DTechTrigger", make3DTechTrigger));
+  helpers.insert(std::pair<std::string,Make3D>("make3DTrackPoints", make3DTrackPoints));
+  helpers.insert(std::pair<std::string,Make3D>("make3DTrackingParticles", make3DTrackingParticles));
+  helpers.insert(std::pair<std::string,Make3D>("make3DTracks", makeAnyTracks));
+  helpers.insert(std::pair<std::string,Make3D>("makeRZTracks", makeAnyTracks));
+  helpers.insert(std::pair<std::string,Make3D>("makeAnyTracks", makeAnyTracks));
+  helpers.insert(std::pair<std::string,Make3D>("make3DTracksNoVertex", make3DTracksNoVertex));
+  helpers.insert(std::pair<std::string,Make3D>("make3DTriggerObject", makeAnyTriggerObject));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoTriggerObjects", makeLegoTriggerObjects));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoCaloTowers", makeLegoCaloTowers));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoEcalRecHits", makeLegoEcalRecHits));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoGrid", makeLegoGrid));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoHcalRecHits", makeLegoHcalRecHits));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoJets", makeLegoJets));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoTracks", makeLegoTracks));
+  helpers.insert(std::pair<std::string,Make3D>("makeRZECalRecHits", makeRZECalRecHits));
+  helpers.insert(std::pair<std::string,Make3D>("makeRZEPRecHits", makeRZEPRecHits));
+  helpers.insert(std::pair<std::string,Make3D>("makeRZHCalRecHits", makeRZHCalRecHits));
+  helpers.insert(std::pair<std::string,Make3D>("makeLegoPhotons", makeLegoPhotons));
 }
