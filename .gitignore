@@ -38,3 +38,9 @@ externals/sw
 /*.sav
 /*.vcproj.*
 /*.suo
+/debug/
+/ipch/
+/release/
+/*.vcxproj*
+/ispy-wnt.opensdf
+/ispy-wnt.sdf
