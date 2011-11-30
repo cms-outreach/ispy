@@ -246,7 +246,7 @@ make3DEvent(IgCollectionItem& e,
       // One can turn off event information anyway in the display.
       // Add option here for keeping logo, copyright, and url
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2011. All rights reserved.");
+      helper.createTextLine("(c) CERN. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
       helper.createTextLine("http://iguana.cern.ch/ispy");
@@ -267,7 +267,7 @@ make3DEvent(IgCollectionItem& e,
                              e.get<int>("run"), e.get<int>("event")), buf));
       helper.endBox();
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2011. All rights reserved.");
+      helper.createTextLine("(c) CERN. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
       helper.createTextLine("http://iguana.cern.ch/ispy");
