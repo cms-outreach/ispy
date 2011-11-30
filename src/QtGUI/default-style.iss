@@ -44,7 +44,7 @@ Event_V2 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
   font-size: 24.0; 
   font-family: Arial;
-  background: :/images/cms-color-medium.png;
+  background: :/images/cms-logo-small.png;
   left: 0.125;
   top: 0.025;
   annotation-level: press;
