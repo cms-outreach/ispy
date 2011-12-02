@@ -56,32 +56,62 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
-  <collection label="Detector/Tracker TIB"
+  <collection label="Detector/Pixel Endcap (+Z)"
+              spec="PixelEndcapPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+   <collection label="Detector/Pixel Endcap (-Z)"
+              spec="PixelEndcapMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/Tracker Inner Barrel"
               spec="SiStripTIB3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
-  <collection label="Detector/Tracker TOB"
+  <collection label="Detector/Tracker Outer Barrel"
               spec="SiStripTOB3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
-   <collection label="Detector/Tracker TOB (simplified)"
+   <collection label="Detector/Tracker Outer Barrel (simplified)"
               spec="TOB_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
               visibility="none"/>	      
 
-  <collection label="Detector/Tracker TID"
+  <collection label="Detector/Tracker Inner Detector"
               spec="SiStripTID3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
-  <collection label="Detector/Tracker TEC"
+   <collection label="Detector/Tracker Inner Detector (+Z)"
+              spec="SiStripTIDPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/Tracker Inner Detector (-Z)"
+              spec="SiStripTIDMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/Tracker Endcap"
               spec="SiStripTEC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
-  <collection label="Detector/Tracker TEC (simplified)"
+   <collection label="Detector/Tracker Endcap (+Z)"
+              spec="SiStripTECPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/Tracker Endcap (-Z)"
+              spec="SiStripTECMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/Tracker Endcap (simplified)"
               spec="TEC_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
               visibility="none"/>
@@ -101,6 +131,16 @@
               draw="make3DAnyBox"
               visibility="none"/>
 	      
+  <collection label="Detector/ECAL Endcap (+Z)"
+              spec="EcalEndcapPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/ECAL Endcap (-Z)"
+              spec="EcalEndcapMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
   <collection label="Detector/ECAL Endcap (simplified)"
               spec="EE_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
@@ -121,6 +161,16 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
+   <collection label="Detector/HCAL Endcap (+Z)"
+              spec="HcalEndcapPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+   <collection label="Detector/HCAL Endcap (-Z)"
+              spec="HcalEndcapMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
   <collection label="Detector/HCAL Outer"
               spec="HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"/>
@@ -135,23 +185,34 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
+  <collection label="Detector/HCAL Forward (+Z)"
+              spec="HcalForwardPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/HCAL Forward (-Z)"
+              spec="HcalForwardMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
   <collection label="Detector/Drift Tubes"
               spec="DTs3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
-  <collection label="Detector/Cathode Strip Chambers (Plus Z)"
-              spec="CSC3DPlus_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"
-              visibility="none"/>
-  
-  <collection label="Detector/Cathode Strip Chambers (Minus Z)"
-              spec="CSC3DMinus_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"
-              visibility="none"/>
 
   <collection label="Detector/Cathode Strip Chambers"
               spec="CSC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/Cathode Strip Chambers (+Z)"
+              spec="CSCPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
+  <collection label="Detector/Cathode Strip Chambers (-Z)"
+              spec="CSCMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
@@ -165,12 +226,12 @@
               draw="make3DAnyBox"
               visibility="none"/>
 
-  <collection label="Detector/Resistive Plate Chambers (Plus Endcap)"
+ <collection label="Detector/Resistive Plate Chambers (+Z)"
               spec="RPCPlusEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>
 
-  <collection label="Detector/Resistive Plate Chambers (Minus Endcap)"
+  <collection label="Detector/Resistive Plate Chambers (-Z)"
               spec="RPCMinusEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
               visibility="none"/>

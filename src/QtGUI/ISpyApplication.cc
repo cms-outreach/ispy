@@ -2532,7 +2532,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
 void
 ISpyApplication::downloadGeometry(void)
 {
-  QNetworkReply *reply = getUrl(QUrl("http://iguana.web.cern.ch/iguana/ispy/igfiles/other/cms-geometry.ig"));
+  QNetworkReply *reply = getUrl(QUrl("http://cmsdoc.cern.ch/~mccauley/cms-geometry.v4.ig"));
   QTemporaryFile *tmpFile = new QTemporaryFile();
   IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(reply, tmpFile);
   QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),
