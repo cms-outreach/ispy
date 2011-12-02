@@ -48,11 +48,11 @@ LIBS += -L$$ISPY_SDK_BASE/lib64
 
 CONFIG(debug, debug|release): #debug settings
 {
-   LIBS += -L$$ZLIB_BASE/contrib\vstudio\vc9\x86\ZlibStatDebug -lzlibstat
+   LIBS += -L$$ZLIB_BASE/contrib/vstudio/vc9/x86/ZlibStatDebug -lzlibstat
    LIBS += -L$$SOQT_BASE/lib -lSoQt1d
    LIBS += -L$$COIN3D_BASE/lib -lCoin3d
 } else { # release settings
-   LIBS += -L$$ZLIB_BASE/contrib\vstudio\vc9\x86\ZlibStatRelease -lzlibstat
+   LIBS += -L$$ZLIB_BASE/contrib/vstudio/vc9.x86/ZlibStatRelease -lzlibstat
    LIBS += -L$$SOQT_BASE/lib -lSoQt1
    LIBS += -L$$COIN3D_BASE/lib -lCoin3
 }
