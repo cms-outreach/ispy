@@ -260,8 +260,8 @@ ISpy3DView::save(void)
   QApplication::restoreOverrideCursor();
 
   //FIXME: Should be export menu:
-  //saveNode(getSceneManager()->getSceneGraph(), "Save Scene As...", parent());
-  //saveNode(model()->sceneGraph(), "Save Scene As...", getShellWidget());
+  saveNode(getSceneManager()->getSceneGraph(), "Save Scene As...", parent());
+  saveNode(model()->sceneGraph(), "Save Scene As...", getShellWidget());
 }
 void
 ISpy3DView::exportIV(void)

@@ -285,6 +285,11 @@
               draw="make3DPointSetShapes"
               visibility="none"/>
 
+  <collection label="Tracking/Matching Tracker Dets"
+              spec="TrackerDets_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DAnyBox"
+              visibility="none"/>
+
   <collection label="ECAL/ECAL Rec. Hits" spec="EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"/>
 
