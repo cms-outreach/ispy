@@ -7,6 +7,8 @@
 #include <Framework/IgCollection.h>
 #endif
 
+#include <limits>
+
 class ParseError
 {
 public:
@@ -113,11 +115,25 @@ public:
   void parseDouble(double &result)
     {
       char *endbuf;
-      result = strtod(m_buffer, &endbuf);
-      if (!endbuf)
-      { throwParseError(m_buffer-m_initialBuffer); }
-      m_buffer = endbuf;
-    }
+	  result = strtod(m_buffer, &endbuf);
+	  if ( endbuf == m_buffer )
+	  {
+//        Check for NAN in case strtod does not support it (ie, VS). Only looks for standard string, not the full NAN(n-char-sequence) string.
+		  const char *p = m_buffer;
+		  while (isspace(*p)) { p++; }
+		  if (strncmp(p,"NAN",3) ==0 || strncmp(p,"NaN",3) == 0  || strncmp(p,"nan",3) == 0 )
+		  {
+			  result = std::numeric_limits<double>::quiet_NaN();
+			  endbuf = const_cast<char*>(p)+3;
+		  }
+		  else
+		  {
+
+			  throwParseError(m_buffer-m_initialBuffer); 
+		  }
+	  }
+	  m_buffer = endbuf;
+  }
 
   void parseString(std::string &result)
     {
