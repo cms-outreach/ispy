@@ -44,7 +44,7 @@ Event_V2 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
   font-size: 24.0; 
   font-family: Arial;
-  background: :/images/cms-logo-small.png;
+  background: :/images/cms-color-medium.png;
   left: 0.125;
   top: 0.025;
   annotation-level: press;
@@ -227,23 +227,24 @@ GsfTracks_V1
   diffuse-color: rgb(1.0, 0.8, 0.4);
 }
 
-EcalRecHits_V1 { diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.15; energy-scale: 1.0;}
-EBRecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.25; energy-scale: 1.0;}
-EERecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.8; energy-scale: 1.0;}
-ESRecHits_V1 {diffuse-color: rgb(0.3, 0.64, 0.15); min-energy: 0.001; energy-scale: 100.; }
-HBRecHits_V1 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
-HERecHits_V1 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
-HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.005;}
-HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 0.005;}
+EcalRecHits_V1 { diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.03;}
+
+EBRecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.15;}
+EERecHits_V1 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.01;}
+ESRecHits_V1 {diffuse-color: rgb(1.0, 0.6, 0.0); min-energy: 0.0005; energy-scale: 100.;}
+HBRecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.1;}
+HERecHits_V1 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.03;}
+HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.03;}
+HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 1.0; energy-scale: 0.03;}
 
 /* FIXME: we should really support wildcards */
-EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.25; energy-scale: 1.0;}
-EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.8; energy-scale: 1.0;}
-ESRecHits_V2 {diffuse-color: rgb(0.3, 0.64, 0.15); min-energy: 0.001; energy-scale: 100.; }
-HBRecHits_V2 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
-HERecHits_V2 {diffuse-color: rgb(0.15, 0.4, 0.59); min-energy: 0.75; energy-scale: 0.005;}
-HFRecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.005;}
-HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.3; energy-scale: 0.005;}
+EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.15;}
+EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.01;}
+ESRecHits_V2 {diffuse-color: rgb(1.0, 0.6, 0.0); min-energy: 0.0005; energy-scale: 100.;}
+HBRecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.1;}
+HERecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.03;}
+HFRecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.03;}
+HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 1.0; energy-scale: 0.03;}
 
 EBDigis_V1 {min-energy: 0.25; energy-scale: 1.0;}
 EEDigis_V1 {min-energy: 0.8; energy-scale: 1.0;}
@@ -417,6 +418,7 @@ Jets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
+  min-energy: 70.0;
 }
 
 PATJets_V1 {
