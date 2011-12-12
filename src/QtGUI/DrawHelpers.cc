@@ -1180,7 +1180,7 @@ makeLegoTriggerObjects(IgCollection **collections, IgAssociations **,
 
 static void 
 makeLegoPhotons(IgCollection **collections, IgAssociations **,
-                SoSeparator *sep, Style * /*style*/,
+                SoSeparator *sep, Style* style,
                 Projectors &/*projectors*/)
 {
   IgCollection         *c = collections[0];
@@ -1194,6 +1194,9 @@ makeLegoPhotons(IgCollection **collections, IgAssociations **,
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {    
+    if ( ci->get(E) < style->minEnergy )
+      continue;
+
     double eta = ci->get(ETA);
     double phi = ci->get(PHI);  
     if ( phi < 0 ) phi += 2*M_PI;      
@@ -1908,7 +1911,7 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 
 static void
 makeAnyPhoton(IgCollection **collections, IgAssociations **,
-              SoSeparator *sep, Style * /*style*/,
+              SoSeparator *sep, Style* style,
               Projectors &projectors)
 {
   IgCollection  *c = collections[0];
@@ -1927,6 +1930,9 @@ makeAnyPhoton(IgCollection **collections, IgAssociations **,
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {    
+    if ( ci->get(E) < style->minEnergy )
+      continue;
+
     double eta = ci->get(ETA);
     double phi = ci->get(PHI);
     

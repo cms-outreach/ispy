@@ -44,7 +44,7 @@ Event_V2 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
   font-size: 24.0; 
   font-family: Arial;
-  background: :/images/cms-color-medium.png;
+  background: :/images/cms-logo-small.png;
   left: 0.125;
   top: 0.025;
   annotation-level: press;
@@ -238,13 +238,13 @@ HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 
 HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 1.0; energy-scale: 0.03;}
 
 /* FIXME: we should really support wildcards */
-EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.15;}
-EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.01;}
+EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.04;}
+EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.04;}
 ESRecHits_V2 {diffuse-color: rgb(1.0, 0.6, 0.0); min-energy: 0.0005; energy-scale: 100.;}
-HBRecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.1;}
-HERecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.03;}
-HFRecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.03;}
-HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 1.0; energy-scale: 0.03;}
+HBRecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.02;}
+HERecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.02;}
+HFRecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 0.02;}
+HORecHits_V2 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 1.0; energy-scale: 0.02;}
 
 EBDigis_V1 {min-energy: 0.25; energy-scale: 1.0;}
 EEDigis_V1 {min-energy: 0.8; energy-scale: 1.0;}
@@ -381,14 +381,14 @@ PATGlobalMuons_V1 {
 GsfElectrons_V1
 {
   draw-style: lines; 
-  line-width:2;
+  line-width:3;
   diffuse-color: rgb(0.0, 1.0, 0.5);
 }
 
 PATElectrons_V1
 {
   draw-style: lines; 
-  line-width:2;
+  line-width:3;
   diffuse-color: rgb(0.0, 1.0, 0.5);
 }
 
@@ -405,13 +405,17 @@ CaloTowers_V2 {
 Photons_V1 { 
   diffuse-color: rgb(1.0, 1.0, 0.0); 
   draw-style: lines;
-  line-width: 3;
+  line-width: 4;
+  line-pattern: 0x0fff;
+  min-energy: 5.0;
 }
 
 PATPhotons_V1 { 
   diffuse-color: rgb(1.0, 1.0, 0.0); 
   draw-style: lines;
-  line-width: 3;
+  line-width: 4;
+  line-pattern: 0x0fff;
+  min-energy: 5.0;
 }
 
 Jets_V1 {
