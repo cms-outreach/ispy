@@ -107,7 +107,7 @@ ExternalProject_Add(simage
                         --disable-debug --disable-symbols --without-targa --without-pic 
                         --without-rgb --without-tiff --without-jpeg --with-png 
                         --without-gif --without-ungif --without-oggvorbis
-                        --without-eps --disable-framework
+                        --without-eps --disable-framework ${SIMAGE_CONF_FLAGS}
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
 )

@@ -263,8 +263,8 @@ make3DEvent(IgCollectionItem& e,
       helper.indentText(0, 0.7);
       helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
                                    ("Data recorded: " + time).c_str());
-      helper.createTextLine((sprintf(buf, "Run / Event: %d / %d", 
-                             e.get<int>("run"), e.get<int>("event")), buf));
+      helper.createTextLine((sprintf(buf, "Run / Event: %d / %ld", 
+                             e.get<int>("run"), e.get<long>("event")), buf));
       helper.endBox();
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
       helper.createTextLine("(c) CERN. All rights reserved.");
@@ -295,7 +295,7 @@ make3DEvent(IgCollectionItem& e,
       helper.indentText(0, 0.7);
       helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" : time.c_str());
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("run")), buf));
-      helper.createTextLine((sprintf(buf, "%d", e.get<int>("event")), buf));
+      helper.createTextLine((sprintf(buf, "%ld", e.get<long>("event")), buf));
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("ls")), buf));
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("orbit")), buf));
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("bx")), buf));
