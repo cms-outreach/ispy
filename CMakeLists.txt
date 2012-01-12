@@ -229,6 +229,10 @@ INSTALL(CODE "
    " COMPONENT Runtime)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/externals/sw/src/qt/src/gui/mac/qt_menu.nib
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/Resources/ )
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/QtGUI/resources/Info.plist
+	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/ )
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/QtGUI/resources/ispy.icns
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/Resources/ )
 endif(APPLE)
 
 add_test(test_igfiles ${EXECUTABLE_OUTPUT_PATH}/test_igfiles)
