@@ -1655,6 +1655,7 @@ ISpyApplication::doRun(void)
   bool didOpen = false;
   for (int i = 1; i < m_argc; ++i)
     didOpen |= simpleOpen(m_argv[i]);
+  
   if (didOpen && !m_archives[1])
     downloadGeometry();
 
@@ -2392,7 +2393,7 @@ ISpyApplication::openFileDialog(void)
 
   if (f.exec())
     openWithFallbackGeometry(f.selectedFiles().front());
-
+  
   // If we didn't show the main window yet, show it now
   if (! m_mainWindow->isVisible())
     m_mainWindow->show();
@@ -2429,6 +2430,24 @@ ISpyApplication::simpleOpen(const QString &fileName)
   if (fileName.isEmpty())
     return false;
 
+
+  // FIXME: For some reason the simpleOpen in 
+  // openWithFallbackGeometry attempts to open
+  // the file that is the first argument on the
+  // command line. Catch the iss and iml cases here.
+  // Next: figure out why this happens.
+  if (fileName.endsWith(".iss"))
+  {
+    qDebug() <<"Trying to open .iss!";
+    return false;
+  }
+  
+  if (fileName.endsWith(".iml"))
+  {
+    qDebug() <<"Trying to open *.iml!";
+    return false;
+  }
+  
   qDebug() << "Try to open " << fileName;
   showMessage(QString("Opening ") + fileName + tr("..."));
 
