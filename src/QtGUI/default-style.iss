@@ -178,7 +178,7 @@ Tracks_V2
 }
 
 
-TrackerDets_V1
+TrackDets_V1
 {
   diffuse-color: rgb(1.0, 0.7, 0.1);
   transparency: 0.5;
