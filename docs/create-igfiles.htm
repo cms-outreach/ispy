@@ -72,40 +72,46 @@ as follows:
 
 <p>&nbsp;</p>
 
-<h5>1) Set-up your environment:</h5>
+<h5>1) Set-up your environment for CMSSW release X_Y_Z:</h5>
 <p>
 <b>For csh:</b><br>
 <pre>
-setenv CMSSW_VERSION CMSSW_3_3_X
+setenv CMSSW_VERSION CMSSW_X_Y_Z
 </pre>
 <p>
 <b>For sh:</b><br> 
 <pre>
-export CMSSW_VERSION=CMSSW_3_3_X
+export CMSSW_VERSION=CMSSW_X_Y_Z
 </pre>
 
 <h5>2) Check out sources and build:</h5>
+
+<b>for CMSSW releases before 3_10_x</b><br>
 <pre>
 project CMSSW
 cmsrel $CMSSW_VERSION
 cmsenv
-addpkg ISpy/Analyzers V01-02-04
+cvs co -r preCMSSW_3_10 ISpy/Services 
+cvs co -r preCMSSW_3_10 ISpy/Analyzers
 scram b
 </pre>
 
-<h5>3a) Run the test analyzer to make a Monte-Carlo .ig file:</h5>
+<b>for CMSSW releases after 3_10_x</b><br>
 <pre>
+project CMSSW
+cmsrel $CMSSW_VERSION
 cmsenv
-cmsRun ISpy/Analyzers/python/ispy_33X_cfg.py
+cvs co -r use_zlib ISpy/Services 
+cvs co -r use_zlib ISpy/Analyzers
+scram b
 </pre>
   
-<h5>3b) Run the test analyzer to make an .ig file from real data:</h5>
+<h5>3a) Run the test analyzer to make an .ig file from real data:</h5>
 <pre>
-cmsenv
-cmsRun ISpy/Analyzers/python/ispy_Collisions09_cfg.py
+cmsRun ISpy/Analyzers/python/ispy_XYZ_cfg.py
 </pre>
 
-<h5>3c) Use iSpy with your custom configuration file:</h5>
+<h5>3b) Use iSpy with your custom configuration file:</h5>
 
 You only need to add the iSpy path to your process:
 

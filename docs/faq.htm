@@ -22,9 +22,6 @@
 <!-- tpl: page-default -->
 
 
-
-
-
 <div id="page" class="ispy">
 
    <!-- Start of header  ========================================== --> 
@@ -74,20 +71,7 @@
       and use on multiple platforms. 
 
 <hr/>
-      <h2>2) How does iSpy relate to CMSSW and Iguana?</h2>
-
-      <b>iSpy</b> is independent of the CMSSW software 
-      but re-uses many aspects of the iguana code and experience. 
-      This independence solves previous issues of "heaviness" of Iguana that were caused by 
-      its integration with CMSSW -- slow to start, large memory footprint, 
-      fragility due to rapidly-changing CMSSW code, data formats, etc.
-       <p>
-      <b>iSpy</b>  will ultimately replace the older and hard-to-maintain <b>Iguana</b> software 
-      once the simpler <b>iSpy</b> has the funtionality that meets users' needs.
-      <p/>
-
-<hr/>
-      <h2>3) How do I install and run iSpy?</h2>
+      <h2>2) How do I install and run iSpy?</h2>
 
       Just download <b>iSpy</b> from the <a href="index.htm"><b>iSpy</b> home page</a> 
       and double-click the icon to start (on Linux type "chmod +x ispy" then "./ispy").
@@ -98,7 +82,7 @@
       simulated CMS events, served from the Web.
 
 <hr/>
-      <h2>4) How does iSpy get access to CMS data?</h2>
+      <h2>3) How does iSpy get access to CMS data?</h2>
 
       <b>iSpy</b> reads standalone <b>.ig files</b> containing 
       collections of physics and other objects.
@@ -115,7 +99,7 @@
       <p/>
 
 <hr/>
-      <h2>5) Can I make my own .ig files to view with iSpy?</h2>
+      <h2>4) Can I make my own .ig files to view with iSpy?</h2>
 
       Yes, it is straightforward to invoke our CMSSW analysers in your own CMSSW 
       program to create <b>.ig files</b> that can then be read by <b>iSpy</b>.
@@ -127,7 +111,7 @@
 
 
 
-      <h2>6) Is iSpy stable with respect to CMSSW and CMS data formats?</h2>
+      <h2>5) Is iSpy stable with respect to CMSSW and CMS data formats?</h2>
 
       Yes, because it uses a very stable <b>.ig file</b> format. 
       Multiple versions of <b>iSpy</b> can read the 
@@ -136,9 +120,9 @@
 <hr/>
 
 
-      <h2>7) On which linux distribution does iSpy work?</a></h2>
+      <h2>6) On which Linux distribution does iSpy work?</a></h2>
       While we try to be as distribution agnostic as possible when building iSpy
-      on linux, only the following distributions are known to work out of the box:<br/>
+      on Linux, only the following distributions are known to work out of the box:<br/>
 
       <br/><i><b>For 64 bit mode</b></i>
       <ul>
@@ -155,35 +139,27 @@
       </ul>
 <hr/>
 
-      <h2>8) Can I change the colors / cuts used by iSpy, without recompiling?</h2>
+      <h2>7) Can I change the colors / cuts used by iSpy, without recompiling?</h2>
 
       Yes, you can. The <a href="css-inst.htm"> iSpy Style Sheet reference</a>
       gives you a description of how to do that. 
       Notice that this is an experimental feature.
 <hr/>
 
-      <h2>9) Can I change the view contents, the camera position, etc, without recompiling?</h2>
+      <h2>8) Can I change the view contents, the camera position, etc, without recompiling?</h2>
 
       Yes, you can. The <a href="iml-inst.htm"> iSpy Layout reference</a>
       gives you a description of how to do that.
       Notice that this is an experimental feature and documentation 
       needs improvement.
+
 <hr/>
-
-      <h2>10) Can I build iSpy and change it?</h2>
-
-      Yes, you can. If what you want to accomplish is not achievable by what 
-      described in 8) or 9), the <a href="build-inst.htm"> build procedure</a>
-      is fairly straightforward albeit some parts of it are still under 
-      development.
-
-      <h2>11) What kind of format is .ig? Where can I find information about it?</h2>
+      <h2>9) What kind of format is .ig? Where can I find information about it?</h2>
 
       A .ig file is a zip archive (unzippable via <code>unzip</code> or similar)  
       containing one file per event. Each event file uses a relational database like
       structure, described using <a href="http://json.org">JSON</a>. For a more
       extensive description look <a href="ig-specs.htm">here</a>.
-
 <hr/> 
  
    <p></p> <!-- small vertical space -->
