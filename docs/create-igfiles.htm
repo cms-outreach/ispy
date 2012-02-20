@@ -120,6 +120,21 @@ process.load("ISpy/Analyzers/ISpy_Producer_cff")
 process.p1 = cms.Path(process.iSpy_sequence)
 </pre>
 
+<p>&nbsp;</p>
+
+<h5>Produce files from shell script</h5> 
+Alternatively, <a href="mailto:zhangjin@cern.ch">Jinzhong Zhang</a> has created a bash script that can:
+<ul>
+<li id="ispy">Install the Analyzers
+<li id="ispy">Produce the ig files from a specified dataset (and run and lumi range)
+<li id="ispy">Filter on an HLT
+<li id="ispy">Publish the resulting ig files in a storage element such as CASTOR
+</ul>
+The script can be viewed <a href="http://cmssw.cvs.cern.ch/cgi-bin/cmssw.cgi/CMSSW/ISpy/Analyzers/ISpy.sh">here</a>. 
+One can fetch the script from CVS with the following command:
+<pre>
+cvs co -r use_zlib ISpy/Analyzers/ISpy.sh
+</pre>
 </div>
 
 <!-- End of main page ========================================== --> 

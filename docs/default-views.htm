@@ -1,1875 +1,1893 @@
-<layout>
-<camera position="-18.1, 8.6, 14.0" pointAt="0, 0, 0" scale="10.6" orthographic="true" rotating="true">
-<visibilityGroup>
-<view label="Standard 3D View" specialised="true">
-<collection label="Provenance/Event information" spec="Event_V1:time:run:event:ls:orbit:bx" draw="make3DEventV1"/>
+<html>
+<head>
+<title>iSpy | A powerful and lightweight event display.</title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<style type="text/css">
+pre {
+  padding-left: 0.5cm;
+}
+</style>
+</head>
+<body>
+<pre>
 
-  <collection label="Provenance/Event information"
+&ltlayout&gt
+&ltcamera position="-18.1, 8.6, 14.0" pointAt="0, 0, 0" scale="10.6" orthographic="true" rotating="true"&gt
+&ltvisibilityGroup&gt
+&ltview label="Standard 3D View" specialised="true"&gt
+&ltcollection label="Provenance/Event information" spec="Event_V1:time:run:event:ls:orbit:bx" draw="make3DEventV1"/&gt
+
+  &ltcollection label="Provenance/Event information"
               spec="Event_V2:time:run:event:ls:orbit:bx:localtime"
-              draw="make3DEventV2"/>
+              draw="make3DEventV2"/&gt
 
-  <collection label="Provenance/L1 Triggers"
+  &ltcollection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
               draw="make3DL1Trigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Technical Triggers"
+  &ltcollection label="Provenance/Technical Triggers"
               spec="TechTrigger_V1"
               draw="make3DTechTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/HLT Trigger Paths"
+  &ltcollection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
               draw="make3DHLTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Trigger Objects"
+  &ltcollection label="Provenance/Trigger Objects"
               spec="TriggerObjects_V1:VID:pt:eta:phi"
               draw="make3DTriggerObject"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Data Products found"
+  &ltcollection label="Provenance/Data Products found"
               spec="Products_V1"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Data Products not found"
+  &ltcollection label="Provenance/Data Products not found"
               spec="Errors_V1"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Drawing limits"
+  &ltcollection label="Provenance/Drawing limits"
               spec="Internal_Limits_V1"
               draw="make3DLimits"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Detector/Tracker"
+  &ltcollection label="Detector/Tracker"
               spec="Tracker3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Detector/Pixel Barrel"
+  &ltcollection label="Detector/Pixel Barrel"
               spec="PixelBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Pixel Endcap"
+  &ltcollection label="Detector/Pixel Endcap"
               spec="PixelEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Pixel Endcap (+Z)"
+  &ltcollection label="Detector/Pixel Endcap (+Z)"
               spec="PixelEndcapPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-   <collection label="Detector/Pixel Endcap (-Z)"
+   &ltcollection label="Detector/Pixel Endcap (-Z)"
               spec="PixelEndcapMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Tracker Inner Barrel"
+  &ltcollection label="Detector/Tracker Inner Barrel"
               spec="SiStripTIB3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Tracker Outer Barrel"
+  &ltcollection label="Detector/Tracker Outer Barrel"
               spec="SiStripTOB3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-   <collection label="Detector/Tracker Outer Barrel (simplified)"
+   &ltcollection label="Detector/Tracker Outer Barrel (simplified)"
               spec="TOB_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
-              visibility="none"/>	      
+              visibility="none"/&gt	      
 
-  <collection label="Detector/Tracker Inner Detector"
+  &ltcollection label="Detector/Tracker Inner Detector"
               spec="SiStripTID3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-   <collection label="Detector/Tracker Inner Detector (+Z)"
+   &ltcollection label="Detector/Tracker Inner Detector (+Z)"
               spec="SiStripTIDPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Tracker Inner Detector (-Z)"
+  &ltcollection label="Detector/Tracker Inner Detector (-Z)"
               spec="SiStripTIDMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Tracker Endcap"
+  &ltcollection label="Detector/Tracker Endcap"
               spec="SiStripTEC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-   <collection label="Detector/Tracker Endcap (+Z)"
+   &ltcollection label="Detector/Tracker Endcap (+Z)"
               spec="SiStripTECPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Tracker Endcap (-Z)"
+  &ltcollection label="Detector/Tracker Endcap (-Z)"
               spec="SiStripTECMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Tracker Endcap (simplified)"
+  &ltcollection label="Detector/Tracker Endcap (simplified)"
               spec="TEC_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/ECAL Barrel"
+  &ltcollection label="Detector/ECAL Barrel"
               spec="EcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/ECAL Barrel (simplified)"
+  &ltcollection label="Detector/ECAL Barrel (simplified)"
               spec="EB_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/ECAL Endcap"
+  &ltcollection label="Detector/ECAL Endcap"
               spec="EcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 	      
-  <collection label="Detector/ECAL Endcap (+Z)"
+  &ltcollection label="Detector/ECAL Endcap (+Z)"
               spec="EcalEndcapPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/ECAL Endcap (-Z)"
+  &ltcollection label="Detector/ECAL Endcap (-Z)"
               spec="EcalEndcapMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/ECAL Endcap (simplified)"
+  &ltcollection label="Detector/ECAL Endcap (simplified)"
               spec="EE_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Preshower"
+  &ltcollection label="Detector/Preshower"
               spec="EcalPreshower3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Barrel"
+  &ltcollection label="Detector/HCAL Barrel"
               spec="HcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Endcap"
+  &ltcollection label="Detector/HCAL Endcap"
               spec="HcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-   <collection label="Detector/HCAL Endcap (+Z)"
+   &ltcollection label="Detector/HCAL Endcap (+Z)"
               spec="HcalEndcapPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-   <collection label="Detector/HCAL Endcap (-Z)"
+   &ltcollection label="Detector/HCAL Endcap (-Z)"
               spec="HcalEndcapMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Outer"
+  &ltcollection label="Detector/HCAL Outer"
               spec="HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/HCAL Outer (simplified)"
+  &ltcollection label="Detector/HCAL Outer (simplified)"
               spec="HO_V1:innerR_minus:innerR_plus:outerR_minus:outerR_plus:z_minus:z_plus"
               draw="make3DAnyCylinder"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Forward"
+  &ltcollection label="Detector/HCAL Forward"
               spec="HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Forward (+Z)"
+  &ltcollection label="Detector/HCAL Forward (+Z)"
               spec="HcalForwardPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Forward (-Z)"
+  &ltcollection label="Detector/HCAL Forward (-Z)"
               spec="HcalForwardMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Drift Tubes"
+  &ltcollection label="Detector/Drift Tubes"
               spec="DTs3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
 
-  <collection label="Detector/Cathode Strip Chambers"
+  &ltcollection label="Detector/Cathode Strip Chambers"
               spec="CSC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Cathode Strip Chambers (+Z)"
+  &ltcollection label="Detector/Cathode Strip Chambers (+Z)"
               spec="CSCPlus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Cathode Strip Chambers (-Z)"
+  &ltcollection label="Detector/Cathode Strip Chambers (-Z)"
               spec="CSCMinus3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Resistive Plate Chambers"
+  &ltcollection label="Detector/Resistive Plate Chambers"
               spec="RPC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Resistive Plate Chambers Barrel"
+  &ltcollection label="Detector/Resistive Plate Chambers Barrel"
               spec="RPCBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
- <collection label="Detector/Resistive Plate Chambers (+Z)"
+ &ltcollection label="Detector/Resistive Plate Chambers (+Z)"
               spec="RPCPlusEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Resistive Plate Chambers (-Z)"
+  &ltcollection label="Detector/Resistive Plate Chambers (-Z)"
               spec="RPCMinusEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Tracks (reco.)"
+  &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
 
- <collection label="Tracking/Tracks (reco.)"
+ &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V2:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
 
-  <collection label="Tracking/Tracks (GSF)"
+  &ltcollection label="Tracking/Tracks (GSF)"
               spec="GsfTracks_V1:pt:pos:dir"
               other="GsfExtras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfTrackExtras_V1"
               draw="make3DTracksNoVertex"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Tracking/Digis (Si Pixels)"
+  &ltcollection label="Tracking/Digis (Si Pixels)"
               spec="PixelDigis_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Digis (Si Strips)"
+  &ltcollection label="Tracking/Digis (Si Strips)"
               spec="SiStripDigis_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Clusters (Si Pixels)"
+  &ltcollection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Clusters (Si Strips)"
+  &ltcollection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Rec. Hits (Si Pixels)"
+  &ltcollection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Rec. Hits (Tracking)"
+  &ltcollection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Matching Tracker Dets"
+  &ltcollection label="Tracking/Matching Tracker Dets"
               spec="TrackDets_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="ECAL/ECAL Rec. Hits" spec="EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+  &ltcollection label="ECAL/ECAL Rec. Hits" spec="EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Endcap Rec. Hits"
+  &ltcollection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
   
-  <collection label="ECAL/Preshower Rec. Hits"
+  &ltcollection label="ECAL/Preshower Rec. Hits"
               spec="ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DPreshowerTowers"/>
+              draw="make3DPreshowerTowers"/&gt
 
- <collection label="ECAL/Barrel Rec. Hits"
+ &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
- <collection label="ECAL/Barrel Digis"
+ &ltcollection label="ECAL/Barrel Digis"
               spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers" visibility="none"/>
+              draw="make3DEnergyTowers" visibility="none"/&gt
 
-  <collection label="ECAL/Endcap Rec. Hits"
+  &ltcollection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
   
-  <collection label="ECAL/Endcap Digis"
+  &ltcollection label="ECAL/Endcap Digis"
               spec="EEDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers" visibility="none"/>
+              draw="make3DEnergyTowers" visibility="none"/&gt
 
-  <collection label="ECAL/Preshower Rec. Hits"
+  &ltcollection label="ECAL/Preshower Rec. Hits"
               spec="ESRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DPreshowerTowers"/>
+              draw="make3DPreshowerTowers"/&gt
 
-  <collection label="ECAL/CaloClusters"
+  &ltcollection label="ECAL/CaloClusters"
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="ECAL/SuperClusters"
+  &ltcollection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="SuperClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Endcap Rec. Hits"
+  &ltcollection label="HCAL/Endcap Rec. Hits"
               spec="HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Forward Rec. Hits"
+  &ltcollection label="HCAL/Forward Rec. Hits"
               spec="HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyBoxes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Endcap Rec. Hits"
+  &ltcollection label="HCAL/Endcap Rec. Hits"
               spec="HERecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Forward Rec. Hits"
+  &ltcollection label="HCAL/Forward Rec. Hits"
               spec="HFRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyBoxes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Digis"
+  &ltcollection label="Muon/DT Digis"
               spec="DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight"
               draw="make3DDTDigis"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Rec. Hits"
+  &ltcollection label="Muon/DT Rec. Hits"
               spec="DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
               other=":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight"
               draw="make3DDTRecHits"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Rec. Segments (4D)"
+  &ltcollection label="Muon/DT Rec. Segments (4D)"
               spec="DTRecSegment4D_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/CSC Segments"
+  &ltcollection label="Muon/CSC Segments"
               spec="CSCSegments_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/CSC Wire Digis"
+  &ltcollection label="Muon/CSC Wire Digis"
               spec="CSCWireDigis_V1:pos:length"
-              draw="make3DCSCWireDigis"/>
+              draw="make3DCSCWireDigis"/&gt
 
-  <collection label="Muon/CSC Strip Digis"
+  &ltcollection label="Muon/CSC Strip Digis"
               spec="CSCStripDigis_V1:pos:length"
-              draw="make3DCSCStripDigis"/>
+              draw="make3DCSCStripDigis"/&gt
 
-  <collection label="Muon/CSC LCT Digis"
+  &ltcollection label="Muon/CSC LCT Digis"
 	      spec="CSCLCTDigis_V1:pos"
-              draw="make3DPointSetShapes"/>
+              draw="make3DPointSetShapes"/&gt
 
-  <collection label="Muon/RPC Rec. Hits"
+  &ltcollection label="Muon/RPC Rec. Hits"
               spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V2:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/Matching Muon Chambers"
+  &ltcollection label="Muon/Matching Muon Chambers"
               spec="MuonChambers_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Particle Flow/Rec. Tracks"
+  &ltcollection label="Particle Flow/Rec. Tracks"
               spec="PFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/GSF Tracks"
+  &ltcollection label="Particle Flow/GSF Tracks"
               spec="GsfPFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="GsfPFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/ECAL Barrel Rec. Hits"
+  &ltcollection label="Particle Flow/ECAL Barrel Rec. Hits"
               spec="PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/ECAL Endcap Rec. Hits"
+  &ltcollection label="Particle Flow/ECAL Endcap Rec. Hits"
               spec="PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/Bremsstrahlung candidate tangents"
+  &ltcollection label="Particle Flow/Bremsstrahlung candidate tangents"
               spec="PFBrems_V1:deltaP:sigmadeltaP"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFBremTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Muons (Reco)"
+  &ltcollection label="Physics Objects/Muons (Reco)"
               spec="Muons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Tracker Muons (Reco)"
+  &ltcollection label="Physics Objects/Tracker Muons (Reco)"
               spec="TrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonStandalonePoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V2:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="MuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (Reco)"
+  &ltcollection label="Physics Objects/Global Muons (Reco)"
               spec="GlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
   
-  <collection label="Physics Objects/Tracker Muons (PAT)"
+  &ltcollection label="Physics Objects/Tracker Muons (PAT)"
               spec="PATTrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (PAT)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (PAT)"
               spec="PATStandaloneMuons_V1:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATMuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (PAT)"
+  &ltcollection label="Physics Objects/Global Muons (PAT)"
               spec="PATGlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Electrons (GSF)"
+  &ltcollection label="Physics Objects/Electrons (GSF)"
               spec="GsfElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfElectronExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracks"/&gt
 
-  <collection label="Physics Objects/Electrons (PAT)"
+  &ltcollection label="Physics Objects/Electrons (PAT)"
               spec="PATElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATElectronExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracks"/&gt
 
-  <collection label="Physics Objects/Photons (Reco)"
+  &ltcollection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"
-              draw="make3DPhoton"/>
+              draw="make3DPhoton"/&gt
 
-  <collection label="Physics Objects/Photons (PAT)"
+  &ltcollection label="Physics Objects/Photons (PAT)"
               spec="PATPhotons_V1:energy:eta:phi:pos"
-              draw="make3DPhoton"/>
+              draw="make3DPhoton"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Jets"
+  &ltcollection label="Physics Objects/Jets"
               spec="Jets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Missing Et (Reco)"
+  &ltcollection label="Physics Objects/Missing Et (Reco)"
               spec="METs_V1:pt:px:py:phi"
               draw="make3DMET"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Jets (PAT)"
+  &ltcollection label="Physics Objects/Jets (PAT)"
               spec="PATJets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Physics Objects/Missing Et (PAT)"
+  &ltcollection label="Physics Objects/Missing Et (PAT)"
               spec="PATMETs_V1:pt:px:py:phi"
               draw="make3DMET"
-       visibility="none"/>
+       visibility="none"/&gt
 
 
-  <collection label="Monte-Carlo/Sim. tracks with hits"
+  &ltcollection label="Monte-Carlo/Sim. tracks with hits"
               spec="TrackingParticles_V1"
               other="PSimHits_V1:pos:dir"
               associations="TrackingParticlePSimHits_V1"
               draw="make3DTrackingParticles"
-              visibility="none"/>
+              visibility="none"/&gt
 
 
-  <collection label="Collections not drawn/Extras_V1" spec="Extras_V1" visibility="none"/>
-  <collection label="Collections not drawn/Hits_V1" spec="Hits_V1" visibility="none"/>
-  <collection label="Collections not drawn/Points_V1" spec="Points_V1" visibility="none"/>
-  <collection label="Collections not drawn/DetIds_V1" spec="DetIds_V1" visibility="none"/>
-  <collection label="Collections not drawn/PSimHits_V1" spec="PSimHits_V1" visibility="none"/>
-  <collection label="Collections not drawn/GsfExtras_V1" spec="GsfExtras_V1" visibility="none"/>
-  <collection label="Collections not drawn/PFTrajectoryPoints_V1" spec="PFTrajectoryPoints_V1" visibility="none"/>
-  <collection label="Collections not drawn/PFRecHitFractions_V1" spec="PFRecHitFractions_V1" visibility="none"/>
+  &ltcollection label="Collections not drawn/Extras_V1" spec="Extras_V1" visibility="none"/&gt
+  &ltcollection label="Collections not drawn/Hits_V1" spec="Hits_V1" visibility="none"/&gt
+  &ltcollection label="Collections not drawn/Points_V1" spec="Points_V1" visibility="none"/&gt
+  &ltcollection label="Collections not drawn/DetIds_V1" spec="DetIds_V1" visibility="none"/&gt
+  &ltcollection label="Collections not drawn/PSimHits_V1" spec="PSimHits_V1" visibility="none"/&gt
+  &ltcollection label="Collections not drawn/GsfExtras_V1" spec="GsfExtras_V1" visibility="none"/&gt
+  &ltcollection label="Collections not drawn/PFTrajectoryPoints_V1" spec="PFTrajectoryPoints_V1" visibility="none"/&gt
+  &ltcollection label="Collections not drawn/PFRecHitFractions_V1" spec="PFRecHitFractions_V1" visibility="none"/&gt
 
-  <collection label="Collections not drawn/TrackerRPhi_V1"
-              spec="TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/TrackerRPhi_V1"
+              spec="TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/TrackerRZ_V1"
-              spec="TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/TrackerRZ_V1"
+              spec="TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/EcalBarrelRPhi_V1"
-              spec="EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/EcalBarrelRPhi_V1"
+              spec="EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/EcalBarrelRZ_V1"
-              spec="EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/EcalBarrelRZ_V1"
+              spec="EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/EcalPreshowerRZ_V1"
-              spec="EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/EcalPreshowerRZ_V1"
+              spec="EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/EcalEndcapRZ_V1"
-              spec="EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/EcalEndcapRZ_V1"
+              spec="EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/HcalBarrelRPhi_V1"
-              spec="HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/HcalBarrelRPhi_V1"
+              spec="HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/HcalBarrelRZ_V1"
-              spec="HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/HcalBarrelRZ_V1"
+              spec="HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/HcalEndcapRZ_V1"
-              spec="HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/HcalEndcapRZ_V1"
+              spec="HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/CaloLego_V1"
-              spec="CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/CaloLego_V1"
+              spec="CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/HcalOuterRPhi_V1"
-              spec="HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/HcalOuterRPhi_V1"
+              spec="HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/HcalOuterRZ_V1"
-              spec="HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/HcalOuterRZ_V1"
+              spec="HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/HcalForwardRZ_V1"
-              spec="HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/HcalForwardRZ_V1"
+              spec="HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/CSCRZ_V1"
-              spec="CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/CSCRZ_V1"
+              spec="CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
   
-  <collection label="Collections not drawn/DTsRPhi_V1"
-              spec="DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/DTsRPhi_V1"
+              spec="DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/DTsRZ_V1"
-              spec="DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/DTsRZ_V1"
+              spec="DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/RPCRPhi_V1"
-              spec="RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/RPCRPhi_V1"
+              spec="RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection label="Collections not drawn/RPCRZ_V1"
-              spec="RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/>
+  &ltcollection label="Collections not drawn/RPCRZ_V1"
+              spec="RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"/&gt
 
-  <collection spec=":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4" draw="make3DAnyBox" visibility="none"/>
-  <collection spec=":pos_1:pos_2" draw="make3DAnyLine" visibility="none"/>
-  <collection spec=":pos" draw="make3DAnyPoint" visibility="none"/>
-  <collection spec=":detid" draw="make3DAnyDetId" visibility="none"/>
+  &ltcollection spec=":front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4" draw="make3DAnyBox" visibility="none"/&gt
+  &ltcollection spec=":pos_1:pos_2" draw="make3DAnyLine" visibility="none"/&gt
+  &ltcollection spec=":pos" draw="make3DAnyPoint" visibility="none"/&gt
+  &ltcollection spec=":detid" draw="make3DAnyDetId" visibility="none"/&gt
 
-</view>
-</visibilityGroup>
-</camera>
-<camera position="0, 0, 1" pointAt="0, 0, 0" scale="3.5" orthographic="true" rotating="false">
-<visibilityGroup>
-<view label="Standard R-Phi View" specialised="true">
+&lt/view&gt
+&lt/visibilityGroup&gt
+&lt/camera&gt
+&ltcamera position="0, 0, 1" pointAt="0, 0, 0" scale="3.5" orthographic="true" rotating="false"&gt
+&ltvisibilityGroup&gt
+&ltview label="Standard R-Phi View" specialised="true"&gt
 
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V1:time:run:event:ls:orbit:bx"
-              draw="make3DEventV1"/>
+              draw="make3DEventV1"/&gt
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V2:time:run:event:ls:orbit:bx:localtime"
-              draw="make3DEventV2"/>
+              draw="make3DEventV2"/&gt
 
-  <collection label="Provenance/L1 Triggers"
+  &ltcollection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
               draw="make3DL1Trigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/HLT Trigger Paths"
+  &ltcollection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
               draw="make3DHLTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Technical Triggers"
+  &ltcollection label="Provenance/Technical Triggers"
               spec="TechTrigger_V1"
               draw="make3DTechTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Trigger Objects"
+  &ltcollection label="Provenance/Trigger Objects"
               spec="TriggerObjects_V1:VID:pt:eta:phi"
               draw="make3DTriggerObject"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Data Products found"
-              spec="Products_V1"/>
+  &ltcollection label="Provenance/Data Products found"
+              spec="Products_V1"/&gt
 
-  <collection label="Provenance/Data Products not found"
-              spec="Errors_V1"/>
+  &ltcollection label="Provenance/Data Products not found"
+              spec="Errors_V1"/&gt
 
-  <collection label="Provenance/Drawing limits"
+  &ltcollection label="Provenance/Drawing limits"
               spec="Internal_Limits_V1"
               draw="make3DLimits"
-              visibility="none"/>
+              visibility="none"/&gt
 
 
-  <collection label="Detector/Tracker"
+  &ltcollection label="Detector/Tracker"
               spec="TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/ECAL Barrel"
+  &ltcollection label="Detector/ECAL Barrel"
               spec="EcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/HCAL Barrel"
+  &ltcollection label="Detector/HCAL Barrel"
               spec="HcalBarrelRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/HCAL Outer"
+  &ltcollection label="Detector/HCAL Outer"
               spec="HcalOuterRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/Drift Tubes"
+  &ltcollection label="Detector/Drift Tubes"
               spec="DTsRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/Resistive Plate Chambers"
+  &ltcollection label="Detector/Resistive Plate Chambers"
               spec="RPCRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Tracks (reco.)"
+  &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
 
- <collection label="Tracking/Tracks (reco.)"
+ &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V2:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
 
-  <collection label="Tracking/Tracks (GSF)"
+  &ltcollection label="Tracking/Tracks (GSF)"
               spec="GsfTracks_V1:pt:pos:dir"
               other="GsfExtras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfTrackExtras_V1"
               draw="make3DTracksNoVertex"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Tracking/Digis (Si Pixels)"
+  &ltcollection label="Tracking/Digis (Si Pixels)"
               spec="PixelDigis_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Digis (Si Strips)"
+  &ltcollection label="Tracking/Digis (Si Strips)"
               spec="SiStripDigis_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Clusters (Si Pixels)"
+  &ltcollection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Clusters (Si Strips)"
+  &ltcollection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
               draw="make3DPointSetShapes"
-               visibility="none"/>
+               visibility="none"/&gt
 
-  <collection label="Tracking/Rec. Hits (Si Pixels)"
+  &ltcollection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
               draw="make3DPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Rec. Hits (Tracking)"
+  &ltcollection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
               draw="make3DPointSetShapes"
-               visibility="none"/>
+               visibility="none"/&gt
 
-  <collection label="ECAL/ECAL Rec. Hits" 
+  &ltcollection label="ECAL/ECAL Rec. Hits" 
               spec="EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Barrel Digis"
+  &ltcollection label="ECAL/Barrel Digis"
               spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers" visibility="none"/>
+              draw="make3DEnergyTowers" visibility="none"/&gt
 
- <collection label="ECAL/CaloClusters"
+ &ltcollection label="ECAL/CaloClusters"
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="ECAL/SuperClusters"
+  &ltcollection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="SuperClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyBoxes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyBoxes"
-              visibility="none"/>
-  <collection label="Muon/DT Digis"
+              visibility="none"/&gt
+  &ltcollection label="Muon/DT Digis"
               spec="DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight"
               draw="make3DDTDigis"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Rec. Hits"
+  &ltcollection label="Muon/DT Rec. Hits"
               spec="DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
               other=":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight"
               draw="make3DDTRecHits"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Rec. Segments (4D)"
+  &ltcollection label="Muon/DT Rec. Segments (4D)"
               spec="DTRecSegment4D_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/CSC Segments"
+  &ltcollection label="Muon/CSC Segments"
               spec="CSCSegments_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/RPC Rec. Hits"
+  &ltcollection label="Muon/RPC Rec. Hits"
               spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
   
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V2:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Particle Flow/Rec. Tracks"
+  &ltcollection label="Particle Flow/Rec. Tracks"
               spec="PFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/GSF Tracks"
+  &ltcollection label="Particle Flow/GSF Tracks"
               spec="GsfPFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="GsfPFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/ECAL barrel Rec. Hits"
+  &ltcollection label="Particle Flow/ECAL barrel Rec. Hits"
               spec="PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/Bremsstrahlung candidate tangents"
+  &ltcollection label="Particle Flow/Bremsstrahlung candidate tangents"
               spec="PFBrems_V1:deltaP:sigmadeltaP"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFBremTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Muons (Reco)"
+  &ltcollection label="Physics Objects/Muons (Reco)"
               spec="Muons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Tracker Muons (Reco)"
+  &ltcollection label="Physics Objects/Tracker Muons (Reco)"
               spec="TrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonStandalonePoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V2:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="MuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (Reco)"
+  &ltcollection label="Physics Objects/Global Muons (Reco)"
               spec="GlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Tracker Muons (PAT)"
+  &ltcollection label="Physics Objects/Tracker Muons (PAT)"
               spec="PATTrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (PAT)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (PAT)"
               spec="PATStandaloneMuons_V1:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATMuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (PAT)"
+  &ltcollection label="Physics Objects/Global Muons (PAT)"
               spec="PATGlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-   <collection label="Physics Objects/Electrons (GSF)"
+   &ltcollection label="Physics Objects/Electrons (GSF)"
               spec="GsfElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfElectronExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracks"/&gt
 
-  <collection label="Physics Objects/Electrons (PAT)"
+  &ltcollection label="Physics Objects/Electrons (PAT)"
               spec="PATElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATElectronExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracks"/&gt
 
-  <collection label="Physics Objects/Photons (Reco)"
+  &ltcollection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"
-              draw="make3DPhoton"/>
+              draw="make3DPhoton"/&gt
 
-  <collection label="Physics Objects/Photons (PAT)"
+  &ltcollection label="Physics Objects/Photons (PAT)"
               spec="PATPhotons_V1:energy:eta:phi:pos"
-              draw="make3DPhoton"/>
+              draw="make3DPhoton"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Jets"
+  &ltcollection label="Physics Objects/Jets"
               spec="Jets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Missing Et (Reco)"
+  &ltcollection label="Physics Objects/Missing Et (Reco)"
               spec="METs_V1:pt:px:py:phi"
               draw="make3DMET"
-              visibility="none"/>
+              visibility="none"/&gt
               
-  <collection label="Physics Objects/Jets (PAT)"
+  &ltcollection label="Physics Objects/Jets (PAT)"
               spec="PATJets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Physics Objects/Missing Et (PAT)"
+  &ltcollection label="Physics Objects/Missing Et (PAT)"
               spec="PATMETs_V1:pt:px:py:phi"
               draw="make3DMET"
-       visibility="none"/>
+       visibility="none"/&gt
   
 
-  <collection label="Monte-Carlo/Sim. tracks with hits"
+  &ltcollection label="Monte-Carlo/Sim. tracks with hits"
               spec="TrackingParticles_V1"
               other="PSimHits_V1:pos:dir"
               associations="TrackingParticlePSimHits_V1"
               draw="make3DTrackingParticles"
-              visibility="none"/>
+              visibility="none"/&gt
 
-</view>
-</visibilityGroup>
-</camera>
+&lt/view&gt
+&lt/visibilityGroup&gt
+&lt/camera&gt
 
-<camera position="-1, 0, 0" pointAt="0, 0, 0" scale="8.5" orthographic="true" rotating="false" projection="RZ">
-<visibilityGroup>
-<view label="Standard R-Z View" specialised="true">
+&ltcamera position="-1, 0, 0" pointAt="0, 0, 0" scale="8.5" orthographic="true" rotating="false" projection="RZ"&gt
+&ltvisibilityGroup&gt
+&ltview label="Standard R-Z View" specialised="true"&gt
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V1:time:run:event:ls:orbit:bx"
-              draw="make3DEventV1"/>
+              draw="make3DEventV1"/&gt
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V2:time:run:event:ls:orbit:bx:localtime"
-              draw="make3DEventV2"/>
+              draw="make3DEventV2"/&gt
 
-  <collection label="Provenance/L1 Triggers"
+  &ltcollection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
               draw="make3DL1Trigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/HLT Trigger Paths"
+  &ltcollection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
               draw="make3DHLTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Technical Triggers"
+  &ltcollection label="Provenance/Technical Triggers"
               spec="TechTrigger_V1"
               draw="make3DTechTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Trigger Objects"
+  &ltcollection label="Provenance/Trigger Objects"
               spec="TriggerObjects_V1:VID:pt:eta:phi"
               draw="make3DTriggerObject"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Data Products found"
-              spec="Products_V1"/>
+  &ltcollection label="Provenance/Data Products found"
+              spec="Products_V1"/&gt
 
-  <collection label="Provenance/Data Products not found"
-              spec="Errors_V1"/>
+  &ltcollection label="Provenance/Data Products not found"
+              spec="Errors_V1"/&gt
   
-  <collection label="Provenance/Drawing limits"
+  &ltcollection label="Provenance/Drawing limits"
               spec="Internal_Limits_V1"
               draw="make3DLimits"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Detector/Tracker"
+  &ltcollection label="Detector/Tracker"
               spec="TrackerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/ECAL Barrel"
+  &ltcollection label="Detector/ECAL Barrel"
               spec="EcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/ECAL Endcap"
+  &ltcollection label="Detector/ECAL Endcap"
               spec="EcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/Preshower"
+  &ltcollection label="Detector/Preshower"
               spec="EcalPreshowerRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Barrel"
+  &ltcollection label="Detector/HCAL Barrel"
               spec="HcalBarrelRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/HCAL Endcap"
+  &ltcollection label="Detector/HCAL Endcap"
               spec="HcalEndcapRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/HCAL Outer"
+  &ltcollection label="Detector/HCAL Outer"
               spec="HcalOuterRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/HCAL Forward"
+  &ltcollection label="Detector/HCAL Forward"
               spec="HcalForwardRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/Drift Tubes"
+  &ltcollection label="Detector/Drift Tubes"
               spec="DTsRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/Cathode Strip Chambers"
+  &ltcollection label="Detector/Cathode Strip Chambers"
               spec="CSCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DAnyBox"/>
+              draw="make3DAnyBox"/&gt
 
-  <collection label="Detector/Resistive Plate Chambers"
+  &ltcollection label="Detector/Resistive Plate Chambers"
               spec="RPCRZ_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
 
-  <collection label="Tracking/Tracks (reco.)"
+  &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
 
-  <collection label="Tracking/Tracks (reco.)"
+  &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V2:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
 
-  <collection label="Tracking/Tracks (GSF)"
+  &ltcollection label="Tracking/Tracks (GSF)"
               spec="GsfTracks_V1:pt:pos:dir"
               other="GsfExtras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfTrackExtras_V1"
               draw="make3DTracksNoVertex"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Tracking/Digis (Si Pixels)"
+  &ltcollection label="Tracking/Digis (Si Pixels)"
               spec="PixelDigis_V1:pos"
               draw="makeRZPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Digis (Si Strips)"
+  &ltcollection label="Tracking/Digis (Si Strips)"
               spec="SiStripDigis_V1:pos"
               draw="makeRZPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Clusters (Si Pixels)"
+  &ltcollection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
               draw="makeRZPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Clusters (Si Strips)"
+  &ltcollection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
               draw="makeRZPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Rec. Hits (Si Pixels)"
+  &ltcollection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
               draw="makeRZPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Rec. Hits (Tracking)"
+  &ltcollection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
               draw="makeRZPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="ECAL/ECAL Rec. Hits"
+  &ltcollection label="ECAL/ECAL Rec. Hits"
               spec="EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZECalRecHits"/>
+              draw="makeRZECalRecHits"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZECalRecHits"/>
+              draw="makeRZECalRecHits"/&gt
 
-  <collection label="ECAL/Endcap Rec. Hits"
+  &ltcollection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZECalRecHits"/>
+              draw="makeRZECalRecHits"/&gt
   
-  <collection label="ECAL/Preshower Rec. Hits"
+  &ltcollection label="ECAL/Preshower Rec. Hits"
               spec="ESRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZEPRecHits"/>
+              draw="makeRZEPRecHits"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZECalRecHits"/>
+              draw="makeRZECalRecHits"/&gt
 
-  <collection label="ECAL/Barrel Digis"
+  &ltcollection label="ECAL/Barrel Digis"
               spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZECalRecHits" visibility="none"/>
+              draw="makeRZECalRecHits" visibility="none"/&gt
 
-  <collection label="ECAL/Endcap Rec. Hits"
+  &ltcollection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZECalRecHits"/>
+              draw="makeRZECalRecHits"/&gt
   
-  <collection label="ECAL/Endcap Digis"
+  &ltcollection label="ECAL/Endcap Digis"
               spec="EEDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZECalRecHits" visibility="none"/>
+              draw="makeRZECalRecHits" visibility="none"/&gt
 
-  <collection label="ECAL/Preshower Rec. Hits"
+  &ltcollection label="ECAL/Preshower Rec. Hits"
               spec="ESRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZEPRecHits"/>
+              draw="makeRZEPRecHits"/&gt
 
-   <collection label="ECAL/CaloClusters"
+   &ltcollection label="ECAL/CaloClusters"
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="ECAL/SuperClusters"
+  &ltcollection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="SuperClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZHCalRecHits"/>
+              draw="makeRZHCalRecHits"/&gt
 
-  <collection label="HCAL/Endcap Rec. Hits"
+  &ltcollection label="HCAL/Endcap Rec. Hits"
               spec="HERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZHCalRecHits"/>
+              draw="makeRZHCalRecHits"/&gt
 
-  <collection label="HCAL/Forward Rec. Hits"
+  &ltcollection label="HCAL/Forward Rec. Hits"
               spec="HFRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZHCalRecHits"/>
+              draw="makeRZHCalRecHits"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeRZHCalRecHits"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZHCalRecHits"/>
+              draw="makeRZHCalRecHits"/&gt
 
-  <collection label="HCAL/Endcap Rec. Hits"
+  &ltcollection label="HCAL/Endcap Rec. Hits"
               spec="HERecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZHCalRecHits"/>
+              draw="makeRZHCalRecHits"/&gt
 
-  <collection label="HCAL/Forward Rec. Hits"
+  &ltcollection label="HCAL/Forward Rec. Hits"
               spec="HFRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeRZHCalRecHits"/>
+              draw="makeRZHCalRecHits"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeRZHCalRecHits"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Digis"
+  &ltcollection label="Muon/DT Digis"
               spec="DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight"
               draw="make3DDTDigis"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Rec. Hits"
+  &ltcollection label="Muon/DT Rec. Hits"
               spec="DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
               other=":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight"
               draw="make3DDTRecHits"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Muon/DT Rec. Segments (4D)"
+  &ltcollection label="Muon/DT Rec. Segments (4D)"
               spec="DTRecSegment4D_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/CSC Segments"
+  &ltcollection label="Muon/CSC Segments"
               spec="CSCSegments_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/CSC Wire Digis"
+  &ltcollection label="Muon/CSC Wire Digis"
               spec="CSCWireDigis_V1:pos:length"
-              draw="make3DCSCWireDigis"/>
+              draw="make3DCSCWireDigis"/&gt
 
-  <collection label="Muon/CSC Strip Digis"
+  &ltcollection label="Muon/CSC Strip Digis"
               spec="CSCStripDigis_V1:pos:length"
-              draw="make3DCSCStripDigis"/>
+              draw="make3DCSCStripDigis"/&gt
 
-  <collection label="Muon/CSC LCT Digis"
+  &ltcollection label="Muon/CSC LCT Digis"
 	      spec="CSCLCTDigis_V1:pos"
-              draw="make3DPointSetShapes"/>
+              draw="make3DPointSetShapes"/&gt
 
-  <collection label="Muon/RPC Rec. Hits"
+  &ltcollection label="Muon/RPC Rec. Hits"
               spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V2:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Particle Flow/Rec. Tracks"
+  &ltcollection label="Particle Flow/Rec. Tracks"
               spec="PFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/GSF Tracks"
+  &ltcollection label="Particle Flow/GSF Tracks"
               spec="GsfPFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="GsfPFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/ECAL Barrel Rec. Hits"
+  &ltcollection label="Particle Flow/ECAL Barrel Rec. Hits"
               spec="PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/ECAL Endcap Rec. Hits"
+  &ltcollection label="Particle Flow/ECAL Endcap Rec. Hits"
               spec="PFEERecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/Bremsstrahlung candidate tangents"
+  &ltcollection label="Particle Flow/Bremsstrahlung candidate tangents"
               spec="PFBrems_V1:deltaP:sigmadeltaP"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFBremTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Muons (Reco)"
+  &ltcollection label="Physics Objects/Muons (Reco)"
               spec="Muons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Tracker Muons (Reco)"
+  &ltcollection label="Physics Objects/Tracker Muons (Reco)"
               spec="TrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonStandalonePoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V2:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="MuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (Reco)"
+  &ltcollection label="Physics Objects/Global Muons (Reco)"
               spec="GlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Tracker Muons (PAT)"
+  &ltcollection label="Physics Objects/Tracker Muons (PAT)"
               spec="PATTrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (PAT)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (PAT)"
               spec="PATStandaloneMuons_V1:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATMuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (PAT)"
+  &ltcollection label="Physics Objects/Global Muons (PAT)"
               spec="PATGlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
   
-  <collection label="Physics Objects/Electrons (GSF)"
+  &ltcollection label="Physics Objects/Electrons (GSF)"
               spec="GsfElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfElectronExtras_V1"
-              draw="makeRZTracks"/>
+              draw="makeRZTracks"/&gt
 
-  <collection label="Physics Objects/Electrons (PAT)"
+  &ltcollection label="Physics Objects/Electrons (PAT)"
               spec="PATElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATElectronExtras_V1"
-              draw="makeRZTracks"/>
+              draw="makeRZTracks"/&gt
 
-  <collection label="Physics Objects/Photons (Reco)"
+  &ltcollection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"
-              draw="makeRZPhoton"/>
+              draw="makeRZPhoton"/&gt
 
-  <collection label="Physics Objects/Photons (PAT)"
+  &ltcollection label="Physics Objects/Photons (PAT)"
               spec="PATPhotons_V1:energy:eta:phi:pos"
-              draw="makeRZPhoton"/>
+              draw="makeRZPhoton"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Jets"
+  &ltcollection label="Physics Objects/Jets"
               spec="Jets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Missing Et (Reco)"
+  &ltcollection label="Physics Objects/Missing Et (Reco)"
               spec="METs_V1:pt:px:py:phi"
               draw="make3DMET"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Jets (PAT)"
+  &ltcollection label="Physics Objects/Jets (PAT)"
               spec="PATJets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Physics Objects/Missing Et (PAT)"
+  &ltcollection label="Physics Objects/Missing Et (PAT)"
               spec="PATMETs_V1:pt:px:py:phi"
               draw="make3DMET"
-       visibility="none"/>
+       visibility="none"/&gt
 
 
-  <collection label="Monte Carlo/Sim. tracks with hits"
+  &ltcollection label="Monte Carlo/Sim. tracks with hits"
               spec="TrackingParticles_V1"
               other="PSimHits_V1:pos:dir"
               associations="TrackingParticlePSimHits_V1"
               draw="make3DTrackingParticles"
-              visibility="none"/>
+              visibility="none"/&gt
 
-</view>
-</visibilityGroup>
-</camera>
+&lt/view&gt
+&lt/visibilityGroup&gt
+&lt/camera&gt
 
 
-<camera position="7.2, 4.5, 2.5" pointAt="0, 0, 0" scale="6.5" orthographic="true" rotating="true">
-<visibilityGroup>
-<view label="Standard LEGO View" specialised="true" autoplay="false">
+&ltcamera position="7.2, 4.5, 2.5" pointAt="0, 0, 0" scale="6.5" orthographic="true" rotating="true"&gt
+&ltvisibilityGroup&gt
+&ltview label="Standard LEGO View" specialised="true" autoplay="false"&gt
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V1:time:run:event:ls:orbit:bx"
-              draw="make3DEventV1"/>
+              draw="make3DEventV1"/&gt
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V2:time:run:event:ls:orbit:bx:localtime"
-              draw="make3DEventV2"/>
+              draw="make3DEventV2"/&gt
 
-  <collection label="Provenance/L1 Triggers"
+  &ltcollection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
-              draw="make3DL1Trigger"/>
+              draw="make3DL1Trigger"/&gt
 
-  <collection label="Provenance/HLT Trigger Paths"
+  &ltcollection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
               draw="make3DHLTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Technical Triggers"
+  &ltcollection label="Provenance/Technical Triggers"
               spec="TechTrigger_V1"
               draw="make3DTechTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Trigger Objects"
+  &ltcollection label="Provenance/Trigger Objects"
               spec="TriggerObjects_V1:VID:pt:eta:phi"
               draw="makeLegoTriggerObjects"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Data Products found"
-              spec="Products_V1"/>
+  &ltcollection label="Provenance/Data Products found"
+              spec="Products_V1"/&gt
 
-  <collection label="Provenance/Data Products not found"
-              spec="Errors_V1"/>
+  &ltcollection label="Provenance/Data Products not found"
+              spec="Errors_V1"/&gt
 
-  <collection label="Provenance/Drawing limits"
+  &ltcollection label="Provenance/Drawing limits"
               spec="Internal_Limits_V1"
               draw="make3DLimits"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Detector/Eta-Phi Grid"
+  &ltcollection label="Detector/Eta-Phi Grid"
               spec="CaloLego_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeLegoGrid"/>
+              draw="makeLegoGrid"/&gt
 
- <collection label="Physics Objects/Photons (Reco)"
+ &ltcollection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"
-              draw="makeLegoPhotons"/>
+              draw="makeLegoPhotons"/&gt
 
-  <collection label="Physics Objects/Jets"
+  &ltcollection label="Physics Objects/Jets"
               spec="Jets_V1:et:eta:phi"
-              draw="makeLegoJets"/>
+              draw="makeLegoJets"/&gt
 
-  <collection label="ECAL/ECAL Rec. Hits"
+  &ltcollection label="ECAL/ECAL Rec. Hits"
               spec="EcalRecHits_V1:energy:eta:phi"
-              draw="makeLegoEcalRecHits"/>
+              draw="makeLegoEcalRecHits"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V1:energy:eta:phi"
-              draw="makeLegoHcalRecHits"/>
+              draw="makeLegoHcalRecHits"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V1:energy:eta:phi"
-              draw="makeLegoEcalRecHits"/>
+              draw="makeLegoEcalRecHits"/&gt
 
-  <collection label="ECAL/Endcap Rec. Hits"
+  &ltcollection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V1:energy:eta:phi"
-              draw="makeLegoEcalRecHits"/>
+              draw="makeLegoEcalRecHits"/&gt
 
-  <collection label="HCAL/Endcap Rec. Hits"
+  &ltcollection label="HCAL/Endcap Rec. Hits"
               spec="HERecHits_V1:energy:eta:phi"
-              draw="makeLegoHcalRecHits"/>
+              draw="makeLegoHcalRecHits"/&gt
 
-  <collection label="HCAL/Forward Rec. Hits"
+  &ltcollection label="HCAL/Forward Rec. Hits"
               spec="HFRecHits_V1:energy:eta:phi"
-              draw="makeLegoHcalRecHits"/>
+              draw="makeLegoHcalRecHits"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:eta:phi"
               draw="makeLegoHcalRecHits"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Tracks (reco.)"
+  &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="makeLegoTracks"/>
+              draw="makeLegoTracks"/&gt
 
-  <collection label="Tracking/Tracks (reco.)"
+  &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V2:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="makeLegoTracks"/>
+              draw="makeLegoTracks"/&gt
   
-  <collection label="Tracking/Tracks (GSF)"
+  &ltcollection label="Tracking/Tracks (GSF)"
               spec="GsfTracks_V1:pt:pos:dir"
               other="GsfExtras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfTrackExtras_V1"
-              draw="makeLegoTracks"/>
+              draw="makeLegoTracks"/&gt
            
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V2:energy:eta:phi"
-              draw="makeLegoHcalRecHits"/>
+              draw="makeLegoHcalRecHits"/&gt
   
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:eta:phi"
-              draw="makeLegoEcalRecHits"/>
+              draw="makeLegoEcalRecHits"/&gt
 
-  <collection label="ECAL/Barrel Digis"
+  &ltcollection label="ECAL/Barrel Digis"
               spec="EBDigis_V1:energy:eta:phi"
-              draw="makeLegoEcalRecHits" visibility="none"/>
+              draw="makeLegoEcalRecHits" visibility="none"/&gt
   
-  <collection label="ECAL/Endcap Rec. Hits"
+  &ltcollection label="ECAL/Endcap Rec. Hits"
               spec="EERecHits_V2:energy:eta:phi"
-              draw="makeLegoEcalRecHits"/>
+              draw="makeLegoEcalRecHits"/&gt
 
-  <collection label="ECAL/Endcap Digis"
+  &ltcollection label="ECAL/Endcap Digis"
               spec="EEDigis_V1:energy:eta:phi"
-              draw="makeLegoEcalRecHits" visibility="none"/>
+              draw="makeLegoEcalRecHits" visibility="none"/&gt
   
-  <collection label="HCAL/Endcap Rec. Hits"
+  &ltcollection label="HCAL/Endcap Rec. Hits"
               spec="HERecHits_V2:energy:eta:phi"
-              draw="makeLegoHcalRecHits"/>
+              draw="makeLegoHcalRecHits"/&gt
   
-  <collection label="HCAL/Forward Rec. Hits"
+  &ltcollection label="HCAL/Forward Rec. Hits"
               spec="HFRecHits_V2:energy:eta:phi"
-              draw="makeLegoHcalRecHits"/>
+              draw="makeLegoHcalRecHits"/&gt
   
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V2:energy:eta:phi"
               draw="makeLegoHcalRecHits"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Electrons (GSF)"
+  &ltcollection label="Physics Objects/Electrons (GSF)"
               spec="GsfElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfElectronExtras_V1"
-              draw="makeLegoTracks"/>
+              draw="makeLegoTracks"/&gt
 
-  <collection label="Physics Objects/Electrons (PAT)"
+  &ltcollection label="Physics Objects/Electrons (PAT)"
               spec="PATElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATElectronExtras_V1"
-              draw="makeLegoTracks"/>
+              draw="makeLegoTracks"/&gt
  
-</view>
-</visibilityGroup>
-</camera>
+&lt/view&gt
+&lt/visibilityGroup&gt
+&lt/camera&gt
 
-<camera position="0, 0, 1" pointAt="0, 0, 0" scale="50" orthographic="true" rotating="false" projection="muonslices">
-<visibilityGroup>
-<view label="Sliced View" specialised="true" autoplay="false">
+&ltcamera position="0, 0, 1" pointAt="0, 0, 0" scale="50" orthographic="true" rotating="false" projection="muonslices"&gt
+&ltvisibilityGroup&gt
+&ltview label="Sliced View" specialised="true" autoplay="false"&gt
 
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V1:time:run:event:ls:orbit:bx"
-              draw="make3DEventV1"/>
+              draw="make3DEventV1"/&gt
 
-  <collection label="Provenance/Event information"
+  &ltcollection label="Provenance/Event information"
               spec="Event_V2:time:run:event:ls:orbit:bx:localtime"
-              draw="make3DEventV2"/>
+              draw="make3DEventV2"/&gt
 
-  <collection label="Provenance/L1 Triggers"
+  &ltcollection label="Provenance/L1 Triggers"
               spec="L1GtTrigger_V1"
               draw="make3DL1Trigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/HLT Trigger Paths"
+  &ltcollection label="Provenance/HLT Trigger Paths"
               spec="TriggerPaths_V1"
               draw="make3DHLTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Technical Triggers"
+  &ltcollection label="Provenance/Technical Triggers"
               spec="TechTrigger_V1"
               draw="make3DTechTrigger"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Trigger Objects"
+  &ltcollection label="Provenance/Trigger Objects"
               spec="TriggerObjects_V1:VID:pt:eta:phi"
               draw="make3DTriggerObject"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Provenance/Data Products found"
-              spec="Products_V1"/>
+  &ltcollection label="Provenance/Data Products found"
+              spec="Products_V1"/&gt
 
-  <collection label="Provenance/Data Products not found"
-              spec="Errors_V1"/>
+  &ltcollection label="Provenance/Data Products not found"
+              spec="Errors_V1"/&gt
 
-  <collection label="Provenance/Drawing limits"
+  &ltcollection label="Provenance/Drawing limits"
               spec="Internal_Limits_V1"
               draw="make3DLimits"
-              visibility="none"/>
+              visibility="none"/&gt
 
 
-  <collection label="Detector/Tracker"
+  &ltcollection label="Detector/Tracker"
               spec="Tracker3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/ECAL Barrel"
+  &ltcollection label="Detector/ECAL Barrel"
               spec="EcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"/>
+              draw="makeAnyBox"/&gt
 
-  <collection label="Detector/ECAL Endcap"
+  &ltcollection label="Detector/ECAL Endcap"
               spec="EcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/Preshower"
+  &ltcollection label="Detector/Preshower"
               spec="EcalPreshower3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Barrel"
+  &ltcollection label="Detector/HCAL Barrel"
               spec="HcalBarrel3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"/>
+              draw="makeAnyBox"/&gt
 
-  <collection label="Detector/HCAL Endcap"
+  &ltcollection label="Detector/HCAL Endcap"
               spec="HcalEndcap3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Detector/HCAL Outer"
+  &ltcollection label="Detector/HCAL Outer"
               spec="HcalOuter3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"/>
+              draw="makeAnyBox"/&gt
 
-  <collection label="Detector/HCAL Forward"
+  &ltcollection label="Detector/HCAL Forward"
               spec="HcalForward3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"/>
+              draw="makeAnyBox"/&gt
 
-  <collection label="Detector/Drift Tubes"
+  &ltcollection label="Detector/Drift Tubes"
               spec="DTs3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"/>
+              draw="makeAnyBox"/&gt
 
-  <collection label="Detector/Cathode Strip Chambers"
+  &ltcollection label="Detector/Cathode Strip Chambers"
               spec="CSC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="makeAnyBox"/>
+              draw="makeAnyBox"/&gt
 
-  <collection label="Detector/Resistive Plate Chambers"
+  &ltcollection label="Detector/Resistive Plate Chambers"
               spec="RPC3D_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="makeAnyBox"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Tracks (reco.)"
+  &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="makeAnyTracks"/>
+              draw="makeAnyTracks"/&gt
 
- <collection label="Tracking/Tracks (reco.)"
+ &ltcollection label="Tracking/Tracks (reco.)"
               spec="Tracks_V2:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="TrackExtras_V1"
-              draw="makeAnyTracks"/>
+              draw="makeAnyTracks"/&gt
 
-  <collection label="Tracking/Tracks (GSF)"
+  &ltcollection label="Tracking/Tracks (GSF)"
               spec="GsfTracks_V1:pt:pos:dir"
               other="GsfExtras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfTrackExtras_V1"
               draw="makeAnyTracks"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Tracking/Digis (Si Pixels)"
+  &ltcollection label="Tracking/Digis (Si Pixels)"
               spec="PixelDigis_V1:pos"
               draw="makeAnyPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Digis (Si Strips)"
+  &ltcollection label="Tracking/Digis (Si Strips)"
               spec="SiStripDigis_V1:pos"
               draw="makeAnyPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Clusters (Si Pixels)"
+  &ltcollection label="Tracking/Clusters (Si Pixels)"
               spec="SiPixelClusters_V1:pos"
-              draw="makeAnyPointSetShapes"/>
+              draw="makeAnyPointSetShapes"/&gt
 
-  <collection label="Tracking/Clusters (Si Strips)"
+  &ltcollection label="Tracking/Clusters (Si Strips)"
               spec="SiStripClusters_V1:pos"
-              draw="make3DPointSetShapes"/>
+              draw="make3DPointSetShapes"/&gt
 
-  <collection label="Tracking/Rec. Hits (Si Pixels)"
+  &ltcollection label="Tracking/Rec. Hits (Si Pixels)"
               spec="SiPixelRecHits_V1:pos"
               draw="makeAnyPointSetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Tracking/Rec. Hits (Tracking)"
+  &ltcollection label="Tracking/Rec. Hits (Tracking)"
               spec="TrackingRecHits_V1:pos"
-              draw="makeAnyPointSetShapes"/>
+              draw="makeAnyPointSetShapes"/&gt
 
-  <collection label="ECAL/ECAL Rec. Hits" 
+  &ltcollection label="ECAL/ECAL Rec. Hits" 
               spec="EcalRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Barrel Rec. Hits"
+  &ltcollection label="ECAL/Barrel Rec. Hits"
               spec="EBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers"/>
+              draw="make3DEnergyTowers"/&gt
 
-  <collection label="ECAL/Barrel Digis"
+  &ltcollection label="ECAL/Barrel Digis"
               spec="EBDigis_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyTowers" visibility="none"/>
+              draw="make3DEnergyTowers" visibility="none"/&gt
 
- <collection label="ECAL/CaloClusters"
+ &ltcollection label="ECAL/CaloClusters"
               spec="CaloClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="CaloClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="ECAL/SuperClusters"
+  &ltcollection label="ECAL/SuperClusters"
               spec="SuperClusters_V1:pos:energy"
               other="RecHitFractions_V1:fraction:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               associations="SuperClusterRecHitFractions_V1"
-              draw="make3DCaloClusters" visibility="none"/>
+              draw="make3DCaloClusters" visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyBoxes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="HCAL/Barrel Rec. Hits"
+  &ltcollection label="HCAL/Barrel Rec. Hits"
               spec="HBRecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
-              draw="make3DEnergyBoxes"/>
+              draw="make3DEnergyBoxes"/&gt
 
-  <collection label="HCAL/Outer Rec. Hits"
+  &ltcollection label="HCAL/Outer Rec. Hits"
               spec="HORecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyBoxes"
-              visibility="none"/>
-  <collection label="Muon/DT Digis"
+              visibility="none"/&gt
+  &ltcollection label="Muon/DT Digis"
               spec="DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight"
-              draw="make3DDTDigis"/>
+              draw="make3DDTDigis"/&gt
 
-  <collection label="Muon/DT Rec. Hits"
+  &ltcollection label="Muon/DT Rec. Hits"
               spec="DTRecHits_V1:lPlusGlobalPos:lMinusGlobalPos:rPlusGlobalPos:rMinusGlobalPos"
               other=":lGlobalPos:rGlobalPos:wirePos:axis:angle:cellWidth:cellLength:cellHeight"
-              draw="make3DDTRecHits"/>
+              draw="make3DDTRecHits"/&gt
 
-  <collection label="Muon/DT Rec. Segments (4D)"
+  &ltcollection label="Muon/DT Rec. Segments (4D)"
               spec="DTRecSegment4D_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/CSC Segments"
+  &ltcollection label="Muon/CSC Segments"
               spec="CSCSegments_V1:pos_1:pos_2"
-              draw="make3DSegmentShapes"/>
+              draw="make3DSegmentShapes"/&gt
 
-  <collection label="Muon/RPC Rec. Hits"
+  &ltcollection label="Muon/RPC Rec. Hits"
               spec="RPCRecHits_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
   
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V1:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/CSC Rec. Hits (2D)"
+  &ltcollection label="Muon/CSC Rec. Hits (2D)"
               spec="CSCRecHit2Ds_V2:u1:u2:v1:v2:w1:w2"
-              draw="make3DRPCRecHits"/>
+              draw="make3DRPCRecHits"/&gt
 
-  <collection label="Muon/CSC Wire Digis"
+  &ltcollection label="Muon/CSC Wire Digis"
               spec="CSCWireDigis_V1:pos:length"
-              draw="make3DCSCWireDigis"/>
+              draw="make3DCSCWireDigis"/&gt
   
-  <collection label="Muon/CSC Strip Digis"
+  &ltcollection label="Muon/CSC Strip Digis"
               spec="CSCStripDigis_V1:pos:length"
-              draw="make3DCSCStripDigis"/>
+              draw="make3DCSCStripDigis"/&gt
   
-  <collection label="Particle Flow/Rec. Tracks"
+  &ltcollection label="Particle Flow/Rec. Tracks"
               spec="PFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/GSF Tracks"
+  &ltcollection label="Particle Flow/GSF Tracks"
               spec="GsfPFRecTracks_V1:pt:charge:phi:eta"
               other="PFTrajectoryPoints_V1:pos"
               associations="GsfPFRecTrackTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/ECAL barrel Rec. Hits"
+  &ltcollection label="Particle Flow/ECAL barrel Rec. Hits"
               spec="PFEBRecHits_V1:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Particle Flow/Bremsstrahlung candidate tangents"
+  &ltcollection label="Particle Flow/Bremsstrahlung candidate tangents"
               spec="PFBrems_V1:deltaP:sigmadeltaP"
               other="PFTrajectoryPoints_V1:pos"
               associations="PFBremTrajectoryPoints_V1"
               draw="make3DTrackPoints"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Muons (Reco)"
+  &ltcollection label="Physics Objects/Muons (Reco)"
               spec="Muons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Tracker Muons (Reco)"
+  &ltcollection label="Physics Objects/Tracker Muons (Reco)"
               spec="TrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonStandalonePoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (Reco)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (Reco)"
               spec="StandaloneMuons_V2:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="MuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (Reco)"
+  &ltcollection label="Physics Objects/Global Muons (Reco)"
               spec="GlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="MuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Tracker Muons (PAT)"
+  &ltcollection label="Physics Objects/Tracker Muons (PAT)"
               spec="PATTrackerMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonTrackerPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-  <collection label="Physics Objects/Stand-alone Muons (PAT)"
+  &ltcollection label="Physics Objects/Stand-alone Muons (PAT)"
               spec="PATStandaloneMuons_V1:pt:charge:pos:phi:eta"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATMuonTrackExtras_V1"
-              draw="make3DTracksNoVertex"/>
+              draw="make3DTracksNoVertex"/&gt
   
-  <collection label="Physics Objects/Global Muons (PAT)"
+  &ltcollection label="Physics Objects/Global Muons (PAT)"
               spec="PATGlobalMuons_V1:pt:charge:phi:eta"
               other="Points_V1:pos"
               associations="PATMuonGlobalPoints_V1"
-              draw="make3DTrackPoints"/>
+              draw="make3DTrackPoints"/&gt
 
-   <collection label="Physics Objects/Electrons (GSF)"
+   &ltcollection label="Physics Objects/Electrons (GSF)"
               spec="GsfElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="GsfElectronExtras_V1"
-              draw="make3DTracks"/>
+              draw="make3DTracks"/&gt
 
-  <collection label="Physics Objects/Electrons (PAT)"
+  &ltcollection label="Physics Objects/Electrons (PAT)"
               spec="PATElectrons_V1:pt:pos:dir"
               other="Extras_V1:pos_1:dir_1:pos_2:dir_2"
               associations="PATElectronExtras_V1"
-              draw="makeAnyTracks"/>
+              draw="makeAnyTracks"/&gt
 
-  <collection label="Physics Objects/Photons (Reco)"
+  &ltcollection label="Physics Objects/Photons (Reco)"
               spec="Photons_V1:energy:eta:phi:pos"
-              draw="makeAnyPhoton"/>
+              draw="makeAnyPhoton"/&gt
 
-  <collection label="Physics Objects/Photons (PAT)"
+  &ltcollection label="Physics Objects/Photons (PAT)"
               spec="PATPhotons_V1:energy:eta:phi:pos"
-              draw="makeAnyPhoton"/>
+              draw="makeAnyPhoton"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V1:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Calorimeter Energy Towers"
+  &ltcollection label="Physics Objects/Calorimeter Energy Towers"
               spec="CaloTowers_V2:emEnergy:hadEnergy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DCaloTowers"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Jets"
+  &ltcollection label="Physics Objects/Jets"
               spec="Jets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
 
-  <collection label="Physics Objects/Missing Et (Reco)"
+  &ltcollection label="Physics Objects/Missing Et (Reco)"
               spec="METs_V1:pt:px:py:phi"
               draw="make3DMET"
-              visibility="none"/>
+              visibility="none"/&gt
               
-  <collection label="Physics Objects/Jets (PAT)"
+  &ltcollection label="Physics Objects/Jets (PAT)"
               spec="PATJets_V1:et:theta:phi"
               draw="make3DJetShapes"
-              visibility="none"/>
+              visibility="none"/&gt
   
-  <collection label="Physics Objects/Missing Et (PAT)"
+  &ltcollection label="Physics Objects/Missing Et (PAT)"
               spec="PATMETs_V1:pt:px:py:phi"
               draw="make3DMET"
-       visibility="none"/>
+       visibility="none"/&gt
   
 
-  <collection label="Monte-Carlo/Sim. tracks with hits"
+  &ltcollection label="Monte-Carlo/Sim. tracks with hits"
               spec="TrackingParticles_V1"
               other="PSimHits_V1:pos:dir"
               associations="TrackingParticlePSimHits_V1"
               draw="make3DTrackingParticles"
-              visibility="none"/>
+              visibility="none"/&gt
 
-</view>
-</visibilityGroup>
-</camera>
+&lt/view&gt
+&lt/visibilityGroup&gt
+&lt/camera&gt
 
-</layout>
+
+&lt/layout&gt
+
+</pre>
+</body>
+</html>

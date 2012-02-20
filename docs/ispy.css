@@ -68,7 +68,11 @@ ul#features {
 	padding-right: 20px;
 }
 
-li#ispy  { background-image: url('images/bullet_triangle_green.png'); }
+li#ispy  { 
+    background-image: url('images/bullet_triangle_green.png'); 
+    background-position: 0px 1px;
+}
+
 
 li#feat1 { background-image: url('images/feat1.png'); }
 li#feat2 { background-image: url('images/feat2.png'); }
@@ -80,6 +84,7 @@ li#feat7 { background-image: url('images/feat7.png'); }
 li#feat8 { background-image: url('images/feat8.png'); }
 li#feat9 { background-image: url('images/feat9.png'); }
 li#feat10 { background-image: url('images/feat10.png'); }
+
 
 li#os1 { background-image: url('images/linux.png'); }
 li#os2 { background-image: url('images/mac.png'); }
