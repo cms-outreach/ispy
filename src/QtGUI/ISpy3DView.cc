@@ -499,6 +499,13 @@ ISpy3DView::pick(void)
   }
 }
 
+void ISpy3DView::enableDisablePicking() {
+	if (isViewing())
+		pick();
+	else
+		view();
+}
+
 void
 ISpy3DView::drawGrid(const bool enable)
 {
@@ -549,6 +556,13 @@ ISpy3DView::findGroup(SoNode *node, const char* name)
     }
   }
   return 0;
+}
+
+SoNode* ISpy3DView::findGroup(const char* name) {
+	if (m_model)
+		return findGroup(m_model->contents(), name);
+	else
+		return NULL;
 }
 
 void

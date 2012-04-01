@@ -50,6 +50,8 @@ public:
   void           setCamera(SoCamera *camera);
   void           setViewMode(enum Mode mode);
 
+	SoNode *       findGroup(const char* name);
+
 public slots:
   void         save(void);
   void         print(void);
@@ -72,6 +74,8 @@ public slots:
   virtual void toggleCameraType(void);
   virtual void invertCamera(void);
   void         setEventMessage(const QString&);
+
+	void enableDisablePicking();
 signals:
   void  cameraToggled(void);
 

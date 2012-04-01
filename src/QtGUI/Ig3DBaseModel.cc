@@ -7,8 +7,10 @@
 #include <Inventor/nodes/SoSelection.h>
 #include <Inventor/nodes/SoSeparator.h>
 #include <Inventor/actions/SoSearchAction.h>
+#include <Inventor/SoPath.h>
 #include <cassert>
 #include <climits>
+#include <QDebug>
 
 Ig3DBaseModel::Ig3DBaseModel(void)
   : m_sceneGraph(new SoSelection),
@@ -19,6 +21,43 @@ Ig3DBaseModel::Ig3DBaseModel(void)
   m_sceneGraph->ref();
   m_sceneGraph->setName("ISPY_SCENE_GRAPH_V1");
   initScene(m_sceneGraph);
+}
+
+void debugPath(SoPath* path) {
+	qDebug("Nodes count: %d", path->getLength());
+	for (int i = 0; i < path->getLength(); i++) {
+		qDebug() << i << " = " << path->getNode(i)->getName()
+				 << " type: "  << path->getNode(i)->getTypeId().getName();
+	}
+}
+
+void selectionCallback(void * obj, SoPath * path) {
+	Ig3DBaseModel* model = (Ig3DBaseModel*) obj;
+	SoNode* triggeredNode = path->getNodeFromTail(1);
+
+	if (triggeredNode) {
+		model->updateSelection(triggeredNode);
+		triggeredNode->touch(); // redraw
+	}
+
+	debugPath(path);
+}
+
+void deselectionCallback(void * obj, SoPath * path) {
+	SoNode* triggeredNode = path->getNodeFromTail(1);
+
+	if (triggeredNode) {
+		triggeredNode->touch(); // redraw
+	}
+}
+
+void Ig3DBaseModel::updateSelection(SoNode* node) {
+	if (node) {
+		emit elementSelected(QString(node->getName().getString()));
+
+		qDebug() << "Selected node: " << node->getName()
+						 << " type: "  << node->getTypeId().getName();
+	}
 }
 
 void
@@ -44,6 +83,13 @@ Ig3DBaseModel::initScene(SoGroup *top)
 
   m_contents = new SoSeparator;
   root->addChild(m_contents);
+
+	root->addSelectionCallback(selectionCallback, this);
+	root->addDeselectionCallback(deselectionCallback, this);
+}
+
+void Ig3DBaseModel::update() {
+	m_selection->touch(); // to redraw
 }
 
 Ig3DBaseModel::~Ig3DBaseModel(void)

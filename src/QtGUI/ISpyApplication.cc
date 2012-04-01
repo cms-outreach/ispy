@@ -1693,6 +1693,7 @@ ISpyApplication::doRun(void)
   std::cout << "Thank you for using iSpy!" << std::endl;
   delete m_viewer;
   delete m_splash;
+
   return 0;
 }
 
@@ -2091,7 +2092,11 @@ ISpyApplication::updateCollections(void)
   // Add a name of the view to the meta-data of
   // an automatically printed image
   m_metaData.clear();
-  m_metaData.append("View: ").append(QString::fromStdString(view.spec->name));
+
+  // crashes when calling QString::fromStdString using Qt 4.7.0 on Windows 7
+  //m_metaData.append("View: ").append(QString::fromStdString(view.spec->name));
+  if (m_views.size() == 0) return;
+  m_metaData.append("View: ").append(QString(view.spec->name.c_str()));
 
   for (size_t sti = 0, ste = 2, i = 0; sti < ste; ++sti)
   {
@@ -2429,7 +2434,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
   showMessage(QString("Opening ") + fileName + tr("..."));
 
   // Read the file in.
-  IgArchive *file = loadFile(fileName.toStdString().c_str());
+  IgArchive *file = loadFile(fileName.toAscii().data());
   if (! file)
     return false;
 

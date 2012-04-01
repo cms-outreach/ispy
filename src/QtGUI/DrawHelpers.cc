@@ -27,6 +27,7 @@
 #include <Inventor/nodes/SoTranslation.h>
 #include <Inventor/nodes/SoVertexProperty.h>
 #include <Inventor/nodes/SoImage.h>
+#include <Inventor/nodes/SoDrawStyle.h>
 
 #include <QString>
 #include <sstream>
@@ -495,12 +496,15 @@ makeAnyBoxHelper(IgCollection **collections, IgAssociations **,
 {
   IgCollection *c = collections[0];
 
-  IgDrawTowerHelper drawTowerHelper(sep, projectors);
+  //IgDrawTowerHelper drawTowerHelper(sep, projectors);
   IgColumn<SbVec3f> FRONT_1(c, "front_1"), FRONT_2(c, "front_2"),
                     FRONT_3(c, "front_3"), FRONT_4(c, "front_4"),
                     BACK_1(c, "back_1"), BACK_2(c, "back_2"),
                     BACK_3(c, "back_3"), BACK_4(c, "back_4");
 
+	IgColumn<int> DETID(c, "detid");
+
+	int itemIndex = 1;
   for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
   {
     SbVec3f f1  = ci->get(FRONT_1);
@@ -512,6 +516,35 @@ makeAnyBoxHelper(IgCollection **collections, IgAssociations **,
     SbVec3f b2  = ci->get(BACK_2);
     SbVec3f b3  = ci->get(BACK_3);
     SbVec3f b4  = ci->get(BACK_4);
+
+	int collectionId = ci->get(DETID);
+	std::ostringstream strStream;
+	strStream << itemIndex++;
+	std::string collectionIdStr = strStream.str();
+
+	SoSeparator* itemSep = new SoSeparator();
+
+	// Skip Sep prefix
+	itemSep->setName(SbName((std::string(
+		sep->getName().getString()) + "_" +
+		collectionIdStr).substr(3).c_str()
+	));
+
+	SoMaterial* parentMaterial = ((SoMaterial*)sep->getChild(0));
+	SoMaterial* material = new SoMaterial();
+	SoDrawStyle* drawStyle = new SoDrawStyle();
+	material->diffuseColor = parentMaterial->diffuseColor;
+	material->transparency = parentMaterial->transparency;
+	itemSep->addChild(material);
+
+	drawStyle->style = SoDrawStyle::FILLED;
+	itemSep->addChild(drawStyle);
+
+	// FIXME: a dirty hack to make work SoDrawStyle,
+	// Force to draw faces
+	solid = true;
+
+	IgDrawTowerHelper drawTowerHelper(itemSep, projectors);
     
     if (solid && projected)
       drawTowerHelper.addTowerProjected(f1,f2,f3,f4, b1,b2,b3,b4);
@@ -521,6 +554,8 @@ makeAnyBoxHelper(IgCollection **collections, IgAssociations **,
       drawTowerHelper.addTowerOutlineProjected(f1,f2,f3,f4, b1,b2,b3,b4);
     else if (!solid && !projected)
       drawTowerHelper.addTowerOutline(f1,f2,f3,f4, b1,b2,b3,b4);
+
+	sep->addChild(itemSep);
   }
 }
 

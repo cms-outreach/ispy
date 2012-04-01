@@ -1,0 +1,570 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{05613549-B286-31E5-94BB-BEFC24370982}</ProjectGuid>
+    <RootNamespace>iSpyDCS</RootNamespace>
+    <Keyword>Qt4VSv1.0</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <OutputDirectory>release\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <IntermediateDirectory>tmp\</IntermediateDirectory>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <OutputDirectory>debug\</OutputDirectory>
+    <ATLMinimizesCRunTimeLibraryUsage>false</ATLMinimizesCRunTimeLibraryUsage>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <IntermediateDirectory>tmp\</IntermediateDirectory>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">tmp\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">iSpyDCS</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</IgnoreImportLibrary>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">tmp\</IntDir>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">iSpyDCS</TargetName>
+    <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</IgnoreImportLibrary>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>"$(QTDIR)\include\QtCore";"$(QTDIR)\include\QtNetwork";"$(QTDIR)\include\QtGui";"$(QTDIR)\include\QtOpenGL";"$(QTDIR)\include";"..\src";"..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO";"..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include";"..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src";"..\..\..\..\Programs\Libs\iSpySdk\include";"$(QTDIR)\include\ActiveQt";"tmp";"ui";..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zm200 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>tmp\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>tmp\</ObjectFileName>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;WIN32;COIN_NOT_DLL;SOQT_NOT_DLL;QT_THREAD_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>.\</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;c:/Programs/Libs/iSpySdk/lib\zlibstat.lib;C:\Siemens\Automation\WinCC_OA\3.10/api/lib.winnt\ewo.lib;c:\Programs\Libs\Coin\Coin-3.1.3\build\msvc9/lib\coin3s.lib;c:\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9/lib\soqt1s.lib;QtOpenGL4.lib;QtGui4.lib;QtNetwork4.lib;QtCore4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;c:/Programs/Libs/iSpySdk/lib;C:\Siemens\Automation\WinCC_OA\3.10/api/lib.winnt;c:\Programs\Libs\Coin\Coin-3.1.3\build\msvc9/lib;c:\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkDLL>true</LinkDLL>
+      <LinkIncremental>false</LinkIncremental>
+      <OutputFile>release\iSpyDCS.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl />
+    <ResourceCompile>
+      <PreprocessorDefinitions>QT_NO_DEBUG;NDEBUG;_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;WIN32;COIN_NOT_DLL;SOQT_NOT_DLL;QT_THREAD_SUPPORT;QT_DLL;QT_NO_DEBUG;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>"$(QTDIR)\include\QtCore";"$(QTDIR)\include\QtNetwork";"$(QTDIR)\include\QtGui";"$(QTDIR)\include\QtOpenGL";"$(QTDIR)\include";"..\src";"..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO";"..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include";"..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src";"..\..\..\..\Programs\Libs\iSpySdk\include";"$(QTDIR)\include\ActiveQt";"tmp";"ui";..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalOptions>-Zm200 %(AdditionalOptions)</AdditionalOptions>
+      <AssemblerListingLocation>tmp\</AssemblerListingLocation>
+      <BrowseInformation>false</BrowseInformation>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <ObjectFileName>tmp\</ObjectFileName>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;WIN32;COIN_NOT_DLL;SOQT_NOT_DLL;QT_THREAD_SUPPORT;QT_DLL;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessToFile>false</PreprocessToFile>
+      <ProgramDataBaseFileName>.\</ProgramDataBaseFileName>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <WarningLevel>TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>glu32.lib;opengl32.lib;gdi32.lib;user32.lib;c:/Programs/Libs/iSpySdk/lib\zlibstat.lib;C:\Siemens\Automation\WinCC_OA\3.10/api/lib.winnt\ewo.lib;c:\Programs\Libs\Coin\Coin-3.1.3\build\msvc9/lib\coin3s.lib;c:\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9/lib\soqt1s.lib;QtOpenGLd4.lib;QtGuid4.lib;QtNetworkd4.lib;QtCored4.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(QTDIR)\lib;c:/Programs/Libs/iSpySdk/lib;C:\Siemens\Automation\WinCC_OA\3.10/api/lib.winnt;c:\Programs\Libs\Coin\Coin-3.1.3\build\msvc9/lib;c:\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <IgnoreImportLibrary>true</IgnoreImportLibrary>
+      <LinkDLL>true</LinkDLL>
+      <OutputFile>debug\iSpyDCS.dll</OutputFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+    </Link>
+    <Midl />
+    <ResourceCompile>
+      <PreprocessorDefinitions>_WINDOWS;UNICODE;WIN32;QT_LARGEFILE_SUPPORT;WIN32;COIN_NOT_DLL;SOQT_NOT_DLL;QT_THREAD_SUPPORT;QT_DLL;QT_OPENGL_LIB;QT_GUI_LIB;QT_NETWORK_LIB;QT_CORE_LIB;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\QtGUI\DrawHelpers.cc" />
+    <ClCompile Include="..\src\QtGUI\ISpy3DView.cc" />
+    <ClCompile Include="..\src\QtGUI\ISpyApplication.cc" />
+    <ClCompile Include="GeneratedFiles\qrc_ispy.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ISpyDCSInterface.cpp" />
+    <ClCompile Include="ISpyDCSWidget.cpp" />
+    <ClCompile Include="..\src\QtGUI\ISpyEventFilter.cc" />
+    <ClCompile Include="..\src\QtGUI\ISpyListView.cc" />
+    <ClCompile Include="..\src\QtGUI\ISpyMainWindow.cc" />
+    <ClCompile Include="..\src\QtGUI\ISpySplashScreen.cc" />
+    <ClCompile Include="..\src\QtGUI\Ig3DBaseModel.cc" />
+    <ClCompile Include="..\src\Framework\IgArchive.cc" />
+    <ClCompile Include="..\src\Framework\IgCollection.cc" />
+    <ClCompile Include="..\src\QtGUI\IgCollectionListModel.cc" />
+    <ClCompile Include="..\src\QtGUI\IgCollectionTableModel.cc" />
+    <ClCompile Include="..\src\QtGUI\IgDataStorageTableModel.cc" />
+    <ClCompile Include="..\src\QtGUI\IgDrawSplinesHelper.cc" />
+    <ClCompile Include="..\src\QtGUI\IgDrawTowerHelper.cc" />
+    <ClCompile Include="..\src\QtGUI\IgLocationDialog.cc" />
+    <ClCompile Include="..\src\QtGUI\IgMultiStorageTreeModel.cc" />
+    <ClCompile Include="..\src\QtGUI\IgNetworkReplyHandler.cc" />
+    <ClCompile Include="..\src\QtGUI\IgSettingsEditor.cc" />
+    <ClCompile Include="..\src\QtGUI\IgSettingsTree.cc" />
+    <ClCompile Include="..\src\QtGUI\IgSoGridPlane.cc" />
+    <ClCompile Include="..\src\QtGUI\IgSoGridPlaneMap.cc" />
+    <ClCompile Include="..\src\QtGUI\IgSoJet.cc" />
+    <ClCompile Include="..\src\QtGUI\IgSoPlaneManip.cc" />
+    <ClCompile Include="..\src\QtGUI\IgSoShapeKit.cc" />
+    <ClCompile Include="..\src\Framework\IgTokenizer.cc" />
+    <ClCompile Include="..\src\QtGUI\IgVariantDelegate.cc" />
+    <ClCompile Include="..\src\QtGUI\Projectors.cc" />
+    <ClCompile Include="..\src\Framework\ioapi.c" />
+    <ClCompile Include="..\src\Framework\iowin32.c" />
+    <ClCompile Include="..\src\QtGUI\bin\ispy.cpp" />
+    <ClCompile Include="..\src\Framework\unzip.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\QtGUI\DrawHelpers.h" />
+    <CustomBuild Include="..\src\QtGUI\ISpy3DView.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\ISpyApplication.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\src\QtGUI\ISpyConsumer.h" />
+    <CustomBuild Include="ISpyDCSInterface.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="ISpyDCSWidget.h" />
+    <CustomBuild Include="..\src\QtGUI\ISpyEventFilter.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\src\QtGUI\ISpyListView.h" />
+    <CustomBuild Include="..\src\QtGUI\ISpyMainWindow.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\ISpySplashScreen.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\Ig3DBaseModel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\src\Framework\IgArchive.h" />
+    <ClInclude Include="..\src\Framework\IgCollection.h" />
+    <CustomBuild Include="..\src\QtGUI\IgCollectionListModel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\IgCollectionTableModel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\IgDataStorageTableModel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\src\QtGUI\IgDrawSplinesHelper.h" />
+    <ClInclude Include="..\src\QtGUI\IgDrawTowerHelper.h" />
+    <ClInclude Include="..\src\Framework\IgLinearAlgebra.h" />
+    <CustomBuild Include="..\src\QtGUI\IgLocationDialog.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\IgMultiStorageTreeModel.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\IgNetworkReplyHandler.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\src\Framework\IgParser.h" />
+    <CustomBuild Include="..\src\QtGUI\IgSettingsEditor.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\IgSettingsTree.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\src\QtGUI\IgSoGridPlane.h" />
+    <ClInclude Include="..\src\QtGUI\IgSoGridPlaneMap.h" />
+    <ClInclude Include="..\src\QtGUI\IgSoJet.h" />
+    <ClInclude Include="..\src\QtGUI\IgSoPlaneManip.h" />
+    <ClInclude Include="..\src\QtGUI\IgSoShapeKit.h" />
+    <ClInclude Include="..\src\Framework\IgStyleParser.h" />
+    <ClInclude Include="..\src\Framework\IgTokenizer.h" />
+    <CustomBuild Include="..\src\QtGUI\IgVariantDelegate.h">
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -DQT_NO_DEBUG -DNDEBUG -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath);%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\tmp\moc_%(Filename).cpp"  -D_WINDOWS -DUNICODE -DWIN32 -DQT_LARGEFILE_SUPPORT -DCOIN_NOT_DLL -DSOQT_NOT_DLL -DQT_THREAD_SUPPORT -DQT_DLL -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_NETWORK_LIB -DQT_CORE_LIB -D_WINDLL "-I." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtNetwork" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtOpenGL" "-I$(QTDIR)\include" "-I.\..\src" "-I.\..\..\..\..\Siemens\Automation\WinCC_OA\3.10\api\include\EWO" "-I.\..\..\..\..\Programs\Libs\Coin\Coin-3.1.3\build\msvc9\include" "-I.\..\..\..\..\Programs\Libs\SoQt\SoQt-1.5.0\build\msvc9\src" "-I.\..\..\..\..\Programs\Libs\iSpySdk\include" "-I$(QTDIR)\include\ActiveQt" "-I.\tmp" "-I.\ui" "-I.\..\..\..\..\Programs\Libs\Qt\4.7.0\mkspecs\default" "-I." "-I." "-I."</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Moc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\tmp\moc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+    <ClInclude Include="..\src\QtGUI\LayoutParser.h" />
+    <ClInclude Include="..\src\QtGUI\Projectors.h" />
+    <ClInclude Include="..\src\Framework\SimpleSAXParser.h" />
+    <ClInclude Include="..\src\QtGUI\Style.h" />
+    <ClInclude Include="..\src\Framework\crypt.h" />
+    <ClInclude Include="..\src\Framework\ioapi.h" />
+    <ClInclude Include="..\src\Framework\iowin32.h" />
+    <ClInclude Include="..\src\Framework\unzip.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="tmp\moc_Ig3DBaseModel.cpp" />
+    <ClCompile Include="tmp\moc_IgCollectionListModel.cpp" />
+    <ClCompile Include="tmp\moc_IgCollectionTableModel.cpp" />
+    <ClCompile Include="tmp\moc_IgDataStorageTableModel.cpp" />
+    <ClCompile Include="tmp\moc_IgLocationDialog.cpp" />
+    <ClCompile Include="tmp\moc_IgMultiStorageTreeModel.cpp" />
+    <ClCompile Include="tmp\moc_IgNetworkReplyHandler.cpp" />
+    <ClCompile Include="tmp\moc_IgSettingsEditor.cpp" />
+    <ClCompile Include="tmp\moc_IgSettingsTree.cpp" />
+    <ClCompile Include="tmp\moc_IgVariantDelegate.cpp" />
+    <ClCompile Include="tmp\moc_ISpy3DView.cpp" />
+    <ClCompile Include="tmp\moc_ISpyApplication.cpp" />
+    <ClCompile Include="tmp\moc_ISpyDCSInterface.cpp" />
+    <ClCompile Include="tmp\moc_ISpyEventFilter.cpp" />
+    <ClCompile Include="tmp\moc_ISpyMainWindow.cpp" />
+    <ClCompile Include="tmp\moc_ISpySplashScreen.cpp" />
+    <ClInclude Include="ui\ui_ISpyListView.h" />
+    <ClInclude Include="ui\ui_ISpySplashScreen.h" />
+    <ClInclude Include="ui\ui_IgMainWindowMDI.h" />
+    <ClInclude Include="ui\ui_IgSettingsEditorMainWindow.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\src\QtGUI\ISpyListView.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\QtGUI\ISpyListView.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\ISpyListView.ui -o ui\ui_ISpyListView.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UIC ..\src\QtGUI\ISpyListView.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ui\ui_ISpyListView.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\QtGUI\ISpyListView.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\ISpyListView.ui -o ui\ui_ISpyListView.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">UIC ..\src\QtGUI\ISpyListView.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ui\ui_ISpyListView.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\ISpySplashScreen.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\QtGUI\ISpySplashScreen.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\ISpySplashScreen.ui -o ui\ui_ISpySplashScreen.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UIC ..\src\QtGUI\ISpySplashScreen.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ui\ui_ISpySplashScreen.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\QtGUI\ISpySplashScreen.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\ISpySplashScreen.ui -o ui\ui_ISpySplashScreen.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">UIC ..\src\QtGUI\ISpySplashScreen.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ui\ui_ISpySplashScreen.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\IgMainWindowMDI.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\QtGUI\IgMainWindowMDI.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\IgMainWindowMDI.ui -o ui\ui_IgMainWindowMDI.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UIC ..\src\QtGUI\IgMainWindowMDI.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ui\ui_IgMainWindowMDI.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\QtGUI\IgMainWindowMDI.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\IgMainWindowMDI.ui -o ui\ui_IgMainWindowMDI.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">UIC ..\src\QtGUI\IgMainWindowMDI.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ui\ui_IgMainWindowMDI.h;%(Outputs)</Outputs>
+    </CustomBuild>
+    <CustomBuild Include="..\src\QtGUI\IgSettingsEditorMainWindow.ui">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">..\src\QtGUI\IgSettingsEditorMainWindow.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\IgSettingsEditorMainWindow.ui -o ui\ui_IgSettingsEditorMainWindow.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">UIC ..\src\QtGUI\IgSettingsEditorMainWindow.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ui\ui_IgSettingsEditorMainWindow.h;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">..\src\QtGUI\IgSettingsEditorMainWindow.ui;$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe ..\src\QtGUI\IgSettingsEditorMainWindow.ui -o ui\ui_IgSettingsEditorMainWindow.h</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">UIC ..\src\QtGUI\IgSettingsEditorMainWindow.ui</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ui\ui_IgSettingsEditorMainWindow.h;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\src\QtGUI\resources\ispy.qrc">
+      <FileType>Document</FileType>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">%(FullPath);..\src\QtGUI\default-style.iss;..\src\QtGUI\default-views.iml;..\src\QtGUI\resources\CMS-Color.png;..\src\QtGUI\resources\cms-color-medium.png;..\src\QtGUI\resources\cms-bw-medium.png;..\src\QtGUI\resources\cms-bw-small.png;..\src\QtGUI\resources\cms-logo-small.png;..\src\QtGUI\resources\Play1Normal.png;..\src\QtGUI\resources\PausePressed.png;..\src\QtGUI\resources\stylesheet-branch-open.png;..\src\QtGUI\resources\ortho.xpm;..\src\QtGUI\resources\perspective.xpm;..\src\QtGUI\resources\IGUANA_SPLASH.xpm;..\src\QtGUI\resources\home.xpm;..\src\QtGUI\resources\xz_small.xpm;..\src\QtGUI\resources\yx_small.xpm;..\src\QtGUI\resources\yz_small.xpm;..\src\QtGUI\resources\view_all.xpm;..\src\QtGUI\resources\network-green.png;..\src\QtGUI\resources\network-red.png;..\src\QtGUI\resources\network.png;..\src\QtGUI\resources\iguana-small.xpm;..\src\QtGUI\resources\filenew.png;..\src\QtGUI\resources\fileopen.png;..\src\QtGUI\resources\filesave.png;..\src\QtGUI\resources\grid.png;..\src\QtGUI\resources\controlcenter.png;..\src\QtGUI\resources\crosshair.png;..\src\QtGUI\resources\next.png;..\src\QtGUI\resources\previous.png;..\src\QtGUI\resources\print.png;..\src\QtGUI\resources\zoom_in.png;..\src\QtGUI\resources\zoom_out.png;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Rcc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">%(FullPath);..\src\QtGUI\default-style.iss;..\src\QtGUI\default-views.iml;..\src\QtGUI\resources\CMS-Color.png;..\src\QtGUI\resources\cms-color-medium.png;..\src\QtGUI\resources\cms-bw-medium.png;..\src\QtGUI\resources\cms-bw-small.png;..\src\QtGUI\resources\cms-logo-small.png;..\src\QtGUI\resources\Play1Normal.png;..\src\QtGUI\resources\PausePressed.png;..\src\QtGUI\resources\stylesheet-branch-open.png;..\src\QtGUI\resources\ortho.xpm;..\src\QtGUI\resources\perspective.xpm;..\src\QtGUI\resources\IGUANA_SPLASH.xpm;..\src\QtGUI\resources\home.xpm;..\src\QtGUI\resources\xz_small.xpm;..\src\QtGUI\resources\yx_small.xpm;..\src\QtGUI\resources\yz_small.xpm;..\src\QtGUI\resources\view_all.xpm;..\src\QtGUI\resources\network-green.png;..\src\QtGUI\resources\network-red.png;..\src\QtGUI\resources\network.png;..\src\QtGUI\resources\iguana-small.xpm;..\src\QtGUI\resources\filenew.png;..\src\QtGUI\resources\fileopen.png;..\src\QtGUI\resources\filesave.png;..\src\QtGUI\resources\grid.png;..\src\QtGUI\resources\controlcenter.png;..\src\QtGUI\resources\crosshair.png;..\src\QtGUI\resources\next.png;..\src\QtGUI\resources\previous.png;..\src\QtGUI\resources\print.png;..\src\QtGUI\resources\zoom_in.png;..\src\QtGUI\resources\zoom_out.png;%(AdditionalInputs)</AdditionalInputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Rcc%27ing %(Identity)...</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">.\GeneratedFiles\qrc_%(Filename).cpp;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\src\QtGUI\default-style.iss">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\default-views.iml">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\cms-bw-medium.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\cms-bw-small.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\cms-color-medium.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\CMS-Color.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\cms-logo-small.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\controlcenter.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\crosshair.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\filenew.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\fileopen.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\filesave.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\grid.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\home.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\iguana-small.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\IGUANA_SPLASH.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\network-green.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\network-red.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\network.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\next.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\ortho.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\PausePressed.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\perspective.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\Play1Normal.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\previous.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\print.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\stylesheet-branch-open.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\view_all.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\xz_small.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\yx_small.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\yz_small.xpm">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\zoom_in.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+    <None Include="..\src\QtGUI\resources\zoom_out.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
+    </None>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties QtVersion_x0020_Win32="4.7.0" RccDir=".\GeneratedFiles" />
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>

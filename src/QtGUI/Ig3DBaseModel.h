@@ -4,6 +4,7 @@
 //<<<<<< INCLUDES                                                       >>>>>>
 
 # include <string>
+# include <QObject>
 
 //<<<<<< PUBLIC DEFINES                                                 >>>>>>
 //<<<<<< PUBLIC CONSTANTS                                               >>>>>>
@@ -13,13 +14,16 @@ class SbString;
 class SbName;
 class SoGroup;
 class SoCamera;
+class SoPath;
+class SoNode;
 
 //<<<<<< PUBLIC VARIABLES                                               >>>>>>
 //<<<<<< PUBLIC FUNCTIONS                                               >>>>>>
 //<<<<<< CLASS DECLARATIONS                                             >>>>>>
 
-class Ig3DBaseModel
+class Ig3DBaseModel: public QObject
 {
+Q_OBJECT
 public:
   Ig3DBaseModel(void);
   ~Ig3DBaseModel(void);
@@ -33,6 +37,12 @@ public:
   static SbString     encode(const std::string &name);
   static std::string  decode(const std::string &name);
   static std::string  decode(const SbName &name);
+
+	void update();
+	void updateSelection(SoNode* node);
+
+signals:
+	void elementSelected(QString name);
 
 private:
   void          initScene(SoGroup *root);

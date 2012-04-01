@@ -29,3 +29,12 @@ test_StyleParser
 test_igfiles
 build
 externals/sw
+Release
+Debug
+ipch
+*.pdb
+*.filters
+*.user
+*.opensdf
+*.sdf
+*.suo

@@ -1,7 +1,6 @@
-﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ispy", "ispy.vcxproj", "{280EA6D7-5B4E-3B7C-AABF-85D16A02B4B2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "iSpyDCS", "iSpyDCS\iSpyDCS.vcxproj", "{05613549-B286-31E5-94BB-BEFC24370982}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,12 +8,15 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{280EA6D7-5B4E-3B7C-AABF-85D16A02B4B2}.Debug|Win32.ActiveCfg = Debug|Win32
-		{280EA6D7-5B4E-3B7C-AABF-85D16A02B4B2}.Debug|Win32.Build.0 = Debug|Win32
-		{280EA6D7-5B4E-3B7C-AABF-85D16A02B4B2}.Release|Win32.ActiveCfg = Release|Win32
-		{280EA6D7-5B4E-3B7C-AABF-85D16A02B4B2}.Release|Win32.Build.0 = Release|Win32
+		{05613549-B286-31E5-94BB-BEFC24370982}.Debug|Win32.ActiveCfg = Debug|Win32
+		{05613549-B286-31E5-94BB-BEFC24370982}.Debug|Win32.Build.0 = Debug|Win32
+		{05613549-B286-31E5-94BB-BEFC24370982}.Release|Win32.ActiveCfg = Release|Win32
+		{05613549-B286-31E5-94BB-BEFC24370982}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		QtVersion = 4.7.0
 	EndGlobalSection
 EndGlobal

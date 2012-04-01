@@ -106,7 +106,7 @@ public slots:
   void                  previousEvent(void);
   void                  showAbout(void);
   void                  newEvent(void);
-  void                  updateCollections(void);
+  virtual void          updateCollections(void);
   void                  openCss(const QString &filename);
   void                  cssDirChanged(const QString &cssDir);
   void                  checkCss(void);
@@ -127,7 +127,7 @@ protected:
   void                  setupMainWindow(void);
   void                  setupSplashScreen(void);
 
-private slots:
+protected slots:
   void                  setCurrentItem(QTreeWidgetItem *current, QTreeWidgetItem *previous);
   void                  itemActivated(QTreeWidgetItem *current, int);
   void                  handleGroupsClicking(QTreeWidgetItem *current);
@@ -143,7 +143,7 @@ private slots:
   void                  cameraToggled(void);
   void                  resetToHomePosition(void);
 
-private:
+protected:
   struct CollectionSpec
   {
     std::string                 friendlyName;
@@ -243,7 +243,7 @@ private:
     }
   };
 
-  int                   doRun(void);
+  virtual int           doRun(void);
   void                  defaultSettings(void);
   void                  restoreSettings(void);
 
@@ -257,7 +257,7 @@ private:
   void                  downloadFile(const QUrl &url);
   void                  downloadGeometry(void);
   bool                  simpleOpen(const QString &fileName);
-  void                  setupActions(void);
+  virtual void          setupActions(void);
   void                  restoreCameraFromSpec(CameraSpec *spec, Camera &camera);
   // Helper methods to handle rendering styles.
   SoMarkerSet::MarkerType   getMarkerType(enum ISPY_MARKER_STYLE style,
