@@ -43,7 +43,7 @@ Event_V1 {
 Event_V2 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
   font-size: 20.0; 
-  font-family: Arial Bold;
+  font-family: Arial;
   background: :/images/cms-logo-small.png;
   left: 0.125;
   top: 0.025;
@@ -172,9 +172,11 @@ Tracks_V1
 
 Tracks_V2
 {
-  draw-style: lines; line-width: 4;
+  draw-style: lines; 
+  line-width: 3;
   diffuse-color: rgb(1.0, 0.7, 0.1);
   marker-style: outline;
+  transparency: 0.3;
 }
 
 

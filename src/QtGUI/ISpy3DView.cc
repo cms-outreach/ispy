@@ -113,6 +113,7 @@ ISpy3DView::initWidget(void)
   setAutoClippingStrategy(CONSTANT_NEAR_PLANE, 0.9, fixedDistanceClipPlanesCB, this);
   setDecoration(false);
   parent()->setMinimumSize(300, 200);
+
 }
 
 void
@@ -156,7 +157,8 @@ ISpy3DView::printBitmap(const QString &file,
 
   getSceneManager()->getBackgroundColor().getValue(r, g, b);
   renderer->setBackgroundColor(SbColor(r, g, b));
-
+  renderer->getGLRenderAction()->setSmoothing(TRUE);
+ 
   // Want to render from above the SceneGraph so we get what the
   // camera sees; SoQtViewer uses the following code.(FIXME:
   // do we actually want to just render root, or look for camera?)
