@@ -13,7 +13,7 @@
   line-width: 1.0;
   line-pattern: 0xffff;
   font-size: 12;
-  font-family: Arial;
+  font-family: Arial Bold;
   draw-style: solid;
   marker-shape: square;
   marker-size: normal;
@@ -42,8 +42,8 @@ Event_V1 {
 
 Event_V2 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
-  font-size: 24.0; 
-  font-family: Arial;
+  font-size: 20.0; 
+  font-family: Arial Bold;
   background: :/images/cms-logo-small.png;
   left: 0.125;
   top: 0.025;
