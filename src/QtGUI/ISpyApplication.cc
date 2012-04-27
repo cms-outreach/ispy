@@ -235,6 +235,7 @@ public:
     spec.minEnergy = 0.2;   // Default value is 0.2 GeV
     spec.maxEnergy = 5.;    // Default value is 5.0 GeV
     spec.energyScale = 1.;  // Default value is 0.1 m/GeV
+	spec.minPt = 0.5;
     spec.annotationLevel = ISPY_ANNOTATION_LEVEL_NORMAL;
     // Default position it top left corner. Coordinate system
     // is like the web one.
@@ -272,6 +273,7 @@ public:
       spec.minEnergy = previous.minEnergy;
       spec.maxEnergy = previous.maxEnergy;
       spec.energyScale = previous.energyScale;
+	  spec.minPt = previous.minPt;
       spec.background = previous.background;
       spec.annotationLevel = previous.annotationLevel;
       spec.top = previous.top;
@@ -380,6 +382,12 @@ public:
       if (*endptr)
         throw CssParseError("Error while parsing max-energy value", value);
     }
+	else if (key == "min-pt")
+	{
+		spec.minPt = strtod(value.c_str(), &endptr);
+		if (*endptr)
+			throw CssParseError("Error while parsing min-pt value", value);
+	}
     else if (key == "background")
       spec.background = value;
     else if (key == "left")
@@ -711,9 +719,9 @@ ISpyApplication::ISpyApplication(void)
 #else
   QCoreApplication::setApplicationName("iSpy");
 #endif
-  QCoreApplication::setApplicationVersion("1.4.5");
-  QCoreApplication::setOrganizationDomain("iguana");
-  QCoreApplication::setOrganizationName("iguana");
+  QCoreApplication::setApplicationVersion("1.5.0");
+  QCoreApplication::setOrganizationDomain("ispy");
+  QCoreApplication::setOrganizationName("ispy");
 
   if (QDir::home().isReadable())
     defaultSettings();
@@ -1941,6 +1949,7 @@ ISpyApplication::findStyle(const char *pattern)
     style.minEnergy = spec.minEnergy;
     style.maxEnergy = spec.maxEnergy;
     style.energyScale = spec.energyScale;
+	style.minPt = spec.minPt;
     style.annotationLevel = spec.annotationLevel;
     
     // Read the background file and put it in a SoImage so that it can be
@@ -2007,7 +2016,8 @@ ISpyApplication::createStats(void)
   IgProperty MINENERGY = limits.addProperty("minEnergy", 0.);
   IgProperty MAXENERGY = limits.addProperty("maxEnergy", 0.);
   IgProperty ENERGYSCALE = limits.addProperty("energyScale", 0.);
-  
+  //TPM: add tracks IgProperty MINPT = limits.addProperty("minPt", 0.);
+
   const char *interestingLimits[15] = {"EcalRecHits_V1",
                                        "EBRecHits_V1",
                                        "EERecHits_V1",
@@ -2384,7 +2394,7 @@ ISpyApplication::openFileDialog(void)
 {
   QString fileName;
   QFileDialog f(m_mainWindow->centralwidget, tr("Open File"), ".",
-                tr("Ig Files(*.ig *.iguana)"));
+                tr("Ig Files(*.ig)"));
   f.setFileMode(QFileDialog::ExistingFiles);
 
   QList<QUrl> shortcuts = f.sidebarUrls();
@@ -2510,7 +2520,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
     update = true;
   }
   else
-      m_mainWindow->setWindowTitle(QString("IGUANA iSpy - %1").arg(fileName));
+      m_mainWindow->setWindowTitle(QString("iSpy - %1").arg(fileName));
   
   if (! events.empty() || ! geometry)
   {
@@ -2652,7 +2662,7 @@ ISpyApplication::handleWizardLinks(const QUrl &link)
   }
   else if (linkString == "OpenWeb")
   {
-    m_splash->setRightPage(QUrl("http://iguana.web.cern.ch/iguana/ispy/igfiles/"));
+    m_splash->setRightPage(QUrl("http://cern.ch/ispy/igfiles/"));
   }
   else if (linkString == "OpenFile")
   {
@@ -2831,7 +2841,7 @@ ISpyApplication::openUrlDialog(void)
 {
   QInputDialog dialog;
   dialog.setLabelText("Specify an ig-file url:");
-  dialog.setTextValue("http://iguana.web.cern.ch/iguana/ispy/igfiles/mc/electroweak/RelValZEE.ig");
+  dialog.setTextValue("http://cern.ch/ispy/igfiles/mc/electroweak/RelValZEE.ig");
   dialog.resize(430,72);
   // FIXME: use the latest file downloaded as default.
   if (!dialog.exec())

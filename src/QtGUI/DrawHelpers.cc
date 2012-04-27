@@ -249,7 +249,7 @@ make3DEvent(IgCollectionItem& e,
       helper.createTextLine("(c) CERN. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
-      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.createTextLine("http://cern.ch/ispy");
       helper.endBox();
       
       if (style->background)
@@ -270,7 +270,7 @@ make3DEvent(IgCollectionItem& e,
       helper.createTextLine("(c) CERN. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
-      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.createTextLine("http://cern.ch/ispy");
       helper.endBox();
       
       if (style->background)
@@ -305,7 +305,7 @@ make3DEvent(IgCollectionItem& e,
       helper.createTextLine("(c) CERN 2011. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
-      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.createTextLine("http://cern.ch/ispy");
       helper.endBox();
       
       if (style->background)
@@ -1394,7 +1394,7 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
   IgDrawSplinesHelper helper;
 
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
-  {
+  {	
     // Determine the sign of the last tracking rechit and always project the
     // track so that the same map is used for projection.
     //
@@ -1416,6 +1416,9 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
                         .arg(ci->get(PT))
                         .arg(p[0]).arg(p[1]).arg(p[2]);
 
+    if ( ci->get(PT) < style->minPt )
+		continue;
+	
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
       p = ai->get(POS1);
@@ -2003,6 +2006,29 @@ makeAnyJetShapes(IgCollection **collections, IgAssociations **,
 }
 
 static void
+makeRPhiJets(IgCollection **collections, IgAssociations **,
+			SoSeparator *sep, Style *style, Projectors &projectors)
+{
+	IgCollection *c = collections[0];
+	IgColumn<double> ET(c, "et"), PHI(c, "phi");
+	
+	for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  	{
+    	SbVec3f jet(ci->get(ET), M_PI*0.5, ci->get(PHI));
+
+    	if (jet[0] > style->minEnergy)
+    	{
+      		IgSoJet *recoJet = new IgSoJet;
+     
+      		recoJet->energy.setValue(jet[0]);
+      		recoJet->theta.setValue(jet[1]);
+      		recoJet->phi.setValue(jet[2]);
+      		sep->addChild(recoJet);
+    	}
+  	}			
+}
+
+static void
 makeAnyMET(IgCollection **collections, IgAssociations **, 
            SoSeparator *sep, Style * style, Projectors &projectors)
 {
@@ -2378,6 +2404,7 @@ registerDrawHelpers(std::map<std::string, Make3D> &helpers)
   helpers.insert(std::pair<std::string,Make3D>("make3DEventV2", make3DEventV2));
   helpers.insert(std::pair<std::string,Make3D>("make3DHLTrigger", make3DHLTrigger));
   helpers.insert(std::pair<std::string,Make3D>("make3DJetShapes", makeAnyJetShapes));
+  helpers.insert(std::pair<std::string,Make3D>("makeRPhiJets", makeRPhiJets));
   helpers.insert(std::pair<std::string,Make3D>("make3DL1Trigger", make3DL1Trigger));
   helpers.insert(std::pair<std::string,Make3D>("make3DLimits", make3DLimits));
   helpers.insert(std::pair<std::string,Make3D>("make3DMET", makeAnyMET));

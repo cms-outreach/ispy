@@ -22,6 +22,7 @@
   min-energy: 0.2;
   max-energy: 5.0;
   energy-scale: 1.0;
+  min-pt: 0.5;
   left: 0.;
   top: 0.;
 }
@@ -177,6 +178,7 @@ Tracks_V2
   diffuse-color: rgb(1.0, 0.7, 0.1);
   marker-style: outline;
   transparency: 0.3;
+  min-pt: 1.0;
 }
 
 
@@ -424,7 +426,7 @@ Jets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
-  min-energy: 70.0;
+  min-energy: 15.0;
 }
 
 PATJets_V1 {

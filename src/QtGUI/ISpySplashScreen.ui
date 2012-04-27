@@ -26,7 +26,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>IGUANA iSpy</string>
+   <string>iSpy</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QFrame {
@@ -323,9 +323,9 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;Updates and example data files are available on the application web site. &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;See &lt;/span&gt;&lt;a href=&quot;http://iguana.cern.ch/ispy/&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt; text-decoration: underline; color:#109d0a;&quot;&gt;http://iguana.cern.ch/ispy/&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt; for more information. &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;See &lt;/span&gt;&lt;a href=&quot;http://cern.ch/ispy/&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt; text-decoration: underline; color:#109d0a;&quot;&gt;http://cern.ch/ispy/&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt; for more information. &lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt; font-style:italic;&quot;&gt;Developed by: &lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;George Alverson, Giulio Eulisse, Thomas McCauley, and Lucas Taylor.  &lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt; font-style:italic;&quot;&gt;Developed by: &lt;/span&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;George Alverson, Giulio Eulisse, Thomas McCauley, and Lucas Taylor.  Shahzad Muzaffar, Ianna Osbourne, and Lassi Tuura.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;a href=&quot;mailto:hn-cms-visualization@cern.ch&quot;&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt; text-decoration: underline; color:#109d0a;&quot;&gt;Contact us&lt;/span&gt;&lt;/a&gt;&lt;span style=&quot; font-family:'Sans Serif'; font-size:12pt;&quot;&gt;. &lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
             </property>

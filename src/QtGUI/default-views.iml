@@ -927,8 +927,8 @@
               visibility="none"/>
 
   <collection label="Physics Objects/Jets"
-              spec="Jets_V1:et:theta:phi"
-              draw="make3DJetShapes"
+              spec="Jets_V1:et:phi"
+              draw="makeRPhiJets"
               visibility="none"/>
 
   <collection label="Physics Objects/Missing Et (Reco)"
