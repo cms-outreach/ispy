@@ -404,6 +404,8 @@ CaloTowers_V1 {
 CaloTowers_V2 {
   transparency: 0.75;
   diffuse-color: rgb(0.1, 1.0, 0.2);
+  min-energy: 1.0;
+  energy-scale: 0.05;
 }
 
 Photons_V1 { 

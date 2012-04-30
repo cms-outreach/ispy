@@ -1520,6 +1520,9 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get(PT)).arg(p[0]).arg(p[1]).arg(p[2]);
     
+	if ( ci->get(PT) < style->minPt )
+		continue;
+
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
       p = ai->get(POS1);
@@ -1829,7 +1832,7 @@ make3DCaloTowers(IgCollection **collections, IgAssociations **assocs,
   // FIXME LT: draw ECAL and HCAL parts in different colours
 
   make3DEmPlusHadCaloTowerShapes(collections, assocs, sep, style, projectors);
-  make3DEmCaloTowerShapes(collections, assocs, sep, style, projectors);
+  //make3DEmCaloTowerShapes(collections, assocs, sep, style, projectors);
 }
 
 /*
