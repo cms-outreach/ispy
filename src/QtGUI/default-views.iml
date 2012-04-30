@@ -671,7 +671,6 @@
               draw="make3DLimits"
               visibility="none"/>
 
-
   <collection label="Detector/Tracker"
               spec="TrackerRPhi_V1:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DAnyBox"/>
@@ -791,6 +790,7 @@
               spec="HORecHits_V2:energy:front_1:front_2:front_3:front_4:back_1:back_2:back_3:back_4"
               draw="make3DEnergyBoxes"
               visibility="none"/>
+
   <collection label="Muon/DT Digis"
               spec="DTDigis_V1:pos:axis:angle:cellWidth:cellLength:cellWidth:cellHeight"
               draw="make3DDTDigis"

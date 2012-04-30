@@ -2038,7 +2038,7 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
   std::vector<int>      lineIndices;
   std::vector<SbVec3f>  points;
   int                   i = 0;
-  float etRadius = 8.0; // radius in x,y, to draw Etmiss vectors --- FIXME: calculate based on scene ???
+  float etRadius = 4.0; // radius in x,y, to draw Etmiss vectors --- FIXME: calculate based on scene ???
 
   // If the collection is empty, look no further.
   if (!c->size())
@@ -2077,6 +2077,7 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
 
     sep->addChild(lineSet);
 
+/*
     direction *= 1.05; // Add text label a bit past the end of the line
 
     SoTranslation *textPos = new SoTranslation;
@@ -2091,6 +2092,7 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
 
     sep->addChild(textPos);
     sep->addChild(label);
+*/
   }
 }
 
