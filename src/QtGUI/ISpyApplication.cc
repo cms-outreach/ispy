@@ -2561,7 +2561,7 @@ ISpyApplication::simpleOpen(const QString &fileName)
 void
 ISpyApplication::downloadGeometry(void)
 {
-  QNetworkReply *reply = getUrl(QUrl("http://cmsdoc.cern.ch/~mccauley/cms-geometry.v4.ig"));
+  QNetworkReply *reply = getUrl(QUrl("http://ispy.web.cern.ch/ispy/cms-geometry.v4.ig"));
   QTemporaryFile *tmpFile = new QTemporaryFile();
   IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(reply, tmpFile);
   QObject::connect(handler, SIGNAL(done(IgNetworkReplyHandler *)),
@@ -2662,7 +2662,7 @@ ISpyApplication::handleWizardLinks(const QUrl &link)
   }
   else if (linkString == "OpenWeb")
   {
-    m_splash->setRightPage(QUrl("http://cern.ch/ispy/igfiles/"));
+    m_splash->setRightPage(QUrl("http://ispy.web.cern.ch/ispy/igfiles/"));
   }
   else if (linkString == "OpenFile")
   {
@@ -2841,7 +2841,7 @@ ISpyApplication::openUrlDialog(void)
 {
   QInputDialog dialog;
   dialog.setLabelText("Specify an ig-file url:");
-  dialog.setTextValue("http://cern.ch/ispy/igfiles/mc/electroweak/RelValZEE.ig");
+  dialog.setTextValue("http://ispy.web.cern.ch/ispy/igfiles/data/Wenu.ig");
   dialog.resize(430,72);
   // FIXME: use the latest file downloaded as default.
   if (!dialog.exec())

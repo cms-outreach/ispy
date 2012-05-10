@@ -31,7 +31,7 @@ ISpySplashScreen::initActions(ISpyApplication *app)
   m_application = app;
   // Get the news from http://cern.ch/ispy/ispy-news.htm
   // and update the news view accordingly once fetching is complete.
-  QUrl newsUrl("http://cern.ch/ispy/ispy-news.htm");
+  QUrl newsUrl("http://ispy.web.cern.ch/ispy/ispy-news.htm");
   QNetworkReply *newsReply = app->getUrl(newsUrl);
   IgNetworkReplyHandler *handler = new IgNetworkReplyHandler(newsReply,
                                                              new QBuffer);

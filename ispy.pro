@@ -9,15 +9,15 @@ unix:TARGET= ispy
 
 CONFIG += release
 
-mac:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.4
-mac:CONFIG += x86 ppc
+mac:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.5
+mac:CONFIG += 
 
 # Change any of these in order to match your externals.
 ISPY_SDK_BASE = $$QT_INSTALL_PREFIX
 COIN3D_BASE = $$ISPY_SDK_BASE
 SOQT_BASE = $$ISPY_SDK_BASE
 PCRE_BASE = $$ISPY_SDK_BASE
-CLASSLIB_BASE = $$ISPY_SDK_BASE
+ZLIB_BASE = $$ISPY_SDK_BASE
 FREETYPE_BASE = $$ISPY_SDK_BASE
 FONTCONFIG_BASE = $$ISPY_SDK_BASE
 EXPAT_BASE = $$ISPY_SDK_BASE
@@ -34,6 +34,7 @@ UI_DIR = ui
 # qmake file in a subdirectory, therefore we need 
 # to find the sources a few levels up.
 SOURCES += src/Framework/*.cc
+SOURCES += src/Framework/*.c
 SOURCES += src/QtGUI/*.cc
 SOURCES += src/QtGUI/bin/ispy.cpp
 HEADERS += src/QtGUI/*.h
@@ -45,7 +46,6 @@ INCLUDEPATH += $$ISPY_SDK_BASE/include
 INCLUDEPATH += src
 INCLUDEPATH += $$COIN3D_BASE/include
 INCLUDEPATH += $$SOQT_BASE/include
-INCLUDEPATH += $$CLASSLIB_BASE/include
 INCLUDEPATH += $$FONTCONFIG_BASE/include
 INCLUDEPATH += $$FREETYPE_BASE/include
 INCLUDEPATH += $$EXPAT_BASE/include
@@ -55,11 +55,12 @@ LIBS += -L$$ISPY_SDK_BASE/lib64
 LIBS += -L$$SOQT_BASE/lib -lSoQt
 LIBS += -L$$COIN3D_BASE/lib -lCoin
 LIBS += -L$$PCRE_BASE/lib -lpcre
-LIBS += -L$$CLASSLIB_BASE/lib -lclasslib
+LIBS += -L$$ZLIB_BASE/lib -lz
 LIBS += -L$$FONTCONFIG_BASE/lib -lfontconfig
 LIBS += -L$$FREETYPE_BASE/lib -lfreetype
+LIBS += -L$$ISPY_SDK_BASE/lib -lsimage
 mac { 
-LIBS += -L$$EXPAT_BASE/lib -lexpatstatic
+LIBS += -L$$EXPAT_BASE/lib -lexpat-static
 }
 
 unix:!mac { LIBS += -L$$EXPAT_BASE/lib -lexpat }
