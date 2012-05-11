@@ -2674,6 +2674,12 @@ ISpyApplication::handleWizardLinks(const QUrl &link)
   {
     m_splash->hide();
     m_mainWindow->show();
+
+    // get rid of extra ispy/igfiles/*
+    // and only get bare file name
+    linkString = linkString.section("/", -1);
+    qDebug() << linkString ;
+
     this->downloadFile(m_splash->rightPage()
                        .toString()
                        .replace(QRegExp("/[?].*"), "/") + linkString);
