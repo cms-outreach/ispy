@@ -146,7 +146,7 @@ padding-left: 220px;
 </string>
             </property>
             <property name="text">
-             <string>Welcome to iSpy 1.5.0</string>
+             <string>Welcome to iSpy 1.5.0 (beta)</string>
             </property>
            </widget>
           </item>
