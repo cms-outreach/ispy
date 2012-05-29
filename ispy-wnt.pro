@@ -9,7 +9,7 @@ CONFIG += debug_and_release
 
 
 # Change any of these in order to match your externals.
-ISPY_SDK_BASE = C:/Graphics/ispy-git
+ISPY_SDK_BASE = C:/Graphics/ispy-git2
 COIN3D_BASE = $$(COINDIR)
 SOQT_BASE = $$(COINDIR)
 ZLIB_BASE = C:/Graphics/zlib-1.2.5
