@@ -1,11 +1,16 @@
-/*  Lucas preferred style.
-    
-    Colour table at:
-    
-    http://www.december.com/html/spec/colorsafecodes.html
- */
-
-
+<html>
+<head>
+<title>iSpy | A powerful and lightweight event display.</title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<style type="text/css">
+pre {
+  padding-left: 0.5cm;
+}
+</style>
+</head>
+<body>
+<pre>
+ 
 // Default style.
 * {
   diffuse-color: rgb(0.7, 0.7, 0.7);
@@ -13,7 +18,7 @@
   line-width: 1.0;
   line-pattern: 0xffff;
   font-size: 12;
-  font-family: Arial Bold;
+  font-family: Arial;
   draw-style: solid;
   marker-shape: square;
   marker-size: normal;
@@ -22,7 +27,6 @@
   min-energy: 0.2;
   max-energy: 5.0;
   energy-scale: 1.0;
-  min-pt: 0.5;
   left: 0.;
   top: 0.;
 }
@@ -43,7 +47,7 @@ Event_V1 {
 
 Event_V2 {
   diffuse-color: rgb(1.0, 1.0, 1.0); 
-  font-size: 20.0; 
+  font-size: 24.0; 
   font-family: Arial;
   background: :/images/cms-logo-small.png;
   left: 0.125;
@@ -173,12 +177,9 @@ Tracks_V1
 
 Tracks_V2
 {
-  draw-style: lines; 
-  line-width: 3;
+  draw-style: lines; line-width: 4;
   diffuse-color: rgb(1.0, 0.7, 0.1);
   marker-style: outline;
-  transparency: 0.3;
-  min-pt: 1.0;
 }
 
 
@@ -242,8 +243,8 @@ HFRecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 3.0; energy-scale: 
 HORecHits_V1 {diffuse-color: rgb(0.8, 1.0, 1.0); min-energy: 1.0; energy-scale: 0.03;}
 
 /* FIXME: we should really support wildcards */
-EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.1;}
-EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.1;}
+EBRecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 1.0; energy-scale: 0.04;}
+EERecHits_V2 {diffuse-color: rgb(1.0, 0.2, 0.0); min-energy: 0.2; energy-scale: 0.04;}
 ESRecHits_V2 {diffuse-color: rgb(1.0, 0.6, 0.0); min-energy: 0.0005; energy-scale: 100.;}
 HBRecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.02;}
 HERecHits_V2 {diffuse-color: rgb(0.4, 0.8, 1.0); min-energy: 1.0; energy-scale: 0.02;}
@@ -404,8 +405,6 @@ CaloTowers_V1 {
 CaloTowers_V2 {
   transparency: 0.75;
   diffuse-color: rgb(0.1, 1.0, 0.2);
-  min-energy: 1.0;
-  energy-scale: 0.05;
 }
 
 Photons_V1 { 
@@ -428,7 +427,7 @@ Jets_V1 {
   transparency: 0.6; 
   diffuse-color: rgb(1.0, 1.0, 0.0);
   marker-shape: cross;
-  min-energy: 15.0;
+  min-energy: 70.0;
 }
 
 PATJets_V1 {
@@ -465,3 +464,6 @@ PATMETs_V1 {
 
 PSimHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}
 TrackingParticlePSimHits_V1 {diffuse-color: rgb(1.0, 0.1, 1.0);}
+</pre>
+</body>
+</html>

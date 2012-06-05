@@ -178,7 +178,8 @@ if (APPLE)
 else(APPLE)
     find_library(SSL_LIBRARY ssl)
     find_library(XRENDER_LIBRARY Xrender)
-    set(ADDITIONAL_LIBS ${SSL_LIBRARY} ${XRENDER_LIBRARY})
+    find_library(RT_LIBRARY rt)
+    set(ADDITIONAL_LIBS ${SSL_LIBRARY} ${XRENDER_LIBRARY} ${RT_LIBRARY})
 endif(APPLE)
 
 if (APPLE)
@@ -228,6 +229,10 @@ INSTALL(CODE "
    fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
    " COMPONENT Runtime)
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/externals/sw/src/qt/src/gui/mac/qt_menu.nib
+     DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/Resources/ )
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/QtGUI/resources/Info.plist
+	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/ )
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/QtGUI/resources/ispy.icns
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/Resources/ )
 endif(APPLE)
 

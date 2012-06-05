@@ -25,10 +25,6 @@ main (int argc, char *argv[])
 {
   putenv(strdup("LANG=C"));
 
-  #ifdef Q_WS_MAC
-  putenv(strdup("COIN_FORCE_FONTCONFIG_OFF=1"));
-  #endif
-
   // Do not inform when COIN is running using indirect rendering
   // because it simply confuses things and there is not
   // much the user can really do since

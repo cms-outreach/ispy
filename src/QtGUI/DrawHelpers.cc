@@ -246,10 +246,10 @@ make3DEvent(IgCollectionItem& e,
       // One can turn off event information anyway in the display.
       // Add option here for keeping logo, copyright, and url
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2011. All rights reserved.");
+      helper.createTextLine("(c) CERN. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
-      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.createTextLine("http://cern.ch/ispy");
       helper.endBox();
       
       if (style->background)
@@ -263,14 +263,14 @@ make3DEvent(IgCollectionItem& e,
       helper.indentText(0, 0.7);
       helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" :
                                    ("Data recorded: " + time).c_str());
-      helper.createTextLine((sprintf(buf, "Run / Event: %d / %d", 
-                             e.get<int>("run"), e.get<int>("event")), buf));
+      helper.createTextLine((sprintf(buf, "Run / Event: %d / %ld", 
+                             e.get<int>("run"), e.get<long>("event")), buf));
       helper.endBox();
       helper.beginBox(-0.95, -0.92, style->textAlign, 0.4);
-      helper.createTextLine("(c) CERN 2011. All rights reserved.");
+      helper.createTextLine("(c) CERN. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
-      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.createTextLine("http://cern.ch/ispy");
       helper.endBox();
       
       if (style->background)
@@ -295,7 +295,7 @@ make3DEvent(IgCollectionItem& e,
       helper.indentText(0, 0.7);
       helper.createTextLine(time.substr (0,11) == "1970-Jan-01" ? "Simulated (MC) event" : time.c_str());
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("run")), buf));
-      helper.createTextLine((sprintf(buf, "%d", e.get<int>("event")), buf));
+      helper.createTextLine((sprintf(buf, "%ld", e.get<long>("event")), buf));
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("ls")), buf));
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("orbit")), buf));
       helper.createTextLine((sprintf(buf, "%d", e.get<int>("bx")), buf));
@@ -305,7 +305,7 @@ make3DEvent(IgCollectionItem& e,
       helper.createTextLine("(c) CERN 2011. All rights reserved.");
       helper.endBox();
       helper.beginBox(0.95, -0.92, SoText2::RIGHT, 0.4);
-      helper.createTextLine("http://iguana.cern.ch/ispy");
+      helper.createTextLine("http://cern.ch/ispy");
       helper.endBox();
       
       if (style->background)
@@ -1180,7 +1180,7 @@ makeLegoTriggerObjects(IgCollection **collections, IgAssociations **,
 
 static void 
 makeLegoPhotons(IgCollection **collections, IgAssociations **,
-                SoSeparator *sep, Style * /*style*/,
+                SoSeparator *sep, Style* style,
                 Projectors &/*projectors*/)
 {
   IgCollection         *c = collections[0];
@@ -1194,6 +1194,9 @@ makeLegoPhotons(IgCollection **collections, IgAssociations **,
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {    
+    if ( ci->get(E) < style->minEnergy )
+      continue;
+
     double eta = ci->get(ETA);
     double phi = ci->get(PHI);  
     if ( phi < 0 ) phi += 2*M_PI;      
@@ -1391,7 +1394,7 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
   IgDrawSplinesHelper helper;
 
   for (IgCollection::iterator ci = tracks->begin(), ce = tracks->end(); ci != ce; ++ci)
-  {
+  {	
     // Determine the sign of the last tracking rechit and always project the
     // track so that the same map is used for projection.
     //
@@ -1413,6 +1416,9 @@ void make3DTracksNoVertex(IgCollection **collections, IgAssociations **assocs,
                         .arg(ci->get(PT))
                         .arg(p[0]).arg(p[1]).arg(p[2]);
 
+    if ( ci->get(PT) < style->minPt )
+		continue;
+	
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
       p = ai->get(POS1);
@@ -1514,6 +1520,9 @@ void makeAnyTracks(IgCollection **collections, IgAssociations **assocs,
     QString trackName = QString("Track %1 GeV(%2, %3, %4)")
                         .arg(ci->get(PT)).arg(p[0]).arg(p[1]).arg(p[2]);
     
+	if ( ci->get(PT) < style->minPt )
+		continue;
+
     for (IgAssociations::iterator ai = assoc->begin(ci), ae = assoc->end(); ai != ae; ++ai)
     {
       p = ai->get(POS1);
@@ -1823,7 +1832,7 @@ make3DCaloTowers(IgCollection **collections, IgAssociations **assocs,
   // FIXME LT: draw ECAL and HCAL parts in different colours
 
   make3DEmPlusHadCaloTowerShapes(collections, assocs, sep, style, projectors);
-  make3DEmCaloTowerShapes(collections, assocs, sep, style, projectors);
+  //make3DEmCaloTowerShapes(collections, assocs, sep, style, projectors);
 }
 
 /*
@@ -1908,7 +1917,7 @@ make3DJet(SoGroup* sep, double et, double theta, double phi)
 
 static void
 makeAnyPhoton(IgCollection **collections, IgAssociations **,
-              SoSeparator *sep, Style * /*style*/,
+              SoSeparator *sep, Style* style,
               Projectors &projectors)
 {
   IgCollection  *c = collections[0];
@@ -1927,6 +1936,9 @@ makeAnyPhoton(IgCollection **collections, IgAssociations **,
 
   for ( IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci )
   {    
+    if ( ci->get(E) < style->minEnergy )
+      continue;
+
     double eta = ci->get(ETA);
     double phi = ci->get(PHI);
     
@@ -1997,6 +2009,29 @@ makeAnyJetShapes(IgCollection **collections, IgAssociations **,
 }
 
 static void
+makeRPhiJets(IgCollection **collections, IgAssociations **,
+			SoSeparator *sep, Style *style, Projectors &projectors)
+{
+	IgCollection *c = collections[0];
+	IgColumn<double> ET(c, "et"), PHI(c, "phi");
+	
+	for (IgCollection::iterator ci = c->begin(), ce = c->end(); ci != ce; ++ci)
+  	{
+    	SbVec3f jet(ci->get(ET), M_PI*0.5, ci->get(PHI));
+
+    	if (jet[0] > style->minEnergy)
+    	{
+      		IgSoJet *recoJet = new IgSoJet;
+     
+      		recoJet->energy.setValue(jet[0]);
+      		recoJet->theta.setValue(jet[1]);
+      		recoJet->phi.setValue(jet[2]);
+      		sep->addChild(recoJet);
+    	}
+  	}			
+}
+
+static void
 makeAnyMET(IgCollection **collections, IgAssociations **, 
            SoSeparator *sep, Style * style, Projectors &projectors)
 {
@@ -2006,7 +2041,7 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
   std::vector<int>      lineIndices;
   std::vector<SbVec3f>  points;
   int                   i = 0;
-  float etRadius = 8.0; // radius in x,y, to draw Etmiss vectors --- FIXME: calculate based on scene ???
+  float etRadius = 4.0; // radius in x,y, to draw Etmiss vectors --- FIXME: calculate based on scene ???
 
   // If the collection is empty, look no further.
   if (!c->size())
@@ -2045,6 +2080,7 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
 
     sep->addChild(lineSet);
 
+/*
     direction *= 1.05; // Add text label a bit past the end of the line
 
     SoTranslation *textPos = new SoTranslation;
@@ -2059,6 +2095,7 @@ makeAnyMET(IgCollection **collections, IgAssociations **,
 
     sep->addChild(textPos);
     sep->addChild(label);
+*/
   }
 }
 
@@ -2372,6 +2409,7 @@ registerDrawHelpers(std::map<std::string, Make3D> &helpers)
   helpers.insert(std::pair<std::string,Make3D>("make3DEventV2", make3DEventV2));
   helpers.insert(std::pair<std::string,Make3D>("make3DHLTrigger", make3DHLTrigger));
   helpers.insert(std::pair<std::string,Make3D>("make3DJetShapes", makeAnyJetShapes));
+  helpers.insert(std::pair<std::string,Make3D>("makeRPhiJets", makeRPhiJets));
   helpers.insert(std::pair<std::string,Make3D>("make3DL1Trigger", make3DL1Trigger));
   helpers.insert(std::pair<std::string,Make3D>("make3DLimits", make3DLimits));
   helpers.insert(std::pair<std::string,Make3D>("make3DMET", makeAnyMET));

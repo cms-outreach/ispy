@@ -45,6 +45,10 @@ public:
       {
         m_currentCollection->addProperty(name.c_str(), static_cast<int>(0));
       }
+      else if(type == "long")
+      {
+        m_currentCollection->addProperty(name.c_str(), static_cast<long>(0));
+      }
       else if(type == "double")
       {
         m_currentCollection->addProperty(name.c_str(), static_cast<double>(1.0));
@@ -111,7 +115,15 @@ public:
       m_buffer = endbuf;
     }
 
-
+  void parseLong(long &result)
+    {
+      char *endbuf;
+      result = strtol(m_buffer, &endbuf, 10);
+      if (!endbuf)
+      { throwParseError(m_buffer-m_initialBuffer); }
+      m_buffer = endbuf;
+    }
+  
   void parseDouble(double &result)
     {
       char *endbuf;
@@ -217,7 +229,8 @@ public:
       m_currentAssociations->reserve(100000);
       skipChar(':');
       skipChar('[');
-      if (checkChar(']')) return;
+  
+    if (checkChar(']')) return;
       do
       {
         parseAssociation();
@@ -279,6 +292,9 @@ public:
           {
           case INT_COLUMN:
             parseInt(item.current<int>());
+            break;
+          case LONG_COLUMN:
+            parseLong(item.current<long>());
             break;
           case STRING_COLUMN:
             parseString(item.current<std::string>());

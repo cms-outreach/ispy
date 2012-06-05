@@ -91,6 +91,7 @@ struct StyleSpec
   double                      energyScale;
   double                      left;
   double                      top;
+  double                      minPt;
 };
 
 // The style structure is used to keep track of the context used to render
@@ -110,6 +111,7 @@ public:
   double                      minEnergy;
   double                      maxEnergy;
   double                      energyScale;
+  double                      minPt;
   SoImage                     *background;
   ISPY_ANNOTATION_LEVEL       annotationLevel;
   double                      left;

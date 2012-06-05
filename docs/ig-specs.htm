@@ -22,9 +22,6 @@
 <!-- tpl: page-default -->
 
 
-
-
-
 <div id="page" class="ispy">
 
    <!-- Start of header  ========================================== --> 
@@ -65,7 +62,7 @@
    each. The associated run number and the event number are, respectively, the filename for the <em>run
    directory</em> and for the <em>ig event file</em>.</p>
 
-   <h1><em>ig-event-file</em> format.</h1>
+   <h1><em>ig-event-file</em> format:</h1>
 
    <p>The <em>ig-event-file</em> format is a valid JSON or python dictionary. The format defines three categories of
    objects:
@@ -91,7 +88,7 @@
    Possible <em>attribute type</em>s include:</p>
 
    <ul>
-   <li>simple numeric types: <em>int</em>, <em>double</em>, which map to their C++ equivalents.</li>
+   <li>simple numeric types: <em>int</em>, <em>long</em>, and <em>double</em>, which map to their C++ equivalents.</li>
    <li>text-like elements: <em>string</em>, which map to <code>std::string</code></li>
    <li>vector like quantities: <em>v2d</em>, <em>v3d</em>, <em>v4d</em> which map to <code>IgV2d</code>, <code>IgV3d</code>, <code>IgV4d</code>.</li>
    </ul>
@@ -110,7 +107,7 @@
 
    <p><em>string-literal</em> ::= [A-Za-z_][A-Za-z_/0-9]*</p>
 
-   <p><em>attribute-type</em> ::= <strong>int</strong> OR <strong>double</strong> OR <strong>string</strong> OR <strong>v2d</strong> OR <strong>v3d</strong> OR <strong>v4d</strong></p>
+   <p><em>attribute-type</em> ::= <strong>int</strong> OR <strong>long</strong> OR <strong>double</strong> OR <strong>string</strong> OR <strong>v2d</strong> OR <strong>v3d</strong> OR <strong>v4d</strong></p>
 
    <h2><em>Collection</em>s</h2>
 
@@ -135,7 +132,7 @@
 
    <p><em>numeric-literal</em> ::= [0-9]+[.]*[0-9]*</p>
 
-   <p><em>vector-literal</em> ::= <strong>(</strong><em>numeric-literal</em><strong>,</strong> <em>numeric-literal</em><strong>,</strong> ...<strong>)</strong></p>
+   <p><em>vector-literal</em> ::= <strong>[</strong><em>numeric-literal</em><strong>,</strong> <em>numeric-literal</em><strong>,</strong> ...<strong>]</strong></p>
 
    <h2><em>Association sets</em></h2>
 
@@ -172,12 +169,12 @@
 
    <p>Here is a simple example of how an <code>ig</code> file looks like.</p>
 
-   <pre><code>{'Types': {"Tracks/V1": [["x", "double"],["y", "double"],["z", "double"],
+   <pre><code>{"Types": {"Tracks_V1": [["x", "double"],["y", "double"],["z", "double"],
                             ["px", "double"],["py","double"],["pz", "double"]],
-              "Clusters/V1": [["x", "double"],["y", "double"],["z", "double"],
+              "Clusters_V1": [["x", "double"],["y", "double"],["z", "double"],
                               ["e", "double"]]
    },
-   'Collections': {"Tracks/V1": [[0, 0, 0, 0, 0, 0],
+   "Collections": {"Tracks_V1": [[0, 0, 0, 0, 0, 0],
                                  [1, 1, 1, 1, 1, 1],
                                  [2, 2, 2, 2, 2, 2],
                                  [3, 3, 3, 3, 3, 3],
@@ -188,7 +185,7 @@
                                  [8, 8, 8, 8, 8, 8],
                                  [9, 9, 9, 9, 9, 9]
                                 ],
-                   "Clusters/V1": [[0, 0, 0, 0],
+                   "Clusters_V1": [[0, 0, 0, 0],
                                   [1, 1, 1, 1],
                                   [2, 2, 2, 2],
                                   [3, 3, 3, 3],
@@ -200,7 +197,7 @@
                                   [9, 9, 9, 9]
                                  ]
                    },
-   'Associations': {"TrackClusters/V1": [[[0, 0], [1, 0]],
+   "Associations": {"TrackClusters_V1": [[[0, 0], [1, 0]],
                                          [[0, 1], [1, 1]],
                                          [[0, 2], [1, 2]],
                                          [[0, 3], [1, 3]],
@@ -211,7 +208,7 @@
                                          [[0, 8], [1, 8]],
                                          [[0, 9], [1, 9]]
                                         ],
-                    "TrackClusters2/V1": [[[0, 0], [1, 0]],
+                    "TrackClusters2_V1": [[[0, 0], [1, 0]],
                                           [[0, 1], [1, 0]],
                                           [[0, 2], [1, 0]],
                                           [[0, 3], [1, 0]],
@@ -227,7 +224,13 @@
    </code></pre>
 
 
- 
+   <h1><em>APIs</em>:</h1>
+   APIs for ig files can be found on <a href="http://github.com">github</a>:
+   <ul>
+   <li id="ispy"><a href="https://github.com/tpmccauley/igfiles">C++</a>
+   <li id="ispy"><a href="https://github.com/tpmccauley/pyig">python</a>
+   </ul>
+
    <p></p> <!-- small vertical space -->
 
 </div>

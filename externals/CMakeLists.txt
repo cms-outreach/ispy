@@ -23,7 +23,7 @@ ExternalProject_Add_Step(${ARGV} post_configure
 ENDMACRO(custom_configure)
 
 ExternalProject_Add(zlib
-                    URL http://zlib.net/zlib-1.2.5.tar.gz 
+                    URL http://zlib.net/zlib-1.2.7.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> && 
                       ./configure --prefix <INSTALL_DIR> --static
@@ -107,7 +107,7 @@ ExternalProject_Add(simage
                         --disable-debug --disable-symbols --without-targa --without-pic 
                         --without-rgb --without-tiff --without-jpeg --with-png 
                         --without-gif --without-ungif --without-oggvorbis
-                        --without-eps --disable-framework
+                        --without-eps --disable-framework ${SIMAGE_CONF_FLAGS}
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
                     INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
 )
@@ -142,7 +142,7 @@ custom_configure(soqt)
 
 
 ExternalProject_Add(libpng
-                    URL ftp://ftp.simplesystems.org/pub/libpng/png/src/libpng-1.5.6.tar.gz 
+                    URL http://sourceforge.net/projects/libpng/files/libpng15/1.5.10/libpng-1.5.10.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       ./configure --prefix <INSTALL_DIR> --disable-dependency-tracking 

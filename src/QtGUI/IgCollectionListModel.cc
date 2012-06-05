@@ -30,6 +30,9 @@ IgCollectionListModel::data(const QModelIndex &index, int role) const
   case INT_COLUMN:
     return p.handle().get<int>(index.row());
     break;
+  case LONG_COLUMN:
+    return p.handle().get<qlonglong>(index.row());   
+    break;
   case DOUBLE_COLUMN:
     return p.handle().get<double>(index.row());
     break;
