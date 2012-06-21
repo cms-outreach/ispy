@@ -6,7 +6,7 @@
 TEMPLATE = vcapp
 
 CONFIG += debug_and_release
-
+DEFINES += ZLIB_WINAPI
 
 # Change any of these in order to match your externals.
 ISPY_SDK_BASE = C:/Graphics/ispy-git2
@@ -46,16 +46,16 @@ LIBS += -L$$ISPY_SDK_BASE/lib
 LIBS += -L$$ISPY_SDK_BASE/lib64
 
 
-CONFIG(debug, debug|release): #debug settings
-{
-   LIBS += -L$$ZLIB_BASE/contrib/vstudio/vc9/x86/ZlibStatDebug -lzlibstat
-   LIBS += -L$$SOQT_BASE/lib -lSoQt1d
-   LIBS += -L$$COIN3D_BASE/lib -lCoin3d
-} else { # release settings
-   LIBS += -L$$ZLIB_BASE/contrib/vstudio/vc9.x86/ZlibStatRelease -lzlibstat
+#CONFIG(debug, debug|release): #debug settings
+#{
+#   LIBS += -L$$ZLIB_BASE/contrib/vstudio/vc10/x86/ZlibStatDebug -lzlibstat
+#   LIBS += -L$$SOQT_BASE/lib -lSoQt1d
+#   LIBS += -L$$COIN3D_BASE/lib -lCoin3d
+#} else { # release settings
+   LIBS += -L$$ZLIB_BASE/contrib/vstudio/vc10/x86/ZlibDllRelease -lzlibwapi
    LIBS += -L$$SOQT_BASE/lib -lSoQt1
    LIBS += -L$$COIN3D_BASE/lib -lCoin3
-}
+#}
 
 QT += network opengl
 
