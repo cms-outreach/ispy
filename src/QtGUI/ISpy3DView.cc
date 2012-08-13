@@ -145,12 +145,44 @@ ISpy3DView::printBitmap(const QString &file,
 
   SbVec2s             pixels(outvr.getViewportSizePixels());
   SbVec2s             size((short)(pixels[0] + 0.5), (short)(pixels[1] + 0.5));
-  if (getenv("ISPY_HD_PRINT"))
+  
+  if ( getenv("ISPY_HD_PRINT") )
   {
     size[0] = 1920;
     size[1] = 1080;
   }
-  SbVec2s             origin = outvr.getViewportOriginPixels();
+
+  char* pr = getenv("ISPY_PRINT_RESOLUTION");
+  if ( pr != NULL )
+    {
+      std::string prStr(pr);
+      std::string sepStr("x");
+      size_t found = prStr.find(sepStr);
+
+      if (found != std::string::npos) {
+	std::string wStr = prStr.substr(0,found);
+	std::string hStr = prStr.substr(found+1);
+
+	long int width = strtol(wStr.c_str(), NULL, 10);
+	long int height = strtol(hStr.c_str(), NULL, 10);
+	
+	if ( width && height ) {
+	  size[0] = width;
+	  size[1] = height;
+	}
+	else {
+	  std::cerr<<"Unable to use specified print resolution: "<< pr <<std::endl;
+	  std::cerr<<"Will use "<< size[0] <<"x"<< size[1] <<" instead"<<std::endl; 
+	}
+      }
+      
+      else {
+	std::cerr<<"Unable to use specified print resolution: "<< pr <<std::endl;
+	std::cerr<<"Will use "<< size[0] <<"x"<< size[1] <<" instead"<<std::endl; 
+      }
+    }
+
+  SbVec2s origin = outvr.getViewportOriginPixels();
   outvr.setViewportPixels(origin, size);
 
   SoOffscreenRenderer *renderer = new SoOffscreenRenderer(outvr);

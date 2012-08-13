@@ -142,7 +142,7 @@ custom_configure(soqt)
 
 
 ExternalProject_Add(libpng
-                    URL http://sourceforge.net/projects/libpng/files/libpng15/1.5.10/libpng-1.5.10.tar.gz
+                    URL http://sourceforge.net/projects/libpng/files/libpng15/1.5.12/libpng-1.5.12.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       ./configure --prefix <INSTALL_DIR> --disable-dependency-tracking 
