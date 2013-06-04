@@ -23,7 +23,7 @@ ExternalProject_Add_Step(${ARGV} post_configure
 ENDMACRO(custom_configure)
 
 ExternalProject_Add(zlib
-                    URL http://zlib.net/zlib-1.2.7.tar.gz 
+                    URL http://zlib.net/zlib-1.2.8.tar.gz 
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> && 
                       ./configure --prefix <INSTALL_DIR> --static
@@ -70,7 +70,7 @@ custom_configure(fontconfig)
 
 ExternalProject_Add(qt
                     DEPENDS zlib freetype
-                    URL  ftp://ftp.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.7.3.tar.gz
+                    URL  http://download.qt-project.org/official_releases/qt/4.8/4.8.4/qt-everywhere-opensource-src-4.8.4.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       yes | ./configure -prefix <INSTALL_DIR>
@@ -97,7 +97,7 @@ else(APPLE)
 endif(APPLE)
 
 ExternalProject_Add(simage
-                    URL http://ftp.coin3d.org/coin/src/all/simage-1.7.0.tar.gz
+                    URL https://bitbucket.org/Coin3D/coin/downloads/simage-1.7.0.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     DEPENDS qt
                     CONFIGURE_COMMAND cd <SOURCE_DIR> && 
@@ -119,7 +119,7 @@ endif(APPLE)
 
 ExternalProject_Add(coin
                     DEPENDS simage freetype fontconfig
-                    URL http://ftp.coin3d.org/coin/src/all/Coin-3.1.3.tar.gz 
+                    URL https://bitbucket.org/Coin3D/coin/downloads/Coin-3.1.3.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR>
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
@@ -131,7 +131,7 @@ custom_configure(coin)
 set(CONFIG_QTLIBS -L<INSTALL_DIR>/lib -lz -lQt3Support -lQtOpenGL -lQtGui -lQtCore ${SOQT_LIBS})
 
 ExternalProject_Add(soqt
-                    URL http://ftp.coin3d.org/coin/src/all/SoQt-1.5.0.tar.gz
+                    URL https://bitbucket.org/Coin3D/coin/downloads/SoQt-1.5.0.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     DEPENDS coin qt
                     CONFIGURE_COMMAND cd <SOURCE_DIR> && sh -ex ../../../configure_soqt.sh <INSTALL_DIR> ${PLATFORM}
@@ -142,7 +142,7 @@ custom_configure(soqt)
 
 
 ExternalProject_Add(libpng
-                    URL http://sourceforge.net/projects/libpng/files/libpng15/1.5.12/libpng-1.5.12.tar.gz
+                    URL http://prdownloads.sourceforge.net/libpng/libpng-1.6.2.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       ./configure --prefix <INSTALL_DIR> --disable-dependency-tracking 
