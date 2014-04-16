@@ -6,5 +6,6 @@ ARCH=$2
                                    --with-expat-lib=$INSTALL_DIR/lib \
                                    --with-expat-includes=$INSTALL_DIR/include \
                                    --with-freetype-config=$INSTALL_DIR/bin/freetype-config \
-                                   LDFLAGS="-L$INSTALL_DIR/lib" \
+                                   INCLUDES="-DFONTCONFIG_PATH=/etc/fonts" \
+				   LDFLAGS="-L$INSTALL_DIR/lib" \
                                    LIBS="-lz -lfreetype -lexpat-static"

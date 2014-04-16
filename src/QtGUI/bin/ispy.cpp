@@ -24,6 +24,7 @@ int
 main (int argc, char *argv[])
 {
   putenv(strdup("LANG=C"));
+  putenv(strdup("LC_ALL=C"));
 
   // Do not inform when COIN is running using indirect rendering
   // because it simply confuses things and there is not

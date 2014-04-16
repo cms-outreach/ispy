@@ -1423,13 +1423,13 @@ ISpyApplication::setupMainWindow(void)
   m_treeWidget->setHeaderLabels(headers);
   m_treeWidget->setAlternatingRowColors(false);
   
-  m_groupFont = new QFont("Helvetica Neue");
+  m_groupFont = new QFont("Arial");
   m_groupFont->setPixelSize(11);
   m_groupFont->setWeight(QFont::Bold);
   m_groupFont->setCapitalization(QFont::AllUppercase);
   
   //m_groupFont->setStretch(QFont::SemiCondensed);
-  m_itemFont = new QFont("Helvetica Neue");
+  m_itemFont = new QFont("Arial");
   m_itemFont->setPixelSize(11);
 
   m_mainWindow->restoreSettings();
