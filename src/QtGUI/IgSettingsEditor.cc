@@ -4,6 +4,7 @@
 #include "QtGUI/IgLocationDialog.h"
 #include "QtGUI/IgSettingsTree.h"
 #include <QtGui>
+#include <QtWidgets>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>

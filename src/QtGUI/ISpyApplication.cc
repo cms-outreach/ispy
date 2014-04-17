@@ -40,6 +40,7 @@
 #include <QStringList>
 #include <QTreeWidget>
 #include <QtGui>
+#include <QtWidgets>
 #include <QtNetwork>
 #include <QFileSystemWatcher>
 #include <iostream>
@@ -1223,10 +1224,10 @@ ISpyApplication::setupActions(void)
   QIcon icon3;
   icon3.addPixmap(QPixmap(QString::fromUtf8(":/images/zoom_in.png")), QIcon::Normal, QIcon::Off);
   actionZoomIn->setIcon(icon3);
-  actionZoomIn->setText(QApplication::translate("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
-  actionZoomIn->setShortcut(QApplication::translate("ISpy3DView", "Ctrl++", 0, QApplication::UnicodeUTF8));
+  actionZoomIn->setText(QApplication::translate("ISpy3DView", "Zoom In", 0));
+  actionZoomIn->setShortcut(QApplication::translate("ISpy3DView", "Ctrl++", 0));
 #ifndef QT_NO_TOOLTIP
-  actionZoomIn->setToolTip(QApplication::translate("ISpy3DView", "Zoom In", 0, QApplication::UnicodeUTF8));
+  actionZoomIn->setToolTip(QApplication::translate("ISpy3DView", "Zoom In", 0));
 #endif // QT_NO_TOOLTIP
 
   QAction *actionZoomOut = new QAction(parent());
@@ -1234,10 +1235,10 @@ ISpyApplication::setupActions(void)
   QIcon icon4;
   icon4.addPixmap(QPixmap(QString::fromUtf8(":/images/zoom_out.png")), QIcon::Normal, QIcon::Off);
   actionZoomOut->setIcon(icon4);
-  actionZoomOut->setText(QApplication::translate("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
-  actionZoomOut->setShortcut(QApplication::translate("ISpy3DView", "Ctrl+-", 0, QApplication::UnicodeUTF8));
+  actionZoomOut->setText(QApplication::translate("ISpy3DView", "Zoom Out", 0));
+  actionZoomOut->setShortcut(QApplication::translate("ISpy3DView", "Ctrl+-", 0));
 #ifndef QT_NO_TOOLTIP
-  actionZoomOut->setToolTip(QApplication::translate("ISpy3DView", "Zoom Out", 0, QApplication::UnicodeUTF8));
+  actionZoomOut->setToolTip(QApplication::translate("ISpy3DView", "Zoom Out", 0));
 #endif // QT_NO_TOOLTIP
 
   QAction *actionHome = new QAction(parent());
@@ -1245,9 +1246,9 @@ ISpyApplication::setupActions(void)
   QIcon icon2;
   icon2.addPixmap(QPixmap(QString::fromUtf8(":/images/home.xpm")), QIcon::Normal, QIcon::Off);
   actionHome->setIcon(icon2);
-  actionHome->setText(QApplication::translate("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
+  actionHome->setText(QApplication::translate("ISpy3DView", "Home", 0));
 #ifndef QT_NO_TOOLTIP
-  actionHome->setToolTip(QApplication::translate("ISpy3DView", "Home", 0, QApplication::UnicodeUTF8));
+  actionHome->setToolTip(QApplication::translate("ISpy3DView", "Home", 0));
 #endif // QT_NO_TOOLTIP
 
   QAction *actionViewPlaneX = new QAction(parent());
@@ -1255,9 +1256,9 @@ ISpyApplication::setupActions(void)
   QIcon icon5;
   icon5.addPixmap(QPixmap(QString::fromUtf8(":/images/yz_small.xpm")), QIcon::Normal, QIcon::Off);
   actionViewPlaneX->setIcon(icon5);
-  actionViewPlaneX->setText(QApplication::translate("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
+  actionViewPlaneX->setText(QApplication::translate("ISpy3DView", "Plane X", 0));
 #ifndef QT_NO_TOOLTIP
-  actionViewPlaneX->setToolTip(QApplication::translate("ISpy3DView", "Plane X", 0, QApplication::UnicodeUTF8));
+  actionViewPlaneX->setToolTip(QApplication::translate("ISpy3DView", "Plane X", 0));
 #endif // QT_NO_TOOLTIP
 
   QAction *actionViewPlaneY = new QAction(parent());
@@ -1265,9 +1266,9 @@ ISpyApplication::setupActions(void)
   QIcon icon6;
   icon6.addPixmap(QPixmap(QString::fromUtf8(":/images/xz_small.xpm")), QIcon::Normal, QIcon::Off);
   actionViewPlaneY->setIcon(icon6);
-  actionViewPlaneY->setText(QApplication::translate("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
+  actionViewPlaneY->setText(QApplication::translate("ISpy3DView", "Plane Y", 0));
 #ifndef QT_NO_TOOLTIP
-  actionViewPlaneY->setToolTip(QApplication::translate("ISpy3DView", "Plane Y", 0, QApplication::UnicodeUTF8));
+  actionViewPlaneY->setToolTip(QApplication::translate("ISpy3DView", "Plane Y", 0));
 #endif // QT_NO_TOOLTIP
 
   QAction *actionViewPlaneZ = new QAction(parent());
@@ -1275,9 +1276,9 @@ ISpyApplication::setupActions(void)
   QIcon icon7;
   icon7.addPixmap(QPixmap(QString::fromUtf8(":/images/yx_small.xpm")), QIcon::Normal, QIcon::Off);
   actionViewPlaneZ->setIcon(icon7);
-  actionViewPlaneZ->setText(QApplication::translate("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
+  actionViewPlaneZ->setText(QApplication::translate("ISpy3DView", "Plane Z", 0));
 #ifndef QT_NO_TOOLTIP
-  actionViewPlaneZ->setToolTip(QApplication::translate("ISpy3DView", "Plane Z", 0, QApplication::UnicodeUTF8));
+  actionViewPlaneZ->setToolTip(QApplication::translate("ISpy3DView", "Plane Z", 0));
 #endif // QT_NO_TOOLTIP
 
   m_viewPlaneGroup = new QActionGroup(parent());
@@ -1295,10 +1296,10 @@ ISpyApplication::setupActions(void)
   icon8.addPixmap(QPixmap(QString::fromUtf8(":/images/perspective.xpm")), QIcon::Normal, QIcon::Off);
   m_actionCameraPerspective->setIcon(icon8);
   m_actionCameraPerspective->setCheckable(true);
-  m_actionCameraPerspective->setText(QApplication::translate("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
+  m_actionCameraPerspective->setText(QApplication::translate("ISpy3DView", "Perspective View", 0));
 
 #ifndef QT_NO_TOOLTIP
-  m_actionCameraPerspective->setToolTip(QApplication::translate("ISpy3DView", "Perspective View", 0, QApplication::UnicodeUTF8));
+  m_actionCameraPerspective->setToolTip(QApplication::translate("ISpy3DView", "Perspective View", 0));
 #endif // QT_NO_TOOLTIP
 
   m_actionCameraOrthographic = new QAction(parent());
@@ -1306,11 +1307,11 @@ ISpyApplication::setupActions(void)
   QIcon icon9;
   icon9.addPixmap(QPixmap(QString::fromUtf8(":/images/ortho.xpm")), QIcon::Normal, QIcon::On);
   m_actionCameraOrthographic->setIcon(icon9);
-  m_actionCameraOrthographic->setText(QApplication::translate("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
+  m_actionCameraOrthographic->setText(QApplication::translate("ISpy3DView", "Orthographic View", 0));
   m_actionCameraOrthographic->setCheckable(true);
   m_actionCameraOrthographic->setChecked(true);
 #ifndef QT_NO_TOOLTIP
-  m_actionCameraOrthographic->setToolTip(QApplication::translate("ISpy3DView", "Orthographic View", 0, QApplication::UnicodeUTF8));
+  m_actionCameraOrthographic->setToolTip(QApplication::translate("ISpy3DView", "Orthographic View", 0));
 #endif // QT_NO_TOOLTIP
 
   m_viewModeGroup->addAction(m_actionCameraPerspective);
@@ -1342,8 +1343,7 @@ ISpyApplication::setupActions(void)
   m_3DToolBar->addAction(m_actionCameraPerspective);
   m_3DToolBar->addAction(m_actionCameraOrthographic);
 
-  m_3DToolBar->setWindowTitle(QApplication::translate("ISpy3DView", 
-                              "toolBar", 0, QApplication::UnicodeUTF8));
+  m_3DToolBar->setWindowTitle(QApplication::translate("ISpy3DView", "toolBar", 0));
 }
 
 /** Fills in the camera object with the specifications found in the spec.
@@ -1423,13 +1423,13 @@ ISpyApplication::setupMainWindow(void)
   m_treeWidget->setHeaderLabels(headers);
   m_treeWidget->setAlternatingRowColors(false);
   
-  m_groupFont = new QFont("Helvetica Neue");
+  m_groupFont = new QFont("Nimbus");
   m_groupFont->setPixelSize(11);
   m_groupFont->setWeight(QFont::Bold);
   m_groupFont->setCapitalization(QFont::AllUppercase);
   
   //m_groupFont->setStretch(QFont::SemiCondensed);
-  m_itemFont = new QFont("Helvetica Neue");
+  m_itemFont = new QFont("Nimbus");
   m_itemFont->setPixelSize(11);
 
   m_mainWindow->restoreSettings();
@@ -2328,9 +2328,9 @@ ISpyApplication::updateCollections(void)
   m_treeWidget->header()->setDefaultSectionSize(33);
   m_treeWidget->header()->setStretchLastSection(false);
   m_treeWidget->header()->setCascadingSectionResizes(true);
-  m_treeWidget->header()->setResizeMode(0, QHeaderView::Stretch);
-  m_treeWidget->header()->setResizeMode(1, QHeaderView::ResizeToContents);
-  m_treeWidget->header()->setResizeMode(2, QHeaderView::Fixed);
+  m_treeWidget->header()->setSectionResizeMode(0, QHeaderView::Stretch);
+  m_treeWidget->header()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+  m_treeWidget->header()->setSectionResizeMode(2, QHeaderView::Fixed);
   
   // Clear and re-fill the 3D now that we don't need old data.
   // Update the camera.
@@ -2366,8 +2366,8 @@ ISpyApplication::updateCollections(void)
   if (m_eventIndex >= (m_events.empty() ? 0 : m_events.size()-1))
   {
     m_mainWindow->showNormal();
-    m_mainWindow->dockTreeWidget->setShown(true);
-    m_mainWindow->dockTableWidget->setShown(true);
+    m_mainWindow->dockTreeWidget->setVisible(true);
+    m_mainWindow->dockTableWidget->setVisible(true);
     m_mainWindow->menubar->show();
     m_3DToolBar->show();
   }

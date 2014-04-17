@@ -2,7 +2,7 @@
 
 #include "QtGUI/IgLocationDialog.h"
 #include <QtGui>
-
+#include <QtWidgets>
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
 //<<<<<< PRIVATE TYPES                                                  >>>>>>
@@ -58,7 +58,7 @@ IgLocationDialog::IgLocationDialog(QWidget *parent)
   locationsTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
   locationsTable->setColumnCount(2);
   locationsTable->setHorizontalHeaderLabels(labels);
-  locationsTable->horizontalHeader()->setResizeMode(0, QHeaderView::Stretch);
+  locationsTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
   locationsTable->horizontalHeader()->resizeSection(1, 180);
 
   buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok

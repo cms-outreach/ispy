@@ -16,7 +16,7 @@ CONFIG_QTLIBS="-L$INSTALL_DIR/lib -lz -lQtOpenGL -lQtGui -lQtCore $SOQT_LIBS"
 ./configure --prefix="$INSTALL_DIR" \
             --enable-static --disable-shared \
             --with-coin="$INSTALL_DIR" \
-            --with-qt="$INSTALL_DIR" \
+            --with-qt5 --with-qt="$INSTALL_DIR" \
             --disable-dependency-tracking \
             --disable-libtool-lock \
             --disable-static-defaults \

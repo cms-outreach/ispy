@@ -30,7 +30,7 @@ void
 IgCollectionTableModel::setCollection(IgCollection *collection)
 {
   m_collection = collection;
-  emit reset();
+  emit endResetModel();
 }
 
 QVariant
@@ -148,5 +148,5 @@ IgCollectionTableModel::clear(void)
   beginRemoveRows(QModelIndex(), 0, rowCount());
   m_collection = 0;
   endRemoveRows();
-  reset();
+  endResetModel();
 }

@@ -19,6 +19,8 @@
 #include <Inventor/errors/SoDebugError.h>
 #include <Inventor/Qt/devices/SoQtMouse.h>
 #include <QtGui>
+#include <QtWidgets>
+#include <QtPrintSupport>
 #include <iostream>
 #include <typeinfo>
 
@@ -212,7 +214,7 @@ ISpy3DView::printBitmap(const QString &file,
 	buffer += 3;
       }
     QImage mimage = image.mirrored();
-    if(!mimage.save(file, format.toAscii()))
+    if(!mimage.save(file, format.toLatin1()))
       QMessageBox::warning(getShellWidget(), "iSpy Save Image Error",
 			   "Failed to save an image.",
 			   "Ok");
@@ -244,7 +246,7 @@ ISpy3DView::save(void)
 
   // Pop up file dialog to as for the name.
   QFileDialog dialog(parent(), "Save To File");
-  dialog.setFilters(filters);
+  dialog.setNameFilters(filters);
   dialog.setFileMode(QFileDialog::AnyFile);
   dialog.setAcceptMode(QFileDialog::AcceptSave);
   dialog.setLabelText(QFileDialog::Accept, "&Save");
@@ -277,7 +279,7 @@ ISpy3DView::save(void)
     }
   }
   // Pick format settings.
-  QString sfilter = dialog.selectedFilter();
+  QString sfilter = dialog.selectedNameFilter();
   QString format = sfilter.section('.', -1);
   format.remove(QChar(')'));
 
@@ -318,7 +320,7 @@ ISpy3DView::saveNode(SoNode *node, const QString& title,
     QString ascii("ASCII OIV Files(*.iv)");
     QStringList filters(ascii);
     filters.append(binary);
-    dialog.setFilters(filters);
+    dialog.setNameFilters(filters);
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
     dialog.setLabelText(QFileDialog::Accept, "&Save");
@@ -351,7 +353,7 @@ ISpy3DView::saveNode(SoNode *node, const QString& title,
       }
 
     }
-    if (dialog.selectedFilter() == binary)
+    if (dialog.selectedNameFilter() == binary)
       binaryfile = true;
   }
   else

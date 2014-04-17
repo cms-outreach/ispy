@@ -54,11 +54,11 @@ ISpyMainWindow::restoreSettings(void)
 {
   QSettings settings;
   if (settings.contains("mainwindow/treeview/shown"))
-    dockTreeWidget->setShown(settings.value("mainwindow/treeview/shown").value<bool>());
+    dockTreeWidget->setVisible(settings.value("mainwindow/treeview/shown").value<bool>());
   if (settings.contains("mainwindow/treeview/floating"))
     dockTreeWidget->setFloating(settings.value("mainwindow/treeview/floating").value<bool>());
   if (settings.contains("mainwindow/tableview/shown"))
-    dockTableWidget->setShown(settings.value("mainwindow/tableview/shown").value<bool>());
+    dockTableWidget->setVisible(settings.value("mainwindow/tableview/shown").value<bool>());
   if (settings.contains("mainwindow/tableview/floating"))
     dockTableWidget->setFloating(settings.value("mainwindow/tableview/floating").value<bool>());
   if (settings.contains("mainwindow/configuration/save"))
@@ -119,14 +119,14 @@ ISpyMainWindow::maximize(void)
 {
   if (this->isMaximized())
   {
-    actionMaximize->setText(QApplication::translate("IgMainWindow", "Maximize", 0, QApplication::UnicodeUTF8));
+    actionMaximize->setText(QApplication::translate("IgMainWindow", "Maximize", 0));
     actionFull_screen->setEnabled(true);
     actionFull_screen->setEnabled(false);
     this->showNormal();
   }
   else
   {
-    actionMaximize->setText(QApplication::translate("IgMainWindow", "Show &Normal", 0, QApplication::UnicodeUTF8));
+    actionMaximize->setText(QApplication::translate("IgMainWindow", "Show &Normal", 0));
     actionFull_screen->setEnabled(false);
     this->showMaximized();
   }

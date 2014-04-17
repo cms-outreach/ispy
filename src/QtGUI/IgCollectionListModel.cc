@@ -104,5 +104,6 @@ IgCollectionListModel::setCollection(IgCollection *collection)
   assert(collection);
   m_collection = collection;
   //std::cout << " with collection name " << m_collection->name() << std::endl;
-  emit reset();
+  //emit reset();
+  emit endResetModel();
 }

@@ -7,7 +7,7 @@ set(LIBRARY_OUTPUT_PATH build)
 set(EXECUTABLE_OUTPUT_PATH build)
 set(CMAKE_CURRENT_BINARY_DIR build)
 set(CMAKE_OSX_ARCHITECTURES "x86_64")
-set(CMAKE_OSX_DEPLOYMENT_TARGET 10.5)
+set(CMAKE_OSX_DEPLOYMENT_TARGET 10.9)
 #set(CMAKE_OSX_SYSROOT /Developer/SDKs/MacOSX10.5.sdk)
 
 # My QT detection code. FindQt4 behaves weirdly and picks up
@@ -22,15 +22,21 @@ set(QT_LIBRARY_DIR ${QT_ROOT}/lib)
 
 find_path(QT_CORE_HEADERS QtCore PATHS ${QT_ROOT}/include/QtCore NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)                            
 find_path(QT_GUI_HEADERS QtGui PATHS ${QT_ROOT}/include/QtGui NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)              
-find_path(QT_NETWORK_HEADERS QtNetwork PATHS ${QT_ROOT}/include/QtNetwork NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)             
+find_path(QT_NETWORK_HEADERS QtNetwork PATHS ${QT_ROOT}/include/QtNetwork NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)  
+find_path(QT_WIDGETS_HEADERS QtWidgets PATHS ${QT_ROOT}/include/QtWidgets NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)      
+find_path(QT_PRINT_HEADERS QtPrintSupport PATHS ${QT_ROOT}/include/QtPrintSupport NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH) 
+find_path(QT_MAC_HEADERS QtMacExtras PATHS ${QT_ROOT}/include/QtMacExtras NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH) 
 
-find_library(QT_NETWORK_LIBRARY libQtNetwork.a QtNetwork ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(QT_GUI_LIBRARY libQtGui.a QtGui ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(QT_CORE_LIBRARY libQtCore.a QtCore ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
-find_library(QT_OPENGL_LIBRARY libQtOpenGL.a QtOpenGL ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_NETWORK_LIBRARY libQt5Network.a QtNetwork ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_GUI_LIBRARY libQt5Gui.a QtGui ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_CORE_LIBRARY libQt5Core.a QtCore ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_OPENGL_LIBRARY libQt5OpenGL.a QtOpenGL ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_WIDGETS_LIBRARY libQt5Widgets.a QtWidgets ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_PRINT_LIBRARY libQt5PrintSupport.a QtPrintSupport ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
+find_library(QT_MAC_LIBRARY libQt5MacExtras.a QtMacExtras ${QT_ROOT}/lib NO_SYSTEM_ENVIRONMENT_PATH NO_CMAKE_SYSTEM_PATH)
 message(${QT_GUI_LIBRARY})
 
-set(QT_INCLUDE_DIRS ${QT_ROOT}/include ${QT_CORE_HEADERS} ${QT_GUI_HEADERS} ${QT_NETWORK_HEADERS})
+set(QT_INCLUDE_DIRS ${QT_ROOT}/include ${QT_CORE_HEADERS} ${QT_GUI_HEADERS} ${QT_NETWORK_HEADERS} ${QT_WIDGETS_HEADERS} ${QT_PRINT_HEADERS} ${QT_MAC_HEADERS})
 
 # Improved wrap ui macro. Now output files are in ui/
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/ui)
@@ -185,6 +191,9 @@ endif(APPLE)
 if (APPLE)
   target_link_libraries(${ISPY_NAME} ISpyFramework 
                         ${SOQT_LIBRARY}
+                        ${QT_MAC_LIBRARY}
+                        ${QT_PRINT_LIBRARY}
+                        ${QT_WIDGETS_LIBRARY}
                         ${QT_NETWORK_LIBRARY}
                         ${QT_OPENGL_LIBRARY}
                         ${QT_GUI_LIBRARY}
@@ -228,7 +237,7 @@ INSTALL(CODE "
    include(BundleUtilities)
    fixup_bundle(\"${APPS}\"   \"\"   \"${DIRS}\")
    " COMPONENT Runtime)
-file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/externals/sw/src/qt/src/gui/mac/qt_menu.nib
+file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/externals/sw/src/qt/qtbase/src/plugins/platforms/cocoa/qt_menu.nib
      DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/Resources/ )
 file(COPY ${CMAKE_CURRENT_SOURCE_DIR}/src/QtGUI/resources/Info.plist
 	 DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/iSpy.app/Contents/ )

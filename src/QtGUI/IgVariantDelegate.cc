@@ -2,6 +2,7 @@
 
 #include "QtGUI/IgVariantDelegate.h"
 #include <QtGui>
+#include <QtWidgets>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>

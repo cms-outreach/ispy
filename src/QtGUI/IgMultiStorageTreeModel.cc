@@ -4,6 +4,7 @@
 #include "QtGUI/IgDataStorageTableModel.h"
 #include "Framework/IgCollection.h"
 #include <QtGui>
+#include <QtWidgets>
 #include <iostream>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
@@ -197,7 +198,7 @@ IgMultiStorageTreeModel::addStorage(IgDataStorage *storage, const char * label)
 {
   IgDataStorageTableModel *model = new IgDataStorageTableModel(storage, label);
   m_storages.push_back(model);
-  emit reset();
+  emit endResetModel();
 }
 
 void
@@ -206,7 +207,7 @@ IgMultiStorageTreeModel::clear(void)
   beginRemoveRows(QModelIndex(), 0, m_storages.size());
   m_storages.clear();
   endRemoveRows();
-  emit reset();
+  emit endResetModel();
 }
 
 QModelIndex
@@ -226,7 +227,8 @@ IgMultiStorageTreeModel::index(int row, int column, const QModelIndex & parent) 
     UniqueId id(pid.dataStorage(), row);
     return createIndex(row, column, id.toInt());
   }
-  return createIndex(row, column, 0);
+  //return createIndex(row, column, 0);
+  return createIndex(row,column);
 }
 
 QModelIndex

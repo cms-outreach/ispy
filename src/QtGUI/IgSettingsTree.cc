@@ -3,6 +3,7 @@
 #include "QtGUI/IgSettingsTree.h"
 #include "QtGUI/IgVariantDelegate.h"
 #include <QtGui>
+#include <QtWidgets>
 
 //<<<<<< PRIVATE DEFINES                                                >>>>>>
 //<<<<<< PRIVATE CONSTANTS                                              >>>>>>
@@ -22,8 +23,8 @@ IgSettingsTree::IgSettingsTree(QWidget *parent)
   QStringList labels;
   labels << tr("Setting") << tr("Type") << tr("Value");
   setHeaderLabels(labels);
-  header()->setResizeMode(0, QHeaderView::Stretch);
-  header()->setResizeMode(2, QHeaderView::Stretch);
+  header()->setSectionResizeMode(0, QHeaderView::Stretch);
+  header()->setSectionResizeMode(2, QHeaderView::Stretch);
 
   settings_ = 0;
   refreshTimer_.setInterval(2000);

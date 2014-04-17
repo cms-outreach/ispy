@@ -9,7 +9,7 @@ unix:TARGET= ispy
 
 CONFIG += release
 
-mac:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.5
+mac:QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
 mac:CONFIG += 
 
 # Change any of these in order to match your externals.

@@ -69,29 +69,28 @@ ExternalProject_Add(fontconfig
 custom_configure(fontconfig)
 
 ExternalProject_Add(qt
-                    DEPENDS zlib freetype
-                    URL  http://download.qt-project.org/official_releases/qt/4.8/4.8.4/qt-everywhere-opensource-src-4.8.4.tar.gz
-                    PREFIX ${EXTERNALS_PREFIX}
-                    CONFIGURE_COMMAND cd <SOURCE_DIR> &&
-                      yes | ./configure -prefix <INSTALL_DIR>
-                        -static -fast -no-dwarf2 -release
-                        -opensource -stl -L<INSTALL_DIR>/lib -no-glib
-                        -no-libtiff -no-libpng -no-libmng
-                        -qt-libjpeg -qt-libpng -qt-zlib
-                        -no-separate-debug-info -no-multimedia
-                        -no-sql-db2 -no-sql-ibase -no-sql-mysql 
-                        -no-sql-oci -no-sql-odbc -no-sql-psql 
-                        -no-sql-sqlite -no-sql-sqlite2 -no-sql-tds
-                        -no-rpath -no-pch -no-dbus -no-xmlpatterns
-                        -no-phonon -no-phonon-backend -no-svg -no-webkit
-                        -declarative -no-qt3support -openssl-linked 
-                        -make "libs tools"
-                    BUILD_COMMAND cd <SOURCE_DIR> && make -j 4
-                    INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
+DEPENDS zlib freetype
+URL file:///Users/mccauley/qt-everywhere-opensource-src-5.2.1.tar.gz
+PREFIX ${EXTERNALS_PREFIX}
+CONFIGURE_COMMAND cd <SOURCE_DIR> &&
+yes | ./configure -prefix <INSTALL_DIR>
+-static -release -developer-build
+-nomake examples -nomake tests
+-opensource -L<INSTALL_DIR>/lib -no-glib
+-no-libpng -qt-libjpeg -qt-libpng -qt-zlib
+-no-separate-debug-info 
+-no-sql-db2 -no-sql-ibase -no-sql-mysql 
+-no-sql-oci -no-sql-odbc -no-sql-psql 
+-no-sql-sqlite -no-sql-sqlite2 -no-sql-tds
+-no-rpath -no-pch -no-dbus -openssl-linked -skip qtandroidextras
+-skip qtwebkit -skip qtmultimedia -skip qtxmlpatterns 
+-make "libs tools"
+BUILD_COMMAND cd <SOURCE_DIR> && make -j 4
+INSTALL_COMMAND cd <SOURCE_DIR> && make -j 10 install
 )
 
 if(APPLE)
- set(SIMAGE_CONF_FLAGS --enable-quicktime --without-framework --without-x --enable-universal --enable-darwin-x11=false)
+ set(SIMAGE_CONF_FLAGS --without-framework --without-x --enable-darwin-x11=false)
 else(APPLE)
  set(SIMAGE_CONF_FLAGS)
 endif(APPLE)
@@ -119,7 +118,7 @@ endif(APPLE)
 
 ExternalProject_Add(coin
                     DEPENDS simage freetype fontconfig
-                    URL https://bitbucket.org/Coin3D/coin/downloads/Coin-3.1.3.tar.gz
+                    URL file:///Users/mccauley/coin.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR>
                     BUILD_COMMAND cd <SOURCE_DIR> && make -j 5
@@ -131,7 +130,7 @@ custom_configure(coin)
 set(CONFIG_QTLIBS -L<INSTALL_DIR>/lib -lz -lQt3Support -lQtOpenGL -lQtGui -lQtCore ${SOQT_LIBS})
 
 ExternalProject_Add(soqt
-                    URL https://bitbucket.org/Coin3D/coin/downloads/SoQt-1.5.0.tar.gz
+                    URL file:///Users/mccauley/soqt.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     DEPENDS coin qt
                     CONFIGURE_COMMAND cd <SOURCE_DIR> && sh -ex ../../../configure_soqt.sh <INSTALL_DIR> ${PLATFORM}
