@@ -70,11 +70,11 @@ custom_configure(fontconfig)
 
 ExternalProject_Add(qt
                     DEPENDS zlib freetype
-                    URL  http://download.qt-project.org/official_releases/qt/4.8/4.8.4/qt-everywhere-opensource-src-4.8.4.tar.gz
+                    URL  http://download.qt-project.org/official_releases/qt/4.8/4.8.6/qt-everywhere-opensource-src-4.8.6.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
-                      yes | ./configure -prefix <INSTALL_DIR>
-                        -static -fast -no-dwarf2 -release
+                      yes | ./configure -v -prefix <INSTALL_DIR>
+                        -static -fast -no-dwarf2 -release -opengl
                         -opensource -stl -L<INSTALL_DIR>/lib -no-glib
                         -no-libtiff -no-libpng -no-libmng
                         -qt-libjpeg -qt-libpng -qt-zlib
