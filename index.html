@@ -36,25 +36,22 @@
 <p><img src="https://cds.cern.ch/record/1606502/files/eemm_run195099_evt137440354_ispy_3d-annotated-2.png?subformat=icon-1440" alt="Example display"></p>
 
 <h1>
-<a id="what-is-an-ig-file" class="anchor" href="#what-is-an-ig-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is an ig file?</h1>
-
-<p>A .ig file is a zip archive (unzippable via unzip or similar) containing one file per event. Each event file uses a relational database-like structure, described using JSON.</p>
+<a id="what-is-an-ig-file" class="anchor" href="#what-is-an-ig-file" aria-hidden="true"><span class="octicon octicon-link"></span></a>What is an ig file?</h1><a href="#igfile"></a>
+A .ig file is a zip archive (unzippable via unzip or similar) containing one file per event. Each event file uses a relational database-like structure, described using JSON.
 
 <h2>
 <a id="ig-file-format" class="anchor" href="#ig-file-format" aria-hidden="true"><span class="octicon octicon-link"></span></a>ig-file format:</h2>
+ig files have a flat directory structure with a separate directory per run (run directory). Each run directory contains one or more files describing a given event (ig event file) each. The associated run number and the event number are, respectively, the file name for the run directory and for the ig event file.
 
-<p>ig files have a flat directory structure with a separate directory per run (run directory). Each run directory contains one or more files describing a given event (ig event file) each. The associated run number and the event number are, respectively, the file name for the run directory and for the ig event file.</p>
+The ig-event-file format is a valid JSON or python dictionary. The format defines three categories of objects: types, collections and associations-sets.
 
-<p>The ig-event-file format is a valid JSON or python dictionary. The format defines three categories of objects: types, collections and associations-sets.</p>
+Syntax:
 
-<p>Syntax:</p>
-
-<p>ig-event-file ::= { 'Types': type-descriptions, 'Collections': collections, 'Associations': association-sets }</p>
+ig-event-file ::= { 'Types': type-descriptions, 'Collections': collections, 'Associations': association-sets }
 
 <h3>
 <a id="types" class="anchor" href="#types" aria-hidden="true"><span class="octicon octicon-link"></span></a>Types</h3>
-
-<p>Types are a mapping of a type-name and its associated type-description. The type-description defines the types of the objects that are to be found in the Collection which uses the same string as the type-name to be identified. The attributes (i.e. columns) of a Collection are defined by an attribute name and an attribute type. The former is just a string label, while the second one define the kind of object which is stored in the attribute, all of which have a C++ equivalent. Possible attribute types include:</p>
+Types are a mapping of a type-name and its associated type-description. The type-description defines the types of the objects that are to be found in the Collection which uses the same string as the type-name to be identified. The attributes (i.e. columns) of a Collection are defined by an attribute name and an attribute type. The former is just a string label, while the second one define the kind of object which is stored in the attribute, all of which have a C++ equivalent. Possible attribute types include:
 
 <ul>
 <li>simple numeric types: <em>int</em>, <em>long</em>, and <em>double</em>, which map to their C++ equivalents.</li>
@@ -63,74 +60,74 @@
 <li>vector like quantities: <em>v2d</em>, <em>v3d</em>, <em>v4d</em> which map to <code>IgV2d</code>, <code>IgV3d</code>, <code>IgV4d</code>.</li>
 </ul>
 
-<p>Syntax:</p>
+Syntax:
 
-<p>type-descriptions ::= { type-description, ... }</p>
+type-descriptions ::= { type-description, ... }
 
-<p>type-description ::= "type-name": [attributes-description, ...]</p>
+type-description ::= "type-name": [attributes-description, ...]
 
-<p>type-name ::= string-literal</p>
+type-name ::= string-literal
 
-<p>attribute-description ::= ["attribute-name", "attribute-type"]</p>
+attribute-description ::= ["attribute-name", "attribute-type"]
 
-<p>attribute-name ::= string-literal</p>
+attribute-name ::= string-literal
 
-<p>string-literal ::= [A-Za-z_][A-Za-z_/0-9]*</p>
+string-literal ::= [A-Za-z_][A-Za-z_/0-9]*
 
-<p>attribute-type ::= int OR long OR double OR string OR v2d OR v3d OR v4d</p>
+attribute-type ::= int OR long OR double OR string OR v2d OR v3d OR v4d
 
 <h3>
 <a id="collections" class="anchor" href="#collections" aria-hidden="true"><span class="octicon octicon-link"></span></a>Collections</h3>
 
-<p>Collections are arrays of rows, identified by a collection-name. The collection-name is a string-literal which matches one of the type-names defined in types. Rows are arrays of values, where the type of the value matches the attribute-type of the attribute-description with the same position in the type-description which has its type-name matching the collection name.</p>
+Collections are arrays of rows, identified by a collection-name. The collection-name is a string-literal which matches one of the type-names defined in types. Rows are arrays of values, where the type of the value matches the attribute-type of the attribute-description with the same position in the type-description which has its type-name matching the collection name.
 
-<p>This is the actual data contained in a file.</p>
+This is the actual data contained in a file.
 
-<p>Syntax:</p>
+Syntax:
 
-<p>collections ::= {collection, ... }</p>
+collections ::= {collection, ... }
 
-<p>collection ::= "type-name": [row, ...]</p>
+collection ::= "type-name": [row, ...]
 
-<p>row ::= [ value, ...]</p>
+row ::= [ value, ...]
 
-<p>value ::= string-literal OR numeric-literal OR vector-literal</p>
+value ::= string-literal OR numeric-literal OR vector-literal
 
-<p>numeric-literal ::= [0-9]+[.]<em>[0-9]</em></p>
+numeric-literal ::= [0-9]+[.]*[0-9]*
 
-<p>vector-literal ::= [numeric-literal, numeric-literal, ...]</p>
+vector-literal ::= [numeric-literal, numeric-literal, ...]
 
 <h3>
 <a id="association-sets" class="anchor" href="#association-sets" aria-hidden="true"><span class="octicon octicon-link"></span></a>Association sets</h3>
 
-<p>An association defines a relationship between two rows found in any (possibly the same) collections. They are uniquely identified by two couples of numbers, the first one uniquely identifying the left object of the association, the other identifying the right object. The first element of this couple of numbers is the so called collection id while the second one is called object id. The collection id is the index of the collection type within the Types table, while the object id is the index of the object within the collection. Such a couple of numbers is called object reference. An association-set is an array of associations which share some common meaning decided by the writer of the ig-file.</p>
+An association defines a relationship between two rows found in any (possibly the same) collections. They are uniquely identified by two couples of numbers, the first one uniquely identifying the left object of the association, the other identifying the right object. The first element of this couple of numbers is the so called collection id while the second one is called object id. The collection id is the index of the collection type within the Types table, while the object id is the index of the object within the collection. Such a couple of numbers is called object reference. An association-set is an array of associations which share some common meaning decided by the writer of the ig-file.
 
-<p>Syntax:</p>
+Syntax:
 
-<p>associations-sets ::= { association-set, ... }</p>
+associations-sets ::= { association-set, ... }
 
-<p>association-set ::= "association-set-name": [association, ...]</p>
+association-set ::= "association-set-name": [association, ...]
 
-<p>association ::= [left-object, right-object]</p>
+association ::= [left-object, right-object]
 
-<p>left-object ::= object-reference</p>
+left-object ::= object-reference
 
-<p>right-object ::= object-reference</p>
+right-object ::= object-reference
 
-<p>object-reference ::= [collection-id, object-id]</p>
+object-reference ::= [collection-id, object-id]
 
-<p>collection-id ::= index-literal</p>
+collection-id ::= index-literal
 
-<p>object-id ::= index-literal</p>
+object-id ::= index-literal
 
-<p>index-literal ::= [0-9]+</p>
+index-literal ::= [0-9]+
 
 <h3>
 <a id="example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
 
-<p>Here is a simple example of what an ig file looks like.</p>
-
-<pre><code>{
+Here is a simple example of what an ig file looks like.
+```
+{
  "Types": {"Tracks_V1": [["x", "double"],["y", "double"],["z", "double"],
                          ["px", "double"],["py","double"],["pz", "double"]],
            "Clusters_V1": [["x", "double"],["y", "double"],["z", "double"],
@@ -179,13 +176,10 @@
                                         [[0, 9], [1, 0]]]
                   }
 }
-</code></pre>
-
+```
 <h3>
 <a id="apis" class="anchor" href="#apis" aria-hidden="true"><span class="octicon octicon-link"></span></a>APIs</h3>
-
-<p>APIs for ig files can be found on github:</p>
-
+APIs for ig files can be found on github:
 <ul>
 <li>
 <a href="https://github.com/tpmccauley/igfiles">C++</a>
