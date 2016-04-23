@@ -49,7 +49,7 @@ ExternalProject_Add(freetype
 )
 
 ExternalProject_Add(expat
-                    URL http://switch.dl.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz
+                    URL http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
                                   --disable-libtool-lock --disable-dependency-tracking
@@ -70,7 +70,7 @@ custom_configure(fontconfig)
 
 ExternalProject_Add(qt
                     DEPENDS zlib freetype
-                    URL http://download.qt-project.org/official_releases/qt/4.8/4.8.5/qt-everywhere-opensource-src-4.8.5.tar.gz
+                    URL https://download.qt.io/official_releases/qt/4.8/4.8.6/qt-everywhere-opensource-src-4.8.6.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND cd <SOURCE_DIR> &&
                       yes | ./configure -v -prefix <INSTALL_DIR>
