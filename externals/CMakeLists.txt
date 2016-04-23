@@ -49,7 +49,7 @@ ExternalProject_Add(freetype
 )
 
 ExternalProject_Add(expat
-                    URL http://switch.dl.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz
+                    URL http://downloads.sourceforge.net/project/expat/expat/2.0.1/expat-2.0.1.tar.gz
                     PREFIX ${EXTERNALS_PREFIX}
                     CONFIGURE_COMMAND <SOURCE_DIR>/configure --prefix <INSTALL_DIR>
                                   --disable-libtool-lock --disable-dependency-tracking
